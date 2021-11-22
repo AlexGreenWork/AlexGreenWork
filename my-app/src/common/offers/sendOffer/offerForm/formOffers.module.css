@@ -1,0 +1,24 @@
+.formFilds {
+    display:flex;
+    flex-direction: column-reverse;
+}
+.sendOfferContainer{
+    display: flex;
+    grid-column: 1/6;
+    grid-row: 1/6;
+    overflow-y: scroll;
+    background-color: rgba(255,255,255,.7);
+    padding: 10px;
+}
+input{
+    width:100%;
+}
+.formFieldCheckbox{
+    display: flex;
+    flex-direction: row-reverse;
+}
+.buttonConfirm{
+    margin: 15px;
+    display: flex;
+    justify-content: center;
+}

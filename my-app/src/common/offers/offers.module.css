@@ -1,0 +1,75 @@
+.offersContainer{
+    width:98%;
+    padding: 5px;
+    background-color: white;
+    border: solid 2px white;
+    grid-column: 2/6;
+    grid-row: 2/6;
+    z-index: 2;
+    overflow: scroll;
+
+}
+.messagesContainer:hover{
+    background-color: #ccdbf6;
+}
+.titleHeader{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 20px;
+    text-decoration: none;
+}
+.offersContainer>a{
+    text-decoration: none;
+    color:black;
+}
+.from{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 10% 30% 60%;
+
+}
+.header{
+    display: flex;
+    background-color: white;
+    border: 1px solid;
+    border-radius: 15px;
+    padding: 10px;
+
+}
+.header:hover{
+    background-color: #aad1ff;
+    color: #552e00;
+}
+.offerPreview{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px;
+}
+.fromName{
+    font-weight: bold;
+    padding: auto;
+   
+    width: fit-content;
+}
+.date{
+    position: relative;
+    left: 70px;
+    top:0px;
+
+}
+.status{
+    position: relative;
+    left: 50px;
+    top: 10%;
+}
+.message{
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    background-color: burlywood;
+    width: 200px;
+    height: 200px;
+    z-index: 20;
+}

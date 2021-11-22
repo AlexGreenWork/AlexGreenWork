@@ -1,0 +1,162 @@
+html {
+  max-height: 100%;
+  min-height: 100%;
+  padding: 0;
+}
+body {
+  /*display: -webkit-box;*/
+  /*display: -ms-flexbox;*/
+  /*display: flex;*/
+  /*-webkit-box-pack: center;*/
+  /*-ms-flex-pack: center;*/
+  /*justify-content: center;*/
+  margin: 0;
+  width: 100%;
+  max-height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  /*background: url("./src/videos/belazVrZem.mp4");*/
+  background-size: cover;
+}
+
+#root{
+  width: 100%;
+  display:grid;
+
+}
+.container1 {
+  display: -ms-grid;
+  display: grid;
+  width: 100%;
+  min-height: 100%;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -ms-grid-columns: 25vw 25vw 25vw 25vw;
+  grid-template-columns: 25vw 25vw 25vw 25vw;
+  -ms-grid-rows: 12vh 20vh 20vh 20vh 20vh 8vh;
+  grid-template-rows: 12vh 20vh 20vh 20vh 20vh 7.5vh;
+  grid-gap: .1vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-wrapper-content{
+  width: 100%;
+  display:grid;
+  -ms-grid-columns: 15vw 21.5vw 21.5vw 21.5vw 21.5vw;
+  grid-template-columns: 15vw 21.5vw 21.5vw 21.5vw 21.5vw;
+  -ms-grid-rows: 7vh 23.25vh 23.25vh 23.25vh 1fr;
+  grid-template-rows: 7vh 23.25vh 23.25vh 23.25vh 1fr;
+  grid-column: 1/5;
+  grid-row: 2/6;
+  font-weight: bold;
+}
+
+
+:focus {
+  outline: none;
+}
+
+
+
+
+.container-for-table-offers{
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid black;
+}
+
+.btn-worker{
+  font-size: 1.5em;
+  width: 100%;
+  height: 15vh;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+}
+/*----------------------------------------------------CART OFFER*/
+.cart-offer-page {
+  display:grid;
+  position: relative;
+  margin: .5%;
+  width: 98%;
+  min-height: 98%;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 2/ 4;
+  -ms-grid-row: 3;
+  -ms-grid-row-span: 1;
+  grid-row: 1 / 5;
+  background-color: rgba(255, 255, 255, .8) ;
+  padding-left: 5px;
+
+  overflow-y: scroll;
+  border-radius: 20px;
+  -webkit-animation-name:  fromUpToDown;
+  animation-name:  fromUpToDown;
+  -webkit-animation-duration: .3s;
+  animation-duration: .3s;
+  grid-template-columns: 23% 23% 23% 23%;
+  grid-template-rows: 7vh 7vh 7vh 7vh 7vh 7vh 7vh 7vh 7vh 7vh 7vh;
+}
+.header-cart-offer{
+  display: grid;
+  grid-template-columns: 45% 45%;
+  grid-column: 2/ 6;
+  grid-row: 0 / 1;
+}
+
+
+.container-for-cart-offer{
+  grid-column: 1/ 5;
+  grid-row: 2 / 2;
+  display: grid;
+  grid-auto-colums: 1fr,1fr,1fr,1fr,1fr,1fr,1fr,1fr,1fr;
+}
+.close-button{
+  width: 3vw;
+  height: 3vw;
+  background: lightcoral;
+  text-align: center;
+  font-size: 2vw;
+  position: fixed;
+  transform: translate(64vw, 1vh);
+  grid-column: 5/ 6;
+  grid-row: 0 / 1;
+}
+
+.title_cart-offer{
+  display: grid;
+  grid-auto-flow: column;
+}
+.title_cart-offer *{
+  border: solid 1px black;
+  text-align: center;
+  font-size: 1em;
+}
+.contacts-offer{
+  display: grid;
+  grid-auto-flow: column;
+}
+.contacts-offer *{
+  border: solid 1px black;
+  text-align: center;
+  font-size: 1em;
+}
+.responsibles{
+  display: grid;
+  grid-auto-flow: column;
+}
+.responsibles *{
+  border: solid 1px black;
+  text-align: center;
+  font-size: 1em;
+}
+
+/*-------------------------------------------------END CART OFFER*/
