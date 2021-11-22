@@ -50,9 +50,8 @@ function App(props) {
                             <Route path='/sendOfferWorker' component={OffersForm}/>
                             <Route path='/sendOfferFree' component={OffersFormFree}/>
                             <Route path="/registration" component={Registration}/>
-                            <Route path="/personalCabinet/authorization" component={AuthorizationWorker}/>
 
-                            <Redirect to='/personalCabinet/authorization'/>
+                            <Redirect to='/authorization'/>
                         </Switch>
                         :
                         <Switch>
@@ -62,9 +61,10 @@ function App(props) {
 
                         </Switch>
                     }
+                    <Route path="/authorization" component={AuthorizationWorker}/>
+                    {/*<Route path="/adminPanel" component={AdminPanel}/>*/}
                     <Route exact path='/' component={ContentContainer}/>
                     <Route path='/workerVariable' component={WorkerVariable}/>
-
                     <Route path='/personalCabinet/myOffers' component={MyOffers}/>
                     <Route path='/personalCabinet/findWorkers' component={FindWorkers}/>
                     <Route path='/personalCabinet/tasks' component={Tasks}/>
@@ -73,16 +73,10 @@ function App(props) {
                     <Route exact path="/personalCabinet/disk" component={Disk}/>
                     <Route path='/cardOffer' component={CardOffer}/>
                     <Route path='/cardOffer/infoAboutAuthor' component={InfoAboutAuthor}/>
-
                     <Route path='/cardOffer/conclusion' component={ConclusionOffer}/>
-
-
-
                     <Route path='/personalCabinet' component={PersonalCabinet}/>
                     <Route path='/personalCabinet/messages' component={Messages}/>
                     <Route path='/personalCabinet/offers' component={Offers}/>
-
-
 
                 </div>
 

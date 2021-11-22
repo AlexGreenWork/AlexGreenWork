@@ -6,6 +6,109 @@ import Offers from "../offers/offers";
 
 
 const PersonalCabinet = () => {
+
+
+    function IsAdminUser(props) {
+        return (
+            <div className={s.navPCab}>
+                <div className={s.linksPC}>
+                    <NavLink className={s.offers} to="/personalCabinet/myOffers">Мои Предложения</NavLink>
+                </div>
+
+                <div className={s.linksPC}><NavLink className={s.offers}
+                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
+
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/files">
+                    Мои файлы
+                </NavLink></div>
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/tasks">
+                    Задачи
+                </NavLink></div>
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
+                    Найти сотрудника
+                </NavLink></div>
+            </div>
+        )
+    }
+
+    function IsAdminAdmin(props) {
+        return (
+            <div className={s.navPCab}>
+
+                <div className={s.linksPC}>
+                    <NavLink className={s.offers} to="/personalCabinet/myOffers">Мои Предложения</NavLink>
+                </div>
+
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/Offers">Предложения для
+                    обработки</NavLink></div>
+
+                <div className={s.linksPC}><NavLink className={s.offers}
+                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
+
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/files">
+                    Мои файлы
+                </NavLink></div>
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/tasks">
+                    Задачи
+                </NavLink></div>
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
+                    Найти сотрудника
+                </NavLink></div>
+                <div className={s.linksPC}>
+                    <NavLink className={s.offers} to="/personalCabinet/myOffers">Панель администратора</NavLink>
+                </div>
+            </div>
+        );
+    }
+
+    function IsAdminRG(props) {
+        return (
+            <div className={s.navPCab}>
+                <div className={s.linksPC}>
+                    <NavLink className={s.offers} to="/personalCabinet/myOffers">Мои Предложения</NavLink>
+                </div>
+
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/Offers">Предложения для
+                    обработки</NavLink></div>
+
+                <div className={s.linksPC}><NavLink className={s.offers}
+                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
+
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/files">
+                    Мои файлы
+                </NavLink></div>
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/tasks">
+                    Задачи
+                </NavLink></div>
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
+                    Найти сотрудника
+                </NavLink></div>
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
+                    Панель Рабочей группы
+                </NavLink></div>
+            </div>
+        )
+    }
+
+    function AdminChange(props) {
+        const isAdmin = props.isAdmin;
+        if (isAdmin == 'wg') {
+            return <IsAdminRG/>;
+        }
+        if (isAdmin == 'user') {
+            return <IsAdminUser/>;
+        }
+        if (isAdmin == 'admin') {
+            return <IsAdminAdmin/>;
+        }else{
+            return <IsAdminUser/>
+        }
+
+
+
+    }
+
+
     return (
         <div className={s.personalCabinetContainer}>
             <div className={s.header}>
@@ -17,38 +120,7 @@ const PersonalCabinet = () => {
 
             </div>
 
-            <div className={s.navPCab}>
-                <ul className={s.topmenu}>
-                    <li><NavLink className={s.down} to="/personalCabinet/Offers">Предложения > </NavLink>
-                        <ul className={s.submenu}>
-                            <li><NavLink  to="/personalCabinet/myOffers">Мои Предложения</NavLink>
-                            </li>
-                            <li><NavLink  to="/personalCabinet/Offers">Предложения для
-                                обработки</NavLink></li>
-
-                        </ul>
-                    </li>
-                </ul>
-                <NavLink className={s.offers} to="/personalCabinet/messages" > Сообщения </NavLink>
-
-                <NavLink className={s.offers} to="/personalCabinet/files"  >
-                    Мои файлы
-                </NavLink>
-                <NavLink className={s.offers} to="/personalCabinet/tasks"  >
-                    Задачи
-                </NavLink>
-                <NavLink className={s.offers} to="/personalCabinet/findWorkers"  >
-                    Найти сотрудника
-                </NavLink>
-
-            </div>
-            <div className={s.contentContainer}>
-                {/*<Messages/>*/}
-
-                {/*<Offers/>*/}
-
-
-            </div>
+            <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
 
 
         </div>

@@ -28,7 +28,7 @@
 .navPCab{
     grid-column: 1/2;
     grid-row: 2/3;
-    padding: 20px;
+
     display: flex;
     flex-direction: column;
     background-color: #14469B;
@@ -277,7 +277,17 @@ input:required + label::after, textarea:required + label::after {
     color: transparent;
     background: transparent url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDM0IDM0IiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPgogICAgPHBhdGggZD0iTTUsNyBtMywwIGgxOCBhIDMgMyAwIDAgMSAzIDMgdjE2IGEgMyAzIDAgMCAxIC0zIDMgaC0xOCBhIDMgMyAwIDAgMSAtMyAtMyB2LTE2IGEgMyAzIDAgMCAxIDMgLTMgeiBtMiwwIHYtMSBhIDEuNSAxLjUgMCAxIDEgMyAwIHYxIGg4IHYtMSBhIDEuNSAxLjUgMCAxIDEgMyAwIHYxCm0yLjUsNiB2MyBoLTUgdi0zIGg1IG0tNywwIHYzIGgtNSB2LTMgaDUgbS03LDAgdjMgaC01IHYtMyBoNSBtMTQsNSB2MyBoLTUgdi0zIGg1IG0tNywwIHYzIGgtNSB2LTMgaDUgbS03LDAgdjMgaC01IHYtMyBoNSBtMTQsNSB2MyBoLTUgdi0zIGg1IG0tNywwIHYzIGgtNSB2LTMgaDUgbS03LDAgdjMgaC01IHYtMyBoNQoiIGZpbGw9IiNiYmIiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgo8L3N2Zz4=") no-repeat center;
 }
-
+.offers{
+color: white;
+}
+.linksPC{
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: solid 1px gray;
+    padding-left: 10px;
+    margin-top: 5px;
+    width: 90%;
+}
 
 
 @media (max-width: 553px) {
@@ -321,7 +331,7 @@ input:required + label::after, textarea:required + label::after {
     .navPCab{
         grid-column: 1/5;
         grid-row: 2/3;
-        padding: 20px;
+
         display: flex;
         flex-direction: column;
         background-color: whitesmoke;
