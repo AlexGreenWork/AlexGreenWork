@@ -1,0 +1,24 @@
+const ADD_STATUS = "ADD_STATUS"
+const ADD_REJECT = "ADD_REJECT"
+
+
+const defaultState= {
+    rejectStatusOffer:-1,
+    stepStatusOffer:0,
+
+
+}
+export default function ReducerStepper (state=defaultState, action){
+    switch (action.type){
+        case "ADD_STATUS":
+
+            return {...state, stepStatusOffer: state.stepStatusOffer =action.payload}
+        case "ADD_REJECT":{
+            return {...state, rejectStatusOffer: state.rejectStatusOffer =action.payload}
+        }
+        default:
+            return state
+    }
+}
+export const stepStatusOffer = () => ({type: ADD_STATUS})
+export const rejectStatusOffer = () => ({type: ADD_REJECT})

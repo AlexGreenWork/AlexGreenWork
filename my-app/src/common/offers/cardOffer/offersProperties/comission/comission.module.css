@@ -1,0 +1,41 @@
+.nameOffer{
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+}
+.uploadContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.upload{
+    width: content-box;
+
+    background-color: rgba(20, 127, 239, 0.2);
+    border-radius: 10px;
+}
+.icon {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+}
+.filesArea{
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.filesContainer{
+
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    padding:5px;
+
+    justify-content: center;
+
+    background-color: rgba(20, 70, 155,.3);
+    border-radius: 10px;
+}

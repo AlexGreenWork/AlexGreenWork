@@ -1,0 +1,120 @@
+@-webkit-keyframes AnimationName {
+    0%{background-position:90% 0%}
+    50%{background-position:11% 100%}
+    100%{background-position:90% 0%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:90% 0%}
+    50%{background-position:11% 100%}
+    100%{background-position:90% 0%}
+}
+@keyframes AnimationName {
+    0%{background-position:90% 0%}
+    50%{background-position:11% 100%}
+    100%{background-position:90% 0%}
+}
+@-webkit-keyframes fromUpToDown {
+    0% {
+        top: -2000px;
+    }
+    100% {
+        top: 0;
+    }
+}
+@keyframes fromUpToDown {
+    0% {
+        top: -2000px;
+    }
+    100% {
+        top: 0;
+    }
+}
+@-webkit-keyframes fromUpToDown1 {
+    0% {
+        top: 2000px;
+    }
+    100% {
+        top: 0;
+    }
+}
+
+@keyframes fromUpToDown1 {
+    0% {
+        top: 2000px;
+    }
+    100% {
+        top: 0;
+    }
+}
+
+@-webkit-keyframes fromLeftToRight {
+    0% {
+        left: -5000px;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@keyframes fromLeftToRight {
+    0% {
+        left: -5000px;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@-webkit-keyframes fromRightToLeft {
+    0% {
+        left: 5000px;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@keyframes fromRightToLeft {
+    0% {
+        left: 5000px;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@-webkit-keyframes fromRight {
+    0% {
+        left: 5000px;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@keyframes fromRight {
+    0% {
+        left: 5000px;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@-webkit-keyframes fromLeft {
+    0% {
+        left: 5000px;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@keyframes fromLeft {
+    0% {
+        left: 5000px;
+    }
+    100% {
+        left: 0;
+    }
+}

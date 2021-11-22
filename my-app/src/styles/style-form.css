@@ -1,0 +1,212 @@
+html {
+    height: 100%;
+    min-width: 320px;
+}
+
+body {
+    --main-bg-color: #fff;
+    --main-text-color: #444;
+    min-height: 100%;
+    margin: 0;
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+    font-family: sans-serif;
+}
+
+form {
+    --input-height: 38px;
+    padding: 20px;
+    margin: 0;
+}
+
+form header h1 {
+    margin: 0;
+    text-align: center;
+}
+
+.form-fields {
+    margin: 10px 0 20px;
+
+}
+
+.form-field {
+    display: flex;
+    min-height: var(--input-height);
+}
+
+.form-field:not(.radio):not(.checkbox) {
+    flex-flow: row wrap;
+}
+
+.form-field > label {
+    flex: 1 1 100%;
+    height: var(--input-height);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.form-field:not(.radio):not(.checkbox) > label {
+    order: -1;
+}
+
+:not(fieldset) > .form-field + .form-field {
+    margin-top: 3px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    height: var(--input-height);
+    box-sizing: border-box;
+    flex: 1 1 100%;
+    background-color: var(--main-bg-color);
+    border: 2px solid #98beff;
+    padding: 0 10px;
+    border-radius: 0;
+    font-size: 1em;
+    line-height: 1.5;
+    font-family: inherit;
+    transition: background-color .2s ease, border .2s ease;
+    min-width: 200px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    align-self: center;
+    width: 18px;
+    height: 18px;
+    margin: 0 10px 0 0;
+}
+
+textarea {
+    padding: 5px 10px;
+    height: auto;
+    min-height: calc(3 * var(--input-height));
+    resize: vertical;
+}
+
+select {
+    background: var(--main-bg-color) url("arrow-down.svg") no-repeat right center;
+    background-origin: content-box;
+    -webkit-appearance: none;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+    background-color: #fff;
+    border: 2px solid #1167ff;
+}
+
+fieldset {
+    border: 2px solid #98beff;
+    margin: 10px 0 0 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+fieldset legend {
+    padding: 0 5px;
+}
+
+:focus {
+    outline: none;
+}
+
+::placeholder {
+    font-style: italic;
+    color: #bbb;
+}
+
+form footer {
+    display: flex;
+}
+
+#form-button {
+    background-color: #1167ff;
+    color: #fff;
+    font-size: inherit;
+    font-family: inherit;
+    height: var(--input-height);
+    border: 2px solid #1167ff;
+    width: 100%;
+    max-width: 300px;
+    margin: auto;
+}
+
+input:required + label::after, textarea:required + label::after {
+    content: "*";
+    color: red;
+    font-size: 1.5em;
+}
+
+::-webkit-clear-button,
+::-webkit-inner-spin-button {
+    display: none;
+}
+
+::-webkit-calendar-picker-indicator {
+    height: 34px;
+    width: 34px;
+    padding: 0;
+    margin: 0 -10px 0 0;
+    opacity: 1;
+    color: transparent;
+    background: transparent url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDM0IDM0IiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiPgogICAgPHBhdGggZD0iTTUsNyBtMywwIGgxOCBhIDMgMyAwIDAgMSAzIDMgdjE2IGEgMyAzIDAgMCAxIC0zIDMgaC0xOCBhIDMgMyAwIDAgMSAtMyAtMyB2LTE2IGEgMyAzIDAgMCAxIDMgLTMgeiBtMiwwIHYtMSBhIDEuNSAxLjUgMCAxIDEgMyAwIHYxIGg4IHYtMSBhIDEuNSAxLjUgMCAxIDEgMyAwIHYxCm0yLjUsNiB2MyBoLTUgdi0zIGg1IG0tNywwIHYzIGgtNSB2LTMgaDUgbS03LDAgdjMgaC01IHYtMyBoNSBtMTQsNSB2MyBoLTUgdi0zIGg1IG0tNywwIHYzIGgtNSB2LTMgaDUgbS03LDAgdjMgaC01IHYtMyBoNSBtMTQsNSB2MyBoLTUgdi0zIGg1IG0tNywwIHYzIGgtNSB2LTMgaDUgbS03LDAgdjMgaC01IHYtMyBoNQoiIGZpbGw9IiNiYmIiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgo8L3N2Zz4=") no-repeat center;
+}
+
+a {
+    color: #1167ff;
+}
+
+@media (min-width: 553px) {
+    .form-field:not(.radio):not(.checkbox) {
+        flex-flow: row nowrap;
+    }
+
+    :not(fieldset) > .form-field > label {
+        flex: 0 0 180px;
+        justify-content: flex-end;
+        margin-right: 10px;
+    }
+
+    fieldset {
+        width: calc(100% - 160px);
+        margin: 0 0 0 auto;
+    }
+
+    .form-field.checkbox {
+        margin-left: 160px;
+    }
+
+    :not(fieldset) > .form-field.checkbox > label {
+        flex: 1 1 auto;
+        justify-content: flex-start;
+    }
+
+    form {
+        max-width: 700px;
+        margin: auto;
+    }
+
+    form footer {
+        justify-content: flex-start;
+        margin-left: 160px;
+    }
+
+    button {
+        margin: 0;
+    }
+
+}

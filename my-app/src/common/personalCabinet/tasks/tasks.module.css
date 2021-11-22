@@ -1,0 +1,35 @@
+.sendOfferContainer{
+    display: flex;
+    width: 100%;
+    overflow: scroll;
+    grid-column: 2/6;
+    grid-row: 1/6;
+    --main-bg-color: #fff;
+    --main-text-color: #444;
+    min-height: 100%;
+    margin: 0;
+    background-color: rgba(255,255,255,0.6);
+    color: var(--main-text-color);
+    font-family: sans-serif;
+
+}
+
+.events {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.events .ant-badge-status {
+    width: 100%;
+    overflow: hidden;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.notes-month {
+    font-size: 28px;
+    text-align: center;
+}
+.notes-month section {
+    font-size: 28px;
+}

@@ -1,0 +1,6 @@
+{
+  "serverPort" : 5000,
+  "mongoUrl": "mongodb+srv://belazUser:mongo1@cluster0.sdntm.mongodb.net/cluster0?retryWrites=true&w=majority",
+  "secretKey": "mern-secret-key",
+  "baseUrl": "http://localhost:5000"
+}

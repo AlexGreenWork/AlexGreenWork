@@ -1,0 +1,8 @@
+.cardOfferContainer {
+    display: flex;
+    flex-direction: column;
+    grid-column: 1/6;
+    grid-row: 1/6;
+    background-color: white;
+
+}

@@ -1,0 +1,11 @@
+.video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    /*width: auto;*/
+    height: auto;
+    transform: scale(1.1199);
+    z-index: -9999;
+}

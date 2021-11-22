@@ -1,0 +1,137 @@
+.cardOfferContainer {
+    display: flex;
+    flex-direction: column;
+    grid-column: 1/6;
+    grid-row: 1/6;
+    background-color: white;
+
+}
+
+.date {
+    font-size: .9em;
+}
+
+.title {
+    display: flex;
+    width: 99%;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.titleHeader {
+    font-weight: bold;
+}
+
+.btnClose {
+
+    border-radius: 3px;
+    margin-right: 3%;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.btnClose:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.btnClose:active {
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.btnClose > a {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: black;
+
+}
+
+.propertiesOffer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/*//////////////header////////*/
+.header {
+    padding: 20px;
+    border-bottom: 1px solid black;
+}
+
+.nameOffer {
+    display: flex;
+
+}
+
+.nameOffer > div {
+    padding: 10px;
+}
+
+.fallen {
+    padding-left: 20px;
+}
+
+.dropdown {
+    width: 120px;
+    height: 30px;
+    border: 1px solid #999;
+    font-size: 10px;
+    color: #1c87c9;
+    background-color: #eee;
+    border-radius: 5px;
+    box-shadow: 4px 4px #ccc;
+    display: grid;
+}
+
+select::after {
+    content: ">";
+    display: block;
+    position: absolute;
+    transform: rotate(90deg);
+}
+
+.navTabs {
+    display: flex;
+    border-bottom: 1px solid black;
+    flex-wrap: wrap;
+}
+
+.navTabs > div > a {
+    padding-left: 10px;
+    padding-right: 10px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid black;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+
+}
+
+.navTabs > div > a:active {
+    border-bottom: 2px solid white;
+
+}
+
+.tab.active {
+    border-bottom: 2px solid #ffffff;
+    box-shadow: 0 -6px 5px rgb(26 109 255 / 25%);
+    font-size: 1.02em;
+    background-color: #ffffff;
+}
+
+.insideOffers {
+    display: flex;
+    flex-direction: column;
+}
+
+.insideOffers > div {
+    display: flex;
+}
+
+.insideOffers > div > div {
+    padding: 10px;
+}
