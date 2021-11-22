@@ -2,6 +2,7 @@ my-app/node_modules/
 my-app/build/
 my-app/coverage/
 my-app/.pnp/
+my-app/src/videos/*.mp4
 
 server/node_modules/
 server/build/
