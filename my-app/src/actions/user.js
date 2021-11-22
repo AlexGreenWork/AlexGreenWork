@@ -25,11 +25,11 @@ export const registration = async (name, middlename, surname, email, tabelNum, p
 export const login = (email, password) => {
     return async dispatch => {
         try {
-
             const response = await axios.post(`${API_URL}api/auth/login`, {
                 email,
                 password
             })
+			console.log("DEBUG: "+ response);
             console.log(response.data.user)
 
             dispatch(setUser(response.data.user))
@@ -47,6 +47,7 @@ export const login = (email, password) => {
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
             localStorage.setItem('userAvatar', response.data.user.avatar)
         } catch (e) {
+			console.log("Error Level: "+ e);
             alert(e.response.data.message)
         }
     }
