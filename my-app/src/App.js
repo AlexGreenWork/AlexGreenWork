@@ -29,11 +29,14 @@ import Context from "./common/context/Context";
 
 
 function App(props) {
-    const [change, setCounter] = useState(0)
-    const contextFunction = (n) => setCounter(n)
+    const [change, setChange] = useState(0)
+    const [secondCotext, setSecondCotext] = useState(0)
+    const contextFunction = (n , f) => {setChange(n); 
+        setSecondCotext(f)};
 
     const value = {
         change,
+        secondCotext,
         contextFunction,
     };
 

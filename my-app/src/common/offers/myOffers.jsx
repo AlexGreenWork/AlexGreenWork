@@ -48,7 +48,7 @@ const Offer = (props) => {
         <div>
             <NavLink to='/cardOffer' onClick={() => {
                
-                value.contextFunction(props.id)
+                value.contextFunction(props.id, props.tabelNum)
                 
                
             }}>
@@ -75,7 +75,7 @@ const OffersLink = () => {
     let offersData = JSON.parse(Resp());
     return offersData.map((number) => <Offer id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
-                                             status={number.status} nameOffer={number.nameOffer}/>)
+                                             status={number.status} nameOffer={number.nameOffer} tabelNum = {number.tabelNum}/>)
 
 }
 
