@@ -30,11 +30,11 @@ import Context from "./common/context/Context";
 
 function App(props) {
     const [change, setCounter] = useState(0)
-    const count = (n) => setCounter(n)
-    
+    const contextFunction = (n) => setCounter(n)
+
     const value = {
         change,
-        count,
+        contextFunction,
     };
 
     const isAuth = useSelector(state => state.user.isAuth)
