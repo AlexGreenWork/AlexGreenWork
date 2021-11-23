@@ -17,7 +17,6 @@ function Resp() {
     let userName = localStorage.getItem('userName');
     let userSurName = localStorage.getItem('userSurName');
     let userMiddleName = localStorage.getItem('userMiddleName');
-    
     let userEmail = localStorage.getItem('userEmail');
    
 
@@ -49,8 +48,8 @@ const Offer = (props) => {
         <div>
             <NavLink to='/cardOffer' onClick={() => {
                
-                value.count(props.id)
-                console.log("Context "+ value.change)
+                value.contextFunction(props.id)
+                
                
             }}>
                 <div className={s.header}>

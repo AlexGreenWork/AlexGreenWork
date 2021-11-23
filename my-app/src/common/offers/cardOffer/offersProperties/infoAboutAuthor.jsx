@@ -1,8 +1,25 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import s from "./infoAboutAuthor.module.css"
+import Context from "../../../../context/Context";
+import { API_URL } from "../../../../../config";
+import {useContext} from "react";
+
+
+function RequestSelectOffers(){
+    const value = useContext(Context)
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`selectOffers=${value.change}`);
+    
+    return xhr.response
+}
 
 const InfoAboutAuthor = () => {
+
+    let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
+    console.log(offersData)
 
     return (
         <div className={s.cardOfferContainer}>
@@ -13,7 +30,7 @@ const InfoAboutAuthor = () => {
             <div className={s.header}>
                 <div className={s.nameOffer}>
                     <div>Автор:</div>
-                    <div> Василий Иванович Пупкин</div>
+                    <div> {offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
                 </div>
                 <div className={s.nameOffer}>
                     <div>Табельный номер:</div>

@@ -42,32 +42,8 @@ router.get("/allOffers", function(request, response) {
 
     sqlSelectOffers();
 });
-/*
-router.post("/myOffers", function(request, response) {
-    const mysqlConfig = {
-        host: config.database.host,
-        user: config.database.user,
-        password: config.database.password,
-        database: config.database.database,
-    }
-
-    const pool = mysql.createPool(mysqlConfig);
 
 
-    async function sqlSelectOffers() {
-
-       // SELECT * FROM offers WHERE (tabelNum = 2 AND email = "1email5js")  OR (nameSendler = "Имяjs" AND surnameSendler = "фамилияjs" AND middlenameSendler ="отчествоjs" AND tabelNum = 2  AND phoneNumber =  123  )
-        let selectOffers = await pool.execute(`SELECT * FROM offers WHERE tabelNum = ${tabelNum}`);
-        response.setHeader('Content-Type', 'application/json');
-        response.send(JSON.stringify(selectOffers[0], null, 3));
-
-
-    }
-
-    sqlSelectOffers();
-
-});
-*/
 
 router.post("/myOffers", urlencodedParser, async function(request, response){
 
@@ -77,10 +53,8 @@ router.post("/myOffers", urlencodedParser, async function(request, response){
     let tabelNumber = request.body.tabelNumber;;
     let phoneNumber = request.body.phoneNumber;
     let email = request.body.email;
-   let sqlResult =  await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
-    //var codes = await CheckTabAndEmail(tabelNumber, emailInput, phoneNumber);
-    //console.log(request.body)
-   // console.log(sqlResult[0][0])
+    let sqlResult =  await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
+  
     response.send(sqlResult[0][0])
 
 
@@ -96,6 +70,19 @@ async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, p
      return [sqlMyOff]
 
 }
+
+router.post("/selectMyOffers", urlencodedParser, async function(request, response){
+
+ let idOffers = request.body.selectOffers
+ let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE Id = ${idOffers}`)
+    console.log(request.body)
+ response.send(sqlMyOff[0][0])
+ 
+})
+
+
+
+
 
 
 module.exports = router

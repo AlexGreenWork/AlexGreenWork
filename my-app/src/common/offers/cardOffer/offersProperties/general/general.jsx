@@ -15,9 +15,32 @@ import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import OffFunc from "../../../sendOffer/offerForm/FormOffFunc";
 import UploadFile from "../../../sendOffer/fileUpload/fileUpload";
+import Context from "../../../../context/Context";
+import { API_URL } from "../../../../../config";
+import {useContext} from "react";
+
+
+
+
+function RequestSelectOffers(){
+    const value = useContext(Context)
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`selectOffers=${value.change}`);
+    
+    return xhr.response
+}
+
+
+
+
 
 
 const CommonOffer = () => {
+    let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
+   
+
     const steps = ['Подано ', 'Первоначальное рассмотрение', 'Рассмотрение подразделениями', 'Рассмотрение комиссией', 'Внедрение'];
 
     const [category, setCategory] = React.useState('');
@@ -306,14 +329,11 @@ const CommonOffer = () => {
 
             <div className={s.cardOffer}>
                 <div className={s.from}>
-                    <div className={s.date}>12/09/21</div>
-                    <div className={s.from}> Василий Иванович Пупкин</div>
-                    <div> : в работе</div>
+                    <div className={s.date}>{offersData.date.slice(0, 10)}</div>
+                    <div className={s.from}> {offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
+                    <div> : {offersData.status}</div>
                 </div>
-                <div className={s.offerText}>Снижение затрат с административных издержек и ответственность
-                    за
-                    использование служебного автотранспорта в личных целях.
-                </div>
+                <div className={s.offerText}>{offersData.textOffer} </div>
             </div>
             <div>
                 <div>Прикрепленные файлы</div>
