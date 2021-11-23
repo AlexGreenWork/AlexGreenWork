@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import {NavLink} from "react-router-dom";
 import s from "./sendOffer/offerForm/offers.module.css"
 import {API_URL} from "../../config";
+import {useContext} from "react";
+import Context from "../context/Context";
+
 
 
 
@@ -37,10 +40,18 @@ function Resp() {
 }
 
 const Offer = (props) => {
+
+    const value = useContext(Context);
+   
+
+
     return (
         <div>
             <NavLink to='/cardOffer' onClick={() => {
-                Message(props.id)
+               
+                value.count(props.id)
+                console.log("Context "+ value.change)
+               
             }}>
                 <div className={s.header}>
                     <div className={s.offerPreview}>
@@ -50,34 +61,14 @@ const Offer = (props) => {
                             <div className={s.date}> {props.date.slice(0, 10)}</div>
                             <div className={s.status}>  {props.status}</div>
                         </div>
+                        
+                       
                         <div className={s.offerText}>{props.nameOffer}</div>
                     </div>
                 </div>
             </NavLink>
         </div>
     )
-}
-
-function Message(id) {
-    let offersData = JSON.parse(Resp());
-     console.log(offersData[0]);
-    offersData.map((offerArr) => {
-        if (offerArr.Id === id) {
-           
-            let msg = document.createElement('div');
-            msg.className = "message";
-            msg.innerHTML = `<label>Имя: ${offerArr.nameSendler}</label>
-                <label>Фамилия: ${offerArr.surnameSendler}</label>
-                <label>Отчество: ${offerArr.middlenameSendler}</label>
-                <label>Номер телефона: ${offerArr.nameSendler}</label>
-                <label>Электронная почта: ${offerArr.email}</label>
-                <label>Дата подачи предложения: ${offerArr.date.slice(0, 10)}</label>
-                <label>Название предложения: ${offerArr.nameOffer}</label>
-                <label>Сдержание предложения: ${offerArr.textOffer}</label>
-                <label>Описание проблемы: ${offerArr.descriptionProblem}</label>`
-            document.body.appendChild(msg)
-        }
-    })
 }
 
 
