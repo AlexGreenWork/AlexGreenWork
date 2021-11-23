@@ -50,3 +50,9 @@
 .fromName{
     font-weight: bold;
 }
+@media (max-width: 553px) {
+    .offersContainer{
+   grid-column: 1/6;
+        grid-row: 2/6;
+    }
+}
