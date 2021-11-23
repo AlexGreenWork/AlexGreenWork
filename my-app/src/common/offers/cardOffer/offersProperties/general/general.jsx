@@ -199,8 +199,7 @@ const CommonOffer = () => {
         <div className={s.nameOffer}>
 
 
-            <h4>Снижение затрат с административных издержек и ответственность за
-                использование служебного автотранспорта в личных целях.
+            <h4>{offersData.nameOffer}
             </h4>
             <Box sx={{width: '100%'}}>
                 <Stepper activeStep={stepStatusOff} sx={{
