@@ -9,10 +9,6 @@ function Resp() {
     
     let xhr = new XMLHttpRequest();
 
-  /*  xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
-    xhr.send();
-    console.log(xhr.response)
-    return xhr.response;*/
     let userPhoneNumber = localStorage.getItem('userPhoneNumber');
     let userTabelNum = localStorage.getItem('userTabelNum');
     let userName = localStorage.getItem('userName');
@@ -27,20 +23,16 @@ function Resp() {
     xhr.send(`firstName=${userName}&userSurName=${userSurName}&middleName=${userMiddleName}&email=${userEmail}`+
             `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}`);
                  
-           let v = xhr.onreadystatechange;
-       v = function() {
+          
+           xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 let result = this.responseText;
-               
-                  console.log("result = " + result);
-                   
-                    // checkRecData(result);
-                    
+                               
                 return result
       }
 
     }
-    console.log(v)
+    
     return xhr.response
 }
 
@@ -71,8 +63,7 @@ function Message(id) {
      console.log(offersData[0]);
     offersData.map((offerArr) => {
         if (offerArr.Id === id) {
-            ///console.log(offerArr);
-
+           
             let msg = document.createElement('div');
             msg.className = "message";
             msg.innerHTML = `<label>Имя: ${offerArr.nameSendler}</label>
