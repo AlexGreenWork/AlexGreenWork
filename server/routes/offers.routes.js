@@ -79,8 +79,8 @@ router.post("/myOffers", urlencodedParser, async function(request, response){
     let email = request.body.email;
    let sqlResult =  await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
     //var codes = await CheckTabAndEmail(tabelNumber, emailInput, phoneNumber);
-    console.log(request.body)
-    console.log(sqlResult[0][0])
+    //console.log(request.body)
+   // console.log(sqlResult[0][0])
     response.send(sqlResult[0][0])
 
 
