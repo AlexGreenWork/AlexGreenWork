@@ -80,6 +80,24 @@ router.post("/selectMyOffers", urlencodedParser, async function(request, respons
  
 })
 
+router.post("/userInfo", urlencodedParser, async function(request, response){
+
+    let userTab = request.body.userTab;
+    let sqlKadry = await pool.execute(`SELECT * FROM kadry_all WHERE tabnum = ${userTab}`);
+    let sqlDivision = await pool.execute(`SELECT * FROM division WHERE department = ${sqlKadry[0][0].department} AND id = ${sqlKadry[0][0].division}`);
+    let sqlDepartament = await pool.execute(`SELECT * FROM department WHERE id = ${sqlKadry[0][0].department}`);
+       console.log(request.body);
+
+  let reqJson = {
+    
+    department: sqlDepartament[0][0].fullname,
+    division: sqlDivision[0][0].name,
+    position: sqlKadry[0][0].profname
+
+  }
+ 
+  response.send(reqJson);
+   })
 
 
 
