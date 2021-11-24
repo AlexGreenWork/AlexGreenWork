@@ -55,7 +55,6 @@ const CardOffer = () => {
         setValue(newValue);
     };
 
-
     return (
 
 

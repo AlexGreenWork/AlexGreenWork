@@ -48,8 +48,9 @@ function App(props) {
     }, [])
 
     return (
-        <Context.Provider value = {value}>
+
         <BrowserRouter>
+            <Context.Provider value = {value}>
             <div className={'container1'} id="container1">
                 <Header/>
 
@@ -96,8 +97,9 @@ function App(props) {
 
 
             </div>
+            </Context.Provider>
         </BrowserRouter>
-        </Context.Provider>
+
     );
 }
 
