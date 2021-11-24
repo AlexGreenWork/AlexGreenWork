@@ -49,7 +49,7 @@ const Offer = (props) => {
             <NavLink to='/cardOffer' onClick={() => {
                
                 value.contextFunction(props.id, props.tabelNum)
-                
+                localStorage.setItem('idOffers', props.id);
                
             }}>
                 <div className={s.header}>
