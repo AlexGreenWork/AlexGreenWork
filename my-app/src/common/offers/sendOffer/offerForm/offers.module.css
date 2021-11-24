@@ -24,10 +24,9 @@
     color:black;
 }
 .from{
-    display: flex;
+    display: grid;
     flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-around;
+    grid-template-columns: 30% 60% 20%;
 
 }
 .header{
@@ -43,6 +42,7 @@
 }
 .offerPreview{
     display: flex;
+    width: 100%;
     flex-direction: column;
     justify-content: space-around;
     padding: 10px;
