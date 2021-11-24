@@ -15,7 +15,8 @@ import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import OffFunc from "../../../sendOffer/offerForm/FormOffFunc";
 import UploadFile from "../../../sendOffer/fileUpload/fileUpload";
-import {API_URL} from "../../config";
+import {API_URL} from "../../../../../config.js";
+
 
 
 function RequestSelectOffers(){
