@@ -51,6 +51,8 @@ const CreateCompMyOffers = ()=>{
                                             nameOffer={number.nameOffer}  counter={index+1}/>)
 }
 
+
+
 const MyOffersComp = (props) => {
 
     return(
@@ -63,8 +65,6 @@ const MyOffersComp = (props) => {
         </div>
     )
 }
-
-
 
 
 const InfoAboutAuthor = () => {
