@@ -4,7 +4,7 @@ import s from "./sendOffer/offerForm/offers.module.css"
 import {API_URL} from "../../config";
 import {useContext} from "react";
 import Context from "../context/Context";
-
+console.log("e")
 
 
 
