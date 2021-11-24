@@ -1,39 +1,152 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
 import s from "./general.module.css"
 import InputLabel from '@mui/material/InputLabel';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import StepperOffer from "../../../../components/stepper";
-import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-import OffFunc from "../../../sendOffer/offerForm/FormOffFunc";
 import UploadFile from "../../../sendOffer/fileUpload/fileUpload";
-import {API_URL} from "../../../../../config.js";
+import Context from "../../../../context/Context";
+import {API_URL} from "../../../../../config";
+import {useContext} from "react";
 
 
-
-function RequestSelectOffers(){
- 
-    let idOffersStorage = localStorage.getItem('idOffers');
+function RequestSelectOffers() {
+    const value = useContext(Context)
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${idOffersStorage}`);
-    
+    xhr.send(`selectOffers=${value.change}`);
+
     return xhr.response
 }
 
-
 const CommonOffer = () => {
     let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
-   
+
+    ///////////////////// MULTISELECT_ROLE_FOR_WG
+    function AdminChange(props) {
+        const isAdmin = props.isAdmin;
+        if (isAdmin == 'wg') {
+            return <IsAdminRG/>;
+
+        } else {
+            return <IsAdminUser/>
+        }
+    }
+
+    function IsAdminRG() {
+        return (<div>
+                <div className={s.multiselect}>
+                    <div className={s.fallen}><span>Категория предложения:</span><span
+                        className={s.spanCat}>{categoryView(category)}</span>
+
+
+                        <Box className={s.boxF} sx={{width: 300,}}>
+                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset">
+                                <InputLabel id="demo-simple-select-label">Категория</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={category}
+                                    label="category"
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value="">
+
+                                    </MenuItem>
+                                    <MenuItem value={1}>По организации производства</MenuItem>
+                                    <MenuItem value={2}>По улучшению существующих процессов и продукции</MenuItem>
+                                    <MenuItem value={3}>Рационализаторское предложение</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </div>
+                    <div className={s.fallen}><span>Вид предложения:</span><span
+                        className={s.spanCat}>{viewOfView(view)}</span>
+                        <Box className={s.boxF} sx={{width: 300,}}>
+                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset"
+                                         sx={{width: (100 % -0),}}>
+                                <InputLabel id="demo-simple-select-label">Вид</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={view}
+                                    label="view"
+                                    onChange={handleChangeView}
+                                >
+                                    <MenuItem value="">
+                                        <em></em>
+                                    </MenuItem>
+                                    <MenuItem value={1}>Новые объекты на производстве</MenuItem>
+                                    <MenuItem value={2}>Улучшение технологии</MenuItem>
+                                    <MenuItem value={3}>Улучшение конструкции</MenuItem>
+                                    <MenuItem value={4}>Улучшение организации производства</MenuItem>
+                                    <MenuItem value={5}>Улучшение поддерживающей системы</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </div>
+                    <div className={s.fallen}><span>Статус:</span>
+                        <span className={s.spanCat}>{statusOfView(status)}</span>
+                        <Box className={s.boxF} sx={{width: 300,}}>
+                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset"
+                                         sx={{width: (100 % -0),}}>
+                                <InputLabel id="demo-simple-select-label">Статус</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={status}
+                                    label="status"
+                                    onChange={handleChangeStatus}
+                                >
+                                    <MenuItem value="">
+                                        <em></em>
+                                    </MenuItem>
+                                    <MenuItem value={1}>Подано</MenuItem>
+                                    <MenuItem value={2}>Рассматривается первоначальной рабочей группой</MenuItem>
+                                    <MenuItem value={3}>Отклонено первоначальной рабочей группой</MenuItem>
+                                    <MenuItem value={4}>Направлено в подразделения для подготовки заключения и
+                                        предварительного
+                                        обоснования</MenuItem>
+                                    <MenuItem value={5}>Рассматривается рабочей группой</MenuItem>
+                                    <MenuItem value={6}>Отклонено рабочей группой после рассмотрения
+                                        подразделением(ями)</MenuItem>
+                                    <MenuItem value={7}>Направлено секретарю комиссии</MenuItem>
+                                    <MenuItem value={8}>Запланировано к рассмотрению комиссией</MenuItem>
+                                    <MenuItem value={9}>Рассмотрено комиссией. Оформление результатов</MenuItem>
+                                    <MenuItem value={10}>Результаты рассмотрения комиссией оформлены</MenuItem>
+                                    <MenuItem value={11}>Отклонено комиссией</MenuItem>
+                                    <MenuItem value={12}>Направлено для внедрения</MenuItem>
+                                    <MenuItem value={13}>Внедрено</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </div>
+                </div>
+
+                <div>
+                    <Button>Редактировать</Button>
+                    <Button>Сохранить</Button>
+                </div>
+            </div>
+        )
+    }
+
+    function IsAdminUser(props) {
+        return (
+            <div></div>
+        )
+    }
+
+
+    ////////////////END_MULTISELECT_ROLE_FOR_WG
+
 
     const steps = ['Подано ', 'Первоначальное рассмотрение', 'Рассмотрение подразделениями', 'Рассмотрение комиссией', 'Внедрение'];
 
@@ -124,43 +237,43 @@ const CommonOffer = () => {
     };
 
     function statusOfView(status) {
-        if (status == 1) {
+        if (status === 1) {
             return "Подано"
         }
-        if (status == 2) {
+        if (status === 2) {
             return "Рассматривается первоначальной рабочей группой"
         }
-        if (status == 3) {
+        if (status === 3) {
             return "Отклонено первоначальной рабочей группой"
         }
-        if (status == 4) {
+        if (status === 4) {
             return "Направлено в подразделения для подготовки заключения и предварительного обоснования"
         }
-        if (status == 5) {
+        if (status === 5) {
             return "Рассматривается рабочей группой"
         }
-        if (status == 6) {
+        if (status === 6) {
             return "Отклонено рабочей группой после рассмотрения подразделением(ями)"
         }
-        if (status == 7) {
+        if (status === 7) {
             return "Направлено секретарю комиссии"
         }
-        if (status == 8) {
+        if (status === 8) {
             return "Запланировано к рассмотрению комиссией"
         }
-        if (status == 9) {
+        if (status === 9) {
             return "Рассмотрено комиссией. Оформление результатов"
         }
-        if (status == 10) {
+        if (status === 10) {
             return "Результаты рассмотрения комиссией оформлены"
         }
-        if (status == 11) {
+        if (status === 11) {
             return "Отклонено комиссией"
         }
-        if (status == 12) {
+        if (status === 12) {
             return "Направлено для внедрения"
         }
-        if (status == 13) {
+        if (status === 13) {
             return "Внедрено"
         }
     }
@@ -173,13 +286,13 @@ const CommonOffer = () => {
     const handleSubmit = (event) => {
 
         event.preventDefault();
-        let btnFormON =  document.querySelector('.close-btn');
+        let btnFormON = document.querySelector('.close-btn');
 
-        if(btnFormON == null){
+        if (btnFormON == null) {
 
             UploadFile('file');
 
-        }else{
+        } else {
             console.log(".close-btn true");
         }
 
@@ -193,7 +306,10 @@ const CommonOffer = () => {
         <div className={s.nameOffer}>
 
 
-            <h4>{offersData.nameOffer}</h4>
+            <h4 className={s.idOffer}>
+                <div>№:{offersData.Id}</div>
+                <div className={s.nameOfferHead}>. {offersData.nameOffer}</div>
+            </h4>
             <Box sx={{width: '100%'}}>
                 <Stepper activeStep={stepStatusOff} sx={{
                     '@media screen and (max-width: 553px)': {
@@ -222,108 +338,19 @@ const CommonOffer = () => {
             </Box>
 
 
-            <div className={s.propertiesOffer}>
-                <div className={s.multiselect}>
-                    <div className={s.fallen}><span>Категория предложения:</span><span
-                        className={s.spanCat}>{categoryView(category)}</span>
+            <div id={"containerProperties"} className={s.propertiesOffer}>
 
+                <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
 
-                        <Box className={s.boxF} sx={{width: 300,}}>
-                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset"
-                                         sx={{width: (100 % -0),}}>
-                                <InputLabel id="demo-simple-select-label">Категория</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={category}
-                                    label="category"
-                                    onChange={handleChange}
-                                >
-                                    <MenuItem value="">
-                                        <em></em>
-                                    </MenuItem>
-                                    <MenuItem value={1}>По организации производства</MenuItem>
-                                    <MenuItem value={2}>По улучшению существующих процессов и продукции</MenuItem>
-                                    <MenuItem value={3}>Рационализаторское предложение</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-                    </div>
-                    <div className={s.fallen}><span>Вид предложения:</span><span
-                        className={s.spanCat}>{viewOfView(view)}</span>
-                        <Box className={s.boxF} sx={{width: 300,}}>
-                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset"
-                                         sx={{width: (100 % -0),}}>
-                                <InputLabel id="demo-simple-select-label">Вид</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={view}
-                                    label="view"
-                                    onChange={handleChangeView}
-                                >
-                                    <MenuItem value="">
-                                        <em></em>
-                                    </MenuItem>
-                                    <MenuItem value={1}>Новые объекты на производстве</MenuItem>
-                                    <MenuItem value={2}>Улучшение технологии</MenuItem>
-                                    <MenuItem value={3}>Улучшение конструкции</MenuItem>
-                                    <MenuItem value={4}>Улучшение организации производства</MenuItem>
-                                    <MenuItem value={5}>Улучшение поддерживающей системы</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-                    </div>
-                    <div className={s.fallen}><span>Статус:</span>
-                        <span className={s.spanCat}>{statusOfView(status)}</span>
-                        <Box className={s.boxF} sx={{width: 300,}}>
-                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset"
-                                         sx={{width: (100 % -0),}}>
-                                <InputLabel id="demo-simple-select-label">Статус</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={status}
-                                    label="status"
-                                    onChange={handleChangeStatus}
-                                >
-                                    <MenuItem value="">
-                                        <em></em>
-                                    </MenuItem>
-                                    <MenuItem value={1}>Подано</MenuItem>
-                                    <MenuItem value={2}>Рассматривается первоначальной рабочей группой</MenuItem>
-                                    <MenuItem value={3}>Отклонено первоначальной рабочей группой</MenuItem>
-                                    <MenuItem value={4}>Направлено в подразделения для подготовки заключения и
-                                        предварительного
-                                        обоснования</MenuItem>
-                                    <MenuItem value={5}>Рассматривается рабочей группой</MenuItem>
-                                    <MenuItem value={6}>Отклонено рабочей группой после рассмотрения
-                                        подразделением(ями)</MenuItem>
-                                    <MenuItem value={7}>Направлено секретарю комиссии</MenuItem>
-                                    <MenuItem value={8}>Запланировано к рассмотрению комиссией</MenuItem>
-                                    <MenuItem value={9}>Рассмотрено комиссией. Оформление результатов</MenuItem>
-                                    <MenuItem value={10}>Результаты рассмотрения комиссией оформлены</MenuItem>
-                                    <MenuItem value={11}>Отклонено комиссией</MenuItem>
-                                    <MenuItem value={12}>Направлено для внедрения</MenuItem>
-                                    <MenuItem value={13}>Внедрено</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-                    </div>
-                </div>
-
-                <div>
-                    <Button>Редактировать</Button>
-                    <Button>Сохранить</Button>
-                </div>
 
             </div>
 
             <div className={s.cardOffer}>
                 <div className={s.from}>
                     <div className={s.date}>{offersData.date.slice(0, 10)}</div>
-                    <div className={s.from}> {offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
-                    <div> : {offersData.status}</div>
+                    <div
+                        className={s.from}> {offersData.nameSendler} {offersData.surnameSendler} {offersData.middlenameSendler}</div>
+                    <div> Статус предложения: {offersData.status}</div>
                 </div>
                 <div className={s.offerText}>{offersData.textOffer} </div>
             </div>
@@ -334,7 +361,8 @@ const CommonOffer = () => {
                 <form className="offers" onSubmit={handleSubmit}>
                     <input type="file" name="myFile" id="file"></input>
                     <div className={s.buttonConfirm}>
-                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit">Отправить файл
+                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit">Отправить
+                            файл
                         </button>
                     </div>
                 </form>
