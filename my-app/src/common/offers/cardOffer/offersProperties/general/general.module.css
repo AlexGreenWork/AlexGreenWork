@@ -76,10 +76,18 @@
     padding: 20px;
     border-bottom: 1px solid black;
 }
-
+.nameOfferHead{
+    font-weight: bold;
+}
+.idOffer{
+    display: flex;
+    font-weight: bold;
+    margin-right: 10px;
+}
 .nameOffer {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
 
 }
 
