@@ -42,6 +42,11 @@ const CommonOffer = () => {
 
     function IsAdminRG() {
         return (<div>
+
+                <div>
+                    <Button>Редактировать</Button>
+                    <Button>Сохранить</Button>
+                </div>
                 <div className={s.multiselect}>
                     <div className={s.fallen}><span>Категория предложения:</span><span
                         className={s.spanCat}>{categoryView(category)}</span>
@@ -130,10 +135,7 @@ const CommonOffer = () => {
                     </div>
                 </div>
 
-                <div>
-                    <Button>Редактировать</Button>
-                    <Button>Сохранить</Button>
-                </div>
+
             </div>
         )
     }
@@ -349,7 +351,7 @@ const CommonOffer = () => {
                 <div className={s.from}>
                     <div className={s.date}>{offersData.date.slice(0, 10)}</div>
                     <div
-                        className={s.from}> {offersData.nameSendler} {offersData.surnameSendler} {offersData.middlenameSendler}</div>
+                        className={s.from}>{offersData.surnameSendler} {offersData.nameSendler}  {offersData.middlenameSendler}</div>
                     <div> Статус предложения: {offersData.status}</div>
                 </div>
                 <div className={s.offerText}>{offersData.textOffer} </div>
