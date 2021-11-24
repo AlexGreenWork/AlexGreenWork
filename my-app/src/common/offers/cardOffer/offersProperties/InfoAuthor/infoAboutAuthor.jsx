@@ -64,7 +64,18 @@ const MyOffersComp = (props) => {
     )
 }
 
+const MyOffersComp = (props) => {
 
+    return(
+        <div>
+            <div>{props.counter}</div>
+            <div>{props.date.slice(0, 10)}</div>
+            <div className={s.offerText}>
+               №{props.id} {props.nameOffer}        
+            </div>
+        </div>
+    )
+}
 
 
 const InfoAboutAuthor = () => {
