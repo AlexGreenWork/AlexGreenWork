@@ -161,19 +161,25 @@ class FileController {
             const uid = req.user.id
             const user = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
             const avaOld = user[0][0].avatar
-            console.log(avaOld)
+            //console.log(avaOld)
             const file = req.files.file
-            console.log(req.files.file)
+            //console.log(req.files.file)
             // const user = await User.findById(req.user.id)
             const avatarName = Uuid.v4() + ".jpg"
             await file.mv('../server/files/avatar/' + "\\" + avatarName)
 
             user.avatar = avatarName
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
+
             fs.unlinkSync(('../server/files/avatar/') + avaOld)
-            // await user.save()
-            res.send('File uploaded to ');
-            // return res.json(user)
+
+            //await user.save()
+            console.log(user.avatar)
+            user[0][0].avatar=avatarName
+            console.log(user[0][0].avatar)
+            console.log(user)
+            res.send(user[0][0]);
+            return res.json(user)
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Upload avatar error'})
