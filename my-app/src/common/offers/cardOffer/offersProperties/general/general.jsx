@@ -15,26 +15,19 @@ import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import OffFunc from "../../../sendOffer/offerForm/FormOffFunc";
 import UploadFile from "../../../sendOffer/fileUpload/fileUpload";
-import Context from "../../../../context/Context";
-import { API_URL } from "../../../../../config";
-import {useContext} from "react";
-
 
 
 
 function RequestSelectOffers(){
-    const value = useContext(Context)
+ 
+    let idOffersStorage = localStorage.getItem('idOffers');
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${value.change}`);
+    xhr.send(`selectOffers=${idOffersStorage}`);
     
     return xhr.response
 }
-
-
-
-
 
 
 const CommonOffer = () => {
@@ -199,8 +192,7 @@ const CommonOffer = () => {
         <div className={s.nameOffer}>
 
 
-            <h4>{offersData.nameOffer}
-            </h4>
+            <h4>{offersData.nameOffer}</h4>
             <Box sx={{width: '100%'}}>
                 <Stepper activeStep={stepStatusOff} sx={{
                     '@media screen and (max-width: 553px)': {
