@@ -6,73 +6,104 @@ import { API_URL } from "../../../../../config";
 import {useContext} from "react";
 
 
-function RequestSelectOffers(){
-    const value = useContext(Context)
+function Resp() {
+    
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+
+    let userPhoneNumber = localStorage.getItem('userPhoneNumber');
+    let userTabelNum = localStorage.getItem('userTabelNum');
+    let userName = localStorage.getItem('userName');
+    let userSurName = localStorage.getItem('userSurName');
+    let userMiddleName = localStorage.getItem('userMiddleName');
+    let userEmail = localStorage.getItem('userEmail');
+   
+
+    xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${value.change}`);
+    xhr.send(`firstName=${userName}&userSurName=${userSurName}&middleName=${userMiddleName}&email=${userEmail}`+
+            `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}`);
+                 
+          
+           xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                let result = this.responseText;
+                               
+                return result
+      }
+
+    }
     
     return xhr.response
 }
 
+function UserInfo(){
+    let xhr = new XMLHttpRequest();
+    let userTabelNum = localStorage.getItem('userTabelNum');
+    xhr.open('POST', `${API_URL}api/offers/userInfo`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`userTab=${userTabelNum}`)
+    return xhr.response
+}
 
+const CreateCompMyOffers = ()=>{
+    let offersData = JSON.parse(Resp());  //Данные из запроса
+    return offersData.map((number, index)=><MyOffersComp id={number.Id} date={number.date}
+                                            nameOffer={number.nameOffer}  counter={index+1}/>)
+}
 
+const MyOffersComp = (props) => {
+
+    return(
+        <div>
+            <div>{props.counter}</div>
+            <div>{props.date.slice(0, 10)}</div>
+            <div className={s.offerText}>
+               №{props.id} {props.nameOffer}        
+            </div>
+        </div>
+    )
+}
 
 
 
 
 const InfoAboutAuthor = () => {
 
-    let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
-    console.log(offersData)
+    let offersData = JSON.parse(Resp());  //Данные из запроса
+    let userInfo = JSON.parse(UserInfo());
+    console.log(userInfo)
 
     return (
         <div className={s.cardOfferContainer}>
-
-
-
-
             <div className={s.header}>
                 <div className={s.nameOffer}>
                     <div>Автор:</div>
-                    <div> {offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
+                    <div> {offersData[0].surnameSendler} {offersData[0].nameSendler} {offersData[0].middlenameSendler}</div>
                 </div>
                 <div className={s.nameOffer}>
                     <div>Табельный номер:</div>
-                    <div> {offersData.tabelNum}</div>
+                    <div> {offersData[0].tabelNum}</div>
                 </div>
                 <div className={s.nameOffer}>
                     <div>Цех/Управление:</div>
-                    <div> ПЛАНОВО - ЭКОНОМИЧЕСКОЕ УПРАВЛЕНИЕ</div>
+                    <div> {userInfo.department}</div>
                 </div>
                 <div className={s.nameOffer}>
-                    <div>Участок:</div>
-                    <div> БЮРО НОРМАТИВОВ</div>
+                    <div>Участок/Отдел:</div>
+                    <div> {userInfo.division}</div>
                 </div>
                 <div className={s.nameOffer}>
                     <div>Должность:</div>
-                    <div> ЭКОНОМИСТ</div>
+                    <div> {userInfo.position}</div>
                 </div>
                 <div className={s.nameOffer}>
                     <div>E-mail:</div>
-                    <div> {offersData.email}</div>
+                    <div> {offersData[0].email}</div>
                 </div>
                 <div className={s.insideOffers}>
                     <div>Поступившие предложения:</div>
-                    <div>
-                        <div>1</div>
-                        <div>12/08/21</div>
-                        <div className={s.offerText}>Снижение затрат с административных издержек и ответственность за
-                            использование служебного автотранспорта в личных целях.
-                        </div>
-                    </div>
-                    <div>
-                        <div>2</div>
-                        <div>19/09/21</div>
-                        <div className={s.offerText}>Изменение мршрута деталей прессового цеха.
-                        </div>
-                    </div>
+                    
+                    <CreateCompMyOffers/>
                 </div>
 
 
