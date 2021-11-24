@@ -357,7 +357,7 @@ const CommonOffer = () => {
             <div className={s.cardOffer}>
                 <div className={s.from}>
                     <div className={s.date}>{offersData.date.slice(0, 10)}</div>
-                    <div className={s.from}> {offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
+                    <div className={s.from}> {offersData.nameSendler} {offersData.surnameSendler}  {offersData.middlenameSendler}</div>
                     <div> Статус предложения: {offersData.status}</div>
                 </div>
                 <div className={s.offerText}>{offersData.textOffer} </div>

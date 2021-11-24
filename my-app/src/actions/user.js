@@ -29,8 +29,8 @@ export const login = (email, password) => {
                 email,
                 password
             })
-			console.log("DEBUG: "+ response);
-            console.log(response.data.user)
+			//console.log(response);
+            //console.log(response.data.user)
 
             dispatch(setUser(response.data.user))
 
@@ -103,7 +103,10 @@ export const uploadAvatar = (file) => {
             const response = await axios.post(`${API_URL}api/files/avatar`, formData,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
+            localStorage.setItem('avatar', response.data.avatar)
             dispatch(setUser(response.data))
+
+            // dispatch(setUser(response.data))
         } catch (e) {
             console.log(e)
         }
