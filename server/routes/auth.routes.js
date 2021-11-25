@@ -310,7 +310,7 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
     router.post('/upload', function (req, res) {
 
         console.log("начало auth-rou upload")
-        console.log(req.files)
+        console.log(req.body)
 
 
         if (!req.files) {
@@ -319,6 +319,10 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
             fs.readdir('../server/files/upload/', (err, files) => {     //очищаем папку загрузки перед загрузкой файла
 
                 console.log('auth-rou : ' + files);
+                console.log( files);
+                if(files == null){
+                    console.log("file null")
+                }
 
                 for (let i = 0; i < files.length; i++) {
 
@@ -333,6 +337,7 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
             });
             console.log("перед записью")
             req.files.myFile.mv('../server/files/upload/' + req.files.myFile.name);
+           
             res.end(req.files.myFile.name);
 
         }

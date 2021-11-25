@@ -17,13 +17,14 @@ import {useContext} from "react";
 import {toStatus} from "../../../../../actions/offers";
 
 
+
 function RequestSelectOffers() {
     let idOffers = localStorage.getItem('idOffers');
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`selectOffers=${idOffers}`);
-
+    
     return xhr.response
 }
 
@@ -36,6 +37,38 @@ function ReadDir(){
 
     return xhr.response
 }
+
+
+
+function UploadFileCard(file){
+
+    console.log(file)
+    if (file === undefined){
+        return console.log('предложение без вложения файла');   
+
+    }else{
+
+        let fileTemp = document.getElementById(`${file}`).files[0]
+        console.log(fileTemp);
+    
+   if(fileTemp === undefined){
+        console.log('предложение без вложения файла')
+    } else {
+
+        console.log("фронт" );
+       
+        let formData = new FormData();
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', `${API_URL}api/offers/upload`)
+         //xhr.setRequestHeader("Content-type", "multipart/form-data");
+        formData.append("myFileCard", document.getElementById(`${file}`).files[0] );
+        xhr.send(formData);
+
+    }
+
+    }
+} 
+
 
 
 
@@ -370,16 +403,8 @@ function Multiselect() {
     const handleSubmit = (event) => {
 
         event.preventDefault();
-        let btnFormON = document.querySelector('.close-btn');
-
-        if (btnFormON == null) {
-
-            UploadFile('file');
-
-        } else {
-            console.log(".close-btn true");
-        }
-
+   
+            UploadFileCard('fileCard'); 
 
     }
 
@@ -440,15 +465,18 @@ function Multiselect() {
                 <div id="listFile">Прикрепленные файлы</div>
                 <div> {FileList()} </div>
 
-                <form className="offers" onSubmit={handleSubmit}>
-                    <input type="file" name="myFile" id="file"></input>
+                <form className="offersFile" onSubmit={handleSubmit}>
+                    <input type="file" name="myFileCard" id="fileCard"></input>
                     <div className={s.buttonConfirm}>
                         <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit">Отправить
                             файл
                         </button>
                     </div>
+                   
+                    
                 </form>
             </div>
+            
         </div>
 
     )
