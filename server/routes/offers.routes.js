@@ -2,6 +2,7 @@ const Router = require("express");
 const config = require("../config/default.json");
 const mysql = require("mysql2/promise");
 const router = new Router();
+const fs = require('fs');
 
 const urlencodedParser = Router.urlencoded({ extended: false });
 
@@ -103,6 +104,17 @@ router.post("/userInfo", urlencodedParser, async function(request, response){
     
    })
 
+
+   
+
+   router.post("/FilesMyOffers", urlencodedParser, async function(request, response){
+
+    let idOffers = request.body.idOffers
+
+    fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles`, (err, files) => {   
+      
+        response.send(files)})
+    })
 
 
 
