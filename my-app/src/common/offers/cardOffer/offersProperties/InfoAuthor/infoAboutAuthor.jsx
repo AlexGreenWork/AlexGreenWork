@@ -69,7 +69,7 @@ function validElem(){
     
     if(localStorage.getItem('userTabelNum')!=0){
         const divStyle = {
-            display: "contents",
+            display: "flex",
           };
           return divStyle
     } else {
