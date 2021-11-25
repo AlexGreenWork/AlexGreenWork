@@ -26,8 +26,37 @@ function RequestSelectOffers() {
     return xhr.response
 }
 
+function ReadDir(){
+    let idOffers = localStorage.getItem('idOffers');
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', `${API_URL}api/offers/FilesMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`idOffers=${idOffers}`);
+
+    return xhr.response
+}
+
+
+
+ 
+
+function FileList(){
+  let offersFile = JSON.parse(ReadDir());
+  let arr = new Array
+  arr = offersFile
+
+ for(let i=0; i<offersFile.length; i++){
+     arr[i] =  React.createElement("div", null, offersFile[i]); 
+ }
+ console.log(arr.length)
+  return React.createElement("div", null, arr)
+}
+
+
 const CommonOffer = () => {
     let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
+   
+    
 
     ///////////////////// MULTISELECT_ROLE_FOR_WG
     function AdminChange(props) {
@@ -407,8 +436,8 @@ function Multiselect() {
                 <div className={s.offerText}>{offersData.textOffer} </div>
             </div>
             <div>
-                <div>Прикрепленные файлы</div>
-                <div> контейнер для файлов</div>
+                <div id="listFile">Прикрепленные файлы</div>
+                <div> {FileList()} </div>
 
                 <form className="offers" onSubmit={handleSubmit}>
                     <input type="file" name="myFile" id="file"></input>
