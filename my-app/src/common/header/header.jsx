@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./../../Pics/logo/Belaz_logo.png";
 import s from "./header.module.css"
-import {NavLink, withRouter} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../reducers/userReducer";
 import avatarLogo from '../../assets/img/avatar.svg'

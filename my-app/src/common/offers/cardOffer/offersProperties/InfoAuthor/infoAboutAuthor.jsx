@@ -1,5 +1,5 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+
 import s from "./infoAboutAuthor.module.css"
 import { API_URL } from "../../../../../config";
 
@@ -67,7 +67,7 @@ const MyOffersComp = (props) => {
 
 function validElem(){
     
-    if(localStorage.getItem('userTabelNum')!=0){
+    if(localStorage.getItem('userTabelNum')!==0){
         const divStyle = {
 
             display: "flux",
@@ -94,7 +94,7 @@ const InfoAboutAuthor = () => {
    
     let userTabelNum = localStorage.getItem('userTabelNum');
    
-    if(userTabelNum != 0){
+    if(userTabelNum !== 0){
      userInfo = JSON.parse(UserInfo());
     }
     return (

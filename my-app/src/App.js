@@ -45,7 +45,7 @@ function App(props) {
 
     useEffect(() => {
         dispatch(auth())
-    }, [])
+    })
 
     return (
 

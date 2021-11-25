@@ -1,5 +1,5 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+
 import s from "./conclusion.module.css"
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 

@@ -10,10 +10,10 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-import UploadFile from "../../../sendOffer/fileUpload/fileUpload";
-import Context from "../../../../context/Context";
+
+
 import {API_URL} from "../../../../../config";
-import {useContext} from "react";
+
 import {toStatus} from "../../../../../actions/offers";
 
 
@@ -76,7 +76,7 @@ function UploadFileCard(file){
 
 function FileList(){
   let offersFile = JSON.parse(ReadDir());
-  let arr = new Array
+  let arr = new Array();
   arr = offersFile
 
  for(let i=0; i<offersFile.length; i++){
@@ -118,9 +118,7 @@ const CommonOffer = () => {
         }
 
     }
-    function saveMultiSelect(){
-        setViewChange(false)
-    }
+
 
     function MultiSelectChange(props) {
         const viewChange =  props.viewChange
@@ -174,8 +172,7 @@ function Multiselect() {
                     <div className={s.fallen}><span>Вид предложения:</span><span
                         className={s.spanCat}>{viewOfView(view)}</span>
                         <Box className={s.boxF} sx={{width: 300,}}>
-                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset"
-                                         sx={{width: (100 % -0),}}>
+                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset">
                                 <InputLabel id="demo-simple-select-label">Вид</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
@@ -199,8 +196,7 @@ function Multiselect() {
                     <div className={s.fallen}><span>Статус:</span>
                         <span className={s.spanCat}>{statusOfView(status)}</span>
                         <Box className={s.boxF} sx={{width: 300,}}>
-                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset"
-                                         sx={{width: (100 % -0),}}>
+                            <FormControl fullWidth sx={{width: (100 % -0),}} component="fieldset">
                                 <InputLabel id="demo-simple-select-label">Статус</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
