@@ -40,14 +40,50 @@ const CommonOffer = () => {
         }
     }
 
-    function IsAdminRG() {
-        return (<div>
 
-                <div>
-                    <Button>Редактировать</Button>
-                    <Button>Сохранить</Button>
+    const [viewChange, setViewChange] = React.useState('');
+
+
+    function changeViewMultiSelect() {
+
+        if (viewChange == true) {
+            setViewChange(false)
+
+        }
+        if (viewChange == false) {
+            setViewChange(true)
+        }
+
+    }
+    function saveMultiSelect(){
+        setViewChange(false)
+    }
+
+    function MultiSelectChange(props) {
+        const viewChange =  props.viewChange
+        if (viewChange == false) {
+            return <div>
+                <Button onClick={changeViewMultiSelect}>Редактировать</Button>
+
+            </div>;
+
+        } if (viewChange == true) {
+            return (
+                <Multiselect/>
+            )
+        }
+    }
+
+function Multiselect() {
+        return(
+            <div>
+                <div className={s.navMultiSel}>
+                    <Button onClick={changeViewMultiSelect}>Отменить</Button>
+                    <Button onClick={saveMultiSelect}>Сохранить</Button>
                 </div>
+
                 <div className={s.multiselect}>
+
                     <div className={s.fallen}><span>Категория предложения:</span><span
                         className={s.spanCat}>{categoryView(category)}</span>
 
@@ -134,7 +170,23 @@ const CommonOffer = () => {
                         </Box>
                     </div>
                 </div>
+            </div>
 
+    )
+
+
+
+}
+
+
+    function IsAdminRG() {
+
+
+        return (<div>
+
+
+
+                <MultiSelectChange viewChange={viewChange} />
 
             </div>
         )
@@ -308,10 +360,10 @@ const CommonOffer = () => {
         <div className={s.nameOffer}>
 
 
-            <h4 className={s.idOffer}>
+            <div className={s.idOffer}>
                 <div>№:{offersData.Id}</div>
                 <div className={s.nameOfferHead}>. {offersData.nameOffer}</div>
-            </h4>
+            </div>
             <Box sx={{width: '100%'}}>
                 <Stepper activeStep={stepStatusOff} sx={{
                     '@media screen and (max-width: 553px)': {
@@ -322,9 +374,7 @@ const CommonOffer = () => {
                         const labelProps = {};
                         if (isStepFailed(index)) {
                             labelProps.optional = (
-                                <Typography variant="caption" color="error">
-                                    Отклонено
-                                </Typography>
+                                <Typography variant="caption" color="error">Отклонено</Typography>
                             );
 
                             labelProps.error = true;
@@ -351,7 +401,7 @@ const CommonOffer = () => {
                 <div className={s.from}>
                     <div className={s.date}>{offersData.date.slice(0, 10)}</div>
                     <div
-                        className={s.from}>{offersData.surnameSendler} {offersData.nameSendler}  {offersData.middlenameSendler}</div>
+                        className={s.from}>{offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
                     <div> Статус предложения: {offersData.status}</div>
                 </div>
                 <div className={s.offerText}>{offersData.textOffer} </div>
