@@ -52,6 +52,7 @@ const Offer = (props) => {
                 <div className={s.header}>
                     <div className={s.offerPreview}>
                         <div className={s.from}>
+                            <div className={s.date}> {props.id}</div>
                             <div className={s.date}> {props.date.slice(0, 10)}</div>
                             <div
                                 className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>

@@ -13,14 +13,13 @@ function UploadFile(file){
         console.log('предложение без вложения файла')
     } else {
 
-        console.log("фронт" );
         console.log(fileTemp.data );
 
         let formData = new FormData();
 
         let xhr = new XMLHttpRequest();
         xhr.open('POST', `${API_URL}api/auth/upload`)
-        // xhr.setRequestHeader("Content-type", "multipart/form-data");
+
         formData.append("myFile",document.getElementById(`${file}`).files[0] );
 
         console.log(document.getElementById(`${file}`).files[0]);

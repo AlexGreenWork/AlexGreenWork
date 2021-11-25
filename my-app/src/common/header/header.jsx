@@ -24,7 +24,7 @@ const Header = () => {
                 <img className={s.logotype} src={logo} alt="logo"></img>
             </div>
             <div className={s.loginBar}>
-                {!isAuth && <div className="navbar__login"><NavLink to="/login">Войти</NavLink></div>}
+                {!isAuth && <div className="navbar__login"><NavLink to="/authorization">Войти</NavLink></div>}
                 {!isAuth &&
                     <div className="navbar__registration"><NavLink to="/registration">Регистрация</NavLink></div>}
 
