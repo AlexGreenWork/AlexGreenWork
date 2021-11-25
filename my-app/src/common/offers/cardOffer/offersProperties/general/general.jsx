@@ -17,11 +17,11 @@ import {useContext} from "react";
 
 
 function RequestSelectOffers() {
-    const value = useContext(Context)
+    let idOffers = localStorage.getItem('idOffers');
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${value.change}`);
+    xhr.send(`selectOffers=${idOffers}`);
 
     return xhr.response
 }

@@ -1,9 +1,8 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import s from "./infoAboutAuthor.module.css"
-import Context from "../../../../context/Context";
 import { API_URL } from "../../../../../config";
-import {useContext} from "react";
+
 
 
 function Resp() {
@@ -66,13 +65,36 @@ const MyOffersComp = (props) => {
     )
 }
 
+function validElem(){
+    
+    if(localStorage.getItem('userTabelNum')!=0){
+        const divStyle = {
+            display: "contents",
+          };
+          return divStyle
+    } else {
+        const divStyle = {
+            display: "none",
+          };
+          return divStyle
+    }
+}
+
+
 
 const InfoAboutAuthor = () => {
-
+    let userInfo = {
+        position: null,
+        division: null,
+        department: null,
+    }
     let offersData = JSON.parse(Resp());  //Данные из запроса
-    let userInfo = JSON.parse(UserInfo());
-    console.log(userInfo)
-
+   
+    let userTabelNum = localStorage.getItem('userTabelNum');
+   
+    if(userTabelNum != 0){
+     userInfo = JSON.parse(UserInfo());
+    }
     return (
         <div className={s.cardOfferContainer}>
             <div className={s.header}>
@@ -80,19 +102,19 @@ const InfoAboutAuthor = () => {
                     <div>Автор:</div>
                     <div> {offersData[0].surnameSendler} {offersData[0].nameSendler} {offersData[0].middlenameSendler}</div>
                 </div>
-                <div className={s.nameOffer}>
+                <div className={s.nameOffer} style={validElem()}>
                     <div>Табельный номер:</div>
                     <div> {offersData[0].tabelNum}</div>
                 </div>
-                <div className={s.nameOffer}>
+                <div className={s.nameOffer} style={validElem()}>
                     <div>Цех/Управление:</div>
                     <div> {userInfo.department}</div>
                 </div>
-                <div className={s.nameOffer}>
+                <div className={s.nameOffer} style={validElem()}>
                     <div>Участок/Отдел:</div>
                     <div> {userInfo.division}</div>
                 </div>
-                <div className={s.nameOffer}>
+                <div className={s.nameOffer} style={validElem()}>
                     <div>Должность:</div>
                     <div> {userInfo.position}</div>
                 </div>
