@@ -53,7 +53,7 @@ function Message(id) {
     <label>Название предложения: ${offerArr.nameOffer}</label>
     <label>Сдержание предложения: ${offerArr.textOffer}</label>
     <label>Описание проблемы: ${offerArr.descriptionProblem}</label>`
-            document.body.appendChild(msg)
+          document.body.appendChild(msg)
         }
     })
 }

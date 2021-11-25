@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
-import {useSelector} from "react-redux";
+
 
 export const registration = async (name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions) => {
     try {

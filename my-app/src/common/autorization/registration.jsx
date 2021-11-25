@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import s from "./authorization.module.css"
-import Input from "../../utils/input";
 import {registration} from "../../actions/user";
 
 const Registration = () => {
