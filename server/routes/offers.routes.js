@@ -3,6 +3,8 @@ const config = require("../config/default.json");
 const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
+const fileUpload = require("express-fileupload");
+router.use(fileUpload({}));
 
 const urlencodedParser = Router.urlencoded({ extended: false });
 
@@ -116,7 +118,41 @@ router.post("/userInfo", urlencodedParser, async function(request, response){
         response.send(files)})
     })
 
+    router.post('/upload', function (req, res) {
 
+        console.log("начало auth-rou upload")
+        console.log(req.body)
+
+
+        if (!req.files) {
+            console.log("not file")
+        } else {
+            fs.readdir('../server/files/upload/', (err, files) => {     //очищаем папку загрузки перед загрузкой файла
+
+                console.log('auth-rou : ' + files);
+                console.log( files);
+                if(files == null){
+                    console.log("file null")
+                }
+
+                for (let i = 0; i < files.length; i++) {
+
+
+                    fs.unlink(`../server/files/upload/${files[i]}`, err => {
+                        if (err) throw err; // не удалось удалить файл
+                        console.log('Файл успешно удалён');
+                    });
+
+                }
+
+            });
+            console.log("перед записью")
+            
+            req.files.myFileCard.mv('../server/files/upload/' + req.files.myFile.name);
+            res.end(req.files.myFile.name);
+
+        }
+    });
 
 
 module.exports = router
