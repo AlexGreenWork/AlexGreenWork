@@ -14,6 +14,7 @@ import UploadFile from "../../../sendOffer/fileUpload/fileUpload";
 import Context from "../../../../context/Context";
 import {API_URL} from "../../../../../config";
 import {useContext} from "react";
+import {toStatus} from "../../../../../actions/offers";
 
 
 function RequestSelectOffers() {
@@ -48,7 +49,7 @@ function FileList(){
  for(let i=0; i<offersFile.length; i++){
      arr[i] =  React.createElement("div", null, offersFile[i]); 
  }
- console.log(arr.length)
+
   return React.createElement("div", null, arr)
 }
 
@@ -102,13 +103,13 @@ const CommonOffer = () => {
             )
         }
     }
-
+ let offerId = localStorage.getItem("idOffers")
 function Multiselect() {
         return(
             <div>
                 <div className={s.navMultiSel}>
                     <Button onClick={changeViewMultiSelect}>Отменить</Button>
-                    <Button onClick={saveMultiSelect}>Сохранить</Button>
+                    <Button onClick={() => toStatus(offerId, view, category, status)}>Сохранить</Button>
                 </div>
 
                 <div className={s.multiselect}>

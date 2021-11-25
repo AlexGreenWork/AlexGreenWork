@@ -63,18 +63,19 @@ function App(props) {
                             <Route path='/sendOfferWorker' component={OffersForm}/>
                             <Route path='/sendOfferFree' component={OffersFormFree}/>
                             <Route path="/registration" component={Registration}/>
-
+                            <Route path="/authorization" component={AuthorizationWorker}/>
                             <Redirect to='/authorization'/>
                         </Switch>
                         :
                         <Switch>
+
                             <Route path='/sendOfferWorker' component={OffersForm}/>
                             <Route path='/sendOfferFree' component={OffersFormFree}/>
                             <Redirect to="/"/>
 
                         </Switch>
                     }
-                    <Route path="/authorization" component={AuthorizationWorker}/>
+
                     {/*<Route path="/adminPanel" component={AdminPanel}/>*/}
                     <Route exact path='/' component={ContentContainer}/>
                     <Route path='/workerVariable' component={WorkerVariable}/>
