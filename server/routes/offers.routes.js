@@ -3,6 +3,9 @@ const config = require("../config/default.json");
 const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
+const fileUpload = require("express-fileupload");
+
+router.use(fileUpload({}));
 
 const urlencodedParser = Router.urlencoded({extended: false});
 
@@ -21,6 +24,7 @@ router.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
 })
+
 router.get("/allOffers",
     function (request, response) {
         const mysqlConfig = {
@@ -134,6 +138,8 @@ router.post("/toStatus", urlencodedParser,
 
 
     })
+  
 
+    
 
 module.exports = router

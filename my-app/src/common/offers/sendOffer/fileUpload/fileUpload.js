@@ -26,7 +26,8 @@ function UploadFile(file){
         // xhr.setRequestHeader("Content-type", "multipart/form-data");
         formData.append("myFile", document.getElementById(`${file}`).files[0] );
 
-        console.log(document.getElementById(`${file}`).files[0]);
+        //console.log(document.getElementById(`${file}`).files[0]);
+        console.log(formData)
         xhr.send(formData);
 
     }
