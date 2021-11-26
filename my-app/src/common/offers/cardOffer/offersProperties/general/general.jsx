@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import s from "./general.module.css"
 import InputLabel from '@mui/material/InputLabel';
 import Box from '@mui/material/Box';
@@ -40,47 +40,38 @@ function ReadDir(){
 
 
 
-function UploadFileCard(file){
-
-    console.log(file)
-    if (file === undefined){
-        return console.log('предложение без вложения файла');   
-
-    }else{
-
-        let fileTemp = document.getElementById(`${file}`).files[0]
-        console.log(fileTemp);
-    
-   if(fileTemp === undefined){
-        console.log('предложение без вложения файла')
-    } else {
-
-        console.log("фронт" );
-       
-        let formData = new FormData();
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', `${API_URL}api/offers/upload`)
-         //xhr.setRequestHeader("Content-type", "multipart/form-data");
-        formData.append("myFileCard", document.getElementById(`${file}`).files[0] );
-        xhr.send(formData);
-
-    }
-
-    }
-} 
 
 
 
 
- 
+ function IMG(props){
+     return(
+            <div>
+                {props.type}
+               <img src="../../../../../img/pngegg.png"></img>
+
+            </div>
+     )
+ }
 
 function FileList(){
+
   let offersFile = JSON.parse(ReadDir());
   let arr = new Array();
   arr = offersFile
-
- for(let i=0; i<offersFile.length; i++){
-     arr[i] =  React.createElement("div", null, offersFile[i]); 
+  
+  for(let i=0; i<offersFile.length; i++){
+    for(let j=0; j<offersFile[i].length; j++){
+       
+       if(offersFile[i][j] == '.') {
+                   
+           let format = offersFile[i].slice(j)
+           arr[i] =  React.createElement("div", null, offersFile[i], <IMG type = {format}/> ); 
+       } else{
+           console.log("no format")
+       }
+    }  
+    
  }
 
   return React.createElement("div", null, arr)
@@ -401,12 +392,45 @@ function Multiselect() {
         event.preventDefault();
    
             UploadFileCard('fileCard'); 
+            
 
     }
 
     const isStepFailed = (step) => {
         return step === rejectStatusOff;
     };
+
+    const [listFile, setFileList] = useState(<FileList/>);
+
+
+    function UploadFileCard(file){
+    
+    
+        if (file === undefined){
+            return console.log('предложение без вложения файла');   
+    
+        }else{
+              
+            let idOffers = localStorage.getItem('idOffers');
+            let formData = new FormData();
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', `${API_URL}api/auth/uploadMyCard`)
+           
+            formData.append("idOffers", idOffers );
+            formData.append("myFileCard", document.getElementById(`${file}`).files[0] );
+          
+            xhr.send(formData);
+            
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    let result = this.responseText;
+                    setFileList(<FileList/>)               
+                    
+          }
+        }   
+      }   
+    } 
+
     return (
         <div className={s.nameOffer}>
 
@@ -459,12 +483,13 @@ function Multiselect() {
             </div>
             <div>
                 <div id="listFile">Прикрепленные файлы</div>
-                <div> {FileList()} </div>
+                
+                <div>  {listFile} </div>
 
                 <form className="offersFile" onSubmit={handleSubmit}>
                     <input type="file" name="myFileCard" id="fileCard"></input>
                     <div className={s.buttonConfirm}>
-                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit">Отправить
+                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" onClick={()=>setFileList(<FileList/>)}>Отправить
                             файл
                         </button>
                     </div>

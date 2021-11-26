@@ -307,42 +307,52 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
 
     }
 
-    router.post('/upload', function (req, res) {
+   
 
-        console.log("начало auth-rou upload")
-        console.log(req.body)
+});
 
+router.post('/upload', function (req, res) {
 
-        if (!req.files) {
-            console.log("not file")
-        } else {
-            fs.readdir('../server/files/upload/', (err, files) => {     //очищаем папку загрузки перед загрузкой файла
-
-                console.log('auth-rou : ' + files);
-                console.log( files);
-                if(files == null){
-                    console.log("file null")
-                }
-
-                for (let i = 0; i < files.length; i++) {
+    console.log("начало auth-rou upload")
+    console.log(req.body)
 
 
-                    fs.unlink(`../server/files/upload/${files[i]}`, err => {
-                        if (err) throw err; // не удалось удалить файл
-                        console.log('Файл успешно удалён');
-                    });
+    if (!req.files) {
+        console.log("not file")
+    } else {
+        fs.readdir('../server/files/upload/', (err, files) => {     //очищаем папку загрузки перед загрузкой файла
 
-                }
+            console.log('auth-rou : ' + files);
+            console.log( files);
+            if(files == null){
+                console.log("file null")
+            }
 
-            });
-            console.log("перед записью")
-            req.files.myFile.mv('../server/files/upload/' + req.files.myFile.name);
-           
-            res.end(req.files.myFile.name);
+            for (let i = 0; i < files.length; i++) {
 
-        }
-    });
 
+                fs.unlink(`../server/files/upload/${files[i]}`, err => {
+                    if (err) throw err; // не удалось удалить файл
+                    console.log('Файл успешно удалён');
+                });
+
+            }
+
+        });
+        console.log("перед записью")
+        req.files.myFile.mv('../server/files/upload/' + req.files.myFile.name);
+       
+        res.end(req.files.myFile.name);
+
+    }
+});
+
+
+
+router.post('/uploadMyCard',  async function (req, res) {
+   
+    req.files.myFileCard.mv(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/` + req.files.myFileCard.name);
+    res.send(req.files.myFileCard.name); 
 
 });
 

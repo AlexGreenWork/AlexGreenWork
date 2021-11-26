@@ -8,10 +8,11 @@ const fileUpload = require("express-fileupload")
 const app = express()
 const authRouter = require("./routes/auth.routes")
 const fileRouter = require("./routes/file.routes")
-
+const offersRouter = require("./routes/offers.routes")
 
 app.use("/auth", authRouter)
 app.use("/files", fileRouter)
+app.use("/offers", offersRouter)
 app.use(express.static(__dirname));
 app.use('/files', express.static('avatar'));
 app.post('/files', express.static('upload'));
