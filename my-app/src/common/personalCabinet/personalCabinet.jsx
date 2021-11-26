@@ -6,9 +6,8 @@ import Offers from "../offers/offers";
 
 
 const PersonalCabinet = () => {
-
-
-    function IsAdminUser(props) {
+    function IsAdminUser(props)
+    {
         return (
             <div className={s.navPCab}>
                 <div className={s.linksPC}>
@@ -31,7 +30,8 @@ const PersonalCabinet = () => {
         )
     }
 
-    function IsAdminAdmin(props) {
+    function IsAdminAdmin(props)
+    {
         return (
             <div className={s.navPCab}>
 
@@ -61,7 +61,8 @@ const PersonalCabinet = () => {
         );
     }
 
-    function IsAdminRG(props) {
+    function IsAdminRG(props)
+    {
         return (
             <div className={s.navPCab}>
                 <div className={s.linksPC}>
@@ -83,14 +84,15 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
                     Найти сотрудника
                 </NavLink></div>
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/">
                     Панель Рабочей группы
                 </NavLink></div>
             </div>
         )
     }
 
-    function AdminChange(props) {
+    function AdminChange(props)
+    {
         const isAdmin = props.isAdmin;
         if (isAdmin == 'wg') {
             return <IsAdminRG/>;
@@ -103,9 +105,6 @@ const PersonalCabinet = () => {
         }else{
             return <IsAdminUser/>
         }
-
-
-
     }
 
 
@@ -114,15 +113,12 @@ const PersonalCabinet = () => {
             <div className={s.header}>
                 <div className={s.upHeader}>
                     <div></div>
-                    <div className={s.namePage}><h4>Личный кабинет</h4></div>
-
+                    <div className={s.namePage}>
+                        <h4>Личный кабинет</h4>
+                    </div>
                 </div>
-
             </div>
-
             <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
-
-
         </div>
     )
 }
