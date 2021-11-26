@@ -85,7 +85,9 @@ class Search
 	{
 		let results = [];
 
-	    const connection = await Search.connection_to_database();
+		console.log("Connection");
+
+	    let connection = await Search.connection_to_database();
 		const db_results = await Search.find(connection, req.body.value);
 
 		for(const [key, value] of db_results)
@@ -100,6 +102,9 @@ class Search
 
 			results.push(new search_model(search_object));
 		}
+
+		await connection.end();
+
 		res.json(results);
 	}
 }
