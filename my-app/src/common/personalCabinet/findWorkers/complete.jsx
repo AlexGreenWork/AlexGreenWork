@@ -51,8 +51,8 @@ function Item(value, division, department)
         >
 			<span>
 				{value}
-				<p>Цех {department}</p>
-                <p>Отдел {division}</p>
+				Отдел {department}
+                Цех {division}
             </span>
         </div>),
     }
