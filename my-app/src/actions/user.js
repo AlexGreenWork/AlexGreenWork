@@ -45,7 +45,7 @@ export const login = (email, password) => {
             localStorage.setItem('userPhoneNumber', response.data.user.phoneNumber)
             localStorage.setItem('userFired', response.data.user.fired)
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
-            localStorage.setItem('avatar', response.data.user.avatar)
+            localStorage.setItem('userAvatar', response.data.user.avatar)
         } catch (e) {
 			console.log("Error Level: "+ e);
             alert(e.response.data.message)
@@ -70,7 +70,7 @@ export const auth = () => {
                     phoneNumber: localStorage.getItem('userPhoneNumber'),
                     fired: localStorage.getItem('userFired'),
                     adminOptions: localStorage.getItem('userAdminOptions'),
-                    avatar: localStorage.getItem('avatar'),
+                    avatar: localStorage.getItem('userAvatar'),
 
 
                 }
