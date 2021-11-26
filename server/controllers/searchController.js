@@ -52,7 +52,21 @@ class Search
 
 	static query_users_by_alias(alias)
 	{
-		return `SELECT * FROM kadry_all WHERE ${alias} LIKE ? AND deleted <> 1`;
+		const query = ` SELECT
+					ka.fiofull AS fio,
+					d.name AS department,
+					d2.name AS division
+				FROM kadry_all AS ka
+				LEFT JOIN department AS d ON
+					d.id = ka.department
+				LEFT JOIN division AS d2 ON
+					d2.department = ka.department
+					AND d2.id = ka.division
+				 WHERE ka.${alias} LIKE ?
+				 	AND deleted <> 1`;
+
+		console.log(query);
+		return query;
 	}
 
 	static async find_value_by_alias(connection, value, alias)
@@ -85,19 +99,23 @@ class Search
 	{
 		let results = [];
 
-		console.log("Connection");
+		const request = req.body.value;
 
 	    let connection = await Search.connection_to_database();
-		const db_results = await Search.find(connection, req.body.value);
+		const db_results = await Search.find(connection, request);
 
 		for(const [key, value] of db_results)
 		{
-			let search_object = {value: req.body.value, category: Search.category_name_by_db_alias(key), count: value.length, users: []};
+			let search_object = {value: request, category: Search.category_name_by_db_alias(key), count: value.length, users: []};
 
 			const sliced = value.slice(0, 10);
 			for(const info of sliced)
 			{
-				search_object.users.push(new search_user_model({name: info.fiofull}));
+				search_object.users.push(new search_user_model({
+						name: info.fio,
+						department: info.department,
+						division: info.division
+				}));
 			}
 
 			results.push(new search_model(search_object));
