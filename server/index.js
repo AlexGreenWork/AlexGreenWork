@@ -27,6 +27,7 @@ app.use(fileUpload({}))
 app.use(express.json())
 app.use("/api/files", require('./routes/file.routes'))
 app.use("/api/offers", require('./routes/offers.routes'))
+app.use("/api/user", require('./routes/worker_finder.routes'))
 app.use(express.static('static'))
 
 app.use((req, res, next)=>{
