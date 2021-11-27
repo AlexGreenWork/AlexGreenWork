@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React from "react";
 import {AutoComplete, Input} from "antd";
-import Cart from "./card";
+import Card from "./card";
 const axios = require("axios");
 
 class Complete extends React.Component
@@ -17,8 +17,6 @@ class Complete extends React.Component
 												["3", "Код цеха"]
 											]);
 		this.search_value = this.search_value.bind(this);
-
-		console.log(this.props);
 	}
 
 	category_server_converter(category)
@@ -89,7 +87,7 @@ class Complete extends React.Component
 				<span>
 				  Found `{search}` on {' '}
 					<a
-						href={`http://localhost:3000/personalCabinet/findWorkers=${item_category}`}
+						href={`http://localhost:3000/personalCabinet/findWorkers`}
 						target="_blank"
 						rel="noopener noreferrer"
 					>
@@ -120,7 +118,7 @@ class Complete extends React.Component
 					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
 						enterButton/>
 				</AutoComplete>
-			<Cart info={this.state.card}/>
+			<Card info={this.state.card}/>
 		</>);
 	}
 };
