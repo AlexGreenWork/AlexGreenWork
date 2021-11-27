@@ -71,7 +71,7 @@ class Search
 
 	static async find_value_by_alias(connection, value, alias)
 	{
-		return await connection.query( Search.query_users_by_alias(alias), [value + '%']);
+		return await connection.query( Search.query_users_by_alias(alias), ['%' + value + '%']);
 	}
 
 	static get_value_type(value)
