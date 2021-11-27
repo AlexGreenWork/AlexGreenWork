@@ -17,7 +17,7 @@ const Offer = (props) => {
     return (
         <div>
             <NavLink to='/cardOffer' onClick={() => {
-                Message(props.id)
+              localStorage.setItem('idOffers', props.id);
             }}>
                 <div className={s.header}>
                     <div className={s.offerPreview}>
@@ -34,30 +34,6 @@ const Offer = (props) => {
         </div>
     )
 }
-
-function Message(id) {
-    let offersData = JSON.parse(Resp());
-    // console.log(offersData[0]);
-    offersData.map((offerArr) => {
-        if (offerArr.Id === id) {
-            console.log(offerArr);
-
-            let msg = document.createElement('div');
-            msg.className = "message";
-            msg.innerHTML = `<label>Имя: ${offerArr.nameSendler}</label>
-    <label>Фамилия: ${offerArr.surnameSendler}</label>
-    <label>Отчество: ${offerArr.middlenameSendler}</label>
-    <label>Номер телефона: ${offerArr.nameSendler}</label>
-    <label>Электронная почта: ${offerArr.email}</label>
-    <label>Дата подачи предложения: ${offerArr.date.slice(0, 10)}</label>
-    <label>Название предложения: ${offerArr.nameOffer}</label>
-    <label>Сдержание предложения: ${offerArr.textOffer}</label>
-    <label>Описание проблемы: ${offerArr.descriptionProblem}</label>`
-          document.body.appendChild(msg)
-        }
-    })
-}
-
 
 const OffersLink = () => {
     let offersData = JSON.parse(Resp());
