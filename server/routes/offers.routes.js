@@ -116,46 +116,81 @@ router.post("/userInfo", urlencodedParser, async function (request, response) {
 router.post("/FilesMyOffers", urlencodedParser,
     async function (request, response) {
 
-        let idOffers = request.body.idOffers
-        
-      
-
-        fs.readdir(`../server/files/offers/idOffers/`, (err, folder) => {
+      fs.readdir(`../server/files/offers/idOffers/`, (err, folder) => {
            
-            for(let i = 0; i< folder.length; i++){
-               
-               
-               if(folder[i] == `id${request.body.idOffers}`){
-                   
-                   console.log(folder[i])
-                   
-                   fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/`, (err, folder) => {
-                       
-                       if(folder[i] === "SendlerFiles"){
-                          
-                          
-                          
-                       } else {
-                               `../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`
-                       }
-                   })
-                  
-   
-               } else {
-                   `folder id${request.body.idOffers} does not exist`
-                   fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
-                       if(err) throw err; // не удалось создать папки
-                       console.log('Все папки успешно созданы');
-                      
-                       fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, (err, files) => {
+            if(folder.length == 0){
+                
+                fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
+                    if(err) throw err; // не удалось создать папки
+                    console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
 
+                    fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
+                    
                         response.send(files)
                     })
-                   });
-               }
+
+                })
+
+            } else {
+                    let a = 0;
+                for(let i = 0; i< folder.length; i++){
+                              
+                    if(folder[i] == `id${request.body.idOffers}`){
+                    
+                        
+                        fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/`, (err, folder) => {
+                        
+                            if(folder[0] == "SendlerFiles"){
+                             
+                             fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
+                                 
+                                 response.send(files)
+                             })
+                               
+                             i = folder.length
+                               
+                            } else {
+                                   
+                             fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
+                                 if(err) throw err; // не удалось создать папки
+                                 console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
+     
+                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
+                                 
+                                     response.send(files)
+                                 })
+     
+                             })
+                             i = folder.length
+                            }
+                        })
+                       
+        
+                    } else {
+                         a++;
+                        if( a == folder.length){
+                           
+                            fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
+                                if(err) throw err; // не удалось создать папки
+                                console.log('Все папки успешно созданы');
+                               
+                                fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
+                                    console.log(err)
+                              
+                                  
+                                 response.send(files)
+                             })
+         
+                            });
+                        } else {
+                            
+                        }
+                       
+                      
+                    }
+                 }
             }
-          
-          // console.log(folder)
+ 
         })
 
 
