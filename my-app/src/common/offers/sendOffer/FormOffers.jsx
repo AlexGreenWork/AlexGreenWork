@@ -3,18 +3,23 @@ import OffFunc from './offerForm/FormOffFunc.js';
 import UploadFile from './fileUpload/fileUpload'
 import s from "./offerForm/formOffers.module.css";
 
+
+
 function OffersForm() {
 
-    const [name, setName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [middleName, setMiddleName] = useState("");
-    const [Email, setEmail] = useState("");
-    const [tabelNumber, setTabelNumber] = useState("");
+    const [name, setName] = useState(localStorage.getItem('userName'));
+    const [lastName, setLastName] = useState(localStorage.getItem('userSurName'));
+    const [middleName, setMiddleName] = useState(localStorage.getItem('userMiddleName'));
+    const [Email, setEmail] = useState(localStorage.getItem('userEmail'));
+    const [tabelNumber, setTabelNumber] = useState(localStorage.getItem('userTabelNum'));
     const [phoneNumber, setPhoneNumber] = useState("");
     const [nameOffer, setNameOffer] = useState("");
     const [problem, setProblem] = useState("");
     const [offer, setOffer] = useState("");
     const [checked, setChecked] = useState(false);
+
+    //)=>{localStorage.getItem('userName')}
+    
 
 
     const handleSubmit = (event) => {
