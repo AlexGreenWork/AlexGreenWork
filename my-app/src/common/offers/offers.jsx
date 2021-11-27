@@ -46,7 +46,7 @@ const OffersLink = () => {
 const Offers = () => {
     return (
         <div className={s.offersContainer}>
-            <div className={s.titleHeader}><NavLink to="/personalCabinet/offers"> Предложения</NavLink></div>
+            <div className={s.titleHeader}> Предложения для обработки рабочей группой</div>
             <OffersLink/>
 
         </div>

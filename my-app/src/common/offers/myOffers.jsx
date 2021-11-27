@@ -16,7 +16,7 @@ function Resp() {
     let userSurName = localStorage.getItem('userSurName');
     let userMiddleName = localStorage.getItem('userMiddleName');
     let userEmail = localStorage.getItem('userEmail');
-   
+
 
     xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -82,7 +82,7 @@ const OffersLink = () => {
 const Offers = () => {
     return (
         <div className={s.offersContainer}>
-            <div className={s.titleHeader}><NavLink to=""> Предложения</NavLink></div>
+            <div className={s.titleHeader}>Мои предложения</div>
             <OffersLink/>
 
         </div>

@@ -41,10 +41,9 @@ function Header(search, item_category, item_count)
     };
 }
 
-function Item(value)
+function Item(value, division, department)
 {
     return {
-        value: value,
         label:(<div style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -52,7 +51,9 @@ function Item(value)
         >
 			<span>
 				{value}
-			</span>
+				Отдел {department}
+                Цех {division}
+            </span>
         </div>),
     }
 }
@@ -60,18 +61,22 @@ function Item(value)
 function Items(values)
 {
     let items = [];
-    values.forEach((value) => items.push(Item(value.name)))
+    console.log(values)
+    for(const value of values)
+    {
+        items.push(Item(value.name, value.department, value.division))
+    }
     return items;
 }
 
 function CreateOptions(search, response)
 {
     let result = [];
-
-    response.data.forEach((item) => {
+    for(const item of response.data)
+    {
         result.push(Header(search, item.category, item.count));
         result = result.concat(Items(item.users));
-    });
+    }
     return result;
 }
 
@@ -88,8 +93,6 @@ const Complete = () => {
     const select = (value) => {
         console.log('onSelect', value);
     };
-
-
 
     return (<AutoComplete
         dropdownMatchSelectWidth={500}
