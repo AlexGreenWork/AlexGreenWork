@@ -107,6 +107,9 @@ class Complete extends React.Component
 					dropdownMatchSelectWidth={500}
 					style={{
 						width: '100%',
+						paddingBottom: '40px',
+						fontSize: '14px',
+						fontWeight: "bold"
 					}}
 					options={this.state.options}
 					onSelect={(value, info) => {this.setState({cart: info})}}
