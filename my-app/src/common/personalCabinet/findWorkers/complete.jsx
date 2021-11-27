@@ -17,6 +17,7 @@ class Complete extends React.Component
 												["3", "Код цеха"]
 											]);
 		this.search_value = this.search_value.bind(this);
+		this.select_value = this.select_value.bind(this);
 	}
 
 	category_server_converter(category)
@@ -99,6 +100,11 @@ class Complete extends React.Component
 		};
 	}
 
+	select_value(value, element)
+	{
+		this.setState({card: element, options: []});
+	}
+
 	render()
 	{
 		return (
@@ -112,7 +118,7 @@ class Complete extends React.Component
 						fontWeight: "bold"
 					}}
 					options={this.state.options}
-					onSelect={(value, info) => {this.setState({card: info})}}
+					onSelect={this.select_value}
 					onSearch={this.search_value}
 				>
 					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
