@@ -4,11 +4,6 @@ import List from "./list"
 import React from "react";
 
 const FindWorkers = () => {
-
-	React.Children.forEach((children, element) => {
-			console.log(element.props);
-	})
-
 	return (
 				<div className={style.sendOfferContainer}>
 					<div className={style.sendOfferInnerContainer}>
