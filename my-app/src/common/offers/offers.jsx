@@ -7,7 +7,7 @@ function Resp() {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
     xhr.send();
-    console.log(xhr.response)
+    //console.log(xhr.response)
     return xhr.response;
 
 
@@ -22,7 +22,7 @@ const Offer = (props) => {
                 <div className={s.header}>
                     <div className={s.offerPreview}>
                         <div className={s.from}>
-
+                        
                             <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
                             <div className={s.date}> {props.date.slice(0, 10)}</div>
                             <div className={s.status}>  {props.status}</div>

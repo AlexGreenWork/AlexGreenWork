@@ -68,7 +68,7 @@ function FileList(){
            let format = offersFile[i].slice(j)
            arr[i] =  React.createElement("div", null, offersFile[i], <IMG type = {format}/> ); 
        } else{
-
+           console.log("no format")
        }
     }  
     
@@ -125,20 +125,13 @@ const CommonOffer = () => {
             )
         }
     }
-
-    function saveStatus(){
-
-        toStatus(offerId, view, category, status)
-        setViewChange(false)
-        alert("Изменения сохранены")
-    }
  let offerId = localStorage.getItem("idOffers")
 function Multiselect() {
         return(
             <div>
                 <div className={s.navMultiSel}>
                     <Button onClick={changeViewMultiSelect}>Отменить</Button>
-                    <Button onClick={saveStatus}>Сохранить</Button>
+                    <Button onClick={() => toStatus(offerId, view, category, status)}>Сохранить</Button>
                 </div>
 
                 <div className={s.multiselect}>
@@ -492,7 +485,7 @@ function Multiselect() {
                 <div id="listFile">Прикрепленные файлы</div>
                 
                 <div>  {listFile} </div>
-
+                <iframe src="D:/openserver%205.3.0/ospanel/domains/offers/Министерство образования Республики Беларусь.docx&embedded=true"></iframe>
                 <form className="offersFile" onSubmit={handleSubmit}>
                     <input type="file" name="myFileCard" id="fileCard"></input>
                     <div className={s.buttonConfirm}>

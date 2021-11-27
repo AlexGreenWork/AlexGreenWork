@@ -244,7 +244,7 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
                     if (tabelNumber == 0) {
 
                         messageSend = messageSend + "Ваше предложение опубликовано";
-
+                        
                         await pool.query(`INSERT INTO offersworker (name, middlename, surname, tabelNum, email, phoneNumber, password, adminOptions, date)` +
                             `VALUES("${firstName}", "${middleName}", "${lastName}", "${tabelNumber}", "${emailInput}", "${phoneNumber}", "${password}", "user", "${moment().format('YYYY-MM-DD')}")`);
                         console.log("Пользователь зарегистрирован");
