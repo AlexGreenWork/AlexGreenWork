@@ -55,7 +55,8 @@ class Search
 		const query = ` SELECT
 					ka.fiofull AS fio,
 					d.name AS department,
-					d2.name AS division
+					d2.name AS division,
+					ka.tabnum AS tabnum
 				FROM kadry_all AS ka
 				LEFT JOIN department AS d ON
 					d.id = ka.department
@@ -64,8 +65,7 @@ class Search
 					AND d2.id = ka.division
 				 WHERE ka.${alias} LIKE ?
 				 	AND deleted <> 1`;
-
-
+		console.log(query);
 		return query;
 	}
 
@@ -99,7 +99,7 @@ class Search
 	{
 		let results = [];
 
-		const request = req.body.value;
+		const request = req.body.search;
 
 	    let connection = await Search.connection_to_database();
 		const db_results = await Search.find(connection, request);
@@ -113,6 +113,7 @@ class Search
 			{
 				search_object.users.push(new search_user_model({
 						name: info.fio,
+						tabnum: info.tabnum,
 						department: info.department,
 						division: info.division
 				}));
