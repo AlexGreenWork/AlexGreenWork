@@ -1,4 +1,5 @@
-import React, {useEffect} from "react"
+import React from "react"
+import style from "./card.module.css"
 const axios = require("axios");
 
 class Cart extends React.Component
@@ -25,7 +26,9 @@ class Cart extends React.Component
 
     render()
     {
-		if(!this.state) 
+		if(this.state === null
+			|| this.state.info === null
+			|| Object.keys(this.state.info).length === 0) 
 		{
 			return (
 						<div>
@@ -35,22 +38,8 @@ class Cart extends React.Component
 		else
 		{
 			return (
-						<div style={
-										{
-											width: "100%",
-											height: "200px",
-											padding: "40px 40px 20px 40px",
-											backgroundColor: "#607fff",
-											borderRadius: "5px",
-											color: "white"
-										}
-									}>
-							<table style={
-											{
-												width: "100%",
-											}
-										}>
-								<col style={{width: "50%"}}></col>
+						<div className = {style.card}>
+							<table>
 								<tr>
 									<td>
 										Табельный номер

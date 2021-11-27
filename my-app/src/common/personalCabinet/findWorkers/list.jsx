@@ -2,14 +2,15 @@ import React from "react"
 
 class List extends React.Component
 {
-    constructor(prop) {
+    constructor(prop)
+	{
         super(prop);
         console.log(prop);
     }
 
     render() {
         return (
-            <table style={{width: "100%", color: "black", zIndex: 1}}>
+            <table style={{width: "100%", color: "black"}}>
                 <tr>
                     <td>1</td>
                     <td>2</td>
