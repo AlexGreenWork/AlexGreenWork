@@ -9,7 +9,7 @@ class Complete extends React.Component
 	{
 		super(props);
 		this.state = {options: [],
-						cart: []};
+						card: []};
 
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
@@ -17,6 +17,8 @@ class Complete extends React.Component
 												["3", "Код цеха"]
 											]);
 		this.search_value = this.search_value.bind(this);
+
+		console.log(this.props);
 	}
 
 	category_server_converter(category)
@@ -112,13 +114,13 @@ class Complete extends React.Component
 						fontWeight: "bold"
 					}}
 					options={this.state.options}
-					onSelect={(value, info) => {this.setState({cart: info})}}
+					onSelect={(value, info) => {this.setState({card: info})}}
 					onSearch={this.search_value}
 				>
 					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
 						enterButton/>
 				</AutoComplete>
-			<Cart info={this.state.cart}/>
+			<Cart info={this.state.card}/>
 		</>);
 	}
 };
