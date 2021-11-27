@@ -19,7 +19,7 @@ const Profile = () => {
             <div className={s.headerProfile}>
                 <div className={s.uploadAva}>
 
-                    <div className={s.avatarContainer}><img className={s.avatar} src={`${API_URL + 'files/avatar/'+ localStorage.getItem("avatar") }`} alt="avatarLogo"/></div>
+                    <div className={s.avatarContainer}><img className={s.avatar} src={`${API_URL + 'files/avatar/'+ currentUser.avatar }`} alt="avatarLogo"/></div>
                     <button onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
                     <input accept="image/*" onChange={e => changeHandler(e)} type="file"
                            placeholder="Загрузить аватар"/>
