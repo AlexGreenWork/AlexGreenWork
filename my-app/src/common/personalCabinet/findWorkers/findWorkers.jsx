@@ -3,7 +3,7 @@ import Complete from "./complete"
 import List from "./list"
 import React from "react";
 
-const FindWorkers = () => {
+const FindWorkers = (props) => {
 	return (
 				<div className={style.sendOfferContainer}>
 					<div className={style.sendOfferInnerContainer}>
