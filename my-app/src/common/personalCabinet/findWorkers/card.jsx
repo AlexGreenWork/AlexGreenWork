@@ -7,7 +7,6 @@ class Cart extends React.Component
 	{
         super(props);
 		this.load = this.load.bind(this);
-		this.state = {info: []};
     }
 
 	load(tabnum)
@@ -26,56 +25,76 @@ class Cart extends React.Component
 
     render()
     {
-        return (
-            <div style={
-                            {
-                                width: "100%",
-                                height: "200px",
-                            }
-                        }>
-				<table style={
-								{
-									border: "1px"
-								}
-							}
-					>
-					<tr>
-						<td>
-							Табельный номер
-						</td>
-						<td>
-							ФИО
-						</td>
-						<td>
-							Должность
-						</td>
-						<td>
-							Цех
-						</td>
-						<td>
-							Отдел
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{this.state.info.tabnum}
-						</td>
-						<td>
-							{this.state.info.name}
-						</td>
-						<td>
-							{this.state.info.prof}
-						</td>
-						<td>
-							{this.state.info.department}
-						</td>
-						<td>
-							{this.state.info.division}
-						</td>
-					</tr>
-				</table>
-            </div>
-        )
+		if(!this.state) 
+		{
+			return (
+						<div>
+						</div>
+					);
+		}
+		else
+		{
+			return (
+						<div style={
+										{
+											width: "100%",
+											height: "200px",
+											padding: "40px 40px 20px 40px",
+											backgroundColor: "#607fff",
+											borderRadius: "5px",
+											color: "white"
+										}
+									}>
+							<table style={
+											{
+												width: "100%",
+											}
+										}>
+								<col style={{width: "50%"}}></col>
+								<tr>
+									<td>
+										Табельный номер
+									</td>
+									<td>
+										{this.state.info.tabnum}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										ФИО
+									</td>
+									<td>
+										{this.state.info.name}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Должность
+									</td>
+									<td>
+										{this.state.info.prof}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Цех
+									</td>
+									<td>
+										{this.state.info.department}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Отдел
+									</td>
+									<td>
+										{this.state.info.division}
+									</td>
+								</tr>
+							</table>
+						</div>
+				)
+		}
     }
 }
 
