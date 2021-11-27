@@ -9,5 +9,6 @@ router.use((req, res, next) => {
 })
 
 router.post('/search', search_controller.search);
+router.post('/info', search_controller.get_full_info);
 
 module.exports = router;
