@@ -16,7 +16,7 @@ function Resp() {
     let userSurName = localStorage.getItem('userSurName');
     let userMiddleName = localStorage.getItem('userMiddleName');
     let userEmail = localStorage.getItem('userEmail');
-    //ffdfdfdfd
+   
 
     xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

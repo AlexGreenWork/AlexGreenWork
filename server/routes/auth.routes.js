@@ -350,9 +350,63 @@ router.post('/upload', function (req, res) {
 
 
 router.post('/uploadMyCard',  async function (req, res) {
-   
-    req.files.myFileCard.mv(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/` + req.files.myFileCard.name);
-    res.send(req.files.myFileCard.name); 
+
+    
+
+    try{
+       /*  fs.stat(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/`,(err, files) => {
+            console.log(files)
+         }) */
+        
+         fs.readdir(`../server/files/offers/idOffers/`, (err, folder) => {
+           
+             for(let i = 0; i< folder.length; i++){
+                
+                
+                if(folder[i] == `id${req.body.idOffers}`){
+                    
+                    console.log(folder[i])
+                    
+                    fs.readdir(`../server/files/offers/idOffers/id${req.body.idOffers}/`, (err, folder) => {
+                        
+                        if(folder[i] === "SendlerFiles"){
+                           
+                            req.files.myFileCard.mv(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/` + req.files.myFileCard.name);
+                           
+                        } else {
+                                `../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/`
+                        }
+                    })
+                   
+    
+                } else {
+                    `folder id${req.body.idOffers} does not exist`
+                    fs.mkdir(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
+                        if(err) throw err; // не удалось создать папки
+                        console.log('Все папки успешно созданы');
+                        req.files.myFileCard.mv(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/` + req.files.myFileCard.name);
+                    });
+                }
+             }
+           
+           // console.log(folder)
+         })
+
+       /*  fs.readdir(`../server/files/offers/idOffers/id${req.body.idOffers}`, (err, folder) => {
+            if(folder[0] === SendlerFiles){
+
+            } else {
+
+            }
+            console.log(folder)
+         }) */
+    
+       
+        res.send(req.files.myFileCard.name); 
+    }
+   catch (e){
+       console.log(e)
+   }
 
 });
 

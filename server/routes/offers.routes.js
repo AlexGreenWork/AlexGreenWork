@@ -117,11 +117,48 @@ router.post("/FilesMyOffers", urlencodedParser,
     async function (request, response) {
 
         let idOffers = request.body.idOffers
+        
+      
 
-        fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles`, (err, files) => {
+        fs.readdir(`../server/files/offers/idOffers/`, (err, folder) => {
+           
+            for(let i = 0; i< folder.length; i++){
+               
+               
+               if(folder[i] == `id${request.body.idOffers}`){
+                   
+                   console.log(folder[i])
+                   
+                   fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/`, (err, folder) => {
+                       
+                       if(folder[i] === "SendlerFiles"){
+                          
+                          
+                          
+                       } else {
+                               `../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`
+                       }
+                   })
+                  
+   
+               } else {
+                   `folder id${request.body.idOffers} does not exist`
+                   fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
+                       if(err) throw err; // не удалось создать папки
+                       console.log('Все папки успешно созданы');
+                      
+                       fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, (err, files) => {
 
-            response.send(files)
+                        response.send(files)
+                    })
+                   });
+               }
+            }
+          
+          // console.log(folder)
         })
+
+
     })
 
 
