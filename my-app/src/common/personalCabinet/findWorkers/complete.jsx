@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {AutoComplete, Input} from "antd";
+import Cart from "./card";
 const axios = require("axios");
-const Cart = require("./cart");
 
 class Complete extends React.Component
 {
@@ -9,7 +9,7 @@ class Complete extends React.Component
 	{
 		super(props);
 		this.state = {options: [],
-						search: []};
+						cart: []};
 
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
@@ -45,16 +45,20 @@ class Complete extends React.Component
 	create_items(values)
 	{
 		let items = [];
-		for(const value of values)
+		for(let i = 0; i < values.length; i++)
 		{
-			items.push(this.create_item(value.name, value.tabnum, value.department, value.division))
+			const value = values[i];
+			items.push(this.create_item(i, value.name, value.tabnum, value.department, value.division))
 		}
 		return items;
 	}
 
-	create_item(name, tabnum, division, department)
+	create_item(id, name, tabnum, division, department)
 	{
 		return {
+			key: id,
+			id: tabnum,
+			value: name,
 			label:(<div style={{
 				display: 'flex',
 				justifyContent: 'space-between',
@@ -74,7 +78,8 @@ class Complete extends React.Component
 		const category = ` в ${this.category_server_converter(item_category)}`;
 
 		return {
-			value: category, label: (<div
+			value: category,
+			label: (<div
 				style={{
 					display: 'flex', justifyContent: 'space-between',
 				}}
@@ -96,20 +101,22 @@ class Complete extends React.Component
 
 	render()
 	{
-		return (<AutoComplete
-			dropdownMatchSelectWidth={500}
-			style={{
-				width: '100%',
-			}}
-			options={this.state.options}
-			onSearch={this.search_value}
-		>
-			<Input.Search size="large" style={{
-				fontSize: '14px',
-				textAlign: 'center'
-			}
-			} enterButton/>
-		</AutoComplete>);
+		return (
+			<>
+				<AutoComplete
+					dropdownMatchSelectWidth={500}
+					style={{
+						width: '100%',
+					}}
+					options={this.state.options}
+					onSelect={(value, info) => {this.setState({cart: info})}}
+					onSearch={this.search_value}
+				>
+					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
+						enterButton/>
+				</AutoComplete>
+			<Cart info={this.state.cart}/>
+		</>);
 	}
 };
 

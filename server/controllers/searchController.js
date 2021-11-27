@@ -1,6 +1,7 @@
 const mysql = require("mysql2/promise");
 const config = require("./../config/default.json");
 const search_model = require("../models/search.js")
+const search_model_full = require("../models/search_full.js")
 const search_user_model = require("../models/search_user_list")
 
 class Search
@@ -33,10 +34,12 @@ class Search
 			]
 		]);
 	}
+
 	static db_alias_by_type(type)
 	{
 		return new Array(Search.db_alias().get(type));
 	}
+
 	static category_name()
 	{
 		return new Map([
@@ -45,6 +48,7 @@ class Search
 			["department", "3"]
 		]);
 	}
+
 	static category_name_by_db_alias(alias)
 	{
 		 return Search.category_name().get(alias);
@@ -56,7 +60,8 @@ class Search
 					ka.fiofull AS fio,
 					d.name AS department,
 					d2.name AS division,
-					ka.tabnum AS tabnum
+					ka.tabnum AS tabnum,
+					ka.profname AS prof
 				FROM kadry_all AS ka
 				LEFT JOIN department AS d ON
 					d.id = ka.department
@@ -64,14 +69,16 @@ class Search
 					d2.department = ka.department
 					AND d2.id = ka.division
 				 WHERE ka.${alias} LIKE ?
+					AND ka.factory = 1
 				 	AND deleted <> 1`;
-		console.log(query);
 		return query;
 	}
 
-	static async find_value_by_alias(connection, value, alias)
+	static async find_value_by_alias(connection, value, alias, like = true)
 	{
-		return await connection.query( Search.query_users_by_alias(alias), ['%' + value + '%']);
+		let query_param = value;
+		if(like) query_param = `%${value}%`;
+		return await connection.query( Search.query_users_by_alias(alias), [query_param]);
 	}
 
 	static get_value_type(value)
@@ -95,15 +102,44 @@ class Search
 		return result;
 	}
 
+	static async get_find_result(value)
+	{
+	    let connection = await Search.connection_to_database();
+		const db_results = await Search.find(connection, value);
+		await connection.end();
+
+		return db_results;
+	}
+
+	async get_full_info(req, res)
+	{
+		const request = req.body.search;
+
+	    let connection = await Search.connection_to_database();
+		let db_results = await Search.find_value_by_alias(connection, request, "tabnum", false);
+		await connection.end();
+
+		const db_result = db_results[0][0];
+
+		if(!db_result) return res.json([]);
+
+		const result = new search_model_full({
+				name: db_result.fio,
+				tabnum: db_result.tabnum,
+				prof: db_result.prof,
+				department: db_result.department,
+				division: db_result.division})
+
+		return res.json(result);
+	}
+
 	async search(req, res)
 	{
 		let results = [];
 
 		const request = req.body.search;
 
-	    let connection = await Search.connection_to_database();
-		const db_results = await Search.find(connection, request);
-
+		const db_results = await Search.get_find_result(request);
 		for(const [key, value] of db_results)
 		{
 			let search_object = {value: request, category: Search.category_name_by_db_alias(key), count: value.length, users: []};
@@ -121,8 +157,6 @@ class Search
 
 			results.push(new search_model(search_object));
 		}
-
-		await connection.end();
 
 		res.json(results);
 	}
