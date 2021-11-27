@@ -65,7 +65,7 @@ class Search
 				 WHERE ka.${alias} LIKE ?
 				 	AND deleted <> 1`;
 
-		console.log(query);
+
 		return query;
 	}
 

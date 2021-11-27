@@ -61,6 +61,7 @@ function Item(value, division, department)
 function Items(values)
 {
     let items = [];
+    console.log(values)
     for(const value of values)
     {
         items.push(Item(value.name, value.department, value.division))

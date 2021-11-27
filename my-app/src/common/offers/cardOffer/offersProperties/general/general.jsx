@@ -68,7 +68,7 @@ function FileList(){
            let format = offersFile[i].slice(j)
            arr[i] =  React.createElement("div", null, offersFile[i], <IMG type = {format}/> ); 
        } else{
-           console.log("no format")
+
        }
     }  
     
@@ -125,13 +125,20 @@ const CommonOffer = () => {
             )
         }
     }
+
+    function saveStatus(){
+
+        toStatus(offerId, view, category, status)
+        setViewChange(false)
+        alert("Изменения сохранены")
+    }
  let offerId = localStorage.getItem("idOffers")
 function Multiselect() {
         return(
             <div>
                 <div className={s.navMultiSel}>
                     <Button onClick={changeViewMultiSelect}>Отменить</Button>
-                    <Button onClick={() => toStatus(offerId, view, category, status)}>Сохранить</Button>
+                    <Button onClick={saveStatus}>Сохранить</Button>
                 </div>
 
                 <div className={s.multiselect}>
