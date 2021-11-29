@@ -11,33 +11,145 @@ import s from "../comission/comission.module.css";
 import CardOfferUpload from "../../../../components/card/card";
 import DndOffer from "../../../../components/dnd/dnd";
 
+import Button from "@material-ui/core/Button";
+
+import {toDbDateComission} from "../../../../../actions/offers";
 
 const ComissionOffer = () => {
-    const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
+
+    const [dateComission, setDateComission] = React.useState(new Date('2014-08-18T21:11:54'));
 
     const handleChange = (newValue) => {
-        setValue(newValue);
+        setDateComission(newValue);
     };
+
+
+    const [viewChangeCom, setViewChangeCom] = React.useState('');
+
+
+    function changeViewMultiSelect() {
+
+        if (viewChangeCom == true) {
+            setViewChangeCom(false)
+
+        }
+        if (viewChangeCom == false) {
+            setViewChangeCom(true)
+        }
+
+    }
+
+    function MultiSelectChangeCom(props) {
+        const viewChangeCom = props.viewChangeCom
+        if (viewChangeCom == false) {
+            return <div>
+                <Button onClick={changeViewMultiSelect}>Редактировать</Button>
+
+            </div>;
+
+        }
+        if (viewChangeCom == true) {
+            return (
+                <div>
+                    <div className={s.navMultiSel}>
+                        <Button onClick={changeViewMultiSelect}>Отменить</Button>
+                        <Button onClick={saveDateComission}>Сохранить</Button>
+                    </div>
+
+                    <div className={s.FormControl}>
+
+                        <label htmlFor="" className={s.labelCalender} data-shrink="true">Дата</label>
+                        <div className={s.inputCalender}>
+                            <input type="datetime-local"
+
+                                   value={dateComission}
+                                   onChange={e => handleChange(e.target.value)}
+                                   renderInput={(params) => <TextField {...params} />}
+                            ></input>
+
+                            <fieldset aria-hidden="true"
+                                      className={s.OutlineCalender}>
+                                <legend className="css-186xcr5"></legend>
+                            </fieldset>
+                        </div>
+                    </div>
+
+
+                    {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                    {/*    <Stack spacing={3}>*/}
+                    {/*        <div>Дата и время заседания комиссии</div>*/}
+                    {/*        <DateTimePicker*/}
+                    {/*            label="Дата и время"*/}
+                    {/*            value={dateComission}*/}
+                    {/*            onChange={handleChange}*/}
+                    {/*            renderInput={(params) => <TextField {...params} />}*/}
+                    {/*        />*/}
+                    {/*    </Stack>*/}
+                    {/*</LocalizationProvider>*/}
+                </div>
+            )
+        }
+    }
+
+    function IsAdminRG() {
+
+
+        return (<div>
+                <MultiSelectChangeCom viewChangeCom={viewChangeCom}/>
+            </div>
+        )
+    }
+
+    function IsAdminUser(props) {
+        return (
+            <div></div>
+        )
+    }
+
+    function AdminChange(props) {
+        const isAdmin = props.isAdmin;
+        if (isAdmin == 'wg') {
+            return <IsAdminRG/>;
+
+        } else {
+            return <IsAdminUser/>
+        }
+    }
+
+    let offerId = localStorage.getItem("idOffers")
+
+    function saveDateComission() {
+
+        toDbDateComission(offerId, dateComission)
+        setViewChangeCom(false)
+        alert("Изменения сохранены")
+    }
+
+
+    /////////////////////////////
+    // const [dateComision, setDateComision] = React.useState('');
+    //
+    // const handleChangeView = (event) => {
+    //     setDateComision(event.target.value);
+    // };
+
 
     return (
 
+
         <div className={s.nameOffer}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack spacing={3}>
-                    <div>Дата и время заседания комиссии</div>
-                    <DateTimePicker
-                        label="Дата и время"
-                        value={value}
-                        onChange={handleChange}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </Stack>
-            </LocalizationProvider>
+            <div>Дата заседания комиссии: </div>
+
+
+            <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
+
+
             <div className={s.uploadContainer} sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                alignItems: 'center'}}>
+                alignItems: 'center'
+            }}>
                 <div>
                     Файл протокола:
                 </div>
