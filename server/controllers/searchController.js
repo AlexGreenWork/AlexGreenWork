@@ -40,7 +40,7 @@ class Search
 		return new Array(Search.db_alias().get(type));
 	}
 
-	static category_name()
+	static category_name_by_alias()
 	{
 		return new Map([
 			["tabnum", "1"],
@@ -51,7 +51,21 @@ class Search
 
 	static category_name_by_db_alias(alias)
 	{
-		 return Search.category_name().get(alias);
+		 return Search.category_name_by_alias().get(alias);
+	}
+
+	static category_alias_by_name()
+	{
+		return new Map([
+			["1", "tabnum"],
+			["2", "fiofull"],
+			["3", "department"]
+		]);
+	}
+
+	static category_db_alias_by_name(name)
+	{
+		 return Search.category_alias_by_name().get(name);
 	}
 
 	static query_users_by_alias(alias)
@@ -74,17 +88,17 @@ class Search
 		return query;
 	}
 
+	static get_value_type(value)
+	{
+		if(isNaN(value)) return Search.db_alias_by_type("string");
+		return Search.db_alias_by_type("number");
+	}
+
 	static async find_value_by_alias(connection, value, alias, like = true)
 	{
 		let query_param = value;
 		if(like) query_param = `%${value}%`;
 		return await connection.query( Search.query_users_by_alias(alias), [query_param]);
-	}
-
-	static get_value_type(value)
-	{
-		if(isNaN(value)) return Search.db_alias_by_type("string");
-		return Search.db_alias_by_type("number");
 	}
 
 	static async find(connection, value)
@@ -102,63 +116,123 @@ class Search
 		return result;
 	}
 
-	static async get_find_result(value)
+	static async find_all_by_alias(connection, value, alias)
 	{
-	    let connection = await Search.connection_to_database();
-		const db_results = await Search.find(connection, value);
-		await connection.end();
-
-		return db_results;
+	    let result = new Map();
+		const key = Search.category_db_alias_by_name(alias);
+		let db_result = await Search.find_value_by_alias(connection, value, key);
+		result.set(alias, db_result[0]);
+		return result;
 	}
 
 	async get_full_info(req, res)
 	{
-		const request = req.body.search;
+	    let result = [];
 
-	    let connection = await Search.connection_to_database();
-		let db_results = await Search.find_value_by_alias(connection, request, "tabnum", false);
-		await connection.end();
+		if(req['body'])
+		{
+			if (req.body['search'])
+			{
+				const request = req.body.search;
 
-		const db_result = db_results[0][0];
+				let connection = await Search.connection_to_database();
+				let db_results = await Search.find_value_by_alias(connection, request, "tabnum", false);
+				await connection.end();
+				const db_result = db_results[0][0];
 
-		if(!db_result) return res.json([]);
+				if (!db_result) return res.json([]);
 
-		const result = new search_model_full({
-				name: db_result.fio,
-				tabnum: db_result.tabnum,
-				prof: db_result.prof,
-				department: db_result.department,
-				division: db_result.division})
+				result = new search_model_full({
+					name: db_result.fio,
+					tabnum: db_result.tabnum,
+					prof: db_result.prof,
+					department: db_result.department,
+					division: db_result.division
+				})
 
-		return res.json(result);
+			}
+		}
+
+console.log(result);
+		res.json(result);
 	}
 
 	async search(req, res)
 	{
 		let results = [];
 
-		const request = req.body.search;
-
-		const db_results = await Search.get_find_result(request);
-		for(const [key, value] of db_results)
+		if(req['body'])
 		{
-			let search_object = {value: request, category: Search.category_name_by_db_alias(key), count: value.length, users: []};
-
-			const sliced = value.slice(0, 10);
-			for(const info of sliced)
+			if (req.body['search'])
 			{
-				search_object.users.push(new search_user_model({
-						name: info.fio,
-						tabnum: info.tabnum,
-						department: info.department,
-						division: info.division
-				}));
-			}
+				const request = req.body.search;
 
-			results.push(new search_model(search_object));
+				let connection = await Search.connection_to_database();
+				const db_results = await Search.find(connection, request);
+				await connection.end();
+
+				for (const [key, value] of db_results)
+				{
+					let search_object = {
+						value: request,
+						category: Search.category_name_by_db_alias(key),
+						count: value.length,
+						users: []
+					};
+
+					const sliced = value.slice(0, 10);
+					for (const info of sliced)
+					{
+						search_object.users.push(new search_user_model({
+							name: info.fio,
+							tabnum: info.tabnum,
+							department: info.department,
+							division: info.division
+						}));
+					}
+
+					results.push(new search_model(search_object));
+				}
+			}
 		}
 
 		res.json(results);
+	}
+
+	async get_all_by_category(req, res)
+	{
+		let results = [];
+
+		if(req['body'])
+		{
+			if (req.body['search']
+				&& req.body['category'])
+			{
+				const request = req.body.search;
+				const category = req.body.category;
+
+				let connection = await Search.connection_to_database();
+				const db_results = await Search.find_all_by_alias(connection, request, category);
+				await connection.end();
+
+				for (const [key, value] of db_results) {
+					let search_object = {value: request, category: category, count: value.length, users: []};
+
+					for (const info of value) {
+						search_object.users.push(new search_user_model({
+							name: info.fio,
+							tabnum: info.tabnum,
+							department: info.department,
+							division: info.division
+						}));
+					}
+
+					results.push(new search_model(search_object));
+				}
+			}
+		}
+		res.json(results);
+
 	}
 }
 module.exports = new Search();

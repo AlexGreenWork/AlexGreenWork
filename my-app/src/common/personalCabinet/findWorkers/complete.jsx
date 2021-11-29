@@ -9,7 +9,7 @@ class Complete extends React.Component
 	{
 		super(props);
 		this.state = {options: [],
-						card: []};
+						card: []}
 
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
@@ -18,6 +18,7 @@ class Complete extends React.Component
 											]);
 		this.search_value = this.search_value.bind(this);
 		this.select_value = this.select_value.bind(this);
+		this.header_click = this.header_click.bind(this);
 	}
 
 	category_server_converter(category)
@@ -30,6 +31,8 @@ class Complete extends React.Component
         axios.post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
             this.setState({options: this.create_options(value, res)});
         })
+
+		this.props.onSearch?.(value);
 	}
 
 	create_options(search, response)
@@ -74,9 +77,15 @@ class Complete extends React.Component
 		}
 	}
 
+	header_click(category, search)
+	{
+		this.props.onSelectHeader?.(category.target.innerText);
+		this.props.onSearchHeader?.(search);
+	}
+
 	create_category_header(search, item_category, item_count)
 	{
-		const category = ` в ${this.category_server_converter(item_category)}`;
+		const category = `${this.category_server_converter(item_category)}`;
 
 		return {
 			value: category,
@@ -86,14 +95,10 @@ class Complete extends React.Component
 				}}
 			>
 				<span>
-				  Found `{search}` on {' '}
-					<a
-						href={`http://localhost:3000/personalCabinet/findWorkers`}
-						target="_blank"
-						rel="noopener noreferrer"
-					>
+				  Found `{search}` on {' '} в
+				</span>
+				<span onClick={(value) => this.header_click(value, search)} style={{color: "Red"}}>
 					{category}
-				  </a>
 				</span>
 				<span>{item_count} результатов </span>
 			</div>),
@@ -117,7 +122,7 @@ class Complete extends React.Component
 						fontSize: '14px',
 						fontWeight: "bold"
 					}}
-					options={this.state.options}
+					options ={this.state.options}
 					onSelect={this.select_value}
 					onSearch={this.search_value}
 				>
