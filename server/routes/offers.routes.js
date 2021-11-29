@@ -203,15 +203,16 @@ router.post("/toStatus", urlencodedParser,
            let view = request.body.view
            let category = request.body.category
            let status = request.body.status
+         await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
+})
 
-
-        await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
-
-
-
+router.post("/toDbDateComission", urlencodedParser,
+    async function (request, response) {
+        let id = request.body.offerId
+        let dateComission = JSON.stringify(request.body.dateComission)
+      await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
     })
-  
 
-    
+
 
 module.exports = router

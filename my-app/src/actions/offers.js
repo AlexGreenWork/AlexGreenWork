@@ -16,3 +16,15 @@ export const toStatus = async (offerId, view, category, status) => {
         alert(e.response.data.message)
     }
 }
+export const toDbDateComission = async (offerId, dateComission) => {
+    try {
+
+        await axios.post(`${API_URL}api/offers/toDbDateComission`, {
+            offerId,
+            dateComission
+        })
+
+    } catch (e) {
+        alert(e.response.data.message)
+    }
+}
