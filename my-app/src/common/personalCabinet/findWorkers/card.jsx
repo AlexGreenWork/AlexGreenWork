@@ -13,6 +13,7 @@ class Cart extends React.Component
 	load(tabnum)
 	{
         axios.post("http://localhost:5000/api/user/info", {search: tabnum}).then((res) => {
+			console.log(res);
 			this.setState({info: res.data});
         })
 	}
@@ -21,6 +22,7 @@ class Cart extends React.Component
 	{
 		if(this.props.info === prop.info) return;
 		this.load(this.props.info.id);
+		console.log(this.props);
 	}
 
 
