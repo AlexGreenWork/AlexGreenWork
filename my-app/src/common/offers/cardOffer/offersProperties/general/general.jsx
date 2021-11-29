@@ -80,8 +80,8 @@ function FileList(){
 
 const CommonOffer = () => {
     let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
-   
-    
+
+
 
     ///////////////////// MULTISELECT_ROLE_FOR_WG
     function AdminChange(props) {
@@ -125,13 +125,20 @@ const CommonOffer = () => {
             )
         }
     }
- let offerId = localStorage.getItem("idOffers")
-function Multiselect() {
+
+    function saveStatus(){
+
+        toStatus(offerId, view, category, status)
+        setViewChange(false)
+        alert("Изменения сохранены")
+    }
+    let offerId = localStorage.getItem("idOffers")
+    function Multiselect() {
         return(
             <div>
                 <div className={s.navMultiSel}>
                     <Button onClick={changeViewMultiSelect}>Отменить</Button>
-                    <Button onClick={() => toStatus(offerId, view, category, status)}>Сохранить</Button>
+                    <Button onClick={saveStatus}>Сохранить</Button>
                 </div>
 
                 <div className={s.multiselect}>
@@ -222,11 +229,11 @@ function Multiselect() {
                 </div>
             </div>
 
-    )
+        )
 
 
 
-}
+    }
 
 
     function IsAdminRG() {
@@ -390,9 +397,9 @@ function Multiselect() {
     const handleSubmit = (event) => {
 
         event.preventDefault();
-   
-            UploadFileCard('fileCard'); 
-            
+
+        UploadFileCard('fileCard');
+
 
     }
 
