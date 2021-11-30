@@ -57,19 +57,14 @@ router.post("/myOffers", urlencodedParser,
         let middleName = request.body.middleName; // отчество
         let surname = request.body.userSurName; // фамилия
         let tabelNumber = request.body.tabelNumber;
-        ;
         let phoneNumber = request.body.phoneNumber;
         let email = request.body.email;
         let sqlResult = await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
 
         response.send(sqlResult[0][0])
-
-
     })
 
 async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber) {
-
-    // checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${tabelNumber})`);
 
     let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE (tabelNum = ${tabelNumber} AND email = "${email}")` +
         `OR (nameSendler = "${firstName}" AND surnameSendler = "${surname}" AND middlenameSendler ="${middleName}" AND tabelNum = ${tabelNumber} ` +
@@ -84,7 +79,7 @@ router.post("/selectMyOffers", urlencodedParser,
 
     let idOffers = request.body.selectOffers
     let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE Id = ${idOffers}`)
-    console.log(request.body)
+    console.log(sqlMyOff[0])
     response.send(sqlMyOff[0][0])
 
 })

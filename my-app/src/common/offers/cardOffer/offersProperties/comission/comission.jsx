@@ -17,7 +17,7 @@ import {toDbDateComission} from "../../../../../actions/offers";
 
 const ComissionOffer = () => {
 
-    const [dateComission, setDateComission] = React.useState(new Date('2014-08-18T21:11:54'));
+    const [dateComission, setDateComission] = React.useState('');
 
     const handleChange = (newValue) => {
         setDateComission(newValue);
@@ -43,7 +43,12 @@ const ComissionOffer = () => {
         const viewChangeCom = props.viewChangeCom
         if (viewChangeCom == false) {
             return <div>
-                <Button onClick={changeViewMultiSelect}>Редактировать</Button>
+                <Button sx={{
+                    border:'1px solid lightblue',
+                    boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
+                    margin: '10px'
+                }}
+                        onClick={changeViewMultiSelect}>Редактировать</Button>
 
             </div>;
 
@@ -119,8 +124,11 @@ const ComissionOffer = () => {
     let offerId = localStorage.getItem("idOffers")
 
     function saveDateComission() {
-
-        toDbDateComission(offerId, dateComission)
+        let T = /[T]/;
+        let str = `${dateComission}`;
+        let newstr = str.replace(T, " В ");
+        localStorage.setItem('dateComission', newstr )
+        toDbDateComission(offerId, newstr)
         setViewChangeCom(false)
         alert("Изменения сохранены")
     }
@@ -134,11 +142,12 @@ const ComissionOffer = () => {
     // };
 
 
+ let dateCom = localStorage.getItem('dateComission')
     return (
 
 
         <div className={s.nameOffer}>
-            <div>Дата заседания комиссии: </div>
+            <div>Дата заседания комиссии: {dateCom}</div>
 
 
             <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
