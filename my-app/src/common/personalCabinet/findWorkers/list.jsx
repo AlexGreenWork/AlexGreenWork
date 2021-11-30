@@ -1,4 +1,5 @@
 import React from "react"
+import Row from "./row";
 const axios = require("axios");
 
 class List extends React.Component
@@ -13,14 +14,12 @@ class List extends React.Component
 												["ФИО", "2"],
 												["Код цеха", "3"]
 											]);
-		console.log(this.props);
 		this.create_list = this.create_list.bind(this);
 		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 	}
 
 	create_list(res)
 	{
-		console.log(res);
 		let results = [];
 		if(res?.data)
 		{
@@ -30,20 +29,7 @@ class List extends React.Component
 
 				for(let user of response.users)
 				{
-					results.push(<tr>
-									<td>
-										{user.tabnum}
-									</td>
-									<td>
-										{user.name}
-									</td>
-									<td>
-										{user.department}
-									</td>
-									<td>
-										{user.division}
-									</td>
-								</tr>);
+					results.push(<Row tabnum = {user.tabnum} name = {user.name} department = {user.department} division = {user.division}/> );
 				}
 			}
 		}
@@ -72,7 +58,7 @@ class List extends React.Component
 
     render() {
         return (
-            <table style={{width: "100%", color: "black"}}>
+            <table style={{width: "100%", color: "black"}} cellPadding="12">
 				<tbody>
 					{this.state.values}
 				</tbody>

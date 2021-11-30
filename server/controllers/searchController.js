@@ -84,7 +84,7 @@ class Search
 					AND d2.id = ka.division
 				 WHERE ka.${alias} LIKE ?
 					AND ka.factory = 1
-				 	AND deleted <> 1`;
+				 	AND ka.deleted <> 1`;
 		return query;
 	}
 
@@ -98,7 +98,14 @@ class Search
 	{
 		let query_param = value;
 		if(like) query_param = `%${value}%`;
-		return await connection.query( Search.query_users_by_alias(alias), [query_param]);
+		try
+		{
+			return await connection.query( Search.query_users_by_alias(alias), [query_param]);
+		}catch(e)
+		{
+			console.log(e);
+		}
+		return [];
 	}
 
 	static async find(connection, value)
@@ -131,8 +138,10 @@ class Search
 
 		if(req['body'])
 		{
-			if (req.body['search'])
+				console.log(req.body.search);
+			if (req.body['search'] && req.body.search)
 			{
+				console.log(req.body.search);
 				const request = req.body.search;
 
 				let connection = await Search.connection_to_database();
@@ -153,7 +162,6 @@ class Search
 			}
 		}
 
-console.log(result);
 		res.json(result);
 	}
 
@@ -163,7 +171,7 @@ console.log(result);
 
 		if(req['body'])
 		{
-			if (req.body['search'])
+			if (req.body['search'] && req.body.search)
 			{
 				const request = req.body.search;
 
@@ -206,7 +214,9 @@ console.log(result);
 		if(req['body'])
 		{
 			if (req.body['search']
-				&& req.body['category'])
+				&& req.body['category']
+				&& req.body.search
+				&& req.body.category)
 			{
 				const request = req.body.search;
 				const category = req.body.category;
@@ -215,7 +225,8 @@ console.log(result);
 				const db_results = await Search.find_all_by_alias(connection, request, category);
 				await connection.end();
 
-				for (const [key, value] of db_results) {
+				for (const [key, value] of db_results)
+				{
 					let search_object = {value: request, category: category, count: value.length, users: []};
 
 					for (const info of value) {
