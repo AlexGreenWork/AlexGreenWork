@@ -7,24 +7,27 @@ class Cart extends React.Component
     constructor(props)
 	{
         super(props);
+		this.state = {info: null}
 		this.load = this.load.bind(this);
+
+		this.load(this.props.info);
     }
 
 	load(tabnum)
 	{
+			console.log(tabnum);
         axios.post("http://localhost:5000/api/user/info", {search: tabnum}).then((res) => {
-			console.log(res);
 			this.setState({info: res.data});
         })
 	}
 
 	componentDidUpdate(prop)
 	{
+		if(!this.props?.info || !prop?.info) return;
 		if(this.props.info === prop.info) return;
-		this.load(this.props.info.id);
-		console.log(this.props);
-	}
 
+		this.load(this.props.info);
+	}
 
     render()
     {
