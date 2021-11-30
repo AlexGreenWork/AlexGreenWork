@@ -29,6 +29,7 @@ class Complete extends React.Component
 
 	search_value(value)
 	{
+		this.setState({show: false});
         axios.post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
             this.setState({options: this.create_options(value, res)});
         })
@@ -58,6 +59,18 @@ class Complete extends React.Component
 		return items;
 	}
 
+	open_card(value)
+	{
+		this.setState({card: value, show: true});
+	}
+
+	select_value(element)
+	{
+		this.setState({options: []});
+		this.open_card(element);
+		this.props.onSelectItem?.(element)
+	}
+
 	create_item(id, name, tabnum, division, department)
 	{
 		return {
@@ -68,6 +81,7 @@ class Complete extends React.Component
 				display: 'flex',
 				justifyContent: 'space-between',
 			}}
+			onClick = {(value) => this.select_value(tabnum)}
 			>
 				<span>
 					{name}
@@ -106,17 +120,6 @@ class Complete extends React.Component
 		};
 	}
 
-	open_card(value)
-	{
-		this.setState({card: value, show: true});
-	}
-
-	select_value(value, element)
-	{
-		this.setState({options: []});
-		this.open_card(element.id)
-	}
-
 	render()
 	{
 		return (
@@ -130,7 +133,6 @@ class Complete extends React.Component
 						fontWeight: "bold"
 					}}
 					options ={this.state.options}
-					onSelect={this.select_value}
 					onSearch={this.search_value}
 				>
 					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
