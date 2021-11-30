@@ -70,6 +70,19 @@ function IMG(props){
      )
  }
 
+ function downloadFile(obj){
+
+    //console.log(obj.props.children[0])
+    let idOffers = localStorage.getItem('idOffers');
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', `${API_URL}api/offers/downloadMyFile`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`idOffers=${idOffers}&fileName=${obj.props.children[0]}`);
+    console.log(xhr.response)
+    return xhr.response;
+
+ }
+
 function FileList(){
 
   let offersFile = JSON.parse(ReadDir());
@@ -303,7 +316,6 @@ const CommonOffer = () => {
 
     function viewOfView(view) {
         if (view == 1) {
-            localStorage.setItem()
             return "Новые объекты на производстве"
         }
         if (view == 2) {
