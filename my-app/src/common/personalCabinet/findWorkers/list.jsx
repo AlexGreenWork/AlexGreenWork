@@ -7,8 +7,8 @@ class List extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {values: []};
 
+		this.state = {values: [],};
 		this.search_result_category = new Map([
 												["Табельный номер", "1"],
 												["ФИО", "2"],
@@ -29,10 +29,9 @@ class List extends React.Component
 			{
 				if(!response?.users) continue;
 
-				for(let user of response.users)
-				{
-					results.push(<Row tabnum = {user.tabnum} name = {user.name} department = {user.department} division = {user.division}/> );
-				}
+				response.users.map((v, i) => {
+					results.push(<Row key = {i} tabnum = {v.tabnum} name = {v.name} department = {v.department} division = {v.division}/> );
+				});
 			}
 		}
 		

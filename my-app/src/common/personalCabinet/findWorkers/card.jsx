@@ -7,7 +7,7 @@ class Cart extends React.Component
     constructor(props)
 	{
         super(props);
-		this.state = {info: null}
+		this.state = {info: null,}
 		this.load = this.load.bind(this);
 
 		this.load(this.props.info);
@@ -15,7 +15,6 @@ class Cart extends React.Component
 
 	load(tabnum)
 	{
-			console.log(tabnum);
         axios.post("http://localhost:5000/api/user/info", {search: tabnum}).then((res) => {
 			this.setState({info: res.data});
         })

@@ -112,7 +112,14 @@ class Complete extends React.Component
 				<span>
 				  Found `{search}` on {' '} в
 				</span>
-				<span onClick={(value) => this.header_click(value, search)} style={{color: "Red"}}>
+				<span onClick={(value) => this.header_click(value, search)}
+						style={
+								{
+									color: "blue",
+									fontSize: "18px",
+									fontStyle: "Bold"
+								}
+							}>
 					{category}
 				</span>
 				<span>{item_count} результатов </span>
