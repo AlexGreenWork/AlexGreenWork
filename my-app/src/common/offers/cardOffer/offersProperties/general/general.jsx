@@ -39,11 +39,6 @@ function ReadDir(){
 }
 
 
-
-
-
-
-
  function IMG(props){
      return(
             <div>
@@ -52,6 +47,19 @@ function ReadDir(){
 
             </div>
      )
+ }
+
+ function downloadFile(obj){
+
+    //console.log(obj.props.children[0])
+    let idOffers = localStorage.getItem('idOffers');
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', `${API_URL}api/offers/downloadMyFile`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`idOffers=${idOffers}&fileName=${obj.props.children[0]}`);
+    console.log(xhr.response)
+    return xhr.response;
+
  }
 
 function FileList(){
@@ -66,7 +74,7 @@ function FileList(){
        if(offersFile[i][j] == '.') {
                    
            let format = offersFile[i].slice(j)
-           arr[i] =  React.createElement("div", null, offersFile[i], <IMG type = {format}/> ); 
+           arr[i] =  React.createElement("div", null, offersFile[i], <IMG type = {format}/> ,  <input type="submit" value="скачать" onClick={()=>{downloadFile(offersFile[i])} }/>); 
        } else{
            console.log("no format")
        }
@@ -492,7 +500,7 @@ const CommonOffer = () => {
                 <div id="listFile">Прикрепленные файлы</div>
                 
                 <div>  {listFile} </div>
-                <iframe src="D:/openserver%205.3.0/ospanel/domains/offers/Министерство образования Республики Беларусь.docx&embedded=true"></iframe>
+                
                 <form className="offersFile" onSubmit={handleSubmit}>
                     <input type="file" name="myFileCard" id="fileCard"></input>
                     <div className={s.buttonConfirm}>
