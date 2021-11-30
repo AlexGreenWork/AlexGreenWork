@@ -31,13 +31,14 @@ import Context from "./common/context/Context";
 function App(props) {
     const [change, setChange] = useState(0)
     const [secondCotext, setSecondCotext] = useState(0)
-    const contextFunction = (n , f) => {setChange(n); 
+    const contextFunction = (n , f) => {setChange(n);
         setSecondCotext(f)};
 
     const value = {
         change,
         secondCotext,
         contextFunction,
+
     };
 
     const isAuth = useSelector(state => state.user.isAuth)

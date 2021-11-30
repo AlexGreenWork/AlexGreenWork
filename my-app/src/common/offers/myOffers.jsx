@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {NavLink} from "react-router-dom";
 import s from "./sendOffer/offerForm/offers.module.css"
 import {API_URL} from "../../config";
@@ -39,28 +39,27 @@ function Resp() {
 const Offer = (props) => {
 
     const value = useContext(Context);
+    const [dateComission, setDateComission] = useState('');
+function clickOnOfferLink(){
 
+    value.contextFunction(props.id, props.tabelNum)
+    localStorage.setItem('idOffers', props.id);
+    localStorage.setItem('dateComission', props.dateComission);
+    setDateComission(localStorage.getItem('dateComission'))
+}
 
     return (
         <div>
-            <NavLink to='/cardOffer' onClick={() => {
-
-                value.contextFunction(props.id, props.tabelNum)
-                localStorage.setItem('idOffers', props.id);
-
-            }}>
+            <NavLink to='/cardOffer' onClick={clickOnOfferLink}>
                 <div className={s.header}>
                     <div className={s.offerPreview}>
                         <div className={s.from}>
                             <div className={s.date}> {props.id}</div>
                             <div className={s.date}> {props.date.slice(0, 10)}</div>
-                            <div
-                                className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
+                            <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
 
                             <div className={s.status}>  {props.status}</div>
                         </div>
-
-
                         <div className={s.offerText}>{props.nameOffer}</div>
                     </div>
                 </div>
@@ -72,10 +71,11 @@ const Offer = (props) => {
 
 const OffersLink = () => {
     let offersData = JSON.parse(Resp());
+
     return offersData.map((number) =>
         <Offer id={number.Id} date={number.date} name={number.nameSendler}
                surname={number.surnameSendler} midlename={number.middlenameSendler}
-               status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum}/>)
+               status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} />)
 
 }
 

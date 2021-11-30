@@ -16,7 +16,7 @@ import {API_URL} from "../../../../../config";
 
 import {toStatus} from "../../../../../actions/offers";
 
-
+import Background from "../../../../../img/pngegg.png"
 
 function RequestSelectOffers() {
     let idOffers = localStorage.getItem('idOffers');
@@ -38,17 +38,33 @@ function ReadDir(){
     return xhr.response
 }
 
-
-
-
-
-
-
- function IMG(props){
+function IMG(props){
      return(
-            <div>
+            <div >
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50">
+
+                    <g>
+                        <title>Layer 1</title>
+                        <line stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_1" y2="1.66663" x2="0.73774" y1="49.64471" x1="0.84703" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="2.10379" x2="0.84703" y1="2.10379" x1="34.94534" stroke="#000" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_4" y2="49.64471" x2="49.15297" y1="12.70487" x1="49.26226" stroke="#000" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_6" y2="13.03274" x2="49.26226" y1="2.32237" x1="34.72676" stroke="#000" fill="none"/>
+                        <line stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_7" y2="13.90705" x2="34.72676" y1="2.75953" x1="34.72676" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_8" y2="13.46989" x2="34.72676" y1="13.57918" x1="49.04368" stroke="#000" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_9" y2="49.09826" x2="3.46997" y1="36.63926" x1="3.36068" stroke="#000" fill="none"/>
+                        <line transform="rotate(1.43372 5.35885 36.5227)" stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_10" y2="36.63926" x2="2.92353" y1="36.40613" x1="7.79418" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_11" y2="41.77587" x2="3.36068" y1="41.77587" x1="6.3115" stroke="#000" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_12" y2="49.31684" x2="10.68308" y1="36.42068" x1="10.68308" stroke="#000" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_13" y2="49.53542" x2="13.52461" y1="36.42068" x1="13.63389" stroke="#000" fill="none"/>
+                        <line stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_14" y2="49.20755" x2="13.03297" y1="49.09826" x1="17.45903" fill="none"/>
+                        <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_15" y2="49.42613" x2="20.847" y1="36.52997" x1="20.62842" stroke="#000" fill="none"/>
+                        <line stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_16" y2="49.09826" x2="20.30427" y1="49.09826" x1="24.56284" fill="none"/>
+                        <line transform="rotate(-2.33302 22.1038 43.3606)" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_17" y2="43.30592" x2="20.73771" y1="43.41521" x1="23.46995" stroke="#000" fill="none"/>
+                        <line transform="rotate(5.38926 22.4317 36.9671)" stroke="#000" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_18" y2="37.18571" x2="20.51913" y1="36.74855" x1="24.34426" fill="none"/>
+                    </g>
+                </svg>
                 {props.type}
-               <img src="../../../../../img/pngegg.png"></img>
+
 
             </div>
      )
@@ -66,15 +82,15 @@ function FileList(){
        if(offersFile[i][j] == '.') {
                    
            let format = offersFile[i].slice(j)
-           arr[i] =  React.createElement("div", null, offersFile[i], <IMG type = {format}/> ); 
+           arr[i] =  React.createElement("div", {className:"fileElement"} , offersFile[i], <IMG type = {format}/> );
        } else{
-           console.log("no format")
+
        }
     }  
     
  }
 
-  return React.createElement("div", null, arr)
+  return React.createElement("div",{className:"elementContainer"}, arr)
 }
 
 
@@ -287,6 +303,7 @@ const CommonOffer = () => {
 
     function viewOfView(view) {
         if (view == 1) {
+            localStorage.setItem()
             return "Новые объекты на производстве"
         }
         if (view == 2) {
@@ -481,18 +498,20 @@ const CommonOffer = () => {
 
             <div className={s.cardOffer}>
                 <div className={s.from}>
-                    <div className={s.date}>{offersData.date.slice(0, 10)}</div>
+                    <div className={s.date}>Дата предложения: {offersData.date.slice(0, 10)}</div>
                     <div
-                        className={s.from}>{offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
+                        className={s.from}>Автор предложения: {offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
+                    <div> Категория предложения: {category}</div>
+                    <div> Вид предложения: {offersData.status}</div>
                     <div> Статус предложения: {offersData.status}</div>
                 </div>
-                <div className={s.offerText}>{offersData.textOffer} </div>
+                <div className={s.offerText}> Содержание предложения: {offersData.textOffer} </div>
             </div>
-            <div>
+            <div className={s.fileContainerLayer}>
                 <div id="listFile">Прикрепленные файлы</div>
                 
                 <div>  {listFile} </div>
-                <iframe src="D:/openserver%205.3.0/ospanel/domains/offers/Министерство образования Республики Беларусь.docx&embedded=true"></iframe>
+
                 <form className="offersFile" onSubmit={handleSubmit}>
                     <input type="file" name="myFileCard" id="fileCard"></input>
                     <div className={s.buttonConfirm}>
