@@ -138,10 +138,8 @@ class Search
 
 		if(req['body'])
 		{
-				console.log(req.body.search);
 			if (req.body['search'] && req.body.search)
 			{
-				console.log(req.body.search);
 				const request = req.body.search;
 
 				let connection = await Search.connection_to_database();
