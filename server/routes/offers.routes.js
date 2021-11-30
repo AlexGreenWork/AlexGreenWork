@@ -213,6 +213,33 @@ router.post("/toDbDateComission", urlencodedParser,
       await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
     })
 
+router.post("/downloadMyFile", urlencodedParser, async function(request, response){
+    let idOffers = request.body.idOffers;
+    let fileName = request.body.fileName;
+    
+    fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, async (err, filesName) => {
+        
+        console.log(fileName);
 
+        filesName.push('exit');
+        console.log(filesName);
+       for(let i = 0 ; i < filesName.length; i++ ){
+           
+            if(filesName[i] == fileName ){
+
+                let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
+                response.download(file); 
+                
+                break;
+                
+            } else{
+                  if(filesName[i] == 'exit'){
+                    response.send("Нет файла")
+                  
+                }
+            }
+    } 
+} )
+})
 
 module.exports = router
