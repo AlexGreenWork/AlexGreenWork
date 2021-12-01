@@ -3,9 +3,10 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-
+import  {useState} from 'react';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 
+// import {useDispatch, useSelector} from "react-redux";
 
 import s from "../comission/comission.module.css";
 import CardOfferUpload from "../../../../components/card/card";
@@ -16,10 +17,12 @@ import Button from "@material-ui/core/Button";
 import {toDbDateComission} from "../../../../../actions/offers";
 
 const ComissionOffer = () => {
-
+    // const dispatch = useDispatch()
+   // const dateComiss = useSelector( state => state.dateComission )
     const [dateComission, setDateComission] = React.useState('');
 
     const handleChange = (newValue) => {
+
         setDateComission(newValue);
     };
 

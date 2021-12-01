@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {deleteAvatar, uploadAvatar} from "../../../actions/user";
 import s from "./profile.module.css"
 import {API_URL} from "../../../config";
+import avatarLogo from '../../../assets/img/avatar.svg'
 
 const Profile = () => {
     const dispatch = useDispatch()
@@ -13,13 +14,14 @@ const Profile = () => {
         dispatch(uploadAvatar(file))
     }
    localStorage.getItem("avatar")
+    const avatar = currentUser.avatar ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : avatarLogo
     return (
         <div className={s.profile}>
             <div>Профиль</div>
             <div className={s.headerProfile}>
                 <div className={s.uploadAva}>
 
-                    <div className={s.avatarContainer}><img className={s.avatar} src={`${API_URL + 'files/avatar/'+ currentUser.avatar }`} alt="avatarLogo"/></div>
+                    <div className={s.avatarContainer}><img className={s.avatar} src={`${avatar}`} alt="avatarLogo"/></div>
                     <button onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
                     <input accept="image/*" onChange={e => changeHandler(e)} type="file"
                            placeholder="Загрузить аватар"/>

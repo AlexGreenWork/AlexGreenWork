@@ -6,8 +6,16 @@ const File = require('../models/file')
 const Uuid = require('uuid')
 const mysql = require('mysql2/promise')
 
+const mysqlConfig = {
+    host: config.database.host,
+    user: config.database.user,
+    password: config.database.password,
+    database: config.database.database
+}
+const connection = mysql.createPool(mysqlConfig);
 
 class FileController {
+
 
     async createDir(req, res) {
         try {
@@ -151,16 +159,11 @@ class FileController {
     async uploadAvatar(req, res) {
 
         try {
-            const mysqlConfig = {
-                host: config.database.host,
-                user: config.database.user,
-                password: config.database.password,
-                database: config.database.database
-            }
-            const connection = mysql.createPool(mysqlConfig);
+
             const uid = req.user.id
-            const user = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
-            const avaOld = user[0][0].avatar
+            const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
+            const user = userD[0][0]
+            const avaOld = user.avatar
             //console.log(avaOld)
             const file = req.files.file
             //console.log(req.files.file)
@@ -171,14 +174,14 @@ class FileController {
             user.avatar = avatarName
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
 
-            fs.unlinkSync(('../server/files/avatar/') + avaOld)
+            fs.unlinkSync("./files/avatar/" + avaOld)
 
             //await user.save()
             console.log(user.avatar)
-            user[0][0].avatar=avatarName
-            console.log(user[0][0].avatar)
+            user.avatar=avatarName
+            console.log(user.avatar)
             console.log(user)
-            res.send(user[0][0]);
+            res.send(user);
             return res.json(user)
         } catch (e) {
             console.log(e)
@@ -188,10 +191,22 @@ class FileController {
 
     async deleteAvatar(req, res) {
         try {
-            const user = await User.findById(req.user.id)
-            fs.unlinkSync(config.get('staticPath') + "\\" + user.avatar)
+
+            const uid = req.user.id
+            const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
+            const user = userD[0][0]
+            const avaOld = user.avatar
+
+            if(avaOld !== ''){
+                fs.unlinkSync("./files/avatar/"+ avaOld)
+                await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
+            }else{
+                await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
+                console.log('avatar is empty')
+            }
+
             user.avatar = null
-            await user.save()
+            //await user.save()
             return res.json(user)
         } catch (e) {
             console.log(e)
