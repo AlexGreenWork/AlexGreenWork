@@ -8,7 +8,7 @@ function Resp() {
     xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
     xhr.send();
     //console.log(xhr.response)
-    //return xhr.response;
+    return xhr.response;
 
 
 }

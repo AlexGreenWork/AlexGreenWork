@@ -39,7 +39,7 @@ function ReadDir(){
 
 function IMG(props){
      return(
-            <div >
+            <div className="imgFile">
                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50">
 
                     <g>
