@@ -10,6 +10,13 @@ const authRouter = require("./routes/auth.routes")
 const fileRouter = require("./routes/file.routes")
 const offersRouter = require("./routes/offers.routes")
 
+app.use((req, res, next)=>{
+
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    return next();
+})
+
 app.use("/auth", authRouter)
 app.use("/files", fileRouter)
 app.use("/offers", offersRouter)
@@ -31,12 +38,7 @@ app.use("/api/offers", require('./routes/offers.routes'))
 app.use("/api/user", require('./routes/worker_finder.routes'))
 app.use(express.static('static'))
 
-app.use((req, res, next)=>{
 
-    res.header('Access-Control-Allow-Methods', 'GET, POST ');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    return next();
-})
 
 
 
