@@ -69,6 +69,7 @@ function clickOnOfferLink(){
 }
 
 
+
 const OffersLink = () => {
     let offersData = JSON.parse(Resp());
 
