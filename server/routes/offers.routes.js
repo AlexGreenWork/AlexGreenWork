@@ -79,7 +79,7 @@ router.post("/selectMyOffers", urlencodedParser,
 
     let idOffers = request.body.selectOffers
     let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE Id = ${idOffers}`)
-    console.log(sqlMyOff[0])
+   // console.log(sqlMyOff[0])
     response.send(sqlMyOff[0][0])
 
 })
@@ -87,12 +87,12 @@ router.post("/selectMyOffers", urlencodedParser,
 router.post("/userInfo", urlencodedParser, async function (request, response) {
 
     let userTab = request.body.userTab;
-    console.log(request.body)
+    //console.log(request.body)
 
     let sqlKadry = await pool.execute(`SELECT * FROM kadry_all WHERE tabnum = ${userTab}`);
     let sqlDivision = await pool.execute(`SELECT * FROM division WHERE department = ${sqlKadry[0][0].department} AND id = ${sqlKadry[0][0].division}`);
     let sqlDepartament = await pool.execute(`SELECT * FROM department WHERE id = ${sqlKadry[0][0].department}`);
-    console.log(request.body);
+   // console.log(request.body);
 
     let reqJson = {
 
@@ -117,7 +117,7 @@ router.post("/FilesMyOffers", urlencodedParser,
                 
                 fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
                     if(err) throw err; // не удалось создать папки
-                    console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
+                   // console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
 
                     fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
                     
@@ -148,7 +148,7 @@ router.post("/FilesMyOffers", urlencodedParser,
                                    
                              fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
                                  if(err) throw err; // не удалось создать папки
-                                 console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
+                                 //console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
      
                                  fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
                                  
@@ -167,10 +167,10 @@ router.post("/FilesMyOffers", urlencodedParser,
                            
                             fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
                                 if(err) throw err; // не удалось создать папки
-                                console.log('Все папки успешно созданы');
+                               // console.log('Все папки успешно созданы');
                                
                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
-                                    console.log(err)
+                                  //  console.log(err)
                               
                                   
                                  response.send(files)
@@ -208,22 +208,26 @@ router.post("/toDbDateComission", urlencodedParser,
       await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
     })
 
-router.post("/downloadMyFile", urlencodedParser, async function(request, response){
-    let idOffers = request.body.idOffers;
-    let fileName = request.body.fileName;
+router.get("/downloadMyFile", urlencodedParser, async function(request, response){
+    let idOffers = request.query.idOffers;
+    let fileName = request.query.fileName;
+  //  console.log(request.query.idOffers)
     
-    fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, async (err, filesName) => {
-        
-        console.log(fileName);
+    fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, async (err, filesName) => {
+         //console.log(filesName);
+       // console.log(fileName); 
 
         filesName.push('exit');
-        console.log(filesName);
+       
        for(let i = 0 ; i < filesName.length; i++ ){
            
             if(filesName[i] == fileName ){
 
                 let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
+              //  console.log(file)
+
                 response.download(file); 
+                
                 
                 break;
                 
