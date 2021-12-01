@@ -37,7 +37,6 @@ function ReadDir(){
     return xhr.response
 }
 
-
 function IMG(props){
      return(
             <div >
