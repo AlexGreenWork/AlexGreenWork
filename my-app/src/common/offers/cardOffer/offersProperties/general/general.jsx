@@ -70,15 +70,9 @@ function IMG(props){
  }
 
  function downloadFile(obj){
-
-    //console.log(obj.props.children[0])
+    
     let idOffers = localStorage.getItem('idOffers');
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_URL}api/offers/downloadMyFile`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`idOffers=${idOffers}&fileName=${obj.props.children[0]}`);
-    console.log(xhr.response)
-    return xhr.response;
+     window.location = `${API_URL}api/offers/downloadMyFile?idOffers=${idOffers}&fileName=${obj.props.children[0]}`;
 
  }
 
@@ -94,7 +88,7 @@ function FileList(){
        if(offersFile[i][j] == '.') {
                    
            let format = offersFile[i].slice(j)
-           arr[i] =  React.createElement("div", {className:"fileElement"} , offersFile[i], <IMG type = {format}/> );
+           arr[i] =  React.createElement("div", {className:"fileElement"} , offersFile[i], <IMG type = {format}/>, <input type="submit" value="скачать" onClick={()=>{downloadFile(offersFile[i])} }/> );
        } else{
 
        }
