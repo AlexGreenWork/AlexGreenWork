@@ -76,3 +76,15 @@ code {
   display: flex;
   flex-wrap: wrap;
 }
+
+.download{
+  position: relative;
+  top:32px
+ 
+}
+
+.offersFile{
+  position: relative;
+  top: 0px;
+  
+}
