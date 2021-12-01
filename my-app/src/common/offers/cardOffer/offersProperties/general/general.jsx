@@ -16,7 +16,6 @@ import {API_URL} from "../../../../../config";
 
 import {toStatus} from "../../../../../actions/offers";
 
-import Background from "../../../../../img/pngegg.png"
 
 function RequestSelectOffers() {
     let idOffers = localStorage.getItem('idOffers');
@@ -37,6 +36,7 @@ function ReadDir(){
 
     return xhr.response
 }
+
 
 function IMG(props){
      return(
