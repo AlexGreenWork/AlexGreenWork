@@ -3,6 +3,7 @@ import {NavLink} from "react-router-dom";
 import s from "./sendOffer/offerForm/offers.module.css"
 import {API_URL} from "../../config";
 
+
 function Resp() {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `${API_URL}api/offers/allOffers`, false)

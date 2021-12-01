@@ -25,6 +25,7 @@ router.use((req, res, next) => {
     return next();
 })
 
+
 router.get("/allOffers",
     function (request, response) {
         const mysqlConfig = {
