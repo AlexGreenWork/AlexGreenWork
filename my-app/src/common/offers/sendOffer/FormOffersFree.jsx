@@ -5,10 +5,10 @@ import s from "./offerForm/formOffers.module.css";
 
 function OffersFormFree() {
 
-    const [name, setName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [middleName, setMiddleName] = useState("");
-    const [Email, setEmail] = useState("");
+    const [name, setName] = useState(localStorage.getItem('userName'));
+    const [lastName, setLastName] = useState(localStorage.getItem('userSurName'));
+    const [middleName, setMiddleName] = useState(localStorage.getItem('userMiddleName'));
+    const [Email, setEmail] = useState(localStorage.getItem('userEmail'));
     // const [tabelNumber, setTabelNumber] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [nameOffer, setNameOffer] = useState("");

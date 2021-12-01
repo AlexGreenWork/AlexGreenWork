@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./../../Pics/logo/Belaz_logo.png";
 import s from "./header.module.css"
-import {NavLink, withRouter} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../reducers/userReducer";
 import avatarLogo from '../../assets/img/avatar.svg'
@@ -24,7 +24,7 @@ const Header = () => {
                 <img className={s.logotype} src={logo} alt="logo"></img>
             </div>
             <div className={s.loginBar}>
-                {!isAuth && <div className="navbar__login"><NavLink to="/login">Войти</NavLink></div>}
+                {!isAuth && <div className="navbar__login"><NavLink to="/authorization">Войти</NavLink></div>}
                 {!isAuth &&
                     <div className="navbar__registration"><NavLink to="/registration">Регистрация</NavLink></div>}
 

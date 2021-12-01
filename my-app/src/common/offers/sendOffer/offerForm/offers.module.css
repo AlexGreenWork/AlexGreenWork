@@ -24,10 +24,9 @@
     color:black;
 }
 .from{
-    display: flex;
+    display: grid;
     flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-around;
+    grid-template-columns: 10% 30% 50% 10%;
 
 }
 .header{
@@ -43,10 +42,17 @@
 }
 .offerPreview{
     display: flex;
+    width: 100%;
     flex-direction: column;
     justify-content: space-around;
     padding: 10px;
 }
 .fromName{
     font-weight: bold;
+}
+@media (max-width: 553px) {
+    .offersContainer{
+   grid-column: 1/6;
+        grid-row: 2/6;
+    }
 }

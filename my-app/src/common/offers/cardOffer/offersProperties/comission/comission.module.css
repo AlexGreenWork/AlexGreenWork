@@ -6,7 +6,8 @@
 .uploadContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
+
+
 }
 .upload{
     width: content-box;
@@ -28,14 +29,243 @@
 .filesContainer{
 
     flex-direction: column;
-    align-items: center;
     display: flex;
     flex-wrap: wrap;
-    width: fit-content;
-    padding:5px;
-
-    justify-content: center;
-
-    background-color: rgba(20, 70, 155,.3);
+    padding: 2px;
+    align-items: start;
     border-radius: 10px;
+
+}
+.FormControl{
+
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    position: relative;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    vertical-align: top;
+}
+.labelCalender{
+    color: rgba(0, 0, 0, 0.6);
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.4375em;
+    letter-spacing: 0.00938em;
+    padding: 0;
+
+    display: block;
+    transform-origin: top left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(133% - 24px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-transform: translate(14px, -9px) scale(0.75);
+    -moz-transform: translate(14px, -9px) scale(0.75);
+    -ms-transform: translate(14px, -9px) scale(0.75);
+    transform: translate(14px, -9px) scale(0.75);
+    -webkit-transition: color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,-webkit-transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,max-width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+    transition: color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,max-width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+    z-index: 1;
+    pointer-events: none;
+}
+.inputCalender{
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.4375em;
+    letter-spacing: 0.00938em;
+    color: rgba(0, 0, 0, 0.87);
+    box-sizing: border-box;
+    position: relative;
+    cursor: text;
+
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: 4px;
+
+}
+.inputCalender:hover fieldset{
+    border-color: rgba(0, 0, 0, 1);
+}
+.inputCalender>input{
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    font: inherit;
+    letter-spacing: inherit;
+    color: currentColor;
+    padding: 4px 0 5px;
+    border: 0;
+    box-sizing: content-box;
+    background: none;
+    height: 1.4375em;
+    margin: 0;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+    min-width: 0;
+    width: 100%;
+    -webkit-animation-name: mui-auto-fill-cancel;
+    animation-name: mui-auto-fill-cancel;
+    -webkit-animation-duration: 10ms;
+    animation-duration: 10ms;
+    padding: 16.5px 14px;
+    padding-right: 0;
+    overflow: visible;
+}
+.inputCalender>input::-webkit-calendar-picker-indicator{
+    -webkit-appearance: none;
+    opacity: 1;
+    color: rgba(0, 0, 0, 0);
+    background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1OSAzOCIgd2lkdGg9IjU5IiBoZWlnaHQ9IjM4Ij4NCgk8ZGVmcz4NCgkJPGNsaXBQYXRoIGNsaXBQYXRoVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0iY3AxIj4NCgkJCTxwYXRoIGQ9Ik0tMTA4NyAtNjMyTDgzMyAtNjMyTDgzMyAxNTgzTC0xMDg3IDE1ODNaIiAvPg0KCQk8L2NsaXBQYXRoPg0KCQk8aW1hZ2Ugd2lkdGg9IjU5IiBoZWlnaHQ9IjM4IiBpZD0iaW1nMSIgaHJlZj0iZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFEc0FBQUFtQ0FNQUFBQk5zeFBFQUFBQUFYTlNSMElCMmNrc2Z3QUFBTHBRVEZSRkFBQUF0TFMwdExTMHRMUzB0TFMwdExTMHRMUzB0TFMweHNiRzR1TGk3Ky92OHZMeTA5UFQxTlRVdExTMHRMUzB0TFMweDhmSHRMUzB0TFMwMjl2YnM3T3p5c3JLM3Q3ZTVlWGx6TXpNdTd1NzhmSHg2dXJxMXRiVzdlM3R3OFBEMnRyYXljbkp0N2Uzd01EQXZyNiszOS9mMTlmWHhNVEU4UER3dkx5ODdPenM2ZW5wemMzTnVibTUwdExTMGRIUnhjWEY3dTd1ejgvUDBORFE1dWJtMmRuWjFkWFYzTnpjeU1qSXpzN090TFMwdExTMHRMUzB0TFMwdU03WEtRQUFBRDUwVWs1VEFBWnV4L1AvRzgvLy8vLy8vLy9RQjIzLytmai8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vOUZ2eS9Ud2NtQ3BBQUFCbTBsRVFWUjRuTjNWMjNLQ01CQUdZQlZUSmVzcHJZc0NBaXJRNHJIR1kxdjEvVityZ1lEVm1jSUl2WENtL3cxTW1BOUNzckNsMGdOVHJpaFZraU5WcFZLTzZWT3RybExJRWFyV2EwL3lxYlZHSGlqVGJMVkQyNm5ucHdDc0UxcEZMV0pWSmJUUHVkNDFDWDBKTFNsQ0FjaC9zRjNVNUFuRDN0VndYemNJTWZSK2hqVUhGakpiRmJFZEhBN01lSmlPRU1ldU8wWWMwVlNyYThMMlVLUW5yS2JIMUVYUE53ZTI2WHZvMGpScmFLK0pmY091WnNqUkViSUF3QkYzQ2hpT1V1MWs2cy9tb1ozUGZIc2liUjg5UWNFSkZ5THdzSjltY2VGNEdNVnpGaWl0amo0a0ZuelVVKzFOcERYRzVvODF4MGFxWFE0dmVZOHRjYU9Ec3hMTFB3T1hwRnB1cnkzWWJNQmEyL3pXcnNLWnVKbDJLd1NpT052eTJ6a0hBeEdhTldmT0d6dlk3MkhYNFB4MnJXU3kxb3JUcmcrSEEvaGRtdGg0ajZKazd0RXZjNDVySTZKWnRZRjhxaTFCMTJHcFRTOVcxcVRZbjh5YW5PREg1eVVNSi9Id1hkK0NSYTVMZzFpWEMzZDhnN255VUZ2dy8xejlhMStvc0NLV1ZVTGJialh6MCtaWHUyai9aWEgvRlIzNGVEcm42ZnZuMHpIcCswWHpEUXJNYTlkZ014am1BQUFBQUVsRlRrU3VRbUNDIi8+DQoJPC9kZWZzPg0KCTxzdHlsZT4NCgkJdHNwYW4geyB3aGl0ZS1zcGFjZTpwcmUgfQ0KCTwvc3R5bGU+DQoJPGcgaWQ9Ik9mZmVyaW5nX2RldGFpbHNfdjMiIGNsaXAtcGF0aD0idXJsKCNjcDEpIj4NCgkJPGcgaWQ9IlJlc2VydmUgaW52ZXN0bWVudCBtb2RhbCI+DQoJCQk8dXNlIGlkPSJjYWxlbmRhciBLb3BpZSIgaHJlZj0iI2ltZzEiIHg9IjAiIHk9IjAiIC8+DQoJCTwvZz4NCgk8L2c+DQo8L3N2Zz4=) no-repeat;
+    height: 200%;
+    width: 3.6rem;
+    top: 15%;
+    z-index: 2;
+    position: relative;
+    right: 1rem;
+}
+
+
+.picCalender{
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.4375em;
+    letter-spacing: 0.00938em;
+    color: rgba(0, 0, 0, 0.53);
+    box-sizing: border-box;
+    position: relative;
+    cursor: text;
+
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    border-radius: 4px;
+
+}
+.picCalender>button{
+    -webkit-appearance: button;
+
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+    outline: 0;
+    border: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    vertical-align: middle;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    font-size: 1.5rem;
+    padding: 8px;
+    border-radius: 50%;
+    overflow: visible;
+    color: rgba(0, 0, 0, 0.54);
+    -webkit-transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    margin-right: -12px;
+    text-transform: none;
+    overflow: visible;
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    touch-action: manipulation;
+}
+.picCalender>button>svg{
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    fill: currentColor;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    -webkit-transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    font-size: 1.5rem;
+}
+.picCalender>button>span{
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: inherit;
+}
+.OutlineCalender{
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top: -5px;
+    left: 0;
+    margin: 0;
+    padding: 0 8px;
+    pointer-events: none;
+    border-radius: inherit;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    min-width: 0%;
+    border-color: rgba(0, 0, 0, 0.23);
+
+}
+.OutlineCalender>legend{
+    width:40px;
+}
+*,*::before, *::after {
+    box-sizing: border-box;
 }

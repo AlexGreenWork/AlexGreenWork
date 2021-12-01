@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
-import {useSelector} from "react-redux";
+import { useHistory } from "react-router-dom";
 
 export const registration = async (name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions) => {
     try {
@@ -17,6 +17,7 @@ export const registration = async (name, middlename, surname, email, tabelNum, p
             adminOptions
         })
         alert(response.data.message)
+
     } catch (e) {
         alert(e.response.data.message)
     }
@@ -25,12 +26,10 @@ export const registration = async (name, middlename, surname, email, tabelNum, p
 export const login = (email, password) => {
     return async dispatch => {
         try {
-
             const response = await axios.post(`${API_URL}api/auth/login`, {
                 email,
                 password
             })
-            console.log(response.data.user)
 
             dispatch(setUser(response.data.user))
 
@@ -47,6 +46,7 @@ export const login = (email, password) => {
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
             localStorage.setItem('userAvatar', response.data.user.avatar)
         } catch (e) {
+			console.log("Error Level: "+ e);
             alert(e.response.data.message)
         }
     }
@@ -61,15 +61,15 @@ export const auth = () => {
 
                 const user = {
                     id: localStorage.getItem('userId'),
-                    name: localStorage.getItem('name'),
-                    surname: localStorage.getItem('surname'),
-                    middlename: localStorage.getItem('middlename'),
-                    tabelNum: localStorage.getItem('tabelNum'),
-                    email: localStorage.getItem('email'),
-                    phoneNumber: localStorage.getItem('phoneNumber'),
-                    fired: localStorage.getItem('fired'),
-                    adminOptions: localStorage.getItem('adminOptions'),
-                    avatar: localStorage.getItem('avatar'),
+                    name: localStorage.getItem('userName'),
+                    surname: localStorage.getItem('userSurname'),
+                    middlename: localStorage.getItem('userMiddlename'),
+                    tabelNum: localStorage.getItem('userUsertabelNum'),
+                    email: localStorage.getItem('userEmail'),
+                    phoneNumber: localStorage.getItem('userPhoneNumber'),
+                    fired: localStorage.getItem('userFired'),
+                    adminOptions: localStorage.getItem('userAdminOptions'),
+                    avatar: localStorage.getItem('userAvatar'),
 
 
                 }
@@ -102,7 +102,10 @@ export const uploadAvatar = (file) => {
             const response = await axios.post(`${API_URL}api/files/avatar`, formData,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
+            localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
+
+            // dispatch(setUser(response.data))
         } catch (e) {
             console.log(e)
         }
@@ -116,6 +119,7 @@ export const deleteAvatar = () => {
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
             dispatch(setUser(response.data))
+            localStorage.removeItem('userAvatar')
         } catch (e) {
             console.log(e)
         }

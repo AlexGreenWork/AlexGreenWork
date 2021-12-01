@@ -1,5 +1,5 @@
 const Router = require("express");
-const User = require("../models/User")
+const User = require("../models/user")
 const bcrypt = require("bcryptjs")
 const config = require("../config/default.json")
 const conf = require("config")
@@ -244,7 +244,7 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
                     if (tabelNumber == 0) {
 
                         messageSend = messageSend + "Ваше предложение опубликовано";
-
+                        
                         await pool.query(`INSERT INTO offersworker (name, middlename, surname, tabelNum, email, phoneNumber, password, adminOptions, date)` +
                             `VALUES("${firstName}", "${middleName}", "${lastName}", "${tabelNumber}", "${emailInput}", "${phoneNumber}", "${password}", "user", "${moment().format('YYYY-MM-DD')}")`);
                         console.log("Пользователь зарегистрирован");
@@ -307,37 +307,61 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
 
     }
 
-    router.post('/upload', function (req, res) {
+   
 
-        console.log("начало auth-rou upload")
-        console.log(req.files)
+});
 
+router.post('/upload', function (req, res) {
 
-        if (!req.files) {
-            console.log("not file")
-        } else {
-            fs.readdir('../server/files/upload/', (err, files) => {     //очищаем папку загрузки перед загрузкой файла
-
-                console.log('auth-rou : ' + files);
-
-                for (let i = 0; i < files.length; i++) {
+    console.log("начало auth-rou upload")
+    console.log(req.body)
 
 
-                    fs.unlink(`../server/files/upload/${files[i]}`, err => {
-                        if (err) throw err; // не удалось удалить файл
-                        console.log('Файл успешно удалён');
-                    });
+    if (!req.files) {
+        console.log("not file")
+    } else {
+        fs.readdir('../server/files/upload/', (err, files) => {     //очищаем папку загрузки перед загрузкой файла
 
-                }
+            console.log('auth-rou : ' + files);
+            console.log( files);
+            if(files == null){
+                console.log("file null")
+            }
 
-            });
-            console.log("перед записью")
-            req.files.myFile.mv('../server/files/upload/' + req.files.myFile.name);
-            res.end(req.files.myFile.name);
+            for (let i = 0; i < files.length; i++) {
 
-        }
-    });
 
+                fs.unlink(`../server/files/upload/${files[i]}`, err => {
+                    if (err) throw err; // не удалось удалить файл
+                    console.log('Файл успешно удалён');
+                });
+
+            }
+
+        });
+        console.log("перед записью")
+        req.files.myFile.mv('../server/files/upload/' + req.files.myFile.name);
+       
+        res.end(req.files.myFile.name);
+
+    }
+});
+
+
+
+router.post('/uploadMyCard',  async function (req, res) {
+
+    
+
+    try{
+     
+        req.files.myFileCard.mv(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/` + req.files.myFileCard.name);
+
+        res.send(req.files.myFileCard.name); 
+    }
+   catch (e){
+       console.log(e)
+   }
 
 });
 

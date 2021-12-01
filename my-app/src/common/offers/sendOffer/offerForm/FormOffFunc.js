@@ -6,8 +6,7 @@ function OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, na
  
     console.log("OffFunc " + name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer);
 
-    let inputTrue = document.querySelector('#agree');
-    let inputFreeTrue = document.querySelector('#agreeFree');
+
 
 
       if (name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer){
