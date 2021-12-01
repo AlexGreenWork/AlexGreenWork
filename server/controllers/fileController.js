@@ -169,7 +169,7 @@ class FileController {
             //console.log(req.files.file)
             // const user = await User.findById(req.user.id)
             const avatarName = Uuid.v4() + ".jpg"
-            await file.mv('../server/files/avatar/' + "\\" + avatarName)
+            await file.mv('../server/files/avatar/' + avatarName)
 
             user.avatar = avatarName
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
