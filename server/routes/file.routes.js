@@ -3,12 +3,7 @@ const router = new Router()
 const authMiddleware = require('../middleware/auth.middleware')
 const fileController = require('../controllers/fileController')
 
-router.use((req, res, next)=>{
 
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS ');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    return next();
-})
 
 
 router.post('', authMiddleware, fileController.createDir)
