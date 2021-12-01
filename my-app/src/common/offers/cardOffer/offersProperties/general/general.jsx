@@ -73,8 +73,10 @@ function IMG(props){
     
     let idOffers = localStorage.getItem('idOffers');
     console.log(obj)
-     debugger
-     window.location = `${API_URL}api/offers/downloadMyFile?idOffers=${idOffers}&fileName=${obj.props.children[0]}`;
+    console.log(obj.props.children[0])
+    console.log(obj.props.children[0].props.children)
+    
+     window.location = `${API_URL}api/offers/downloadMyFile?idOffers=${idOffers}&fileName=${obj.props.children[0].props.children}`;
 
  }
 
