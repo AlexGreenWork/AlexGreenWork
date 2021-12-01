@@ -88,7 +88,7 @@ function FileList(){
        if(offersFile[i][j] == '.') {
                    
            let format = offersFile[i].slice(j)
-           arr[i] =  React.createElement("div", {className:"fileElement"} , offersFile[i], <IMG type = {format}/>, <input type="submit" value="скачать" onClick={()=>{downloadFile(offersFile[i])} }/> );
+           arr[i] =  React.createElement("div", {className:"fileElement"} , offersFile[i], <IMG type = {format}/>, <input type="submit" className="download" value="скачать" onClick={()=>{downloadFile(offersFile[i])} }/> );
        } else{
 
        }
