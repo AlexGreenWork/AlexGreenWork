@@ -125,7 +125,6 @@ const CommonOffer = () => {
 
     const [viewChange, setViewChange] = React.useState('');
 
-
     function changeViewMultiSelect() {
 
         if (viewChange == true) {

@@ -102,7 +102,7 @@ export const uploadAvatar = (file) => {
             const response = await axios.post(`${API_URL}api/files/avatar`, formData,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
-            localStorage.setItem('avatar', response.data.avatar)
+            localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
 
             // dispatch(setUser(response.data))
@@ -119,6 +119,7 @@ export const deleteAvatar = () => {
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
             dispatch(setUser(response.data))
+            localStorage.removeItem('userAvatar')
         } catch (e) {
             console.log(e)
         }
