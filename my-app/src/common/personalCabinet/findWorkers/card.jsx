@@ -1,95 +1,81 @@
-import React from "react"
+import React, {useEffect, useState} from "react"
 import style from "./card.module.css"
+import {useDispatch} from "react-redux";
+import {searchtabnum} from "../../../actions/search";
 const axios = require("axios");
 
-class Cart extends React.Component
+const Cart = (props) =>
 {
-    constructor(props)
-	{
-        super(props);
-		this.state = {info: null,}
-		this.load = this.load.bind(this);
+	const [info, set_info] = useState(null);
+	const dispatcher = useDispatch();
 
-		this.load(this.props.info);
-    }
-
-	load(tabnum)
-	{
-        axios.post("http://localhost:5000/api/user/info", {search: tabnum}).then((res) => {
-			this.setState({info: res.data});
-        })
-	}
-
-	componentDidUpdate(prop)
-	{
-		if(!this.props?.info || !prop?.info) return;
-		if(this.props.info === prop.info) return;
-
-		this.load(this.props.info);
-	}
-
-    render()
-    {
-		if(this.state === null
-			|| this.state.info === null
-			|| Object.keys(this.state.info).length === 0) 
-		{
-			return (
-						<div>
-						</div>
-					);
+	useEffect(() => {
+	    if(info === null && props?.info)
+	    {
+			axios.post("http://localhost:5000/api/user/info", {search: props.info}).then((res) => {
+				set_info(res.data);
+			})
 		}
-		else
-		{
-			return (
-						<div className = {style.card}>
-							<table>
-								<tbody>
-									<tr>
-										<td>
-											Табельный номер
-										</td>
-										<td>
-											{this.state.info.tabnum}
-										</td>
-									</tr>
-									<tr>
-										<td>
-											ФИО
-										</td>
-										<td>
-											{this.state.info.name}
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Должность
-										</td>
-										<td>
-											{this.state.info.prof}
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Цех
-										</td>
-										<td>
-											{this.state.info.department}
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Отдел
-										</td>
-										<td>
-											{this.state.info.division}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-				)
-		}
+	});
+
+	if(info === null
+		|| Object.keys(info).length === 0)
+	{
+		return (
+					<div>
+					</div>
+				);
+	}
+	else
+	{
+		return (
+					<div className = {style.card} onClick={(value) => {dispatcher(searchtabnum(info.tabnum))}}>
+						<table>
+							<tbody>
+								<tr>
+									<td>
+										Табельный номер
+									</td>
+									<td>
+										{info.tabnum}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										ФИО
+									</td>
+									<td>
+										{info.name}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Должность
+									</td>
+									<td>
+										{info.prof}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Цех
+									</td>
+									<td>
+										{info.department}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Отдел
+									</td>
+									<td>
+										{info.division}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+			);
     }
 }
 
