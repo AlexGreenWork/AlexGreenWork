@@ -62,9 +62,9 @@ export const auth = () => {
                 const user = {
                     id: localStorage.getItem('userId'),
                     name: localStorage.getItem('userName'),
-                    surname: localStorage.getItem('userSurname'),
-                    middlename: localStorage.getItem('userMiddlename'),
-                    tabelNum: localStorage.getItem('userUsertabelNum'),
+                    surname: localStorage.getItem('userSurName'),
+                    middlename: localStorage.getItem('userMiddleName'),
+                    tabelNum: localStorage.getItem('userUserTabelNum'),
                     email: localStorage.getItem('userEmail'),
                     phoneNumber: localStorage.getItem('userPhoneNumber'),
                     fired: localStorage.getItem('userFired'),

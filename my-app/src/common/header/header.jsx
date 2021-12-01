@@ -20,7 +20,8 @@ const Header = () => {
                 <GoBack/>
             </div>
 
-            <div className={s.brand}>
+            <div className={s.brand} >
+
                 <img className={s.logotype} src={logo} alt="logo"></img>
             </div>
             <div className={s.loginBar}>
@@ -29,7 +30,17 @@ const Header = () => {
                     <div className="navbar__registration"><NavLink to="/registration">Регистрация</NavLink></div>}
 
                 {isAuth && <NavLink to='/profile'>
-                    <img className={s.avatar} src={avatar} alt="avatarLogo"/>
+                    <div className={s.avatar} style={{
+                        backgroundImage: `url("${avatar}")`,
+                        width: 40,
+                        backgroundSize: "cover",
+                        height: 40,
+                        borderRadius: "50%"
+                    }}>
+                    </div>
+
+
+                   {/*<img className={s.avatar} src={avatar} alt="avatarLogo"/>*/}
                 </NavLink>}
                     {isAuth && <div className={s.navbarLogin} onClick={() => dispatch(logout())}>Выход</div>}
 
