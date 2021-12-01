@@ -55,10 +55,10 @@ const CardOffer = () => {
         setValue(newValue);
     };
 
-
     return (
 
 
+        
         <div className={s.cardOfferContainer}>
             <Box sx={{width: '100%'}}>
                 <Box sx={{borderBottom: 1, borderColor: 'divider'}}>

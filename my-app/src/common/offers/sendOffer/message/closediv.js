@@ -1,5 +1,3 @@
-import {NavLink} from "react-router-dom";
-
 function closeDiv() {
 
     let closeButton = document.createElement('div');

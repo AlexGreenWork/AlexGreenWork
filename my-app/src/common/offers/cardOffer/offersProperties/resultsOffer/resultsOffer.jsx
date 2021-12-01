@@ -1,6 +1,4 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
-// import s from "./conclusion.module.css"
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
