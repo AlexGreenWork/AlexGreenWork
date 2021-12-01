@@ -48,6 +48,7 @@ function clickOnOfferLink(){
     setDateComission(localStorage.getItem('dateComission'))
 }
 
+
     return (
         <div>
             <NavLink to='/cardOffer' onClick={clickOnOfferLink}>

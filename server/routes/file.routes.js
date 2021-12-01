@@ -10,6 +10,7 @@ router.use((req, res, next)=>{
     return next();
 })
 
+
 router.post('', authMiddleware, fileController.createDir)
 router.post('/upload', authMiddleware, fileController.uploadFile)
 router.post('/avatar', authMiddleware, fileController.uploadAvatar)
