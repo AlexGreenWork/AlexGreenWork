@@ -48,13 +48,13 @@ code {
   width: 100px;
   min-height: 130px;
   padding: 3px;
-  word-wrap: break-word;
+  transition-duration: .3s;
   height: fit-content;
   margin: 5px;
   display: flex;
   font-size: .7em;
   flex-direction: column;
-
+  position: relative;
   justify-content: space-between;
   border: 2px solid;
   border-top-right-radius: 13em 4em;
@@ -65,13 +65,22 @@ code {
   transform: translateY(2px);
   cursor: pointer;
   box-shadow: 1px 3px 3px 1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
-
+  background-color: rgba(0, 0, 0 ,.4);
 }
 .fileElement:active{
   transform: translateY(3px);
   box-shadow: 0 0 0 0 rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
 }
+.fileElement:hover .downloadFileFromGeneral{
+  display: block;
+  background-color: white;
+  border-radius: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
+  height: 27%;
+  left: 0;
 
+}
 .elementContainer{
   display: flex;
   flex-wrap: wrap;
@@ -82,9 +91,21 @@ code {
   top:32px
  
 }
+.downloadFileFromGeneral{
+  position: absolute;
+  top:32px;
+  display: none;
+  transition-duration: .1s;
+}
+.downloadFileFromGeneral:hover{
+  box-shadow: #29569b;
+  color: #29569b;
+  top: 30px;
+  text-shadow: 4px 4px 2px rgba(150, 150, 150, 1);
+}
 
 
 .imgFile{
-  position: relative;
-  top: 50px;
+  position: absolute;
+  bottom: 0;
 }

@@ -72,6 +72,8 @@ function IMG(props){
  function downloadFile(obj){
     
     let idOffers = localStorage.getItem('idOffers');
+    console.log(obj)
+     debugger
      window.location = `${API_URL}api/offers/downloadMyFile?idOffers=${idOffers}&fileName=${obj.props.children[0]}`;
 
  }
@@ -89,7 +91,7 @@ function FileList(){
                     
         
            let format = offersFile[i].slice(j)
-           arr[i] =  React.createElement("div", {className:"fileElement"} , offersFile[i], <IMG type = {format}/>, <input type="submit" className="download" value="скачать" onClick={()=>{downloadFile(offersFile[i])} }/> );
+           arr[i] =  React.createElement("div", {className:"fileElement"} , <div>{offersFile[i]}</div>, <IMG type = {format}/>, <input className="downloadFileFromGeneral download" type="submit"  value="скачать" onClick={()=>{downloadFile(offersFile[i])} }/> );
        } else{
 
        }
