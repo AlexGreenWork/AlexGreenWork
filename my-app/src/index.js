@@ -14,7 +14,7 @@ ReactDOM.render(
         <Provider store={store}>
             <App/>
         </Provider>
-        {<VideoLayer/>}
+        {<VideoLayer/>},
     </React.StrictMode>,
     document.getElementById('root')
 );

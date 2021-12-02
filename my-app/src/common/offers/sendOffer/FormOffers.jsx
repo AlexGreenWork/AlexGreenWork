@@ -4,9 +4,15 @@ import UploadFile from './fileUpload/fileUpload'
 import s from "./offerForm/formOffers.module.css";
 
 
+let arrNewAllElem = []; 
+let arr = new Array();  
+
+
+
+
 
 function OffersForm() {
-
+    
     const [name, setName] = useState(localStorage.getItem('userName'));
     const [lastName, setLastName] = useState(localStorage.getItem('userSurName'));
     const [middleName, setMiddleName] = useState(localStorage.getItem('userMiddleName'));
@@ -17,9 +23,76 @@ function OffersForm() {
     const [problem, setProblem] = useState("");
     const [offer, setOffer] = useState("");
     const [checked, setChecked] = useState(false);
+    const [newSendler, setNewSendler] = useState();
+    const [count, setCount] = useState(0);
 
+    const [nameNew, setNameNew] = useState();
+    const [lastNameNew, setLastNameNew] = useState();
+    const [middleNameNew, setMiddleNameNew] = useState();
+    const [EmailNew, setEmailNew] = useState();
+    const [tabelNumberNew, setTabelNumberNew] = useState();
+    const [phoneNumberNew, setPhoneNumberNew] = useState();
+
+
+   // console.log("OffersForm "+arrNewAllElem)   
     //)=>{localStorage.getItem('userName')}
     
+    let allNewSendler = {
+
+    };
+
+    let addNewSendler = {
+        name: nameNew,
+        surname: lastNameNew,
+        middlename: middleNameNew ,
+        email: EmailNew,
+        tabelNumber: tabelNumberNew,
+        phoneNumber: phoneNumberNew,
+
+    };
+    
+for(let i=0; i<3; i++){
+    
+   // Object.assign(addNewSendler , allNewSendler )
+  // allNewSendler[i] = addNewSendler
+     allNewSendler["newSendler" +i] = addNewSendler  
+    // setNameNew(nameNew +1)
+  
+  if(i === 2){
+        console.log(allNewSendler)
+    }
+}
+    
+    
+    function AddSendler(props){
+        arr = [React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} /> ),
+    React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} />  ),
+    React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} />),
+    React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} /> ),
+    React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} /> ),
+    React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} /> ),
+    ]
+    let saveNewSendler = React.createElement("div", {className:"formFilds"} , <button value="submit" onClick={()=>{}} > Сохранить еще одного пользователя</button>  )
+
+    console.log(props)
+        arrNewAllElem.push(arr)
+    
+    return(React.createElement("div", {className:"offers"} , arrNewAllElem, saveNewSendler ))
+    }  
+
+    function NewSendler(){
+        
+        console.log(arrNewAllElem) 
+        return (
+            
+            <div className={s.buttonConfirm}>
+            <button id="form-button-more" className="form-btn-sendOffer" onClick={()=>{ setCount(count+1);setNewSendler(AddSendler(count)); }}>
+                Добавить ещё одного автора предложения
+            </button>
+        </div>
+        )
+
+    }
 
 
     const handleSubmit = (event) => {
@@ -120,11 +193,7 @@ function OffersForm() {
                     </div>
 
 
-                    <div className={s.buttonConfirm}>
-                        <button id="form-button-more" className="form-btn-sendOffer" type="submit"
-                                value="submit">Добавить ещё одного автора предложения
-                        </button>
-                    </div>
+                    
                     <div className={s.buttonConfirm}>
                         <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit">Подтвердить
                             запись
@@ -134,6 +203,8 @@ function OffersForm() {
                 </div>
 
             </form>
+            {newSendler}
+            <NewSendler/>
         </div>
 
     )
