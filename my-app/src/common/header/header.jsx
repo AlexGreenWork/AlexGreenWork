@@ -16,35 +16,35 @@ const Header = () => {
     const avatar = currentUser.avatar ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : avatarLogo
 
     return (<div className={s.header}>
-            <div className={s.clear}>
-                <GoBack/>
-            </div>
+        <div className={s.clear}>
+            <GoBack/>
+        </div>
 
-            <div className={s.brand} >
+        <div className={s.brand} >
 
-                <img className={s.logotype} src={logo} alt="logo"></img>
-            </div>
-            <div className={s.loginBar}>
-                {!isAuth && <div className="navbar__login"><NavLink to="/authorization">Войти</NavLink></div>}
-                {!isAuth &&
-                    <div className="navbar__registration"><NavLink to="/registration">Регистрация</NavLink></div>}
+            <img className={s.logotype} src={logo} alt="logo"></img>
+        </div>
+        <div className={s.loginBar}>
+            {!isAuth && <div className="navbar__login"><NavLink to="/authorization">Войти</NavLink></div>}
+            {!isAuth &&
+                <div className="navbar__registration"><NavLink to="/registration">Регистрация</NavLink></div>}
 
-                {isAuth && <NavLink to='/profile'>
-                    <div className={s.avatar} style={{
-                        backgroundImage: `url("${avatar}")`,
-                        width: 40,
-                        backgroundSize: "cover",
-                        height: 40,
-                        borderRadius: "50%"
-                    }}>
-                    </div>
+            {isAuth && <NavLink to='/profile'>
+                <div className={s.avatar} style={{
+                    backgroundImage: `url("${avatar}")`,
+                    width: 40,
+                    backgroundSize: "cover",
+                    height: 40,
+                    borderRadius: "50%"
+                }}>
+                </div>
 
 
-                   {/*<img className={s.avatar} src={avatar} alt="avatarLogo"/>*/}
-                </NavLink>}
-                    {isAuth && <div className={s.navbarLogin} onClick={() => dispatch(logout())}>Выход</div>}
+                {/*<img className={s.avatar} src={avatar} alt="avatarLogo"/>*/}
+            </NavLink>}
+            {isAuth && <div className={s.navbarLogin} onClick={() => dispatch(logout())}>Выход</div>}
 
-            </div>
-        </div>)
+        </div>
+    </div>)
 }
 export default Header;

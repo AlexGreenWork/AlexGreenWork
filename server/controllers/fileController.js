@@ -172,15 +172,21 @@ class FileController {
 
             user.avatar = avatarName
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
-            if(avaOld)
-            fs.unlinkSync("./files/avatar/" + avaOld)
+
+            if(avaOld !== null && avaOld !== "") {
+
+                  fs.unlinkSync("./files/avatar/"+ avaOld)
+                console.log("удалило аву")
+            }else {
+                console.log("2th var")
+            }
 
             //await user.save()
             console.log(user.avatar)
             user.avatar=avatarName
             console.log(user.avatar)
             console.log(user)
-            res.send(user);
+            // res.send(user);
             return res.json(user)
         } catch (e) {
             console.log(e)

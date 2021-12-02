@@ -12,12 +12,12 @@ export default function userReducer(state = defaultState, action) {
     switch (action.type) {
         case SET_USER:
 
-                return {
-                    ...state,
-                    currentUser: state.currentUser = action.payload,
-                    isAdmin:state.isAdmin = action.payload.adminOptions ,
-                    isAuth: state.isAuth = true,
-                }
+            return {
+                ...state,
+                currentUser: state.currentUser = action.payload,
+                isAdmin:state.isAdmin = action.payload.adminOptions ,
+                isAuth: state.isAuth = true,
+            }
 
 
         case SET_USER_LOCAL:
