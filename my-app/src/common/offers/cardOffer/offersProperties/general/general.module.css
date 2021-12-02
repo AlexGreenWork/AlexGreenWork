@@ -15,11 +15,20 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    padding: 5px;
+    margin: 7px;
+    box-shadow: 0 4px 15px rgb(26 109 255 / 25%);
+}
+.fieldOfCategoryOffer:hover{
+    transform: translateY(-2px);
+    z-index: 33;
+    box-shadow: 0 6px 16px 10px rgb(26 179 255 / 25%);
 }
 .nameCategoryOfOffer{
     width:150px;
     display: flex;
     justify-content: end;
+
 }
 .title {
     display: flex;
