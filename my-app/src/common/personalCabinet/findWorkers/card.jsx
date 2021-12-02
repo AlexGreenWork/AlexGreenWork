@@ -29,7 +29,7 @@ const Cart = (props) =>
 	else
 	{
 		return (
-					<div className = {style.card} onClick={() => {dispatch(searchtabnum(`${info.tabnum}`))}}>
+					<div className = {style.card}>
 						<table>
 							<tbody>
 								<tr>
@@ -39,12 +39,16 @@ const Cart = (props) =>
 									<td>
 										{info.tabnum}
 									</td>
+									<td>
+										<button onClick={() => {dispatch(searchtabnum(`${info.tabnum}`))}}
+												className = {style.card_button}>Добавить в задачу</button>
+									</td>
 								</tr>
 								<tr>
 									<td>
 										ФИО
 									</td>
-									<td>
+									<td colSpan = "2">
 										{info.name}
 									</td>
 								</tr>
@@ -52,7 +56,7 @@ const Cart = (props) =>
 									<td>
 										Должность
 									</td>
-									<td>
+									<td colSpan = "2">
 										{info.prof}
 									</td>
 								</tr>
@@ -60,7 +64,7 @@ const Cart = (props) =>
 									<td>
 										Цех
 									</td>
-									<td>
+									<td colSpan = "2">
 										{info.department}
 									</td>
 								</tr>
@@ -68,7 +72,7 @@ const Cart = (props) =>
 									<td>
 										Отдел
 									</td>
-									<td>
+									<td colSpan = "2">
 										{info.division}
 									</td>
 								</tr>
