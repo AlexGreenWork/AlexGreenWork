@@ -7,7 +7,7 @@ const axios = require("axios");
 const Cart = (props) =>
 {
 	const [info, set_info] = useState(null);
-	const dispatcher = useDispatch();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 	    if(info === null && props?.info)
@@ -29,7 +29,7 @@ const Cart = (props) =>
 	else
 	{
 		return (
-					<div className = {style.card} onClick={(value) => {dispatcher(searchtabnum(info.tabnum))}}>
+					<div className = {style.card} onClick={() => {dispatch(searchtabnum(`${info.tabnum}`))}}>
 						<table>
 							<tbody>
 								<tr>

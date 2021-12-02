@@ -1,11 +1,17 @@
-const defaultState = { searchUserTabnum: null }
+const SELECT_USER_TABNAME = "select";
+const DEFAULT = {searchUserTabnum: null}
 
-export default function searchReducer(state = defaultState, action)
+export default function searchReducer(state = DEFAULT, action)
 {
-    return {
-        ...state,
-        searchUserTabnum: state.searchUserTabnum = action
-    }
+	switch(action.type)
+	{
+		case SELECT_USER_TABNAME:
+		{
+			state.searchUserTabnum = action.searchUserTabnum;
+		}
+	}
+
+	return state;
 }
 
-export const setTabnum = tabnum => ({type: "select", payload: tabnum})
+export const searchUserTabnum = tabnum => ({type: SELECT_USER_TABNAME, searchUserTabnum: tabnum})
