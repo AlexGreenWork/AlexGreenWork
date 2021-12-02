@@ -1,7 +1,7 @@
 import style from "./findWorkers.module.css"
 import Complete from "./complete"
 import List from "./list"
-import {React, useState} from "react";
+import {React, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 
 const FindWorkers = (props) => {
@@ -9,8 +9,7 @@ const FindWorkers = (props) => {
 	const [search, set_search] = useState('');
 	const [open, set_open] = useState(false);
 
-	const value = useSelector(state => state.searchUserTabnum)
-    console.log(value);
+	const value = useSelector(state => state.searchUserTabnum);
 
 	return (
 				<div className={style.sendOfferContainer}>

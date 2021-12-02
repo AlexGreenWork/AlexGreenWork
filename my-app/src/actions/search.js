@@ -1,7 +1,7 @@
-import {setTabnum} from "../reducers/searchReducer";
+import {searchUserTabnum} from "../reducers/searchReducer";
 
 export const searchtabnum = (tabnum) => {
     return async dispatch => {
-        dispatch(setTabnum(tabnum));
+        dispatch(searchUserTabnum(tabnum));
     }
 }
