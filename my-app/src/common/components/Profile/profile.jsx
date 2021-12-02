@@ -10,7 +10,6 @@ const Profile = () => {
     const currentUser = useSelector(state => state.user.currentUser)
     function changeHandler(e) {
         const file = e.target.files[0]
-        console.log(e.target.files[0])
         dispatch(uploadAvatar(file))
     }
     localStorage.getItem("avatar")
