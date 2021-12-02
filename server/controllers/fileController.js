@@ -204,7 +204,7 @@ class FileController {
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
 
             }if(avaOld == '' ){
-
+                await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
             }else{
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
             }
