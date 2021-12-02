@@ -11,13 +11,14 @@
     font-size: .9em;
     display: flex;
 }
+
 .fieldOfCategoryOffer{
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     padding: 5px;
     margin: 7px;
-    box-shadow: 0 4px 15px rgb(26 109 255 / 25%);
+    box-shadow: 0 4px 15px rgb(25 109 255 / 25%);
 }
 .fieldOfCategoryOffer:hover{
     transform: translateY(-2px);
