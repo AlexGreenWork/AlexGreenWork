@@ -6,15 +6,14 @@ const defaultState= {
     rejectStatusOffer:-1,
     stepStatusOffer:0,
 
-
 }
 export default function ReducerStepper (state=defaultState, action){
     switch (action.type){
         case "ADD_STATUS":
 
-            return {...state, stepStatusOffer: state.stepStatusOffer =action.payload}
+             state.stepStatusOffer =action.payload;
         case "ADD_REJECT":{
-            return {...state, rejectStatusOffer: state.rejectStatusOffer =action.payload}
+            state.rejectStatusOffer =action.payload;
         }
         default:
             return state

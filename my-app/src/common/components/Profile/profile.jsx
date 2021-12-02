@@ -5,6 +5,18 @@ import s from "./profile.module.css"
 import {API_URL} from "../../../config";
 import avatarLogo from '../../../assets/img/avatar.svg'
 
+// function disableDeleteAvaBtn(){
+//     let dis = true
+//     if(localStorage.getItem("avatar")){
+//         let dis = true
+//         return dis
+//     }else{
+//         dis = false
+//         return dis
+//     }
+// }
+/////////// Это доработать для удаления авы disabled button
+
 const Profile = () => {
     const dispatch = useDispatch()
     const currentUser = useSelector(state => state.user.currentUser)
@@ -25,7 +37,7 @@ const Profile = () => {
                         backgroundSize: "cover",
                         borderRadius:10
                     }}></div>
-                    <button onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
+                    <button  onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
                     <input accept="image/*" onChange={e => changeHandler(e)} type="file"
                            placeholder="Загрузить аватар"/>
                 </div>
