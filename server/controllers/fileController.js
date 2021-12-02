@@ -163,7 +163,6 @@ class FileController {
             const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
             const user = userD[0][0]
             const avaOld = user.avatar
-            console.log("Старая ------"+ avaOld)
             const file = req.files.file
             //console.log(req.files.file)
             // const user = await User.findById(req.user.id)
@@ -171,15 +170,15 @@ class FileController {
             await file.mv('../server/files/avatar/' + avatarName)
 
             user.avatar = avatarName
-            console.log(user.avatar)
+
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
 
             if(avaOld !== null && avaOld !== "") {
 
                   fs.unlinkSync("./files/avatar/"+ avaOld)
-                console.log("удалило аву")
+
             }else {
-                console.log("2th var")
+
             }
 
             //await user.save()
