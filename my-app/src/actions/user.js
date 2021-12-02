@@ -46,7 +46,7 @@ export const login = (email, password) => {
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
             localStorage.setItem('userAvatar', response.data.user.avatar)
         } catch (e) {
-			console.log("Error Level: "+ e);
+            console.log("Error Level: "+ e);
             alert(e.response.data.message)
         }
     }
