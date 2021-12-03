@@ -1,10 +1,11 @@
 const {Schema, model, ObjectId} = require("mongoose")
 
-const SearchInfo = new Schema({
+const SearchInfoFull = new Schema({
     name: {type: String, required: false},
 	tabnum: {type: Number, required: false},
+	prof: {type: String, required: false},
     department: {type: String, required: false},
     division: {type: String, required: false}
 })
 
-module.exports = model('SearchInfo', SearchInfo)
+module.exports = model('SearchInfoFull', SearchInfoFull)

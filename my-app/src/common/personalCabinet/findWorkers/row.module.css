@@ -1,0 +1,12 @@
+.searchRow
+{
+	border: 2px solid #607fff;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+
+.searchRow:hover
+{
+	background-color: lightblue;
+}
