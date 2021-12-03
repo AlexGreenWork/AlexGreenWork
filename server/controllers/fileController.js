@@ -46,7 +46,7 @@ class FileController {
             switch (sort) {
                 case 'name':
                     files = await File.find({user: req.user.id, parent: req.query.parent}).sort({name: 1})
-                    console.log("привет")
+
                     break
                 case 'type':
                     files = await File.find({user: req.user.id, parent: req.query.parent}).sort({type: 1})
@@ -164,7 +164,11 @@ class FileController {
             const user = userD[0][0]
             const avaOld = user.avatar
             const file = req.files.file
-            //console.log(req.files.file)
+            console.log(req.files.file)
+
+
+
+            console.log(req.files.file)
             // const user = await User.findById(req.user.id)
             const avatarName = Uuid.v4() + ".jpg"
             await file.mv('../server/files/avatar/' + avatarName)
@@ -203,15 +207,13 @@ class FileController {
                 }
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
 
-            }if(avaOld == '' ){
-                await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
             }else{
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
             }
 
             user.avatar = ""
             //await user.save()
-            return res.json(user)
+           return res.json(user)
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Delete avatar error'})
