@@ -60,6 +60,7 @@ router.post('/registration',
             }
 
             const hashPassword = await bcrypt.hash(password, 8)
+            const hashAdminOptions = await bcrypt.hash(password, 8)
             const user = ({
                 name,
                 surname,
@@ -146,13 +147,15 @@ router.get('/auth', authMiddleware,
             // }
             //
             //     const connection = mysql.createPool(mysqlConfig);
-            const user = await User.findOne({_id: req.user[0][0].id})
-            // await connection.query(`SELECT * FROM offers WHERE id = req.user.id`);
+            console.log(req.user[0][0].id);
+            const user = await connection.query(`SELECT * FROM offers WHERE id = req.user[0][0].id`);
+                //await User.findOne({_id: req.user[0][0].id}) !!!!!!!!!!!!!!!!!!!!!!!!!!!! можно поменять местами
+            // );
 
 
             console.log('секция AUTH')
             console.log(user);
-            const token = jwt.sign({id: user[0][0].id}, conf.get("secretKey"), {expiresIn: "10h"})
+            const token = jwt.sign({id: user[0][0].id}, conf.get("secretKey"), {expiresIn: "8h"})
             return res.json({
                 token,
                 user: {
