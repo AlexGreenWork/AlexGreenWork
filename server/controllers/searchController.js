@@ -59,10 +59,10 @@ class Search
 	static category_alias_by_name()
 	{
 		return new Map([
-			["1", "tabnum"],
-			["2", "fiofull"],
-			["3", "department"],
-			["4", "name"]
+			["1", {db: "ka", field: "tabnum"}],
+			["2", {db: "ka", field: "fiofull"}],
+			["3", {db: "ka", field: "department"}],
+			["4", {db: "d", field: "name"}]
 		]);
 	}
 
