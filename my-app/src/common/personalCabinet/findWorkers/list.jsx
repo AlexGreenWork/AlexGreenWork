@@ -1,27 +1,69 @@
 import React from "react"
+import Row from "./row";
+const axios = require("axios");
 
 class List extends React.Component
 {
-    constructor(prop) {
-        super(prop);
-        console.log(prop);
-    }
+	constructor(props)
+	{
+		super(props);
+
+		this.state = {values: [],};
+		this.search_result_category = new Map([
+												["Табельный номер", "1"],
+												["ФИО", "2"],
+												["Код цеха", "3"],
+												["Название цеха", "4"]
+											]);
+		this.create_list = this.create_list.bind(this);
+		this.componentDidUpdate = this.componentDidUpdate.bind(this);
+
+		console.log(this.props.category);
+		this.load(this.props.category, this.props.search);
+	}
+
+	create_list(res)
+	{
+		let results = [];
+		if(res?.data)
+		{
+			for(let response of res.data)
+			{
+				if(!response?.users) continue;
+
+				response.users.map((v, i) => {
+					results.push(<Row key = {i} tabnum = {v.tabnum} name = {v.name} department = {v.department} division = {v.division}/> );
+				});
+			}
+		}
+		
+		return results;
+	}
+
+	load(category, search)
+	{
+		const search_category = this.search_result_category.get(category);
+		axios.post("http://localhost:5000/api/user/show_category",
+					{
+						search: search,
+						category: search_category
+					}).then((res) => {
+			this.setState({values: this.create_list(res)});
+		})
+	}
+
+	componentDidUpdate(prop)
+	{
+		if(this.props === prop) return;
+		this.load(this.props.category, this.props.search);
+	}
 
     render() {
         return (
-            <table style={{width: "100%", color: "black", zIndex: 1}}>
-                <tr>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                </tr>
+            <table style={{width: "100%", color: "black"}} cellPadding="12">
+				<tbody>
+					{this.state.values}
+				</tbody>
             </table>
         )
     }
