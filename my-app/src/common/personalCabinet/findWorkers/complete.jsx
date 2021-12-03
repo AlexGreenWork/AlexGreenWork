@@ -15,7 +15,8 @@ class Complete extends React.Component
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
 												["2", "ФИО"],
-												["3", "Код цеха"]
+												["3", "Код цеха"],
+												["4", "Название цеха"]
 											]);
 		this.search_value = this.search_value.bind(this);
 		this.select_value = this.select_value.bind(this);
@@ -31,6 +32,7 @@ class Complete extends React.Component
 	{
 		this.setState({show: false});
         axios.post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
+			console.log(res);
             this.setState({options: this.create_options(value, res)});
         })
 
@@ -43,18 +45,18 @@ class Complete extends React.Component
 		for(const item of response.data)
 		{
 			result.push(this.create_category_header(search, item.category, item.count));
-			result = result.concat(this.create_items(item.users));
+			result = result.concat(this.create_items(item.category, item.users));
 		}
 		return result;
 	}
 
-	create_items(values)
+	create_items(category, values)
 	{
 		let items = [];
 		for(let i = 0; i < values.length; i++)
 		{
 			const value = values[i];
-			items.push(this.create_item(i, value.name, value.tabnum, value.department, value.division))
+			items.push(this.create_item(`${category}` + i , value.name, value.tabnum, value.department, value.division))
 		}
 		return items;
 	}
