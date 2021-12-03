@@ -13,7 +13,9 @@ const Profile = () => {
     const dispatch = useDispatch()
     const currentUser = useSelector(state => state.user.currentUser)
     function changeHandler(e) {
+
         const file = e.target.files[0]
+
 
         if ( /\.(jpe?g|png)$/i.test(file.name) === false ) {
             return alert('Выберите картинку формата jpg, jpeg, png')
