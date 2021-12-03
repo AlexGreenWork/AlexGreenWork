@@ -33,7 +33,7 @@ function App(props) {
     const [secondCotext, setSecondCotext] = useState(0)
     const contextFunction = (n , f) => {setChange(n);
         setSecondCotext(f)};
-
+        console.log(props.value)
     const value = {
         change,
         secondCotext,
@@ -59,7 +59,7 @@ function App(props) {
                 <div className='app-wrapper-content' id="wrapperContent">
                     {!isAuth ?
                         <Switch>
-                            <Route exact path='/' component={ContentContainer} />
+                            <Route exact path='/'  component={ContentContainer}  />
                             <Route path='/workerVariable' component={WorkerVariable}/>
                             <Route path='/sendOfferWorker' component={OffersForm}/>
                             <Route path='/sendOfferFree' component={OffersFormFree}/>

@@ -2,16 +2,30 @@ import React, {useState} from 'react';
 import OffFunc from './offerForm/FormOffFunc.js';
 import UploadFile from './fileUpload/fileUpload'
 import s from "./offerForm/formOffers.module.css";
-
+import {useContext} from "react";
+import Context from "../../context/Context";
 
 let arrNewAllElem = []; 
-let arr = new Array();  
+//let arr = new Array();  
+let allNewSendler = null
+ allNewSendler = {
+
+};
 
 
 
 
 
 function OffersForm() {
+
+    const value = useContext(Context);
+  
+   
+    if("http://localhost:3000/sendOfferWorker" == document.location.href){
+        value.contextFunction(document.location.href)
+        console.log(value.change)
+        console.log("document.location.href true")
+    }
     
     const [name, setName] = useState(localStorage.getItem('userName'));
     const [lastName, setLastName] = useState(localStorage.getItem('userSurName'));
@@ -23,8 +37,8 @@ function OffersForm() {
     const [problem, setProblem] = useState("");
     const [offer, setOffer] = useState("");
     const [checked, setChecked] = useState(false);
-    const [newSendler, setNewSendler] = useState();
-    const [count, setCount] = useState(0);
+
+    
 
     const [nameNew, setNameNew] = useState();
     const [lastNameNew, setLastNameNew] = useState();
@@ -34,12 +48,8 @@ function OffersForm() {
     const [phoneNumberNew, setPhoneNumberNew] = useState();
 
 
-   // console.log("OffersForm "+arrNewAllElem)   
-    //)=>{localStorage.getItem('userName')}
-    
-    let allNewSendler = {
-
-    };
+    const [newSendler, setNewSendler] = useState();
+    const [count, setCount] = useState(0);
 
     let addNewSendler = {
         name: nameNew,
@@ -50,43 +60,83 @@ function OffersForm() {
         phoneNumber: phoneNumberNew,
 
     };
+
+    addObjSend(nameNew, lastNameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew, count);
+   // console.log("OffersForm "+arrNewAllElem)   
+    //)=>{localStorage.getItem('userName')}
     
-for(let i=0; i<3; i++){
+   // addObjSend(nameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew)
+   
+   //addObjSend(nameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew) // в первый раз вызывает функцию для корректного присвоения State в последующем игнорировать 0 элемент
     
-   // Object.assign(addNewSendler , allNewSendler )
-  // allNewSendler[i] = addNewSendler
-     allNewSendler["newSendler" +i] = addNewSendler  
-    // setNameNew(nameNew +1)
-  
-  if(i === 2){
-        console.log(allNewSendler)
-    }
+   function addObjSend(){
+    
+     
+       
+
+        allNewSendler["addSendler"+count] = addNewSendler;
+        /* setNameNew(undefined)
+        setLastNameNew(undefined)
+        setMiddleNameNew(undefined)
+        setEmailNew(undefined)
+        setTabelNumberNew(undefined)
+        setPhoneNumberNew(undefined) */
+        console.log("allNewSendler " )
+        console.log(allNewSendler )
+    
+    
+   
+            
 }
+   
+   
+   
+   
+   function SaveBtn(){
+        return(
+            React.createElement("div", {className:"formFilds"} , <button value="submit" onClick={()=>{setNewSendler(newSendler == null); 
+                console.log("ctate do ",nameNew, lastNameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew, count); 
+               
+             }} > Сохранить еще одного пользователя</button>)
+        )
+    }
     
     
     function AddSendler(props){
-        arr = [React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} /> ),
-    React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} />  ),
-    React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} />),
-    React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} /> ),
-    React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} /> ),
-    React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} /> ),
-    ]
-    let saveNewSendler = React.createElement("div", {className:"formFilds"} , <button value="submit" onClick={()=>{}} > Сохранить еще одного пользователя</button>  )
-
-    console.log(props)
-        arrNewAllElem.push(arr)
-    
-    return(React.createElement("div", {className:"offers"} , arrNewAllElem, saveNewSendler ))
+       
+       // let saveNewSendler = React.createElement("div", {className:"formFilds"} , <button value="submit" onClick={()=>{  document.querySelector(`.exists`).remove()}} > Сохранить еще одного пользователя</button>  )
+       
+         let   arr = [
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} onChange={(e) => setNameNew(e.target.value)}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} onChange={(e) => setLastNameNew(e.target.value)}/>  ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} onChange={(e) => setMiddleNameNew(e.target.value)}/>),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} onChange={(e) => setEmailNew(e.target.value)}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} onChange={(e) => setTabelNumberNew(e.target.value)} /> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
+            
+            ]
+                   
+           // console.log(props = "num elem")
+          //  arrNewAllElem.push(arr)
+              
+          
+    return(React.createElement("div", {className:`offers newSendler${props} exists`} , arr, <SaveBtn/> ))
     }  
 
     function NewSendler(){
         
         console.log(arrNewAllElem) 
+        arrNewAllElem = []
+      //  console.log(allNewSendler)
         return (
             
             <div className={s.buttonConfirm}>
-            <button id="form-button-more" className="form-btn-sendOffer" onClick={()=>{ setCount(count+1);setNewSendler(AddSendler(count)); }}>
+            <button  onClick={()=>{
+                
+                 if(!document.querySelector(`.exists`)){
+                    setCount(count+1); setNewSendler(AddSendler(count));
+                }                
+          }}>
                 Добавить ещё одного автора предложения
             </button>
         </div>
@@ -94,6 +144,7 @@ for(let i=0; i<3; i++){
 
     }
 
+    
 
     const handleSubmit = (event) => {
 
@@ -104,6 +155,7 @@ for(let i=0; i<3; i++){
 
             OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer, checked);
             UploadFile('file');
+
         } else {
             console.log(".close-btn true");
         }
