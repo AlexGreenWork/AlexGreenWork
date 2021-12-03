@@ -23,13 +23,14 @@ class Search
 		return new Map([
 			["number",
 				[
-					"tabnum",
-					"department"
+					{db: "ka", field: "tabnum"},
+					{db: "ka", field: "department"}
 				]
 			],
 			["string",
 				[
-					"fiofull"
+					{db: "ka", field: "fiofull"},
+					{db: "d", field: "name"}
 				]
 			]
 		]);
@@ -45,7 +46,8 @@ class Search
 		return new Map([
 			["tabnum", "1"],
 			["fiofull", "2"],
-			["department", "3"]
+			["department", "3"],
+			["name", "4"]
 		]);
 	}
 
@@ -59,7 +61,8 @@ class Search
 		return new Map([
 			["1", "tabnum"],
 			["2", "fiofull"],
-			["3", "department"]
+			["3", "department"],
+			["4", "name"]
 		]);
 	}
 
@@ -82,7 +85,7 @@ class Search
 				LEFT JOIN division AS d2 ON
 					d2.department = ka.department
 					AND d2.id = ka.division
-				 WHERE ka.${alias} LIKE ?
+				 WHERE ${alias.db}.${alias.field} LIKE ?
 					AND ka.factory = 1
 					AND d.factory = 1
 					AND d2.factory = 1
@@ -119,7 +122,7 @@ class Search
 			for (const field of obj)
 			{
 			    let db_result = await Search.find_value_by_alias(connection, value, field);
-				result.set(field, db_result[0]);
+				result.set(field.field, db_result[0]);
 			}
 		}
 		return result;
@@ -130,7 +133,7 @@ class Search
 	    let result = new Map();
 		const key = Search.category_db_alias_by_name(alias);
 		let db_result = await Search.find_value_by_alias(connection, value, key);
-		result.set(alias, db_result[0]);
+		result.set(alias.field, db_result[0]);
 		return result;
 	}
 
@@ -145,7 +148,7 @@ class Search
 				const request = req.body.search;
 
 				let connection = await Search.connection_to_database();
-				let db_results = await Search.find_value_by_alias(connection, request, "tabnum", false);
+				let db_results = await Search.find_value_by_alias(connection, request, {db: "ka", field: "tabnum"}, false);
 				await connection.end();
 				const db_result = db_results[0][0];
 
