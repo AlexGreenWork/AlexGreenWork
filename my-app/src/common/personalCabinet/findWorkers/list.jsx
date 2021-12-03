@@ -12,11 +12,13 @@ class List extends React.Component
 		this.search_result_category = new Map([
 												["Табельный номер", "1"],
 												["ФИО", "2"],
-												["Код цеха", "3"]
+												["Код цеха", "3"],
+												["Название цеха", "4"]
 											]);
 		this.create_list = this.create_list.bind(this);
 		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
+		console.log(this.props.category);
 		this.load(this.props.category, this.props.search);
 	}
 
@@ -46,7 +48,6 @@ class List extends React.Component
 						search: search,
 						category: search_category
 					}).then((res) => {
-
 			this.setState({values: this.create_list(res)});
 		})
 	}
