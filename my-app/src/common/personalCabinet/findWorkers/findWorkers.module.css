@@ -2,25 +2,27 @@
 {
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding-bottom: 20px;
+    padding-top: 20px;
     width: 100%;
-    overflow: scroll;
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow: hidden;
     grid-column: 2/6;
     grid-row: 2/6;
     --main-bg-color: #fff;
     --main-text-color: #444;
-    min-height: 100%;
+    height: auto;
     margin: 0;
     background-color: rgba(255,255,255,0.6);
     color: var(--main-text-color);
     font-family: sans-serif;
-	z-index: 1;
+    z-index: 1;
 }
 .sendOfferInnerContainer
 {
-    width: 80%;
-    display: grid;
-    grid-column-gap: 10px;
+    width: 100%;
+
 }
 
 .sendOfferSearchBar

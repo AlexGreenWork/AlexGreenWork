@@ -81,19 +81,6 @@ const ComissionOffer = () => {
                             </fieldset>
                         </div>
                     </div>
-
-
-                    {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-                    {/*    <Stack spacing={3}>*/}
-                    {/*        <div>Дата и время заседания комиссии</div>*/}
-                    {/*        <DateTimePicker*/}
-                    {/*            label="Дата и время"*/}
-                    {/*            value={dateComission}*/}
-                    {/*            onChange={handleChange}*/}
-                    {/*            renderInput={(params) => <TextField {...params} />}*/}
-                    {/*        />*/}
-                    {/*    </Stack>*/}
-                    {/*</LocalizationProvider>*/}
                 </div>
             )
         }
