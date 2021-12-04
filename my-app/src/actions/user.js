@@ -55,9 +55,7 @@ export const login = (email, password) => {
 export const auth = () => {
     return async dispatch => {
 
-        if (localStorage.getItem('token')) {
-            if (new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 10) {
-
+        if (localStorage.getItem('token') && 0 > new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 8) {
 
                 const user = {
                     id: localStorage.getItem('userId'),
@@ -70,8 +68,6 @@ export const auth = () => {
                     fired: localStorage.getItem('userFired'),
                     adminOptions: localStorage.getItem('userAdminOptions'),
                     avatar: localStorage.getItem('userAvatar'),
-
-
                 }
                 dispatch(setUserLocal(user))
 
@@ -92,7 +88,6 @@ export const auth = () => {
             }
         }
     }
-}
 
 export const uploadAvatar = (file) => {
     return async dispatch => {
