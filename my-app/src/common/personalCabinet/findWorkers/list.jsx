@@ -18,7 +18,7 @@ class List extends React.Component
 		this.create_list = this.create_list.bind(this);
 		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
-		console.log(this.props.category);
+		//console.log(this.props.category);
 		this.load(this.props.category, this.props.search);
 	}
 

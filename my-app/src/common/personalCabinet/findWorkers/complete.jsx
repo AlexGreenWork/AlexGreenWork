@@ -1,7 +1,9 @@
 import React from "react";
 import {AutoComplete, Input} from "antd";
 import Card from "./card";
+import {useDispatch} from "react-redux";
 const axios = require("axios");
+
 
 class Complete extends React.Component
 {
@@ -21,7 +23,9 @@ class Complete extends React.Component
 		this.search_value = this.search_value.bind(this);
 		this.select_value = this.select_value.bind(this);
 		this.header_click = this.header_click.bind(this);
+
 	}
+
 
 	category_server_converter(category)
 	{
@@ -63,6 +67,7 @@ class Complete extends React.Component
 
 	open_card(value)
 	{
+
 		this.setState({card: value, show: true});
 	}
 
@@ -86,9 +91,11 @@ class Complete extends React.Component
 			onClick = {(value) => this.select_value(tabnum)}
 			>
 				<span>
-					{name}
-					Отдел {department}
-					Цех {division}
+					<div style={{display:"flex"}}>
+					<div style={{fontWeight:"bold"}}>{name} ></div>
+					 Цех: {division} >
+					Отдел: {department}
+						</div>
 				</span>
 			</div>),
 		}
@@ -111,8 +118,8 @@ class Complete extends React.Component
 					display: 'flex', justifyContent: 'space-between',
 				}}
 			>
-				<span>
-				  Found `{search}` on {' '} в
+				<span style={{color:"red", display:"flex"}}>
+				  <div style={{fontWeight:"bold", color:"blue"}}> "{search}" </div> нашлось в {' '}
 				</span>
 				<span onClick={(value) => this.header_click(value, search)}
 						style={

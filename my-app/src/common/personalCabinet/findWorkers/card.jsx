@@ -39,10 +39,7 @@ const Cart = (props) =>
 									<td>
 										{info.tabnum}
 									</td>
-									<td>
-										<button onClick={() => {dispatch(searchtabnum(`${info.tabnum}`))}}
-												className = {style.card_button}>Добавить в задачу</button>
-									</td>
+
 								</tr>
 								<tr>
 									<td>
@@ -76,6 +73,12 @@ const Cart = (props) =>
 										{info.division}
 									</td>
 								</tr>
+								{/*<tr>*/}
+								{/*	<td>*/}
+								{/*		<button onClick={() => {dispatch(searchtabnum(`${info.tabnum}` ))}}*/}
+								{/*				className = {style.card_button}>Добавить в задачу</button>*/}
+								{/*	</td>*/}
+								{/*</tr>*/}
 							</tbody>
 						</table>
 					</div>
