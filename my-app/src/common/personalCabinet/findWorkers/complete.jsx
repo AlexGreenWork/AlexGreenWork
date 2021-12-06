@@ -36,7 +36,6 @@ class Complete extends React.Component
 	{
 		this.setState({show: false});
         axios.post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
-			console.log(res);
             this.setState({options: this.create_options(value, res)});
         })
 
@@ -103,8 +102,7 @@ class Complete extends React.Component
 
 	header_click(category, search)
 	{
-		this.props.onSelectHeader?.(category.target.innerText);
-		this.props.onSearchHeader?.(search);
+		this.props.onSelectHeader?.(category.target.innerText, search);
 	}
 
 	create_category_header(search, item_category, item_count)

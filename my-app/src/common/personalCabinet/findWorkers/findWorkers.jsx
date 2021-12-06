@@ -21,11 +21,8 @@ const FindWorkers = (props) => {
 										set_open(false);
 										dispatcher(searchtabnum(`${value}`));
 									}}
-									onSelectHeader = {(category) => {
+									onSelectHeader = {(category, value) => {
 										set_category(category);
-										set_open(true);
-									}}
-									onSearchHeader = {(value) => {
 										set_search(value);
 										set_open(true);
 									}}
