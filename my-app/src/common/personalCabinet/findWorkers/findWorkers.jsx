@@ -1,14 +1,17 @@
 import style from "./findWorkers.module.css"
 import Complete from "./complete"
 import List from "./list"
+import Card from "./card";
 import {searchtabnum} from "../../../actions/search";
 import {React, useState} from "react";
 import {useDispatch} from "react-redux";
 
 const FindWorkers = (props) => {
-	const [category, set_category] = useState('');
-	const [search, set_search] = useState('');
-	const [open, set_open] = useState(false);
+	const [searchCategory, set_search_category] = useState('');
+	const [searchCategoryValue, set_search_category_value] = useState('');
+	const [searchItemValue, set_search_item_value] = useState('');
+	const [isList, show_list] = useState(false);
+	const [isCard, show_card] = useState(false);
 
 	const dispatcher = useDispatch();
 
@@ -18,20 +21,28 @@ const FindWorkers = (props) => {
 						<div className={style.sendOfferSearchBar}>
 							<Complete
 									onSelectItem = {(value) => {
-										set_open(false);
+										set_search_item_value(value);
+										show_list(false);
+										show_card(true);
 										dispatcher(searchtabnum(`${value}`));
 									}}
 									onSelectHeader = {(category, value) => {
-										set_category(category);
-										set_search(value);
-										set_open(true);
+										set_search_category(category);
+										set_search_category_value(value);
+										show_list(true);
+										show_card(false);
 									}}
 							/>
-
+							{isCard ?
+								<div>
+									<Card info = {searchItemValue} />
+								</div>
+								: null
+							}
 						</div>
-						{open ?
+						{isList ?
 							<div className={style.sendOfferList}>
-								<List category = {category} search = {search}/>
+								<List category = {searchCategory} search = {searchCategoryValue}/>
 							</div>
 							: null
 						}
