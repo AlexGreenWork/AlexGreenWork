@@ -10,9 +10,7 @@ class Complete extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {options: [],
-						card: [],
-						show: false};
+		this.state = {options: []}
 
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
@@ -64,16 +62,9 @@ class Complete extends React.Component
 		return items;
 	}
 
-	open_card(value)
-	{
-
-		this.setState({card: value, show: true});
-	}
-
 	select_value(element)
 	{
 		this.setState({options: []});
-		this.open_card(element);
 		this.props.onSelectItem?.(element)
 	}
 
@@ -152,11 +143,6 @@ class Complete extends React.Component
 					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
 						enterButton/>
 				</AutoComplete>
-				{
-					this.state.show ?
-						<Card info={this.state.card}/>
-						: null
-				}
 		</>);
 	}
 };
