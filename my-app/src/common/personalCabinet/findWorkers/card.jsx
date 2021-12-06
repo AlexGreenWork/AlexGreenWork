@@ -64,14 +64,17 @@ const Cart = (props) =>
 									{info?.division}
 								</td>
 							</tr>
-							<tr>
-								<td>
-									Электронная Почта
-								</td>
-								<td colSpan = "2">
-									<a href = {`mailto:${info?.email}`}>Отправить email</a>
-								</td>
-							</tr>
+							{info?.email ?
+								<tr>
+									<td>
+										Электронная Почта
+									</td>
+									<td colSpan = "2">
+										<a href = {`mailto:${info?.email}`}>Отправить email</a>
+									</td>
+								</tr>
+								: null
+							}
 							{/*<tr>*/}
 							{/*	<td>*/}
 							{/*		<button onClick={() => {dispatch(searchtabnum(`${info.tabnum}` ))}}*/}
