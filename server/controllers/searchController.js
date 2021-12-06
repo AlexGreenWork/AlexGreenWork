@@ -78,18 +78,22 @@ class Search
 					d.name AS department,
 					d2.name AS division,
 					ka.tabnum AS tabnum,
-					ka.profname AS prof
+					ka.profname AS prof,
+					ue.email AS email
 				FROM kadry_all AS ka
 				LEFT JOIN department AS d ON
 					d.id = ka.department
 				LEFT JOIN division AS d2 ON
 					d2.department = ka.department
 					AND d2.id = ka.division
+				LEFT JOIN users_emails AS ue ON
+					ue.tabnum = ka.tabnum
 				 WHERE ${alias.db}.${alias.field} LIKE ?
 					AND ka.factory = 1
 					AND d.factory = 1
 					AND d2.factory = 1
 				 	AND ka.deleted <> 1`;
+		console.log(query);
 		return query;
 	}
 
@@ -159,7 +163,8 @@ class Search
 					tabnum: db_result.tabnum,
 					prof: db_result.prof,
 					department: db_result.department,
-					division: db_result.division
+					division: db_result.division,
+					email: db_result.email
 				})
 
 			}
