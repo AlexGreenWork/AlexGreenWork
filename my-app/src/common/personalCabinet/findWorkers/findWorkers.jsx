@@ -2,15 +2,14 @@ import style from "./findWorkers.module.css"
 import Complete from "./complete"
 import List from "./list"
 import {searchtabnum} from "../../../actions/search";
-import {React, useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {React, useState} from "react";
+import {useDispatch} from "react-redux";
 
 const FindWorkers = (props) => {
 	const [category, set_category] = useState('');
 	const [search, set_search] = useState('');
 	const [open, set_open] = useState(false);
 
-	const value = useSelector(state => state.searchUserTabnum);
 	const dispatcher = useDispatch();
 
 	return (
