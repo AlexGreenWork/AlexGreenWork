@@ -70,7 +70,7 @@ const Cart = (props) =>
 										Электронная Почта
 									</td>
 									<td colSpan = "2">
-										<a href = {`mailto:${info?.email}`}>Отправить email</a>
+										<a href = {`mailto:${info?.email}`}>{info?.email}</a>
 									</td>
 								</tr>
 								: null
