@@ -3,7 +3,7 @@ import Complete from "./complete"
 import List from "./list"
 import Card from "./card";
 import {searchtabnum} from "../../../actions/search";
-import {React, useState} from "react";
+import {React, useState, Children, useEffect} from "react";
 import {useDispatch} from "react-redux";
 
 const FindWorkers = (props) => {
