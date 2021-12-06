@@ -1,8 +1,9 @@
 import style from "./findWorkers.module.css"
 import Complete from "./complete"
 import List from "./list"
+import {searchtabnum} from "../../../actions/search";
 import {React, useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 const FindWorkers = (props) => {
 	const [category, set_category] = useState('');
@@ -10,6 +11,7 @@ const FindWorkers = (props) => {
 	const [open, set_open] = useState(false);
 
 	const value = useSelector(state => state.searchUserTabnum);
+	const dispatcher = useDispatch();
 
 	return (
 				<div className={style.sendOfferContainer}>
@@ -18,6 +20,7 @@ const FindWorkers = (props) => {
 							<Complete
 									onSelectItem = {(value) => {
 										set_open(false);
+										dispatcher(searchtabnum(`${value}`));
 									}}
 									onSelectHeader = {(category) => {
 										set_category(category);
