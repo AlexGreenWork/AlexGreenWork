@@ -19,7 +19,8 @@ const Cart = (props) =>
 	});
 
 	return (
-				<div className = {style.card} onClick = {() => dispatch(selectcard(`${info?.tabnum}`))}>
+				<div className = {style.card} onClick = {() => dispatch(selectcard(`${info?.tabnum}`))
+}>
 					<table>
 						<tbody>
 							<tr>
@@ -61,6 +62,14 @@ const Cart = (props) =>
 								</td>
 								<td colSpan = "2">
 									{info?.division}
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Электронная Почта
+								</td>
+								<td colSpan = "2">
+									<a href = {`mailto:${info?.email}`}>Отправить email</a>
 								</td>
 							</tr>
 							{/*<tr>*/}

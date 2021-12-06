@@ -131,7 +131,7 @@ class Complete extends React.Component
 				<AutoComplete
 					dropdownMatchSelectWidth={500}
 					style={{
-						width: '99%',
+						width: '100%',
 						paddingBottom: '40px',
 						fontSize: '14px',
 						fontWeight: "bold"

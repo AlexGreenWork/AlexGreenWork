@@ -4,7 +4,7 @@ import List from "./list"
 import Card from "./card";
 import {searchtabnum} from "../../../actions/search";
 import {React, useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector, shallowEqual} from "react-redux";
 
 const FindWorkers = () => {
 	const [searchCategory, set_search_category] = useState('');
@@ -12,7 +12,7 @@ const FindWorkers = () => {
 	const [searchItemValue, set_search_item_value] = useState('');
 	const [isList, show_list] = useState(false);
 	const [isCard, show_card] = useState(false);
-
+	
 	const dispatcher = useDispatch();
 
 	return (
