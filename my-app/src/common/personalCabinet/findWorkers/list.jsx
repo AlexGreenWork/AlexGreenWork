@@ -1,6 +1,6 @@
 import React from "react"
 import Row from "./row";
-const axios = require("axios");
+const {post} = require("axios");
 
 class List extends React.Component
 {
@@ -18,7 +18,6 @@ class List extends React.Component
 		this.create_list = this.create_list.bind(this);
 		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
-		//console.log(this.props.category);
 		this.load(this.props.category, this.props.search);
 	}
 
@@ -43,7 +42,7 @@ class List extends React.Component
 	load(category, search)
 	{
 		const search_category = this.search_result_category.get(category);
-		axios.post("http://localhost:5000/api/user/show_category",
+		post("http://localhost:5000/api/user/show_category",
 					{
 						search: search,
 						category: search_category

@@ -3,10 +3,10 @@ import Complete from "./complete"
 import List from "./list"
 import Card from "./card";
 import {searchtabnum} from "../../../actions/search";
-import {React, useState, Children, useEffect} from "react";
-import {useDispatch} from "react-redux";
+import {React, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 
-const FindWorkers = (props) => {
+const FindWorkers = () => {
 	const [searchCategory, set_search_category] = useState('');
 	const [searchCategoryValue, set_search_category_value] = useState('');
 	const [searchItemValue, set_search_item_value] = useState('');

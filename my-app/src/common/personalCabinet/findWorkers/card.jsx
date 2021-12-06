@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react"
 import style from "./card.module.css"
 import {useDispatch} from "react-redux";
-import {searchtabnum} from "../../../actions/search";
-const axios = require("axios");
+import {selectcard} from "../../../actions/search";
+const {post} = require("axios");
 
 const Cart = (props) =>
 {
@@ -12,14 +12,14 @@ const Cart = (props) =>
 	useEffect(() => {
 	    if(info === null && props?.info)
 	    {
-			axios.post("http://localhost:5000/api/user/info", {search: props.info}).then((res) => {
+			post("http://localhost:5000/api/user/info", {search: props.info}).then((res) => {
 				set_info(res.data);
 			})
 		}
 	});
 
 	return (
-				<div className = {style.card}>
+				<div className = {style.card} onClick = {() => dispatch(selectcard(`${info?.tabnum}`))}>
 					<table>
 						<tbody>
 							<tr>
