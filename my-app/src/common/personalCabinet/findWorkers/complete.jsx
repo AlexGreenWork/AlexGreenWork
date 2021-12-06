@@ -1,8 +1,6 @@
 import React from "react";
 import {AutoComplete, Input} from "antd";
-import Card from "./card";
-import {useDispatch} from "react-redux";
-const axios = require("axios");
+const {post} = require("axios");
 
 
 class Complete extends React.Component
@@ -33,7 +31,7 @@ class Complete extends React.Component
 	search_value(value)
 	{
 		this.setState({show: false});
-        axios.post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
+        post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
             this.setState({options: this.create_options(value, res)});
         })
 
@@ -82,10 +80,11 @@ class Complete extends React.Component
 			>
 				<span>
 					<div style={{display:"flex"}}>
-					<div style={{fontWeight:"bold"}}>{name} ></div>
-					 Цех: {division} >
-					Отдел: {department}
+						<div style={{fontWeight:"bold"}}>
+							{name} &gt;&nbsp;
 						</div>
+						 Цех: {division} &gt; Отдел: {department}
+					</div>
 				</span>
 			</div>),
 		}
@@ -132,7 +131,7 @@ class Complete extends React.Component
 				<AutoComplete
 					dropdownMatchSelectWidth={500}
 					style={{
-						width: '100%',
+						width: '99%',
 						paddingBottom: '40px',
 						fontSize: '14px',
 						fontWeight: "bold"
