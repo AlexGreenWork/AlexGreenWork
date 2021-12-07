@@ -176,7 +176,7 @@ router.get('/auth', authMiddleware,
 
 
 router.post("/forms", urlencodedParser, async (request, response)=> {
-
+    console.log(request.body)
     let firstName = request.body.firstName; // имя
     let middleName = request.body.middleName; // отчество
     let lastName = request.body.lastName; // фамилия
