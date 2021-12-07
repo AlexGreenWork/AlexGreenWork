@@ -93,7 +93,7 @@ class Search
 					AND d.factory = 1
 					AND d2.factory = 1
 				 	AND ka.deleted <> 1`;
-		console.log(query);
+
 		return query;
 	}
 

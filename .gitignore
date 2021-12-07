@@ -3,6 +3,7 @@ my-app/build/
 my-app/coverage/
 my-app/.pnp/
 my-app/src/videos/*.mp4
+my-app/src/Pics/photos/
 
 server/node_modules/
 server/build/
