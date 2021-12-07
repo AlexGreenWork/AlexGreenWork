@@ -1,5 +1,6 @@
 import React from "react";
 import {AutoComplete, Input} from "antd";
+import {API_URL} from "../../../config.js"
 const {post} = require("axios");
 
 
@@ -31,7 +32,7 @@ class Complete extends React.Component
 	search_value(value)
 	{
 		this.setState({show: false});
-        post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
+        post(`${API_URL}api/user/search`, {search: value}).then((res) => {
             this.setState({options: this.create_options(value, res)});
         })
 
