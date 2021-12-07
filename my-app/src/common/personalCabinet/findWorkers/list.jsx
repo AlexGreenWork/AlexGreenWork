@@ -1,5 +1,6 @@
 import React from "react"
 import Row from "./row";
+import {API_URL} from "../../../config.js"
 const {post} = require("axios");
 
 class List extends React.Component
@@ -42,7 +43,7 @@ class List extends React.Component
 	load(category, search)
 	{
 		const search_category = this.search_result_category.get(category);
-		post("http://localhost:5000/api/user/show_category",
+		post(`${API_URL}api/user/show_category`,
 					{
 						search: search,
 						category: search_category

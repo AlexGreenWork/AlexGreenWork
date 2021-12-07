@@ -144,13 +144,12 @@ class Search
 	async get_full_info(req, res)
 	{
 	    let result = [];
-
+		
 		if(req['body'])
 		{
 			if (req.body['search'] && req.body.search)
 			{
 				const request = req.body.search;
-
 				let connection = await Search.connection_to_database();
 				let db_results = await Search.find_value_by_alias(connection, request, {db: "ka", field: "tabnum"}, false);
 				await connection.end();

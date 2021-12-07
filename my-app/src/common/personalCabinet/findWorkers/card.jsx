@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react"
 import style from "./card.module.css"
 import {useDispatch} from "react-redux";
 import {selectcard} from "../../../actions/search";
+
+import {API_URL} from "../../../config.js"
 const {post} = require("axios");
 
 const Cart = (props) =>
@@ -10,19 +12,30 @@ const Cart = (props) =>
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-	    if(info === null && props?.info)
+	    if(props?.info
+			&& (
+					info === null
+					|| info.tabnum !== props.info
+				) 
+			)
 	    {
-			post("http://localhost:5000/api/user/info", {search: props.info}).then((res) => {
+			post(`${API_URL}api/user/info`, {search: props.info}).then((res) => {
 				set_info(res.data);
 			})
 		}
 	});
 
+	if(info === null) return (<></>);
+
 	return (
-				<div className = {style.card} onClick = {() => dispatch(selectcard(`${info?.tabnum}`))
-}>
+				<div className = {style.card} onClick = {() => dispatch(selectcard(`${info?.tabnum}`))}>
 					<table>
 						<tbody>
+							<tr>
+								<td rowSpan = "7">
+									<img width = "150" height = "200" alt = "Нет фото" src={`${API_URL}files/photos/${info?.tabnum}.jpg`}/>
+								</td>
+							</tr>
 							<tr>
 								<td>
 									Табельный номер
