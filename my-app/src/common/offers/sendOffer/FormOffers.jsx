@@ -1,12 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import OffFunc from './offerForm/FormOffFunc.js';
 import UploadFile from './fileUpload/fileUpload'
 import s from "./offerForm/formOffers.module.css";
-import {useContext} from "react";
-import Context from "../../context/Context";
-import { compose } from 'redux';
+import "./offersStyle.css"
 
-let arrNewAllElem = []; 
+
+
 let allNewSendler = {
    
 
@@ -18,9 +17,18 @@ function objClear(){
 
 objClear()
 
+let addFlag = false;
+
+
+
 
 function OffersForm(props) {
 
+    window.addEventListener("popstate",function(e){
+        objClear();
+        addFlag = false;
+    },false);
+    
     const [name, setName] = useState(localStorage.getItem('userName'));
     const [lastName, setLastName] = useState(localStorage.getItem('userSurName'));
     const [middleName, setMiddleName] = useState(localStorage.getItem('userMiddleName'));
@@ -32,8 +40,6 @@ function OffersForm(props) {
     const [offer, setOffer] = useState("");
     const [checked, setChecked] = useState(false);
 
-    
-
     const [nameNew, setNameNew] = useState();
     const [lastNameNew, setLastNameNew] = useState();
     const [middleNameNew, setMiddleNameNew] = useState();
@@ -41,7 +47,6 @@ function OffersForm(props) {
     const [tabelNumberNew, setTabelNumberNew] = useState();
     const [phoneNumberNew, setPhoneNumberNew] = useState();
     const [yetSendler, setYetSendler] = useState();
-
 
     const [newSendler, setNewSendler] = useState();
     const [count, setCount] = useState(0);
@@ -57,65 +62,86 @@ function OffersForm(props) {
 
     };
 
+   // allNewSendler[count] = addNewSendler;
+
+    addObjSend(addFlag)
+   // console.log(addNewSendler)
+
+
     function YetSendler(){
-        let arr = [];
-        console.log("allNewSendler");
-        console.log(allNewSendler);
-                 
-      let key =  Object.keys(allNewSendler)
-      console.log(key);
+     
+        console.log(addNewSendler);
+        let arrEl = [];          
+        let key =  Object.keys(allNewSendler)
+        console.log(key);
         let objLengtch = Object.keys(allNewSendler).length
         for(let i = 1; i<objLengtch; i++){
-            
-            console.log(`allNewSendler ${i}`);
-            //console.log(allNewSendler);
-            console.log(key[i]);
-           // console.log(allNewSendler[key[i]]);
+         
             let surname = allNewSendler[key[i]].surname;
-            arr[i] = React.createElement("div", {className:"formFilds" , id:`yetSendler${i} `, key:`keyList${i}`} , 
+            arrEl[i] = React.createElement("div", {className:"formFilds" , id:`yetSendler${i} `, key:`keyList${i}`} , 
                                          <label >{surname}</label>, 
                                          <div id ={`keyBtn${i}`} onClick={()=>{
-              
-              //  document.querySelector(`#keyBtn${i}`).remove();
-               console.log('key[i]')
-             //  setLastNameNew(undefined)
-                if(objLengtch == 2){
-                    objClear();
-                }
-               console.log(key[i])
-               
-               console.log(allNewSendler);
-               
-                let numElem = key[i];
-                delete allNewSendler[numElem];
-                console.log(allNewSendler);
-                
-                 
-                setYetSendler(<YetSendler/>)
-                
-                
+                                            setNameNew(undefined)
+                                            setLastNameNew(undefined)
+                                            setMiddleNameNew(undefined)
+                                            setEmailNew(undefined)
+                                            setTabelNumberNew(undefined)
+                                            setPhoneNumberNew(undefined)
+                                            
+                                            let numElem = key[i];
+                                            addFlag = true;
+                                            delete allNewSendler[numElem];                    
+                                            setYetSendler(<YetSendler/>)                             
         }}>X</div>)
         }
-        console.log(arr)
-        return React.createElement("div", {className:"formFilds",  key:`container`} , arr)
+        console.log(arrEl)
+       
+        return React.createElement("div", {className:"formFildsForm",  key:`container`} , arrEl)
        
     }
+  
+   function addObjSend(noadd){
 
-    addObjSend(nameNew, lastNameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew, count);
- 
-   function addObjSend(){
     
-        allNewSendler[count] = addNewSendler;
-        /* console.log("allNewSendler " )
-        console.log(allNewSendler )
-         */
+    if(noadd == true){
+
+    } else{
+        let addNewSendler = {
+       
+            name: nameNew,
+            surname: lastNameNew,
+            middlename: middleNameNew ,
+            email: EmailNew,
+            tabelNumber: tabelNumberNew,
+            phoneNumber: phoneNumberNew,
+    
+        };
+            allNewSendler[count] = addNewSendler;
+            
+            
+    }
+   
     }
    
     function SaveBtn(){
         return(
-            React.createElement("div", {className:"formFilds"} , <button value="submit" onClick={()=>{setNewSendler(newSendler == null); 
-                console.log("ctate do ",nameNew, lastNameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew, count);    
-                setYetSendler(YetSendler())   
+            React.createElement("div", {className:"btnYetSend"} , <button value="submit" onClick={()=>{
+                
+                setNewSendler(newSendler == null); 
+                console.log("ctate do ",nameNew, lastNameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew, count); 
+                setYetSendler(<YetSendler/>)
+                addFlag = false
+                if(nameNew != undefined){
+                    addObjSend(addNewSendler);   
+                    setNameNew(undefined)
+                    setLastNameNew(undefined)
+                    setMiddleNameNew(undefined)
+                    setEmailNew(undefined)
+                    setTabelNumberNew(undefined)
+                    setPhoneNumberNew(undefined)
+                    setYetSendler(<YetSendler/>)   
+                }
+                
              }} > Сохранить еще одного пользователя</button>)
         )
     }
@@ -131,22 +157,31 @@ function OffersForm(props) {
             React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} onChange={(e) => setTabelNumberNew(e.target.value)} /> ),
             React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
             ]
-
-    return(React.createElement("div", {className:`offers newSendler${props} exists`} , arr, <SaveBtn/>  ))
+            
+    return(React.createElement("div", {className:`shadowBox`} , React.createElement("div", {className:`offers newSendler${props} exists`} ,  arr, <SaveBtn/> )))
     }  
 
     function NewSendler(){
-        
-      //  console.log(arrNewAllElem) 
-        arrNewAllElem = []
-      //  console.log(allNewSendler)
+     
         return (
             
-            <div className={s.buttonConfirm}>
+            <div className={s.buttonConfirm} >
             <button  onClick={()=>{
                 
                  if(!document.querySelector(`.exists`)){
                     setCount(count+1); setNewSendler(AddSendler(count));
+                    addFlag = false
+                    addNewSendler = {
+       
+                        name: nameNew,
+                        surname: lastNameNew,
+                        middlename: middleNameNew ,
+                        email: EmailNew,
+                        tabelNumber: tabelNumberNew,
+                        phoneNumber: phoneNumberNew,
+                
+                    };
+                
                 }                
           }}>
                 Добавить ещё одного автора предложения
@@ -163,10 +198,15 @@ function OffersForm(props) {
         let btnFormON = document.querySelector('.close-btn');
 
         if (btnFormON == null) {
-
-            OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer, checked, );
+         
+            console.log("OffFunc allNewSendler")
+            console.log(allNewSendler)
+           let allYetSendler= JSON.stringify(allNewSendler)
+           console.log(allYetSendler)
+            OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer,  allYetSendler  );
+            objClear();
             UploadFile('file');
-
+            
         } else {
             console.log(".close-btn true");
         }
@@ -256,11 +296,10 @@ function OffersForm(props) {
                         <label htmlFor="agree" className="label-checkbox">Разрешаю передачу персональных данных</label>
                         <div className="false-input false-agree"></div>
                     </div>
-
-
-                    
+                    <NewSendler/>
+                    {newSendler}
                     <div className={s.buttonConfirm}>
-                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit">Подтвердить
+                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Подтвердить
                             запись
                         </button>
                     </div>
@@ -268,9 +307,9 @@ function OffersForm(props) {
                 </div>
 
             </form>
-            {newSendler}
+          
             
-            <NewSendler/>
+            
             
         </div>
 

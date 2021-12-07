@@ -2,10 +2,9 @@ import EventClose from '../message/eventClose'
 import closeDiv from '../message/closediv'
 import {API_URL} from "../../../../config";
 
-function OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer) {
+function OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer, allYetSendler) {
  
-    console.log("OffFunc " + name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer);
-
+    console.log("OffFunc " + name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer, "allNewSendler =" + allYetSendler);
 
 
 
@@ -17,7 +16,7 @@ function OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, na
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
            
             xhr.send(`firstName=${name}&lastName=${lastName}&middleName=${middleName}&emailInput=${Email}&tabelNumber=${tabelNumber}`+
-                    `&phoneNumber=${phoneNumber}&nameOffer=${nameOffer}&problem=${problem}&offer=${offer}`)
+                    `&phoneNumber=${phoneNumber}&nameOffer=${nameOffer}&problem=${problem}&offer=${offer}&yetSendler=${allYetSendler}`)
             xhr.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     let params = this.responseText;

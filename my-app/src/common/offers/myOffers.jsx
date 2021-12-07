@@ -21,7 +21,7 @@ function Resp() {
     xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`firstName=${userName}&userSurName=${userSurName}&middleName=${userMiddleName}&email=${userEmail}` +
-        `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}`);
+        `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}&phoneNumber=${userPhoneNumber}`);
 
 
     xhr.onreadystatechange = function () {
