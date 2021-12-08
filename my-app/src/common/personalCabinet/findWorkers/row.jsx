@@ -35,10 +35,13 @@ class Row extends React.Component
 						<td>
 							{this.props.division}
 						</td>
+						<td>
+							{this.state.show ? <>&#128770;</> : <>&#128772;</>}
+						</td>
 					</tr>
 			{this.state.show ?
 					<tr>
-						<td colSpan = "4">
+						<td colSpan = "5">
 							<Card info = {this.state.tabnum}/>
 						</td>
 					</tr>

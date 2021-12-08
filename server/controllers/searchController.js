@@ -71,14 +71,13 @@ class Search
 		 return Search.category_alias_by_name().get(name);
 	}
 
-	static query_users_by_alias(alias)
+	static query_users_info_by_alias(alias)
 	{
 		const query = ` SELECT
 					ka.fiofull AS fio,
 					d.name AS department,
 					d2.name AS division,
-					ka.tabnum AS tabnum,
-					ka.profname AS prof
+					ka.tabnum AS tabnum
 				FROM kadry_all AS ka
 				LEFT JOIN department AS d ON
 					d.id = ka.department
@@ -90,6 +89,34 @@ class Search
 					AND d.factory = 1
 					AND d2.factory = 1
 				 	AND ka.deleted <> 1`;
+
+		return query;
+	}
+
+	static query_full_user_info_by_tabnum()
+	{
+		const query = ` SELECT
+					ka.fiofull AS fio,
+					d.name AS department,
+					d2.name AS division,
+					ka.tabnum AS tabnum,
+					fp.profname AS prof,
+					ue.email AS email
+				FROM kadry_all AS ka
+				LEFT JOIN department AS d ON
+					d.id = ka.department
+				LEFT JOIN division AS d2 ON
+					d2.department = ka.department
+					AND d2.id = ka.division
+				LEFT JOIN users_emails AS ue ON
+					ue.tabnum = ka.tabnum
+				LEFT JOIN clpost AS fp ON SUBSTR(fp.PROFCODE, 1, LENGTH(ka.profcode)) = ka.profcode
+				WHERE ka.tabnum LIKE ?
+					AND ka.factory = 1
+					AND d.factory = 1
+					AND d2.factory = 1
+				 	AND ka.deleted <> 1`;
+
 		return query;
 	}
 
@@ -99,13 +126,11 @@ class Search
 		return Search.db_alias_by_type("number");
 	}
 
-	static async find_value_by_alias(connection, value, alias, like = true)
+	static async query(connection, query, bind_params)
 	{
-		let query_param = value;
-		if(like) query_param = `%${value}%`;
 		try
 		{
-			return await connection.query( Search.query_users_by_alias(alias), [query_param]);
+			return await connection.query(query, bind_params);
 		}catch(e)
 		{
 			console.log(e);
@@ -113,7 +138,15 @@ class Search
 		return [];
 	}
 
-	static async find(connection, value)
+	static async find_value_by_alias(connection, value, alias, like = true)
+	{
+		let query_param = value;
+		if(like) query_param = `%${value}%`;
+
+		return await Search.query(connection, Search.query_users_info_by_alias(alias), [query_param]);
+	}
+
+	static async find_all(connection, value)
 	{
 	    const alias = Search.get_value_type(value);
 	    let result = new Map();
@@ -128,7 +161,7 @@ class Search
 		return result;
 	}
 
-	static async find_all_by_alias(connection, value, alias)
+	static async find_all_category_by_alias(connection, value, alias)
 	{
 	    let result = new Map();
 		const key = Search.category_db_alias_by_name(alias);
@@ -140,15 +173,14 @@ class Search
 	async get_full_info(req, res)
 	{
 	    let result = [];
-
+		
 		if(req['body'])
 		{
 			if (req.body['search'] && req.body.search)
 			{
 				const request = req.body.search;
-
 				let connection = await Search.connection_to_database();
-				let db_results = await Search.find_value_by_alias(connection, request, {db: "ka", field: "tabnum"}, false);
+				let db_results = await Search.query(connection, Search.query_full_user_info_by_tabnum(), [request]);
 				await connection.end();
 				const db_result = db_results[0][0];
 
@@ -159,7 +191,8 @@ class Search
 					tabnum: db_result.tabnum,
 					prof: db_result.prof,
 					department: db_result.department,
-					division: db_result.division
+					division: db_result.division,
+					email: db_result.email
 				})
 
 			}
@@ -179,7 +212,7 @@ class Search
 				const request = req.body.search;
 
 				let connection = await Search.connection_to_database();
-				const db_results = await Search.find(connection, request);
+				const db_results = await Search.find_all(connection, request);
 				await connection.end();
 
 				for (const [key, value] of db_results)
@@ -225,7 +258,7 @@ class Search
 				const category = req.body.category;
 
 				let connection = await Search.connection_to_database();
-				const db_results = await Search.find_all_by_alias(connection, request, category);
+				const db_results = await Search.find_all_category_by_alias(connection, request, category);
 				await connection.end();
 
 				for (const [key, value] of db_results)
