@@ -23,6 +23,8 @@ const ConclusionOffer = () => {
 
 
 
+
+
     function SelectChangeConclusionResponsible() {
 
 
