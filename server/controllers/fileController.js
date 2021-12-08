@@ -46,7 +46,7 @@ class FileController {
             switch (sort) {
                 case 'name':
                     files = await File.find({user: req.user.id, parent: req.query.parent}).sort({name: 1})
-                    console.log("привет")
+
                     break
                 case 'type':
                     files = await File.find({user: req.user.id, parent: req.query.parent}).sort({type: 1})
@@ -163,24 +163,30 @@ class FileController {
             const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
             const user = userD[0][0]
             const avaOld = user.avatar
-            console.log(avaOld)
             const file = req.files.file
-            //console.log(req.files.file)
+            console.log(req.files.file)
+
+
+
+            console.log(req.files.file)
             // const user = await User.findById(req.user.id)
             const avatarName = Uuid.v4() + ".jpg"
             await file.mv('../server/files/avatar/' + avatarName)
 
             user.avatar = avatarName
+
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
-            if(avaOld)
-            fs.unlinkSync("./files/avatar/" + avaOld)
+
+            if(avaOld !== null && avaOld !== "") {
+
+                  fs.unlinkSync("./files/avatar/"+ avaOld)
+
+            }else {
+
+            }
 
             //await user.save()
-            console.log(user.avatar)
-            user.avatar=avatarName
-            console.log(user.avatar)
-            console.log(user)
-            res.send(user);
+            // res.send(user);
             return res.json(user)
         } catch (e) {
             console.log(e)
@@ -196,19 +202,18 @@ class FileController {
             const avaOld = user.avatar
 
             if(avaOld !== '' && avaOld !== null ){
-                if (fs.existsSync("./files/avatar/"+ avaOld)){
-                    fs.unlinkSync("./files/avatar/"+ avaOld)
+                if (fs.existsSync("./files/avatar/"+ avaOld)) {
+                    fs.unlinkSync("./files/avatar/" + avaOld)
                 }
-
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
 
             }else{
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
             }
 
-            user.avatar = null
+            user.avatar = ""
             //await user.save()
-            return res.json(user)
+           return res.json(user)
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Delete avatar error'})
