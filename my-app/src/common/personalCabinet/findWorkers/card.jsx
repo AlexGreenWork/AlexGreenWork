@@ -30,10 +30,21 @@ const Cart = (props) =>
 	return (
 				<div className = {style.card} onClick = {() => dispatch(selectcard(`${info?.tabnum}`))}>
 					<table>
+						<col width = "20%"/>
+						<col width = "20%"/>
 						<tbody>
 							<tr>
 								<td rowSpan = "7">
-										<img width = "150" height = "200" alt = "Нет фото" src={`${API_URL}files/photos/${info?.tabnum}.jpg`}/>
+									<div style={
+													{
+														width: "150px",
+														height: "200px", 
+														backgroundImage: `url(${API_URL}files/photos/${info?.tabnum}.jpg)`,
+														backgroundRepeat: "round",
+														borderRadius: "10px"
+													}
+												}>
+									</div>
 								</td>
 							</tr>
 							<tr>
