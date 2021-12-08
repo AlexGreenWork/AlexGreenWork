@@ -21,11 +21,11 @@ let addFlag = false;
 
 
 
-
 function OffersForm(props) {
 
     window.addEventListener("popstate",function(e){
         objClear();
+      
         addFlag = false;
     },false);
     
@@ -67,6 +67,7 @@ function OffersForm(props) {
     addObjSend(addFlag)
    // console.log(addNewSendler)
 
+ 
 
     function YetSendler(){
      
@@ -78,21 +79,27 @@ function OffersForm(props) {
         for(let i = 1; i<objLengtch; i++){
          
             let surname = allNewSendler[key[i]].surname;
-            arrEl[i] = React.createElement("div", {className:"formFilds" , id:`yetSendler${i} `, key:`keyList${i}`} , 
-                                         <label >{surname}</label>, 
-                                         <div id ={`keyBtn${i}`} onClick={()=>{
-                                            setNameNew(undefined)
-                                            setLastNameNew(undefined)
-                                            setMiddleNameNew(undefined)
-                                            setEmailNew(undefined)
-                                            setTabelNumberNew(undefined)
-                                            setPhoneNumberNew(undefined)
-                                            
-                                            let numElem = key[i];
-                                            addFlag = true;
-                                            delete allNewSendler[numElem];                    
-                                            setYetSendler(<YetSendler/>)                             
-        }}>X</div>)
+            if( surname!=undefined ){
+               
+                arrEl[i] = React.createElement("div", {className:"formYetSendler" , id:`yetSendler${i} `, key:`keyList${i}`} , 
+                <label >{surname}</label>, 
+                <div  className="btnYetClose" id ={`keyBtn${i}`} onClick={()=>{
+                   setNameNew(undefined)
+                   setLastNameNew(undefined)
+                   setMiddleNameNew(undefined)
+                   setEmailNew(undefined)
+                   setTabelNumberNew(undefined)
+                   setPhoneNumberNew(undefined)
+                   
+                   let numElem = key[i];
+                   addFlag = true;
+                   delete allNewSendler[numElem];                    
+                   setYetSendler(<YetSendler/>)                             
+}}>X</div>)
+            } else {
+                delete  allNewSendler[key[i]]
+            }
+           
         }
         console.log(arrEl)
        
@@ -127,11 +134,28 @@ function OffersForm(props) {
         return(
             React.createElement("div", {className:"btnYetSend"} , <button value="submit" onClick={()=>{
                 
-                setNewSendler(newSendler == null); 
-                console.log("ctate do ",nameNew, lastNameNew, lastNameNew, middleNameNew, EmailNew, tabelNumberNew, phoneNumberNew, count); 
-                setYetSendler(<YetSendler/>)
-                addFlag = false
-                if(nameNew != undefined){
+                
+                 let firstInput = document.querySelector(`#firstName${count}`).value;
+                 let twoInput = document.querySelector(`#lastName${count}`).value;
+                 let thirdInput = document.querySelector(`#middleName${count}`).value;
+                 let fourthInput = document.querySelector(`#tabelNumber${count}`).value;
+                 let fifthInput = document.querySelector(`#emailInput${count}`).value;
+                 let sixthInput = document.querySelector(`#phoneNumber${count}`).value;
+                
+                 if(firstInput.length != 0  && twoInput.length != 0 && thirdInput.length != 0 && fourthInput.length != 0
+                     && fifthInput.length != 0 && sixthInput.length != 0 ){
+                       
+                        setNewSendler(newSendler == null); 
+                        setYetSendler(<YetSendler/>)
+                        addFlag = false
+                      
+                     } else{
+                        alert('Заполните все поля')
+                     }
+
+                
+               
+                /* if(nameNew != undefined){
                     addObjSend(addNewSendler);   
                     setNameNew(undefined)
                     setLastNameNew(undefined)
@@ -140,7 +164,7 @@ function OffersForm(props) {
                     setTabelNumberNew(undefined)
                     setPhoneNumberNew(undefined)
                     setYetSendler(<YetSendler/>)   
-                }
+                } */
                 
              }} > Сохранить еще одного пользователя</button>)
         )
@@ -150,15 +174,34 @@ function OffersForm(props) {
        
              
          let   arr = [
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} onChange={(e) => setNameNew(e.target.value)}/> ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} onChange={(e) => setLastNameNew(e.target.value)}/>  ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} onChange={(e) => setMiddleNameNew(e.target.value)}/>),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} onChange={(e) => setEmailNew(e.target.value)}/> ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} onChange={(e) => setTabelNumberNew(e.target.value)} /> ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} placeholder="Иван" required onChange={(e) => setNameNew(e.target.value)}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} placeholder="Иванов" required onChange={(e) => setLastNameNew(e.target.value)}/>  ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} placeholder="Иванович" required onChange={(e) => setMiddleNameNew(e.target.value)}/>),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} placeholder="12345" required onChange={(e) => setEmailNew(e.target.value)}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} placeholder="e-mail-adress@gmail.com" required onChange={(e) => setTabelNumberNew(e.target.value)} /> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} placeholder="+375293333333" required onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
             ]
             
-    return(React.createElement("div", {className:`shadowBox`} , React.createElement("div", {className:`offers newSendler${props} exists`} ,  arr, <SaveBtn/> )))
+    return(React.createElement("div", {className:`shadowBox`, onClick:()=>{
+        addFlag = false;
+        setNewSendler(undefined);
+        
+        setNameNew(undefined)
+        setLastNameNew(undefined)
+        setMiddleNameNew(undefined)
+        setEmailNew(undefined)
+        setTabelNumberNew(undefined)
+        setPhoneNumberNew(undefined)  
+
+       
+        
+      /*   handleClick(event) {  
+            var clickedId = event.target.id;
+            console.log(clickedId);
+            alert("It works! You clicked " + clickedId)
+          } */
+                                                                                                    
+    }} , React.createElement("div", {className:`offers newSendler${props} exists`, onClick: (event)=>event.stopPropagation()} ,  arr, <SaveBtn/>)))
     }  
 
     function NewSendler(){
@@ -170,7 +213,10 @@ function OffersForm(props) {
                 
                  if(!document.querySelector(`.exists`)){
                     setCount(count+1); setNewSendler(AddSendler(count));
+                    //console.log(document.querySelector('.shadowBox'))
+                   
                     addFlag = false
+                    
                     addNewSendler = {
        
                         name: nameNew,
@@ -181,6 +227,8 @@ function OffersForm(props) {
                         phoneNumber: phoneNumberNew,
                 
                     };
+
+                   
                 
                 }                
           }}>
@@ -205,7 +253,15 @@ function OffersForm(props) {
            console.log(allYetSendler)
             OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer,  allYetSendler  );
             objClear();
+            allNewSendler={}
             UploadFile('file');
+            setYetSendler(undefined)
+            setNameNew(undefined)
+            setLastNameNew(undefined)
+            setMiddleNameNew(undefined)
+            setEmailNew(undefined)
+            setTabelNumberNew(undefined)
+            setPhoneNumberNew(undefined)  
             
         } else {
             console.log(".close-btn true");
@@ -215,7 +271,7 @@ function OffersForm(props) {
     return (
       
         <div className={s.sendOfferContainer}>
-           {yetSendler}
+            {yetSendler}
             <form className="offers" onSubmit={handleSubmit}>
                 <div className="form-fields">
                     <div className={s.formFilds}>
@@ -298,6 +354,7 @@ function OffersForm(props) {
                     </div>
                     <NewSendler/>
                     {newSendler}
+                   
                     <div className={s.buttonConfirm}>
                         <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Подтвердить
                             запись
