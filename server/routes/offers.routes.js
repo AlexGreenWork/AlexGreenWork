@@ -53,24 +53,24 @@ router.get("/allOffers",
 
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
-
+        console.log(request.body)
         let firstName = request.body.firstName; // имя
         let middleName = request.body.middleName; // отчество
         let surname = request.body.userSurName; // фамилия
         let tabelNumber = request.body.tabelNumber;
         let phoneNumber = request.body.phoneNumber;
         let email = request.body.email;
+        
         let sqlResult = await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
-
+       
         response.send(sqlResult[0][0])
     })
 
 async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber) {
-
-    let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE (tabelNum = ${tabelNumber} AND email = "${email}")` +
-        `OR (nameSendler = "${firstName}" AND surnameSendler = "${surname}" AND middlenameSendler ="${middleName}" AND tabelNum = ${tabelNumber} ` +
-        `AND phoneNumber =  ${phoneNumber}  )`)
-
+   
+    let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE (tabelNum = ${tabelNumber} AND email = "${email}")`)
+       
+        
     return [sqlMyOff]
 
 }
