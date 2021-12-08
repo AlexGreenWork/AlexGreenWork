@@ -33,7 +33,7 @@ const Cart = (props) =>
 						<tbody>
 							<tr>
 								<td rowSpan = "7">
-									<img width = "150" height = "200" alt = "Нет фото" src={`${API_URL}files/photos/${info?.tabnum}.jpg`}/>
+										<img width = "150" height = "200" alt = "Нет фото" src={`${API_URL}files/photos/${info?.tabnum}.jpg`}/>
 								</td>
 							</tr>
 							<tr>
