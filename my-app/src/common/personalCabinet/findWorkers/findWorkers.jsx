@@ -1,15 +1,18 @@
 import style from "./findWorkers.module.css"
 import Complete from "./complete"
 import List from "./list"
-import {React, useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import Card from "./card";
+import {searchtabnum} from "../../../actions/search";
+import {React, useState} from "react";
+import {useDispatch} from "react-redux";
 
-const FindWorkers = (props) => {
-	const [category, set_category] = useState('');
-	const [search, set_search] = useState('');
-	const [open, set_open] = useState(false);
-
-	const value = useSelector(state => state.searchUserTabnum);
+const FindWorkers = () => {
+	const [searchCategory, set_search_category] = useState('');
+	const [searchCategoryValue, set_search_category_value] = useState('');
+	const [searchItemValue, set_search_item_value] = useState('');
+	const [isList, show_list] = useState(false);
+	
+	const dispatcher = useDispatch();
 
 	return (
 				<div className={style.sendOfferContainer}>
@@ -17,22 +20,23 @@ const FindWorkers = (props) => {
 						<div className={style.sendOfferSearchBar}>
 							<Complete
 									onSelectItem = {(value) => {
-										set_open(false);
+										set_search_item_value(value);
+										show_list(false);
+										dispatcher(searchtabnum(`${value}`));
 									}}
-									onSelectHeader = {(category) => {
-										set_category(category);
-										set_open(true);
-									}}
-									onSearchHeader = {(value) => {
-										set_search(value);
-										set_open(true);
+									onSelectHeader = {(category, value) => {
+										set_search_category(category);
+										set_search_category_value(value);
+										show_list(true);
 									}}
 							/>
-
+							<div>
+								<Card info = {searchItemValue} />
+							</div>
 						</div>
-						{open ?
+						{isList ?
 							<div className={style.sendOfferList}>
-								<List category = {category} search = {search}/>
+								<List category = {searchCategory} search = {searchCategoryValue}/>
 							</div>
 							: null
 						}
