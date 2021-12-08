@@ -46,7 +46,7 @@ export const login = (email, password) => {
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
             localStorage.setItem('userAvatar', response.data.user.avatar)
         } catch (e) {
-			console.log("Error Level: "+ e);
+            console.log("Error Level: "+ e);
             alert(e.response.data.message)
         }
     }
@@ -55,9 +55,7 @@ export const login = (email, password) => {
 export const auth = () => {
     return async dispatch => {
 
-        if (localStorage.getItem('token')) {
-            if (new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 10) {
-
+        if (localStorage.getItem('token') && 0 > new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 8) {
 
                 const user = {
                     id: localStorage.getItem('userId'),
@@ -70,8 +68,6 @@ export const auth = () => {
                     fired: localStorage.getItem('userFired'),
                     adminOptions: localStorage.getItem('userAdminOptions'),
                     avatar: localStorage.getItem('userAvatar'),
-
-
                 }
                 dispatch(setUserLocal(user))
 
@@ -92,13 +88,14 @@ export const auth = () => {
             }
         }
     }
-}
 
 export const uploadAvatar = (file) => {
     return async dispatch => {
         try {
             const formData = new FormData()
             formData.append('file', file)
+
+
             const response = await axios.post(`${API_URL}api/files/avatar`, formData,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
@@ -119,7 +116,7 @@ export const deleteAvatar = () => {
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
             dispatch(setUser(response.data))
-            localStorage.removeItem('userAvatar')
+            localStorage.setItem('userAvatar','')
         } catch (e) {
             console.log(e)
         }
