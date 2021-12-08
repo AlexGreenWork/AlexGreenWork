@@ -5,7 +5,8 @@ const SearchInfoFull = new Schema({
 	tabnum: {type: Number, required: false},
 	prof: {type: String, required: false},
     department: {type: String, required: false},
-    division: {type: String, required: false}
+    division: {type: String, required: false},
+    email: {type: String, required: false}
 })
 
 module.exports = model('SearchInfoFull', SearchInfoFull)
