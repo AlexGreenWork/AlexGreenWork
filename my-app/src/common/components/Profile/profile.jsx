@@ -1,19 +1,32 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {deleteAvatar, uploadAvatar} from "../../../actions/user";
 import s from "./profile.module.css"
 import {API_URL} from "../../../config";
 import avatarLogo from '../../../assets/img/avatar.svg'
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
+
+/////////// Это доработать для удаления авы disabled button
+
 const Profile = () => {
     const dispatch = useDispatch()
     const currentUser = useSelector(state => state.user.currentUser)
     function changeHandler(e) {
+
         const file = e.target.files[0]
-        //console.log(e.target.files[0])
+
+
+        if ( /\.(jpe?g|png)$/i.test(file.name) === false ) {
+            return alert('Выберите картинку формата jpg, jpeg, png')
+        }
+
+         if (file.size > 2000000){
+            return alert('Выберите картинку меньшего размера')
+        }
         dispatch(uploadAvatar(file))
     }
-   localStorage.getItem("avatar")
+    localStorage.getItem("avatar")
     const avatar = currentUser.avatar ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : avatarLogo
     return (
         <div className={s.profile}>
@@ -25,8 +38,8 @@ const Profile = () => {
                         backgroundImage: `url("${avatar}")`,
                         backgroundSize: "cover",
                         borderRadius:10
-                    }}><img className={s.avatar} src={`${avatar}`} alt="avatarLogo"/></div>
-                    <button onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
+                    }}></div>
+                    <button  onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
                     <input accept="image/*" onChange={e => changeHandler(e)} type="file"
                            placeholder="Загрузить аватар"/>
                 </div>
