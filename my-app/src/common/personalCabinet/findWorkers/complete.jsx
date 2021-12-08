@@ -1,8 +1,7 @@
 import React from "react";
 import {AutoComplete, Input} from "antd";
-import Card from "./card";
-import {useDispatch} from "react-redux";
-const axios = require("axios");
+import {API_URL} from "../../../config.js"
+const {post} = require("axios");
 
 
 class Complete extends React.Component
@@ -10,9 +9,7 @@ class Complete extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {options: [],
-						card: [],
-						show: false};
+		this.state = {options: []}
 
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
@@ -35,8 +32,7 @@ class Complete extends React.Component
 	search_value(value)
 	{
 		this.setState({show: false});
-        axios.post("http://localhost:5000/api/user/search", {search: value}).then((res) => {
-			console.log(res);
+        post(`${API_URL}api/user/search`, {search: value}).then((res) => {
             this.setState({options: this.create_options(value, res)});
         })
 
@@ -65,16 +61,9 @@ class Complete extends React.Component
 		return items;
 	}
 
-	open_card(value)
-	{
-
-		this.setState({card: value, show: true});
-	}
-
 	select_value(element)
 	{
 		this.setState({options: []});
-		this.open_card(element);
 		this.props.onSelectItem?.(element)
 	}
 
@@ -92,10 +81,11 @@ class Complete extends React.Component
 			>
 				<span>
 					<div style={{display:"flex"}}>
-					<div style={{fontWeight:"bold"}}>{name} ></div>
-					 Цех: {division} >
-					Отдел: {department}
+						<div style={{fontWeight:"bold"}}>
+							{name} &gt;&nbsp;
 						</div>
+						 Цех: {division} &gt; Отдел: {department}
+					</div>
 				</span>
 			</div>),
 		}
@@ -103,8 +93,7 @@ class Complete extends React.Component
 
 	header_click(category, search)
 	{
-		this.props.onSelectHeader?.(category.target.innerText);
-		this.props.onSearchHeader?.(search);
+		this.props.onSelectHeader?.(category.target.innerText, search);
 	}
 
 	create_category_header(search, item_category, item_count)
@@ -154,11 +143,6 @@ class Complete extends React.Component
 					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
 						enterButton/>
 				</AutoComplete>
-				{
-					this.state.show ?
-						<Card info={this.state.card}/>
-						: null
-				}
 		</>);
 	}
 };
