@@ -2,6 +2,7 @@ const mysql = require("mysql2/promise");
 const express = require("express");
 const fileUpload = require('express-fileupload');
 const fs = require('fs'); 
+const dataBaseConfig = require("../config/default.json")
 
 const app = express();
 
@@ -9,10 +10,10 @@ app.use(fileUpload({}));
 app.use(express.static('public'));
 
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    database: "offersendler",
-    password: "",
+    host: dataBaseConfig.database.host,
+    user: dataBaseConfig.database.user,
+    database: dataBaseConfig.database.database,
+    password: dataBaseConfig.database.password,
 });
 
 app.use((req, res, next)=>{
@@ -45,16 +46,18 @@ module.exports.CheckLastEntry = async function(){
                 if(err) throw err; // не удалось создать папку
                // console.log('Папка успешно создана');
                 fs.readdir('../server/files/upload/', (err, files) => {
-
-                    let tempVar = files[0];
-                    console.log('файл 0')
-                    console.log(files[0])
-                    if(tempVar){
-                        fs.rename(`../server/files/upload/${tempVar}`, `../server/files/offers/idOffers/id${lstEntry[0][0].Id}/SendlerFiles/${tempVar}`, err => {
-
-                            console.log('Файл успешно записан');
-                         });
+                    if(files){
+                        let tempVar = files[0];
+                        if(tempVar){
+                            fs.rename(`../server/files/upload/${tempVar}`, `../server/files/offers/idOffers/id${lstEntry[0][0].Id}/SendlerFiles/${tempVar}`, err => {
+    
+                                console.log('Файл успешно записан');
+                             });
+                        }
+                    } else{
+                        console.log("folder not found")
                     }
+                  
                   });
              });
                 
