@@ -6,7 +6,7 @@
     left:0;
     width: 100%;
     height: 100%;
-    z-index: 1000;
+    z-index: 0;
     }
 
 .exists{
@@ -15,14 +15,33 @@
     left:40%;
     border: 1px black solid ;
     border-radius: 8px;
-    padding: 10px;
-   
+    padding: 15px;
+    width: 360px;
+    height: 365px;
     background-color:  #607fff;
+    z-index: 5;
 }
 
 .btnYetSend{
     position: relative;
-    bottom: -4px;
-    padding: 10px;
+    bottom: -9px;
+    left: 30px;
+    
 }
 
+.formYetSendler{
+    background-color: blanchedalmond;
+    border: 1px black solid ;
+    padding: 5px;
+    position: relative;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.btnYetClose{
+    background-color: rgb(201, 201, 201);
+    border: 1px black solid ;
+    border-radius: 5px;
+    position: relative;
+    width: 20px;
+}
