@@ -9,7 +9,19 @@ class List extends React.Component
 	{
 		super(props);
 
-		this.state = {values: [],};
+		this.sort_binds = {
+						name: {
+								desc: (lv, rv) => {return lv.name > rv.name},
+								asc: (lv, rv) => {return lv.name < rv.name}
+						}
+		};
+
+
+		this.state = {
+						values: [],
+						sort:	{by: "name", type: "desc"}
+					}
+
 		this.search_result_category = new Map([
 												["Табельный номер", "1"],
 												["ФИО", "2"],
@@ -22,6 +34,15 @@ class List extends React.Component
 		this.load(this.props.category, this.props.search);
 	}
 
+	sort_list(list)
+	{
+		list.sort(
+					this.sort_binds[this.state["sort"]["by"]]
+									[this.state["sort"]["type"]]
+					);
+		return list;
+	}
+
 	create_list(res)
 	{
 		let results = [];
@@ -31,7 +52,9 @@ class List extends React.Component
 			{
 				if(!response?.users) continue;
 
-				response.users.map((v, i) => {
+				const list = this.sort_list(response.users);
+
+				list.map((v, i) => {
 					results.push(<Row key = {i} tabnum = {v.tabnum} name = {v.name} department = {v.department} division = {v.division}/> );
 				});
 			}
@@ -62,6 +85,18 @@ class List extends React.Component
         return (
             <table style={{width: "100%", color: "black"}} cellPadding="12">
 				<tbody>
+					<th>
+						Табельный номер
+					</th>
+					<th>
+						ФИО
+					</th>
+					<th>
+						Цех
+					</th>
+					<th>
+						Отдел
+					</th>
 					{this.state.values}
 				</tbody>
             </table>
