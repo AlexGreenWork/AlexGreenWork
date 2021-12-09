@@ -31,8 +31,8 @@ export const login = (email, password) => {
                 password
             })
 
-            dispatch(setUser(response.data.user))
 
+            localStorage.setItem('userAvatar', response.data.user.avatar)
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('tokenExpires', Date())
             localStorage.setItem('userId', response.data.user.id)
@@ -44,7 +44,8 @@ export const login = (email, password) => {
             localStorage.setItem('userPhoneNumber', response.data.user.phoneNumber)
             localStorage.setItem('userFired', response.data.user.fired)
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
-            localStorage.setItem('userAvatar', response.data.user.avatar)
+
+            dispatch(setUser(response.data.user))
         } catch (e) {
             console.log("Error Level: "+ e);
             alert(e.response.data.message)
