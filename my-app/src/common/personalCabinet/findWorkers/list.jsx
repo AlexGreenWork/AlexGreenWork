@@ -34,7 +34,9 @@ class List extends React.Component
 
 		this.state = {
 						values: [],
-						sort:	{by: "name", type: false}
+						sort: "name",
+						sort_type: false,
+						old_sort: "name"
 					}
 
 		this.search_result_category = new Map([
@@ -53,14 +55,14 @@ class List extends React.Component
 	sort_list(list)
 	{
 		list.sort(
-					this.sort_binds[this.state["sort"]["by"]]
-									[this.state["sort"]["type"]]
+					this.sort_binds[this.state.sort]
+									[this.state.sort_type]
 					);
 		return list;
 	}
 
 	create_list(res)
-	{console.log("Create");
+	{
 		let results = [];
 		if(res?.data)
 		{
@@ -102,20 +104,32 @@ class List extends React.Component
 		this.load(this.props.category, this.props.search);
 	}
 
+	sort_handle(type)
+	{
+		let new_type = !this.state.sort_type;
+
+		if(this.state.sort != this.state.old_sort)
+		{
+			new_type = false;
+		}
+
+		this.setState({sort: type, sort_type: new_type, old_sort: this.state.sort});
+	}
+
     render() {
         return (
             <table className = {style.listtable} cellPadding="12">
 				<tbody>
-					<th onClick={() => {this.setState({sort: {by: "tab", type: !this.state.sort.type}})}}>
+					<th onClick={() => {this.sort_handle("tab")}}>
 						Табельный номер
 					</th>
-					<th onClick={() => {this.setState({sort: {by: "name", type: !this.state.sort.type}})}}>
+					<th onClick={() => {this.sort_handle("name")}}>
 						ФИО
 					</th>
-					<th onClick={() => {this.setState({sort: {by: "ceh", type: !this.state.sort.type}})}}>
+					<th onClick={() => {this.sort_handle("ceh")}}>
 						Цех
 					</th>
-					<th onClick={() => {this.setState({sort: {by: "dep", type: !this.state.sort.type}})}}>
+					<th onClick={() => {this.sort_handle("dep")}}>
 						Отдел
 					</th>
 					{this.create_list(this.state.values)}
