@@ -24,13 +24,13 @@ class Search
 			["number",
 				[
 					{db: "ka", field: "tabnum"},
-					{db: "ka", field: "department"}
+					{db: "ka", field: "department_code"}
 				]
 			],
 			["string",
 				[
 					{db: "ka", field: "fiofull"},
-					{db: "d", field: "name"}
+					{db: "d", field: "department"}
 				]
 			]
 		]);
@@ -46,8 +46,8 @@ class Search
 		return new Map([
 			["tabnum", "1"],
 			["fiofull", "2"],
-			["department", "3"],
-			["name", "4"]
+			["department_code", "3"],
+			["department", "4"]
 		]);
 	}
 
@@ -59,10 +59,10 @@ class Search
 	static category_alias_by_name()
 	{
 		return new Map([
-			["1", {db: "ka", field: "tabnum"}],
-			["2", {db: "ka", field: "fiofull"}],
-			["3", {db: "ka", field: "department"}],
-			["4", {db: "d", field: "name"}]
+			["1", {db: "outer_tbl", field: "tabnum"}],
+			["2", {db: "outer_tbl", field: "fiofull"}],
+			["3", {db: "outer_tbl", field: "department_code"}],
+			["4", {db: "outer_tbl", field: "department"}]
 		]);
 	}
 
@@ -73,49 +73,68 @@ class Search
 
 	static query_users_info_by_alias(alias)
 	{
-		const query = ` SELECT
-					ka.fiofull AS fio,
-					d.name AS department,
-					d2.name AS division,
-					ka.tabnum AS tabnum
-				FROM kadry_all AS ka
-				LEFT JOIN department AS d ON
-					d.id = ka.department
-				LEFT JOIN division AS d2 ON
-					d2.department = ka.department
-					AND d2.id = ka.division
-				 WHERE ${alias.db}.${alias.field} LIKE ?
-					AND ka.factory = 1
-					AND d.factory = 1
-					AND d2.factory = 1
-				 	AND ka.deleted <> 1`;
+		const query = `SELECT outer_tbl.tabnum,
+								outer_tbl.fiofull,
+								outer_tbl.department,
+								outer_tbl.division,
+								outer_tbl.department_code
+						FROM (
+							SELECT
+								ka.TABNUM AS tabnum,
+								CONCAT(
+									CONCAT(
+										SUBSTR(ka.NAME1, 1, 1),
+										LCASE(SUBSTR(ka.NAME1, 2)),
+										" "
+									),
+									CONCAT(
+										SUBSTR(ka.NAME2, 1, 1),
+										LCASE(SUBSTR(ka.NAME2, 2)),
+										" "
+									),
+									CONCAT(
+										SUBSTR(ka.NAME3, 1, 1),
+										LCASE(SUBSTR(ka.NAME3, 2))
+									)
+								) AS fiofull,
+								ka.CEHNAME AS department,
+								ka.CEHCODE AS department_code,
+								ka.DISTRFULLN AS division
+							FROM
+								offersendler.workers AS ka
+						) AS outer_tbl
+						WHERE outer_tbl.${alias.field} LIKE ?`
 
 		return query;
 	}
 
 	static query_full_user_info_by_tabnum()
 	{
-		const query = ` SELECT
-					ka.fiofull AS fio,
-					d.name AS department,
-					d2.name AS division,
-					ka.tabnum AS tabnum,
-					fp.profname AS prof,
-					ue.email AS email
-				FROM kadry_all AS ka
-				LEFT JOIN department AS d ON
-					d.id = ka.department
-				LEFT JOIN division AS d2 ON
-					d2.department = ka.department
-					AND d2.id = ka.division
-				LEFT JOIN users_emails AS ue ON
-					ue.tabnum = ka.tabnum
-				LEFT JOIN clpost AS fp ON SUBSTR(fp.PROFCODE, 1, LENGTH(ka.profcode)) = ka.profcode
-				WHERE ka.tabnum LIKE ?
-					AND ka.factory = 1
-					AND d.factory = 1
-					AND d2.factory = 1
-				 	AND ka.deleted <> 1`;
+		const query = `SELECT ka.TABNUM AS tabnum,
+								CONCAT(
+										CONCAT(
+												SUBSTR(ka.NAME1, 1, 1),
+												LCASE(SUBSTR(ka.NAME1, 2)),
+												" "
+											),
+										CONCAT(
+												SUBSTR(ka.NAME2, 1, 1),
+												LCASE(SUBSTR(ka.NAME2, 2)),
+												" "
+											),
+										CONCAT(
+												SUBSTR(ka.NAME3, 1, 1),
+												LCASE(SUBSTR(ka.NAME3, 2))
+											)
+									) AS fio,
+							ka.CEHNAME AS department,
+							ka.PROFNAMSH2 AS prof,
+							ka.DISTRFULLN AS division,
+							ka.BRIGFULLN AS brig,
+							ue.email AS email
+						FROM offersendler.workers AS ka
+						LEFT JOIN offersendler.users_emails AS ue ON ue.tabnum = ka.TABNUM
+						WHERE ka.TABNUM = ?`;
 
 		return query;
 	}
@@ -187,11 +206,12 @@ class Search
 				if (!db_result) return res.json([]);
 
 				result = new search_model_full({
-					name: db_result.fio,
+					name: db_result.fiofull,
 					tabnum: db_result.tabnum,
 					prof: db_result.prof,
 					department: db_result.department,
 					division: db_result.division,
+					brigada: db_result.brig,
 					email: db_result.email
 				})
 
@@ -228,7 +248,7 @@ class Search
 					for (const info of sliced)
 					{
 						search_object.users.push(new search_user_model({
-							name: info.fio,
+							name: info.fiofull,
 							tabnum: info.tabnum,
 							department: info.department,
 							division: info.division
@@ -267,7 +287,7 @@ class Search
 
 					for (const info of value) {
 						search_object.users.push(new search_user_model({
-							name: info.fio,
+							name: info.fiofull,
 							tabnum: info.tabnum,
 							department: info.department,
 							division: info.division
