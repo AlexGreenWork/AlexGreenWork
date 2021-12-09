@@ -126,7 +126,7 @@ class Search
 												SUBSTR(ka.NAME3, 1, 1),
 												LCASE(SUBSTR(ka.NAME3, 2))
 											)
-									) AS fio,
+									) AS fiofull,
 							ka.CEHNAME AS department,
 							ka.PROFNAMSH2 AS prof,
 							ka.DISTRFULLN AS division,

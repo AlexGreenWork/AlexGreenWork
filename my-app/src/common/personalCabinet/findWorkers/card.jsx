@@ -34,7 +34,7 @@ const Cart = (props) =>
 						<col width = "20%"/>
 						<tbody>
 							<tr>
-								<td rowSpan = "7">
+								<td rowSpan = "8">
 									<div style={
 													{
 														width: "150px",
@@ -88,6 +88,17 @@ const Cart = (props) =>
 									{info?.division}
 								</td>
 							</tr>
+							{info?.brigada ?
+								<tr>
+									<td>
+										Бригада
+									</td>
+									<td colSpan = "2">
+										{info?.brigada}
+									</td>
+								</tr>
+								: null
+							}
 							{info?.email ?
 								<tr>
 									<td>
