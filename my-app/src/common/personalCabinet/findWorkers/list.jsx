@@ -1,6 +1,7 @@
 import React from "react"
 import Row from "./row";
 import {API_URL} from "../../../config.js"
+import style from "./list.module.css"
 const {post} = require("axios");
 
 class List extends React.Component
@@ -11,15 +12,29 @@ class List extends React.Component
 
 		this.sort_binds = {
 						name: {
-								desc: (lv, rv) => {return lv.name > rv.name},
-								asc: (lv, rv) => {return lv.name < rv.name}
+								false: (lv, rv) => {return lv.name > rv.name},
+								true: (lv, rv) => {return lv.name < rv.name}
+						},
+
+						tab: {
+								false: (lv, rv) => {return lv.tabnum > rv.tabnum},
+								true: (lv, rv) => {return lv.tabnum < rv.tabnum}
+						},
+
+						ceh: {
+								false: (lv, rv) => {return lv.department > rv.department},
+								true: (lv, rv) => {return lv.department < rv.department }
+						},
+
+						dep: {
+								false: (lv, rv) => {return lv.division > rv.division },
+								true: (lv, rv) => {return lv.division < rv.division }
 						}
 		};
 
-
 		this.state = {
 						values: [],
-						sort:	{by: "name", type: "desc"}
+						sort:	{by: "name", type: false}
 					}
 
 		this.search_result_category = new Map([
@@ -28,6 +43,7 @@ class List extends React.Component
 												["Код цеха", "3"],
 												["Название цеха", "4"]
 											]);
+
 		this.create_list = this.create_list.bind(this);
 		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
@@ -44,7 +60,7 @@ class List extends React.Component
 	}
 
 	create_list(res)
-	{
+	{console.log("Create");
 		let results = [];
 		if(res?.data)
 		{
@@ -55,7 +71,12 @@ class List extends React.Component
 				const list = this.sort_list(response.users);
 
 				list.map((v, i) => {
-					results.push(<Row key = {i} tabnum = {v.tabnum} name = {v.name} department = {v.department} division = {v.division}/> );
+					results.push(<Row key = {i}
+										tabnum = {v.tabnum}
+										name = {v.name}
+										department = {v.department}
+										division = {v.division}
+								/> );
 				});
 			}
 		}
@@ -71,7 +92,7 @@ class List extends React.Component
 						search: search,
 						category: search_category
 					}).then((res) => {
-			this.setState({values: this.create_list(res)});
+			this.setState({values: res});
 		})
 	}
 
@@ -83,21 +104,21 @@ class List extends React.Component
 
     render() {
         return (
-            <table style={{width: "100%", color: "black"}} cellPadding="12">
+            <table className = {style.listtable} cellPadding="12">
 				<tbody>
-					<th>
+					<th onClick={() => {this.setState({sort: {by: "tab", type: !this.state.sort.type}})}}>
 						Табельный номер
 					</th>
-					<th>
+					<th onClick={() => {this.setState({sort: {by: "name", type: !this.state.sort.type}})}}>
 						ФИО
 					</th>
-					<th>
+					<th onClick={() => {this.setState({sort: {by: "ceh", type: !this.state.sort.type}})}}>
 						Цех
 					</th>
-					<th>
+					<th onClick={() => {this.setState({sort: {by: "dep", type: !this.state.sort.type}})}}>
 						Отдел
 					</th>
-					{this.state.values}
+					{this.create_list(this.state.values)}
 				</tbody>
             </table>
         )
