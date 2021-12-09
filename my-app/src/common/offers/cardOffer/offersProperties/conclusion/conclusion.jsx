@@ -128,11 +128,21 @@ const ConclusionOffer = () => {
     }
 
     function RespChange(props) {
-            let isVisible= props.isVisible
+            const isVisible= props.isVisible;
+        if (isVisible == 0) {
+
+            return (
+                <div></div>
+            )
+        }
+
+
         if (isVisible == 1) {
 
            return (
+               <div>
                <ConclusionCard id={1}/>
+               </div>
            )
         }
         if (isVisible == 2) {
@@ -166,13 +176,13 @@ const ConclusionOffer = () => {
 
     return (
         <div className={s.cardOfferContainer}>
-
             <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
-            <RespChange isVisible = {sCount}/>
+
+            <RespChange isVisible={sCount}/>
             <div className={s.header}>
 
 
-                <Complete/>
+
 
 
                 <div className={s.date}>
@@ -186,17 +196,19 @@ const ConclusionOffer = () => {
 
                 <div className={s.ExecutWorker}>
                     <div>Ответственный сотрудник:</div>
-                    <div> Петров Петр Петрович</div>
+                    <div> Вася Пупкин </div>
+
                 </div>
+                <FindWorkers/>
                 <div className={s.filesConclusion}>
                     <div>Файлы заключения подразделения:</div>
                     <div className={s.conclusionFilesArea}> files area:
                         <div>
-                            <ViewFileDoc/>
+
                             <div>Заключение</div>
                         </div>
                         <div>
-                            <ViewFileDoc/>
+
                             <div>Заключение</div>
                         </div>
                         <div className={s.fileUpload}>
