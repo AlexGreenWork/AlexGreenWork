@@ -10,7 +10,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-
+import AddSendlerOffers from "./senlerAdditional";
 
 import {API_URL} from "../../../../../config";
 
@@ -36,6 +36,7 @@ function ReadDir() {
 
     return xhr.response
 }
+
 
 function IMG(props) {
     return (
@@ -125,6 +126,8 @@ function FileList() {
 
 const CommonOffer = () => {
     let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
+    //RequestAddSendlerOffers()
+    AddSendlerOffers()
     let stat = (offersData.status)
 
     if (offersData.category == 1) {
@@ -648,6 +651,7 @@ const CommonOffer = () => {
         }
     }
 
+    
 
     return (
         <div className={s.nameOffer}>
@@ -697,9 +701,10 @@ const CommonOffer = () => {
                         <div style={{
                             fontWeight: 1000,
                             fontFamily: "serif",
-
                             padding: "10px"
+
                         }}>{offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
+                        <AddSendlerOffers/>
                     </div>
                     <div className={s.fieldOfCategoryOffer}>
                         <div className={s.nameCategoryOfOffer}> Категория предложения:</div>

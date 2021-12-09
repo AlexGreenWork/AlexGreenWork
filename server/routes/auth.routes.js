@@ -308,7 +308,7 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
             //const sqlLstEntry = await uploadFile.sqlCheckLastEntry();
           let sqlLstEntry= await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);")
           console.log(sqlLstEntry[0][0].Id) 
-          await pool.query(`INSERT INTO senleradditional (IdOffers, Sendlers) VALUES("${sqlLstEntry[0][0].Id}", "${senleradditional}" )`)
+          await pool.query(`INSERT INTO senleradditional (IdOffers, Sendlers) VALUES("${sqlLstEntry[0][0].Id}", '"${senleradditional}"' )`)
           // `SELECT * FROM senleradditional WHERE tabelNum IN (${tabelNumber})`
             return "Предложение зарегистрировано";
             
