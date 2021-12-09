@@ -1,0 +1,15 @@
+.listtable
+{
+	width: 100%;
+	color: black;
+}
+
+.listtable th
+{
+	cursor: pointer;
+}
+
+.listtable th:hover
+{
+	color: green;
+}
