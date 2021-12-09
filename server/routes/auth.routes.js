@@ -48,7 +48,7 @@ router.post('/registration',
                 return res.status(400).json({message: "Не корректный запрос", errors})
             }
 
-            const {name, surname, middlename, tabelNum, email, phoneNumber, password, fired, adminOptions} = req.body
+            const {name, surname, middlename, tabelNum, email, phoneNumber, password, fired, adminOptions,date} = req.body
 
 
             const candidate = await connection.query(`SELECT * FROM offersworker WHERE email = '${email}' OR tabelNum = '${tabelNum}' AND ${tabelNum}<>0`);
@@ -62,6 +62,7 @@ router.post('/registration',
             const hashPassword = await bcrypt.hash(password, 8)
             const hashAdminOptions = await bcrypt.hash(password, 8)
             const user = ({
+                date,
                 name,
                 surname,
                 middlename,
@@ -71,6 +72,7 @@ router.post('/registration',
                 password: hashPassword,
                 fired,
                 adminOptions
+
             })
             console.log(user)
 

@@ -5,9 +5,12 @@ import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
 import Button from "@material-ui/core/Button";
 import Complete from "../../../../personalCabinet/findWorkers/complete";
+import {useSelector} from "react-redux";
 
 
-const ConclusionCard = () => {
+const ConclusionCard = (props) => {
+
+    const searchUser = useSelector(state => state.search.searchUserTabnum)
 
     const [viewChange, setViewChange] = React.useState(false);
 
@@ -94,12 +97,14 @@ const ConclusionCard = () => {
                 return <IsAdminUser/>
             }
         }
-
+function chese(){
+            alert("ghbdtn")
+}
 
         return (
-            <div>
+            <div id={props.id}>
                 <div className={s.header}>
-                    <Complete/>
+
 
 
 
@@ -114,7 +119,8 @@ const ConclusionCard = () => {
 
                     <div className={s.ExecutWorker}>
                         <div>Ответственный сотрудник:</div>
-                        <div> Петров Петр Петрович</div>
+                        <div oninput={chese}> табельный {searchUser}</div>
+
                     </div>
                     <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
                     <div className={s.filesConclusion}>
@@ -151,9 +157,7 @@ const ConclusionCard = () => {
             <div>
                 <CardDivisionConclusion/>
             </div>
-            <div>
-                <CardDivisionConclusion/>
-            </div>
+
 
 
         </div>

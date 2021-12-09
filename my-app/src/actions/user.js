@@ -5,6 +5,11 @@ import { useHistory } from "react-router-dom";
 
 export const registration = async (name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions) => {
     try {
+
+        const date= new Date().toISOString().slice(0, 10);
+
+
+        console.log(date)
         const response = await axios.post(`${API_URL}api/auth/registration`, {
             name,
             middlename,
@@ -14,7 +19,8 @@ export const registration = async (name, middlename, surname, email, tabelNum, p
             phoneNumber,
             password,
             fired,
-            adminOptions
+            adminOptions,
+            date
         })
         alert(response.data.message)
 
@@ -79,10 +85,10 @@ export const auth = () => {
                     const response = await axios.get(`${API_URL}api/auth/auth`,
                         {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
                     )
-                    dispatch(setUser(response.data.user))
+
                     localStorage.setItem('token', response.data.token)
                     console.log(response.data.id)
-
+                    dispatch(setUser(response.data.user))
                 } catch (e) {
                     console.log('auth error' + e)
                 }
@@ -116,8 +122,9 @@ export const deleteAvatar = () => {
             const response = await axios.delete(`${API_URL}api/files/avatar`,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
-            dispatch(setUser(response.data))
+
             localStorage.setItem('userAvatar','')
+            dispatch(setUser(response.data))
         } catch (e) {
             console.log(e)
         }
