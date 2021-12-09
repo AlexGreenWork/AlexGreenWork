@@ -242,4 +242,32 @@ router.get("/downloadMyFile", urlencodedParser, async function(request, response
 } )
 })
 
+router.post("/sendAdd", urlencodedParser,
+    async function (request, response){
+        console.log(request.body)
+        let idOffers = request.body.selectOffers;
+
+        let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
+       
+        let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+      
+      
+       response.send(SendAddValid)
+
+    } )
+
+    router.post("/sendAddInfo", urlencodedParser,
+    async function (request, response){
+        console.log(request.body)
+        let idOffers = request.body.selectOffers;
+
+        let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
+       
+        let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+      console.log("["+SendAddValid+"]")
+      
+       response.send(SendAddValid)
+
+    } )
+
 module.exports = router

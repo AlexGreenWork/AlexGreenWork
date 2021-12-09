@@ -73,7 +73,8 @@ function clickOnOfferLink(){
 
 const OffersLink = () => {
     let offersData = JSON.parse(Resp());
-
+    console.log(Resp())
+    console.log(offersData)
     return offersData.map((number) =>
         <Offer id={number.Id} date={number.date} name={number.nameSendler}
                surname={number.surnameSendler} midlename={number.middlenameSendler}
