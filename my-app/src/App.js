@@ -33,7 +33,7 @@ function App(props) {
     const [secondCotext, setSecondCotext] = useState(0)
     const contextFunction = (n , f) => {setChange(n);
         setSecondCotext(f)};
-        console.log(props.value)
+
     const value = {
         change,
         secondCotext,

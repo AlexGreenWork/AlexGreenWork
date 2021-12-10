@@ -26,8 +26,9 @@ const Profile = () => {
         }
         dispatch(uploadAvatar(file))
     }
+
     localStorage.getItem("avatar")
-    const avatar = currentUser.avatar ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : avatarLogo
+    const avatar = currentUser.avatar  ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : `${API_URL + 'files/photos/' + currentUser.tabelNum + ".jpg"}`
     return (
         <div className={s.profile}>
             <div>Профиль</div>
