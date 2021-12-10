@@ -127,12 +127,15 @@ class Search
 												LCASE(SUBSTR(ka.NAME3, 2))
 											)
 									) AS fiofull,
-							ka.CEHNAME AS department,
-							ka.PROFNAMSH2 AS prof,
-							ka.DISTRFULLN AS division,
-							ka.BRIGFULLN AS brig,
-							ue.email AS email
+									d2.name AS division,
+									CONCAT(d.fullname," (", d.name,")") AS department,
+									cl.PROFNAME AS prof,
+									ka.BRIGFULLN AS brig,
+									ue.email AS email
 						FROM offersendler.workers AS ka
+						LEFT JOIN offersendler.clpost AS cl ON cl.PROFCODE = ka.PROFCODE
+						LEFT JOIN offersendler.department AS d ON d.id = ka.CEHCODE
+						LEFT JOIN offersendler.division AS d2 ON d2.department = d.id AND d2.id = ka.DISTRCODE
 						LEFT JOIN offersendler.users_emails AS ue ON ue.tabnum = ka.TABNUM
 						WHERE ka.TABNUM = ?`;
 
