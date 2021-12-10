@@ -38,7 +38,7 @@ class ScrollButton extends React.Component
 	scrollToTop()
 	{
 		this.state.parent.scrollTo({
-			top: 0,
+			top: this.state.parent.offsetTop,
 			behavior: 'smooth'
 		});
 	};
