@@ -208,6 +208,12 @@ router.post("/toDbDateComission", urlencodedParser,
         let dateComission = JSON.stringify(request.body.dateComission)
       await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
     })
+// router.post("/saveToDb", urlencodedParser,
+//     async function (request, response) {
+//         let id = request.body.offerId
+//         let dateComission = JSON.stringify(request.body.dateComission)
+//       await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
+//     })
 
 router.get("/downloadMyFile", urlencodedParser, async function(request, response){
     let idOffers = request.query.idOffers;

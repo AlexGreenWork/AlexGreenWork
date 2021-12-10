@@ -141,24 +141,24 @@ const ConclusionOffer = () => {
 
            return (
                <div>
-               <ConclusionCard id={1}/>
+               <ConclusionCard name = {1}/>
                </div>
            )
         }
         if (isVisible == 2) {
             return (
                 <div>
-                    <ConclusionCard  id={1}/>
-                    <ConclusionCard id={2}/>
+                    <ConclusionCard  name = {1}/>
+                    <ConclusionCard  name = {2}/>
                 </div>
             )
         }
         if (isVisible == 3) {
             return (
                 <div>
-                    <ConclusionCard  id={1}/>
-                    <ConclusionCard id={2}/>
-                    <ConclusionCard id={3}/>
+                    <ConclusionCard  name = {1}/>
+                    <ConclusionCard  name = {2}/>
+                    <ConclusionCard  name = {3}/>
                 </div>
             )
         }
@@ -173,6 +173,9 @@ const ConclusionOffer = () => {
         }
     }
 
+    function readConclusion(){
+
+    }
 
     return (
         <div className={s.cardOfferContainer}>
