@@ -13,11 +13,13 @@ function RequestAddSendlerOffers() {
 
 
 function AddSendlerOffers(){
-    let addSendlers = JSON.parse(RequestAddSendlerOffers());  //Данные из запроса
+    let elemArr = [];
+    if(RequestAddSendlerOffers() != 'null'){
+        let addSendlers = JSON.parse(RequestAddSendlerOffers());  //Данные из запроса
     //RequestAddSendlerOffers()
     let key =  Object.keys(addSendlers)
    
-    let elemArr = [];
+    
 
     
     for(let i = 0; i<key.length; i++ ){
@@ -28,6 +30,10 @@ function AddSendlerOffers(){
        elemArr[i] = React.createElement("div", {className:"formFilds"} , <label id={`sendler${[i]}`} >{surname} {name} {middlename}</label> ) ;
 
     }
+    } else {
+        elemArr = []
+    }
+    
 return (
     React.createElement("div", {className:"formFilds"} , elemArr ) 
 )
