@@ -1,8 +1,8 @@
-import {searchUserTabnum, selectUserCard} from "../reducers/searchReducer";
+import {searchUser, selectUserCard} from "../reducers/searchReducer";
 
-export const searchtabnum = (tabnum) => {
+export const searchuser = (tabnum, name, department, division) => {
     return async dispatch => {
-        dispatch(searchUserTabnum(tabnum));
+        dispatch(searchUser(tabnum, name, department, division));
     }
 }
 

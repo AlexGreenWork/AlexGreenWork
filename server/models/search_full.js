@@ -6,6 +6,7 @@ const SearchInfoFull = new Schema({
 	prof: {type: String, required: false},
     department: {type: String, required: false},
     division: {type: String, required: false},
+	brigada: {type: String, required: false},
     email: {type: String, required: false}
 })
 

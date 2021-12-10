@@ -1,7 +1,7 @@
-const SEARCH_USER_TABNAME = "select";
+const SEARCH_USER = "select";
 const SELECT_USER_CARD = "card";
 const DEFAULT = {
-					searchUserTabnum: null,
+					searchUser: {tabnum: null, name: null, department: null, division: null},
 					selectUserCard: null
 				}
 
@@ -9,8 +9,8 @@ export default function searchReducer(state = DEFAULT, action)
 {
 	switch(action.type)
 	{
-		case SEARCH_USER_TABNAME:
-			state.searchUserTabnum = action.searchUserTabnum;
+		case SEARCH_USER:
+			state.searchUser = action.searchUser;
 		break;
 
 		case SELECT_USER_CARD:
@@ -22,5 +22,5 @@ export default function searchReducer(state = DEFAULT, action)
 	return state;
 }
 
-export const searchUserTabnum = tabnum => ({type: SEARCH_USER_TABNAME, searchUserTabnum: tabnum})
+export const searchUser = (tabnum, name, department, division) => ({type: SEARCH_USER, searchUser: {tabnum:tabnum, name: name, department: department, division: division}})
 export const selectUserCard = tabnum => ({type: SELECT_USER_CARD, selectUserCard: tabnum})
