@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
@@ -17,10 +17,10 @@ function RequestAddSendlerOffers() {
 }
 
 
-function Resp() {
-    
-    let xhr = new XMLHttpRequest();
 
+
+function Resp(tab, name, surname, middlename, email, phoneNumber) {
+    
     let userPhoneNumber = localStorage.getItem('userPhoneNumber');
     let userTabelNum = localStorage.getItem('userTabelNum');
     let userName = localStorage.getItem('userName');
@@ -28,36 +28,61 @@ function Resp() {
     let userMiddleName = localStorage.getItem('userMiddleName');
     let userEmail = localStorage.getItem('userEmail');
    
+    if(tab === userTabelNum){
+       
+        let xhr = new XMLHttpRequest();
 
-    xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`firstName=${userName}&userSurName=${userSurName}&middleName=${userMiddleName}&email=${userEmail}`+
-            `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}`);
-                 
-          
-           xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                let result = this.responseText;
-                               
-                return result
-      }
+        xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send(`firstName=${userName}&userSurName=${userSurName}&middleName=${userMiddleName}&email=${userEmail}`+
+                `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}`);
+                     
+              
+               xhr.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    let result = this.responseText;
+                                   
+                    return result
+          }
+    
+        }
+        
+        return xhr.response
+    }else{
+        
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send(`firstName=${name}&userSurName=${surname}&middleName=${middlename}&email=${email}`+
+                `&tabelNumber=${tab}&phoneNumber=${phoneNumber}`);  
+      
+
+        return xhr.response
+
+       
 
     }
     
-    return xhr.response
+       
+   
+    
+    
 }
 
-function UserInfo(){
+function UserInfo(userTabelNum){
     let xhr = new XMLHttpRequest();
-    let userTabelNum = localStorage.getItem('userTabelNum');
+   // let userTabelNum = localStorage.getItem('userTabelNum');
     xhr.open('POST', `${API_URL}api/offers/userInfo`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`userTab=${userTabelNum}`)
     return xhr.response
 }
 
-const CreateCompMyOffers = ()=>{
-    let offersData = JSON.parse(Resp());  //Данные из запроса
+const CreateCompMyOffers = (props)=>{
+      //  name={name} surname={surname} middlename={middlename} email={email} tabelNumber={tabelNumber}
+    let offersData = JSON.parse(Resp(props.tabelNumber, props.name, props.surname, props.middlename,  props.email, props.phoneNumber));  //Данные из запроса
+    
     return offersData.map((number, index)=><MyOffersComp id={number.Id} date={number.date}
                                             nameOffer={number.nameOffer}  counter={index+1}/>)
 }
@@ -97,38 +122,74 @@ function validElem(){
 
 
 const InfoAboutAuthor = (props) => {
-
-    const [value, setValue] = React.useState(0);
+    let offersDataStart = JSON.parse(Resp(localStorage.getItem('userTabelNum')));
+   
+    const [value, setValue] = useState(0);
+    const [name, setName] = useState(offersDataStart[0].nameSendler);
+    const [surname, setSurname] = useState(offersDataStart[0].surnameSendler);
+    const [middlename, setMiddlename] = useState(offersDataStart[0].middlenameSendler);
+    const [email, setEmail] = useState(offersDataStart[0].email);
+    const [tabelNumber, setTabelNumber] = useState(offersDataStart[0].tabelNum);
+    const [phoneNumber, setPhoneNumber] = useState(offersDataStart[0].phoneNumber);
+    const [photo, setPoto] = useState(`${ API_URL }files/photos/${localStorage.getItem('userTabelNum')}.jpg`);
+    
 
     const SendlerTab = (props) => {
-        //  onClick={<InfoAboutAuthor name={props.a}/>
+                
           return (
-              <Tab label={`Автор ${props.numAut}`} onChange={()=>{setValue(props.name)}} />
+              <Tab label={`Автор ${props.numAut}`} onChange={()=>{
+                if(props.numAut === 1){
+                    let offersData = JSON.parse(Resp(localStorage.getItem('userTabelNum')));  //Данные из запроса
+                        setName(offersData[0].nameSendler);
+                        setSurname(offersData[0].surnameSendler);
+                        setMiddlename(offersData[0].middlenameSendler);
+                        setEmail(offersData[0].email);
+                        setTabelNumber(offersData[0].tabelNum);
+                        setPhoneNumber(offersDataStart[0].phoneNumber)
+                        setPoto(`${ API_URL }files/photos/${offersData[0].tabelNum}.jpg`)
+                }else{
+                        setName(props.name);
+                        setSurname(props.surname);
+                        setMiddlename(props.middlename);
+                        setEmail(props.email);
+                        setTabelNumber(props.tabelNumber);
+                        setPhoneNumber(props.phoneNumber)
+                        setPoto(`${ API_URL }files/photos/${props.tabelNumber}.jpg`)
+                }
+                  
+                  
+            }
+        } />
           )
       }
 
       const SendlerTabList = (props) => {
     
 
-        console.log(RequestAddSendlerOffers())
+       
+    if(RequestAddSendlerOffers() !== 'null'){
+        let offersData = JSON.parse(RequestAddSendlerOffers());
+       
+
     
-       let offersData = JSON.parse(RequestAddSendlerOffers());
-       console.log( Object.keys(offersData))
-      
-        //let offersData = ["1", "2", "3"]
-      /*   let arr=[];
-       arr.push("["+RequestAddSendlerOffers()+']')
-       console.log(arr)
-       console.log(RequestAddSendlerOffers()) */
-       console.log(offersData[8])
-      
-    return Object.keys(offersData).map((key, i)=><SendlerTab key={i} numAut={i} name={offersData[key].name}/>)
+        if(tabelNumber !== 0){
+            userInfo = JSON.parse(UserInfo(tabelNumber));
+
+       }
+            
+    return Object.keys(offersData).map((key, i)=><SendlerTab key={i} numAut={i+1} name={offersData[key].name}
+                                              surname={offersData[key].surname} middlename={offersData[key].middlename} 
+                                              email={offersData[key].email} tabelNumber={offersData[key].tabelNumber}
+                                              phoneNumber={offersData[key].phoneNumber}/>)
+    } else{
+        return ( <SendlerTab numAut={1}/>)
+
+    }
+       
     }
     
-      
-
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setValue(value);
       };
 
     let userInfo = {
@@ -136,31 +197,31 @@ const InfoAboutAuthor = (props) => {
         division: null,
         department: null,
     }
-    let offersData = JSON.parse(Resp());  //Данные из запроса
    
-    let userTabelNum = localStorage.getItem('userTabelNum');
    
-    if(userTabelNum !== 0){
-     userInfo = JSON.parse(UserInfo());
+    if(tabelNumber !== 0){
+     userInfo = JSON.parse(UserInfo(tabelNumber));
     }
     return (
         <div className={s.cardOfferContainer}>
                       <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       <Tabs value={value} onChange={handleChange} centered  orientation="vertical">
-        
         <SendlerTabList/>
       </Tabs>
     </Box>
             <div className={s.header}>
-  
+                <div className="img" style={{ backgroundImage: `url(${photo})`,
+                backgroundRepeat: "round", width: "160px", minHeight: "200px"}}>
+                    
+                </div>
 
                 <div className={s.nameOffer}>
                     <div>Автор:</div>
-                    <div> {props.name}{offersData[0].surnameSendler} {offersData[0].nameSendler} {offersData[0].middlenameSendler}</div>
+                    <div>{surname} {name} {middlename} </div>
                 </div>
                 <div className={s.nameOffer} style={validElem()}>
                     <div>Табельный номер:</div>
-                    <div> {offersData[0].tabelNum}</div>
+                    <div> {tabelNumber} </div>
                 </div>
                 <div className={s.nameOffer} style={validElem()}>
                     <div>Цех/Управление:</div>
@@ -176,12 +237,12 @@ const InfoAboutAuthor = (props) => {
                 </div>
                 <div className={s.nameOffer}>
                     <div>E-mail:</div>
-                    <div> {offersData[0].email}</div>
+                    <div> {email}</div>
                 </div>
                 <div className={s.insideOffers}>
                     <div>Поступившие предложения:</div>
                     
-                    <CreateCompMyOffers/>
+                    <CreateCompMyOffers  name={name} surname={surname} middlename={middlename} email={email} tabelNumber={tabelNumber} phoneNumber={phoneNumber}/>
                 </div>
 
 
