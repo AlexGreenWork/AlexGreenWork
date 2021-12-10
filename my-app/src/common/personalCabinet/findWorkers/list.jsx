@@ -116,11 +116,6 @@ class List extends React.Component
 		this.setState({sort: type, sort_type: new_type, old_sort: this.state.sort});
 	}
 
-	scroll_to_top()
-	{
-		window.scrollTo({top: 0, behavior: "smooth"});
-	}
-
     render() {
         return (<div className = {style.listcontainer}>
 					<table className = {style.listtable} cellPadding="12">
