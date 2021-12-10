@@ -13,7 +13,9 @@ const Header = () => {
     const isAuth = useSelector(state => state.user.isAuth)
     const currentUser = useSelector(state => state.user.currentUser)
     const dispatch = useDispatch()
-    const avatar = currentUser.avatar ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : avatarLogo
+
+
+    const avatar = currentUser.avatar  ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : `${API_URL + 'files/photos/' + localStorage.getItem("userTabelNum") + ".jpg"}`
 
     return (<div className={s.header}>
         <div className={s.clear}>

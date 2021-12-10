@@ -1,6 +1,7 @@
 import React from "react"
 import Row from "./row";
 import {API_URL} from "../../../config.js"
+import style from "./list.module.css"
 const {post} = require("axios");
 
 class List extends React.Component
@@ -9,17 +10,55 @@ class List extends React.Component
 	{
 		super(props);
 
-		this.state = {values: [],};
+		this.sort_binds = {
+						name: {
+								false: (lv, rv) => {return lv.name > rv.name},
+								true: (lv, rv) => {return lv.name < rv.name}
+						},
+
+						tab: {
+								false: (lv, rv) => {return lv.tabnum > rv.tabnum},
+								true: (lv, rv) => {return lv.tabnum < rv.tabnum}
+						},
+
+						ceh: {
+								false: (lv, rv) => {return lv.department > rv.department},
+								true: (lv, rv) => {return lv.department < rv.department }
+						},
+
+						dep: {
+								false: (lv, rv) => {return lv.division > rv.division },
+								true: (lv, rv) => {return lv.division < rv.division }
+						}
+		};
+
+		this.state = {
+						values: [],
+						sort: "name",
+						sort_type: false,
+						old_sort: "name"
+					}
+
 		this.search_result_category = new Map([
 												["Табельный номер", "1"],
 												["ФИО", "2"],
 												["Код цеха", "3"],
 												["Название цеха", "4"]
 											]);
+
 		this.create_list = this.create_list.bind(this);
 		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
 		this.load(this.props.category, this.props.search);
+	}
+
+	sort_list(list)
+	{
+		list.sort(
+					this.sort_binds[this.state.sort]
+									[this.state.sort_type]
+					);
+		return list;
 	}
 
 	create_list(res)
@@ -31,8 +70,15 @@ class List extends React.Component
 			{
 				if(!response?.users) continue;
 
-				response.users.map((v, i) => {
-					results.push(<Row key = {i} tabnum = {v.tabnum} name = {v.name} department = {v.department} division = {v.division}/> );
+				const list = this.sort_list(response.users);
+
+				list.map((v, i) => {
+					results.push(<Row key = {i}
+										tabnum = {v.tabnum}
+										name = {v.name}
+										department = {v.department}
+										division = {v.division}
+								/> );
 				});
 			}
 		}
@@ -48,7 +94,7 @@ class List extends React.Component
 						search: search,
 						category: search_category
 					}).then((res) => {
-			this.setState({values: this.create_list(res)});
+			this.setState({values: res});
 		})
 	}
 
@@ -58,11 +104,35 @@ class List extends React.Component
 		this.load(this.props.category, this.props.search);
 	}
 
+	sort_handle(type)
+	{
+		let new_type = !this.state.sort_type;
+
+		if(this.state.sort != this.state.old_sort)
+		{
+			new_type = false;
+		}
+
+		this.setState({sort: type, sort_type: new_type, old_sort: this.state.sort});
+	}
+
     render() {
         return (
-            <table style={{width: "100%", color: "black"}} cellPadding="12">
+            <table className = {style.listtable} cellPadding="12">
 				<tbody>
-					{this.state.values}
+					<th onClick={() => {this.sort_handle("tab")}}>
+						Табельный номер
+					</th>
+					<th onClick={() => {this.sort_handle("name")}}>
+						ФИО
+					</th>
+					<th onClick={() => {this.sort_handle("ceh")}}>
+						Цех
+					</th>
+					<th onClick={() => {this.sort_handle("dep")}}>
+						Отдел
+					</th>
+					{this.create_list(this.state.values)}
 				</tbody>
             </table>
         )
