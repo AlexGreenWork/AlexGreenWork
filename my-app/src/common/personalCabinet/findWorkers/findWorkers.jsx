@@ -20,7 +20,7 @@ const FindWorkers = () => {
 						<div className={style.sendOfferSearchBar}>
 							<Complete
 									onSelectItem = {(value) => {
-										set_search_item_value(value);
+										set_search_item_value(value.tabnum);
 										show_list(false);
 										dispatcher(searchuser(value.tabnum, value.name, value.department, value.division));
 									}}
