@@ -1,5 +1,6 @@
 import React from "react"
-import Row from "./row";
+import Card from "./card";
+import ScrollButton from "./scroll.jsx"
 import {API_URL} from "../../../config.js"
 import style from "./list.module.css"
 const {post} = require("axios");
@@ -73,12 +74,11 @@ class List extends React.Component
 				const list = this.sort_list(response.users);
 
 				list.map((v, i) => {
-					results.push(<Row key = {i}
-										tabnum = {v.tabnum}
-										name = {v.name}
-										department = {v.department}
-										division = {v.division}
-								/> );
+					results.push(<tr key = {i}>
+									<td colSpan = "4">
+										<Card info = {v.tabnum} />
+									</td>
+								</tr> );
 				});
 			}
 		}
@@ -116,25 +116,39 @@ class List extends React.Component
 		this.setState({sort: type, sort_type: new_type, old_sort: this.state.sort});
 	}
 
+	scroll_to_top()
+	{
+		window.scrollTo({top: 0, behavior: "smooth"});
+	}
+
     render() {
-        return (
-            <table className = {style.listtable} cellPadding="12">
-				<tbody>
-					<th onClick={() => {this.sort_handle("tab")}}>
-						Табельный номер
-					</th>
-					<th onClick={() => {this.sort_handle("name")}}>
-						ФИО
-					</th>
-					<th onClick={() => {this.sort_handle("ceh")}}>
-						Цех
-					</th>
-					<th onClick={() => {this.sort_handle("dep")}}>
-						Отдел
-					</th>
-					{this.create_list(this.state.values)}
-				</tbody>
-            </table>
+        return (<div className = {style.listcontainer}>
+					<table className = {style.listtable} cellPadding="12">
+							<col width = "20%"/>
+							<col width = "20%"/>
+							<col width = "20%"/>
+						<thead>
+							<tr>
+								<th onClick={() => {this.sort_handle("tab")}}>
+									Табельный номер
+								</th>
+								<th onClick={() => {this.sort_handle("name")}}>
+									ФИО
+								</th>
+								<th onClick={() => {this.sort_handle("ceh")}}>
+									Цех
+								</th>
+								<th onClick={() => {this.sort_handle("dep")}}>
+									Отдел
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{this.create_list(this.state.values)}
+						</tbody>
+					</table>
+					<ScrollButton/>
+				</div>
         )
     }
 }

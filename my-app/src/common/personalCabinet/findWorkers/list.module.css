@@ -13,3 +13,8 @@
 {
 	color: green;
 }
+
+.listcontainer
+{
+	display: flex;
+}

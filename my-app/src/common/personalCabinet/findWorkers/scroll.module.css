@@ -1,0 +1,11 @@
+.scroll
+{
+   position: fixed; 
+   width: 40px;
+   bottom: 10%;
+   right: 10px;
+   height: 40px;
+   font-size: 3rem;
+   cursor: pointer;
+   background-repeat: round;
+}
