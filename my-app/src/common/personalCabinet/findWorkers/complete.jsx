@@ -56,7 +56,7 @@ class Complete extends React.Component
 		for(let i = 0; i < values.length; i++)
 		{
 			const value = values[i];
-			items.push(this.create_item(`${category}` + i , value.name, value.tabnum, value.department, value.division))
+			items.push(this.create_item(`${category}` + i , value.name, value.tabnum, value.division, value.department))
 		}
 		return items;
 	}
@@ -77,14 +77,14 @@ class Complete extends React.Component
 				display: 'flex',
 				justifyContent: 'space-between',
 			}}
-			onClick = {(value) => this.select_value({tabnum: tabnum, name: name, division: division, department: department})}
+			onClick = {(value) => this.select_value({tabnum: tabnum, name: name, department: department, division: division})}
 			>
 				<span>
 					<div style={{display:"flex"}}>
 						<div style={{fontWeight:"bold"}}>
 							{name} &gt;&nbsp;
 						</div>
-						 Цех: {division} &gt; Отдел: {department}
+						 Цех: {department} &gt; Отдел: {division}
 					</div>
 				</span>
 			</div>),
