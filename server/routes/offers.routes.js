@@ -53,7 +53,7 @@ router.get("/allOffers",
 
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
-        console.log(request.body)
+        
         let firstName = request.body.firstName; // имя
         let middleName = request.body.middleName; // отчество
         let surname = request.body.userSurName; // фамилия
@@ -167,11 +167,10 @@ router.post("/FilesMyOffers", urlencodedParser,
                         if( a == folder.length){
                            
                             fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
-                                if(err) throw err; // не удалось создать папки
-                               // console.log('Все папки успешно созданы');
+                                if(err) throw err; 
                                
                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
-                                  //  console.log(err)
+                                  
                               
                                   
                                  response.send(files)
@@ -218,11 +217,10 @@ router.post("/toDbDateComission", urlencodedParser,
 router.get("/downloadMyFile", urlencodedParser, async function(request, response){
     let idOffers = request.query.idOffers;
     let fileName = request.query.fileName;
-  //  console.log(request.query.idOffers)
+ 
     
     fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, async (err, filesName) => {
-         //console.log(filesName);
-       // console.log(fileName); 
+        
 
         filesName.push('exit');
        
@@ -231,7 +229,7 @@ router.get("/downloadMyFile", urlencodedParser, async function(request, response
             if(filesName[i] == fileName ){
 
                 let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
-              //  console.log(file)
+            
 
                 response.download(file); 
                 
@@ -247,5 +245,46 @@ router.get("/downloadMyFile", urlencodedParser, async function(request, response
     } 
 } )
 })
+
+router.post("/sendAdd", urlencodedParser,
+    async function (request, response){
+        
+        let idOffers = request.body.selectOffers;
+
+        let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
+       
+        if(sqlSendAdd[0][0] != undefined){
+            
+            let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+            
+            response.send(SendAddValid)
+        } else{
+           
+            response.send('null')
+        }
+        
+      
+      
+       
+
+    } )
+
+    router.post("/sendAddInfo", urlencodedParser,
+    async function (request, response){
+        
+        let idOffers = request.body.selectOffers;
+
+        let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
+       
+       if(sqlSendAdd[0][0] != undefined){
+        let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+       
+        response.send(SendAddValid)
+    } else{
+        response.send('null')
+    }
+
+    } )
+
 
 module.exports = router
