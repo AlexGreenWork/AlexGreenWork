@@ -120,7 +120,7 @@ function OffersForm(props) {
             middlename: middleNameNew ,
             email: EmailNew,
             tabelNumber: tabelNumberNew,
-            phoneNumber: phoneNumberNew,
+            phoneNumber: phoneNumberNew
     
         };
             allNewSendler[count] = addNewSendler;

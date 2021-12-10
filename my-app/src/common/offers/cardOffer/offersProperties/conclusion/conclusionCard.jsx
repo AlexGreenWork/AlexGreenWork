@@ -7,25 +7,67 @@ import Button from "@material-ui/core/Button";
 import Complete from "../../../../personalCabinet/findWorkers/complete";
 import {useSelector} from "react-redux";
 
+import {saveToDb1 ,saveToDb2, saveToDb3 } from "../../../../../actions/offers"
 
 const ConclusionCard = (props) => {
 
-    const searchUser = useSelector(state => state.search.searchUserTabnum)
+    const searchUser = useSelector(state =>state.search.searchUser.searchUserTabnum)
 
     const [viewChange, setViewChange] = React.useState(false);
 
-    function changeViewSelect() {
-        if (viewChange === true) {
-            setViewChange(false)
-        }
-        if (viewChange === false) {
+    function saveToDb1(){
+console.log("saveToDb1")
+    }
+function saveToDb2(){
+    console.log("saveToDb2")
+    }
+function saveToDb3(){
+    console.log("saveToDb3")
+    }
+function saveToDbRG(){
+    console.log("saveToDbRG")
+    }
+
+function changeViewSelect() {
+
             setViewChange(true)
+
+
+    }
+        let propName = props.name;
+    function changeViewSelectSave(props) {
+
+        if (propName == 1) {
+
+            saveToDb1(searchUser)
+            setViewChange(false)
+            alert("Изменения сохранены 1")
         }
+       if (propName == 2) {
+
+            saveToDb2(searchUser)
+            setViewChange(false)
+            alert("Изменения сохранены 2")
+        }
+       if (propName == 3) {
+
+            saveToDb3(searchUser)
+            setViewChange(false)
+            alert("Изменения сохранены 3")
+        }
+       if (propName == "RG") {
+
+            saveToDb1(searchUser)
+            setViewChange(false)
+            alert("Изменения сохранены")
+        }
+
 
     }
 
 
-    function SelectChangeConclusionResponsible() {
+    function SelectChangeConclusionResponsible(props) {
+
 
 
         if (viewChange ==false) {
@@ -62,7 +104,7 @@ const ConclusionCard = (props) => {
                             <Button style={{
                                 width: "300px",
                                 border: "1px solid #1890ff"
-                            }} onClick={changeViewSelect}>Прикрепить сотрудника к предложению</Button>
+                            }} onClick={changeViewSelectSave}>Прикрепить сотрудника к предложению</Button>
                         </div>
                     </div>
                 </div>
@@ -76,7 +118,7 @@ const ConclusionCard = (props) => {
 
         function IsAdminRG() {
             return (<div>
-                    <SelectChangeConclusionResponsible/>
+                    <SelectChangeConclusionResponsible name={props.name}/>
                 </div>
             )
         }
@@ -91,18 +133,17 @@ const ConclusionCard = (props) => {
         function AdminChange(props) {
             const isAdmin = props.isAdmin;
             if (isAdmin == 'wg') {
-                return <IsAdminRG/>;
+                return <IsAdminRG name = {props.name}/>;
 
             } else {
-                return <IsAdminUser/>
+                return <IsAdminUser />
             }
         }
-function chese(){
-            alert("ghbdtn")
-}
+
+
 
         return (
-            <div id={props.id}>
+            <div name={props.name}>
                 <div className={s.header}>
 
 
@@ -119,10 +160,10 @@ function chese(){
 
                     <div className={s.ExecutWorker}>
                         <div>Ответственный сотрудник:</div>
-                        <div oninput={chese}> табельный {searchUser}</div>
+                        <div > табельный: {searchUser}</div>
 
                     </div>
-                    <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
+                    <AdminChange name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
                     <div className={s.filesConclusion}>
                         <div>Файлы заключения подразделения:</div>
                         <div className={s.conclusionFilesArea}> files area:
