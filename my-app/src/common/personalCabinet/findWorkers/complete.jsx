@@ -61,10 +61,10 @@ class Complete extends React.Component
 		return items;
 	}
 
-	select_value(element)
+	select_value(values)
 	{
 		this.setState({options: []});
-		this.props.onSelectItem?.(element)
+		this.props.onSelectItem?.(values)
 	}
 
 	create_item(id, name, tabnum, division, department)
@@ -77,7 +77,7 @@ class Complete extends React.Component
 				display: 'flex',
 				justifyContent: 'space-between',
 			}}
-			onClick = {(value) => this.select_value(tabnum)}
+			onClick = {(value) => this.select_value({tabnum: tabnum, name: name, division: division, department: department})}
 			>
 				<span>
 					<div style={{display:"flex"}}>
