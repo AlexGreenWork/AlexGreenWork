@@ -2,7 +2,7 @@ import style from "./findWorkers.module.css"
 import Complete from "./complete"
 import List from "./list"
 import Card from "./card";
-import {searchtabnum} from "../../../actions/search";
+import {searchuser} from "../../../actions/search";
 import {React, useState} from "react";
 import {useDispatch} from "react-redux";
 
@@ -20,9 +20,9 @@ const FindWorkers = () => {
 						<div className={style.sendOfferSearchBar}>
 							<Complete
 									onSelectItem = {(value) => {
-										set_search_item_value(value);
+										set_search_item_value(value.tabnum);
 										show_list(false);
-										dispatcher(searchtabnum(`${value}`));
+										dispatcher(searchuser(value.tabnum, value.name, value.department, value.division));
 									}}
 									onSelectHeader = {(category, value) => {
 										set_search_category(category);
