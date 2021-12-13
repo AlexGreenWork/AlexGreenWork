@@ -126,7 +126,7 @@ function FileList() {
 
 const CommonOffer = () => {
     let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
-    console.log(offersData)
+    
     //RequestAddSendlerOffers()
     AddSendlerOffers()
     let stat = (offersData.status)
