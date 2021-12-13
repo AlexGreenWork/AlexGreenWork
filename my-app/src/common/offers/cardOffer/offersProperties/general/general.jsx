@@ -126,6 +126,7 @@ function FileList() {
 
 const CommonOffer = () => {
     let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
+    console.log(offersData)
     //RequestAddSendlerOffers()
     AddSendlerOffers()
     let stat = (offersData.status)
@@ -743,6 +744,16 @@ const CommonOffer = () => {
                         fontStyle: "italic"
 
                     }}> {offersData.textOffer}</div>
+                </div>
+                <div className={s.fieldOfCategoryOffer}> Описание проблемы:
+                    <div style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
+                        fontStyle: "italic"
+
+                    }}> {offersData.descriptionProblem}  </div>
                 </div>
             </div>
             <div className={s.fileContainerLayer}>
