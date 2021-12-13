@@ -11,7 +11,8 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import AddSendlerOffers from "./senlerAdditional";
-
+import {useContext} from "react";
+import Context from "../../../../context/Context";
 import {API_URL} from "../../../../../config";
 
 import {toStatus} from "../../../../../actions/offers";
@@ -23,6 +24,12 @@ function RequestSelectOffers() {
     xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`selectOffers=${idOffers}`);
+    console.log( xhr.response );
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        
+        // выводим в консоль то что ответил сервер
+        console.log( xhr.responseText );
+      }
 
     return xhr.response
 }

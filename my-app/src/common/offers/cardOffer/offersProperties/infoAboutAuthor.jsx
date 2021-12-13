@@ -24,9 +24,6 @@ const InfoAboutAuthor = () => {
     return (
         <div className={s.cardOfferContainer}>
 
-
-
-
             <div className={s.header}>
                 <div className={s.nameOffer}>
                     <div>Автор:</div>
