@@ -4,10 +4,13 @@ import s from "./conclusion.module.css"
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
 import Button from "@material-ui/core/Button";
-import Complete from "../../../../personalCabinet/findWorkers/complete";
+// import Complete from "../../../../personalCabinet/findWorkers/complete";
 import {useSelector} from "react-redux";
 
 import {saveToDb1 ,saveToDb2, saveToDb3 } from "../../../../../actions/offers"
+import {store} from "../../../../../reducers";
+import axios from "axios";
+import {API_URL} from "../../../../../config";
 
 const ConclusionCard = (props) => {
 
@@ -15,18 +18,9 @@ const ConclusionCard = (props) => {
 
     const [viewChange, setViewChange] = React.useState(false);
 
-    function saveToDb1(){
-console.log("saveToDb1")
-    }
-function saveToDb2(){
-    console.log("saveToDb2")
-    }
-function saveToDb3(){
-    console.log("saveToDb3")
-    }
-function saveToDbRG(){
-    console.log("saveToDbRG")
-    }
+
+
+
 
 function changeViewSelect() {
 
@@ -111,6 +105,63 @@ function changeViewSelect() {
             )
         }
 
+    }
+    async function saveToDb1(){
+        try{
+            setViewChange(false)
+            const idOffer = localStorage.getItem('idOffers')
+            const respName = store.getState().search.searchUser.name
+            const respTabnum = store.getState().search.searchUser.tabnum
+
+            await axios.post(`${API_URL}api/offers/toDbSaveResposible1`, {
+                respTabnum,
+                respName,
+                idOffer
+
+            })
+            alert('Ответственный сотрудник добавлен')
+
+        } catch (e){
+            alert(e.response.data.message)
+        }
+    }
+    async function saveToDb2(){
+        try{
+            setViewChange(false)
+            const idOffer = localStorage.getItem('idOffers')
+            const respName = store.getState().search.searchUser.name
+            const respTabnum = store.getState().search.searchUser.tabnum
+
+            await axios.post(`${API_URL}api/offers/toDbSaveResposible2`, {
+                respTabnum,
+                respName,
+                idOffer
+
+            })
+            alert('Ответственный сотрудник добавлен')
+
+        } catch (e){
+            alert(e.response.data.message)
+        }
+    }
+    async function saveToDb3(){
+        try{
+            setViewChange(false)
+            const idOffer = localStorage.getItem('idOffers')
+            const respName = store.getState().search.searchUser.name
+            const respTabnum = store.getState().search.searchUser.tabnum
+
+            await axios.post(`${API_URL}api/offers/toDbSaveResposible3`, {
+                respTabnum,
+                respName,
+                idOffer
+
+            })
+            alert('Ответственный сотрудник добавлен')
+
+        } catch (e){
+            alert(e.response.data.message)
+        }
     }
 
     const CardDivisionConclusion = () => {

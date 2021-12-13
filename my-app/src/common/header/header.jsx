@@ -4,7 +4,7 @@ import s from "./header.module.css"
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../reducers/userReducer";
-import avatarLogo from '../../assets/img/avatar.svg'
+// import avatarLogo from '../../assets/img/avatar.svg'
 import {API_URL} from "../../config";
 import GoBack from "../buttons/backButton/backButton";
 
