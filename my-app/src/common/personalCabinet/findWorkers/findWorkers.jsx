@@ -30,9 +30,12 @@ const FindWorkers = () => {
 										show_list(true);
 									}}
 							/>
-							<div>
-								<Card info = {searchItemValue} />
-							</div>
+							{!isList ? 
+								<div>
+									<Card info = {searchItemValue} />
+								</div>
+								: null
+							}
 						</div>
 						{isList ?
 							<div className={style.sendOfferList}>

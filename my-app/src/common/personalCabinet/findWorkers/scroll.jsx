@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import style from "./scroll.module.css"
 import arrow from "../../../Pics/icon/up-arrow.png"
 
@@ -46,11 +46,12 @@ class ScrollButton extends React.Component
 	render()
 	{
 		return (
-					<div style = {{ backgroundImage: `url(${arrow})`,
-									display: this.state.visible ? "block" : "none"
-								}}
+					<div style = {{ display: this.state.visible ? "flex" : "none" }}
 							className = {style.scroll}
 							onClick={this.scrollToTop}>
+						<img src = {arrow}
+							className = {style.scrollButton}
+						/>
 					</div>
 		);
 	};
