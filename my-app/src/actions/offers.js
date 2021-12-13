@@ -62,3 +62,6 @@ export const toDbDateComission = async (offerId, dateComission) => {
         alert(e.response.data.message)
     }
 }
+export const saveResponsible = async ()=>{
+
+}

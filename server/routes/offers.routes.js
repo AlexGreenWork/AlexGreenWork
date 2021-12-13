@@ -4,6 +4,8 @@ const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
+const {isDate} = require("moment");
+const moment = require("moment");
 
 router.use(fileUpload({}));
 
@@ -85,7 +87,8 @@ router.post("/selectMyOffers", urlencodedParser,
 
 })
 
-router.post("/userInfo", urlencodedParser, async function (request, response) {
+router.post("/userInfo", urlencodedParser,
+    async function (request, response) {
 
     let userTab = request.body.userTab;
     //console.log(request.body)
@@ -285,6 +288,42 @@ router.post("/sendAdd", urlencodedParser,
     }
 
     } )
+    router.post("/toDbSaveResposibleRG", urlencodedParser,
+        async function (request, response){
+
+            let idOffers = request.body.idOffer;
+            let respTabnum = request.body.respTabnum;
+            let respName = request.body.respName;
+            await pool.query(`UPDATE offers SET responsibleRG = ${respTabnum} , nameResponsibleRG = "${respName}", dateRespRG = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
+
+    })
+    router.post("/toDbSaveResposible1", urlencodedParser,
+        async function (request, response){
+
+            let idOffers = request.body.idOffer;
+            let respTabnum = request.body.respTabnum;
+            let respName = request.body.respName;
+            await pool.query(`UPDATE offers SET responsible1 = ${respTabnum} , nameResponsible1 = "${respName}", dateResp1 = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
+
+    })
+    router.post("/toDbSaveResposible2", urlencodedParser,
+        async function (request, response){
+
+            let idOffers = request.body.idOffer;
+            let respTabnum = request.body.respTabnum;
+            let respName = request.body.respName;
+            await pool.query(`UPDATE offers SET responsible2 = ${respTabnum} , nameResponsible2 = "${respName}", dateResp2 = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
+
+    })
+    router.post("/toDbSaveResposible3", urlencodedParser,
+        async function (request, response){
+
+            let idOffers = request.body.idOffer;
+            let respTabnum = request.body.respTabnum;
+            let respName = request.body.respName;
+            await pool.query(`UPDATE offers SET responsible3 = ${respTabnum} , nameResponsible3 = "${respName}", dateResp3 = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
+
+    })
 
 
 module.exports = router

@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {deleteAvatar, uploadAvatar} from "../../../actions/user";
 import s from "./profile.module.css"
 import {API_URL} from "../../../config";
-import avatarLogo from '../../../assets/img/avatar.svg'
+// import avatarLogo from '../../../assets/img/avatar.svg'
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 
