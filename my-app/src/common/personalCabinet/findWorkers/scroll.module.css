@@ -1,11 +1,31 @@
 .scroll
 {
-   position: fixed; 
-   width: 40px;
-   bottom: 10%;
-   right: 10px;
-   height: 40px;
-   font-size: 3rem;
-   cursor: pointer;
-   background-repeat: round;
+	border-radius: 5px;
+	position: fixed; 
+	width: 40px;
+	bottom: 10%;
+	right: 5px;
+	height: 70%;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+}
+
+.scrollButton
+{
+	opacity: 0.5;
+	position: absolute;
+	top: 50%;
+	width: 20px;
+	height: 20px;
+}
+
+.scroll:hover
+{
+	border: 2px solid #1c4c9e;
+}
+
+.scroll:hover > .scrollButton
+{
+	opacity: 1;
 }
