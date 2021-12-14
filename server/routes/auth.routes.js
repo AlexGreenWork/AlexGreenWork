@@ -48,7 +48,7 @@ router.post('/registration',
                 return res.status(400).json({message: "Не корректный запрос", errors})
             }
 
-            const {name, surname, middlename, tabelNum, email, phoneNumber, password, fired, adminOptions} = req.body
+            const {name, surname, middlename, tabelNum, email, phoneNumber, password, fired, adminOptions,date} = req.body
 
 
             const candidate = await connection.query(`SELECT * FROM offersworker WHERE email = '${email}' OR tabelNum = '${tabelNum}' AND ${tabelNum}<>0`);
@@ -62,6 +62,7 @@ router.post('/registration',
             const hashPassword = await bcrypt.hash(password, 8)
             const hashAdminOptions = await bcrypt.hash(password, 8)
             const user = ({
+                date,
                 name,
                 surname,
                 middlename,
@@ -71,6 +72,7 @@ router.post('/registration',
                 password: hashPassword,
                 fired,
                 adminOptions
+
             })
             console.log(user)
 
@@ -189,6 +191,7 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
     let emailInput = request.body.emailInput;
     let offer = request.body.offer;
     let problem = request.body.problem;
+    let senleradditional = request.body.yetSendler;
     const password1 = Math.random().toString(36).slice(-8);
     const hashPassword = await bcrypt.hash(password1, 8);
     const password = hashPassword;
@@ -299,13 +302,18 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
 
         } else {
 
-
             await pool.query(`INSERT INTO offers (nameSendler, surnameSendler, middlenameSendler, tabelNum, email, phoneNumber,` +
                 `nameOffer, textOffer, descriptionProblem, date) VALUES ("${firstName}",  "${lastName}", "${middleName}", "${tabelNumber}",` +
                 `"${emailInput}", "${phoneNumber}","${nameOffer}", "${offer}", "${problem}", "${moment().format('YYYY-MM-DD')}")`);
             console.log("Предложение добавлено")
             await uploadFile.CheckLastEntry();
+            //const sqlLstEntry = await uploadFile.sqlCheckLastEntry();
+          let sqlLstEntry= await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);")
+          console.log(sqlLstEntry[0][0].Id) 
+          await pool.query(`INSERT INTO senleradditional (IdOffers, Sendlers) VALUES("${sqlLstEntry[0][0].Id}", '"${senleradditional}"' )`)
+          // `SELECT * FROM senleradditional WHERE tabelNum IN (${tabelNumber})`
             return "Предложение зарегистрировано";
+            
         }
 
     }
@@ -353,9 +361,7 @@ router.post('/upload', function (req, res) {
 
 
 router.post('/uploadMyCard',  async function (req, res) {
-
     
-
     try{
      
         req.files.myFileCard.mv(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/` + req.files.myFileCard.name);

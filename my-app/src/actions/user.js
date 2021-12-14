@@ -1,10 +1,15 @@
 import axios from 'axios'
 import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
-import { useHistory } from "react-router-dom";
+
 
 export const registration = async (name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions) => {
     try {
+
+        const date= new Date().toISOString().slice(0, 10);
+
+
+        console.log(date)
         const response = await axios.post(`${API_URL}api/auth/registration`, {
             name,
             middlename,
@@ -14,7 +19,8 @@ export const registration = async (name, middlename, surname, email, tabelNum, p
             phoneNumber,
             password,
             fired,
-            adminOptions
+            adminOptions,
+            date
         })
         alert(response.data.message)
 
@@ -31,8 +37,8 @@ export const login = (email, password) => {
                 password
             })
 
-            dispatch(setUser(response.data.user))
 
+            localStorage.setItem('userAvatar', response.data.user.avatar)
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('tokenExpires', Date())
             localStorage.setItem('userId', response.data.user.id)
@@ -44,7 +50,8 @@ export const login = (email, password) => {
             localStorage.setItem('userPhoneNumber', response.data.user.phoneNumber)
             localStorage.setItem('userFired', response.data.user.fired)
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
-            localStorage.setItem('userAvatar', response.data.user.avatar)
+
+            dispatch(setUser(response.data.user))
         } catch (e) {
             console.log("Error Level: "+ e);
             alert(e.response.data.message)
@@ -55,7 +62,7 @@ export const login = (email, password) => {
 export const auth = () => {
     return async dispatch => {
 
-        if (localStorage.getItem('token') && 0 > new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 8) {
+        if (localStorage.getItem('token') && new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 8) {
 
                 const user = {
                     id: localStorage.getItem('userId'),
@@ -78,10 +85,10 @@ export const auth = () => {
                     const response = await axios.get(`${API_URL}api/auth/auth`,
                         {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
                     )
-                    dispatch(setUser(response.data.user))
+
                     localStorage.setItem('token', response.data.token)
                     console.log(response.data.id)
-
+                    dispatch(setUser(response.data.user))
                 } catch (e) {
                     console.log('auth error' + e)
                 }
@@ -115,8 +122,9 @@ export const deleteAvatar = () => {
             const response = await axios.delete(`${API_URL}api/files/avatar`,
                 {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
             )
-            dispatch(setUser(response.data))
+
             localStorage.setItem('userAvatar','')
+            dispatch(setUser(response.data))
         } catch (e) {
             console.log(e)
         }

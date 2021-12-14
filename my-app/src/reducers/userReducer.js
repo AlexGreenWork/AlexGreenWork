@@ -14,9 +14,10 @@ export default function userReducer(state = defaultState, action) {
 
             return {
                 ...state,
+                isAuth: state.isAuth = true,
                 currentUser: state.currentUser = action.payload,
                 isAdmin:state.isAdmin = action.payload.adminOptions ,
-                isAuth: state.isAuth = true,
+
             }
 
 
@@ -24,6 +25,7 @@ export default function userReducer(state = defaultState, action) {
 
             return{
                 ...state,
+                isAuth: state.isAuth = true,
                 currentUser:state.currentUser={
                     avatar: localStorage.getItem('userAvatar'),
                     id: localStorage.getItem('userId'),
@@ -37,7 +39,7 @@ export default function userReducer(state = defaultState, action) {
                     adminOptions: localStorage.getItem('userAdminOptions'),
 
                 },
-                isAuth: state.isAuth = true,
+
                 isAdmin: state.isAdmin = localStorage.getItem('userAdminOptions')
             }
         case LOGOUT:
@@ -53,11 +55,15 @@ export default function userReducer(state = defaultState, action) {
             localStorage.removeItem('userFired')
             localStorage.removeItem('userAdminOptions')
             localStorage.removeItem('userAvatar')
+            localStorage.removeItem('dateComission')
+            localStorage.removeItem('idOffers')
+
 
             return {
                 ...state,
-                currentUser:state.currentUser = {},
                 isAuth: state.isAuth = false,
+                currentUser:state.currentUser = {},
+
                 isAdmin: state.isAdmin = '',
             }
         default:
