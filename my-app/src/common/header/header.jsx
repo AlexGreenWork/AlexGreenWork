@@ -4,7 +4,7 @@ import s from "./header.module.css"
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../reducers/userReducer";
-import avatarLogo from '../../assets/img/avatar.svg'
+// import avatarLogo from '../../assets/img/avatar.svg'
 import {API_URL} from "../../config";
 import GoBack from "../buttons/backButton/backButton";
 
@@ -13,7 +13,9 @@ const Header = () => {
     const isAuth = useSelector(state => state.user.isAuth)
     const currentUser = useSelector(state => state.user.currentUser)
     const dispatch = useDispatch()
-    const avatar = currentUser.avatar ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : avatarLogo
+
+
+    const avatar = currentUser.avatar  ? `${API_URL + 'files/avatar/' + currentUser.avatar}` : `${API_URL + 'files/photos/' + localStorage.getItem("userTabelNum") + ".jpg"}`
 
     return (<div className={s.header}>
         <div className={s.clear}>
