@@ -1,6 +1,6 @@
 import React from 'react';
+import { UpCircleOutlined } from "@ant-design/icons"
 import style from "./scroll.module.css"
-import arrow from "../../../Pics/icon/up-arrow.png"
 
 class ScrollButton extends React.Component
 {
@@ -49,8 +49,7 @@ class ScrollButton extends React.Component
 					<div style = {{ display: this.state.visible ? "flex" : "none" }}
 							className = {style.scroll}
 							onClick={this.scrollToTop}>
-						<img src = {arrow}
-							className = {style.scrollButton}
+						<UpCircleOutlined className = {style.scrollButton}
 						/>
 					</div>
 		);

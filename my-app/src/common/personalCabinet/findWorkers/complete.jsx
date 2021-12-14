@@ -1,6 +1,7 @@
 import React from "react";
 import {AutoComplete, Input} from "antd";
 import {API_URL} from "../../../config.js"
+import Translit from "./translit.js"
 const {post} = require("axios");
 
 
@@ -9,7 +10,8 @@ class Complete extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {options: []}
+		this.state = {options: [],
+						input_changed_value: ""}
 
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
@@ -20,7 +22,7 @@ class Complete extends React.Component
 		this.search_value = this.search_value.bind(this);
 		this.select_value = this.select_value.bind(this);
 		this.header_click = this.header_click.bind(this);
-
+		this.input_change = this.input_change.bind(this);
 	}
 
 
@@ -31,7 +33,13 @@ class Complete extends React.Component
 
 	search_value(value)
 	{
-		this.setState({show: false});
+		const converter = new Translit();
+		const new_value = converter.convert(value);
+		if(new_value) value = new_value;
+
+		this.setState({show: false,
+						input_changed_value: value});
+
         post(`${API_URL}api/user/search`, {search: value}).then((res) => {
             this.setState({options: this.create_options(value, res)});
         })
@@ -125,6 +133,10 @@ class Complete extends React.Component
 		};
 	}
 
+	input_change(event)
+	{
+	}
+
 	render()
 	{
 		return (
@@ -137,11 +149,11 @@ class Complete extends React.Component
 						fontSize: '14px',
 						fontWeight: "bold"
 					}}
+					value = {this.state.input_changed_value}
 					options ={this.state.options}
 					onSearch={this.search_value}
 				>
-					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
-						enterButton/>
+					<Input placeholder = "Введите текст для поиска" size="large" style={{ fontSize: '14px', textAlign: "center"}}/>
 				</AutoComplete>
 		</>);
 	}
