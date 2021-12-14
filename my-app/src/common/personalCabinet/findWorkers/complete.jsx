@@ -22,7 +22,8 @@ class Complete extends React.Component
 		this.search_value = this.search_value.bind(this);
 		this.select_value = this.select_value.bind(this);
 		this.header_click = this.header_click.bind(this);
-		this.input_change = this.input_change.bind(this);
+
+		this.text_translite = new Translit();
 	}
 
 
@@ -33,15 +34,13 @@ class Complete extends React.Component
 
 	search_value(value)
 	{
-		const converter = new Translit();
-		const new_value = converter.convert(value);
-		if(new_value) value = new_value;
+		const new_value = this.text_translite.convert(value);
 
 		this.setState({show: false,
-						input_changed_value: value});
+						input_changed_value: new_value});
 
-        post(`${API_URL}api/user/search`, {search: value}).then((res) => {
-            this.setState({options: this.create_options(value, res)});
+        post(`${API_URL}api/user/search`, {search: new_value}).then((res) => {
+            this.setState({options: this.create_options(new_value, res)});
         })
 
 		this.props.onSearch?.(value);
@@ -131,10 +130,6 @@ class Complete extends React.Component
 				<span>{item_count} результатов </span>
 			</div>),
 		};
-	}
-
-	input_change(event)
-	{
 	}
 
 	render()
