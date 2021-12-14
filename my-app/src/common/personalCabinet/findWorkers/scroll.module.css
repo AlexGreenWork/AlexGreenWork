@@ -2,7 +2,7 @@
 {
 	border-radius: 5px;
 	position: fixed; 
-	width: 40px;
+	width: 50px;
 	bottom: 10%;
 	right: 5px;
 	height: 70%;
@@ -13,19 +13,19 @@
 
 .scrollButton
 {
-	opacity: 0.5;
+	opacity: 0.3;
 	position: absolute;
 	top: 50%;
-	width: 20px;
-	height: 20px;
+	font-size: 40px;
 }
 
 .scroll:hover
 {
-	border: 2px solid #1c4c9e;
+	background-color: #4268d7;
 }
 
 .scroll:hover > .scrollButton
 {
 	opacity: 1;
+	color: #ffffff;
 }
