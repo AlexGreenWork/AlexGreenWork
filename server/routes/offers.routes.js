@@ -106,6 +106,7 @@ router.post("/selectMyOffers", urlencodedParser,
     async function (request, response) {
 
     let idOffers = request.body.selectOffers
+
     let sqlMyOff = await pool.execute(`SELECT 
 											o.*,
 											ow.name AS nameSendler,
@@ -117,6 +118,7 @@ router.post("/selectMyOffers", urlencodedParser,
 											ON ow.tabelNum = o.tabelNum
 										WHERE o.Id = ${idOffers}`)
    // console.log(sqlMyOff[0])
+
     response.send(sqlMyOff[0][0])
 
 })
