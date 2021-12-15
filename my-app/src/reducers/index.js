@@ -7,6 +7,7 @@ import uploadReducer from "./uploadReducer";
 import appReducer from "./appReducer";
 import ReducerStepper from "./reducerStepper"
 import searchReducer from "./searchReducer";
+import offerReducer from "./offerReducer";
 
 
 const rootReducer = combineReducers({
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     upload: uploadReducer,
     app: appReducer,
     stepper:ReducerStepper,
-    search:searchReducer
+    search:searchReducer,
+    offers: offerReducer,
 })
 
 export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))

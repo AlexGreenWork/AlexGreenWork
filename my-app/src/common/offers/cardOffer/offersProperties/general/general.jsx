@@ -11,21 +11,14 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import AddSendlerOffers from "./senlerAdditional";
-
+import {useContext} from "react";
+import Context from "../../../../context/Context";
 import {API_URL} from "../../../../../config";
-
+import {useDispatch, useSelector} from "react-redux";
 import {toStatus} from "../../../../../actions/offers";
+import { store } from "../../../../../reducers";
 
 
-function RequestSelectOffers() {
-    let idOffers = localStorage.getItem('idOffers');
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${idOffers}`);
-
-    return xhr.response
-}
 
 function ReadDir() {
     let idOffers = localStorage.getItem('idOffers');
@@ -33,7 +26,15 @@ function ReadDir() {
     xhr.open('POST', `${API_URL}api/offers/FilesMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`idOffers=${idOffers}`);
-
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let offersData = JSON.parse(xhr.response);           
+            console.log(offersData)     
+           
+             
+                      
+        }
+    }   
     return xhr.response
 }
 
@@ -125,9 +126,12 @@ function FileList() {
 
 
 const CommonOffer = () => {
-    let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
-    
-    //RequestAddSendlerOffers()
+
+    const [listFile, setFileList] = useState(<FileList/>);
+
+   
+  const offersData =  useSelector(state => store.getState().offers.offer)
+   
     AddSendlerOffers()
     let stat = (offersData.status)
 
@@ -419,7 +423,7 @@ const CommonOffer = () => {
         }
     }
 
-    const [status, setStatus] = React.useState(`${stat}`);
+    const [status, setStatus] = React.useState(`${store.getState().offers.offer.status}`);
 
     let rejectStatus = ChangeStatRej()
 
@@ -621,8 +625,7 @@ const CommonOffer = () => {
     };
 
 
-    const [listFile, setFileList] = useState(<FileList/>);
-
+  
 
     function UploadFileCard(file) {
 
