@@ -80,7 +80,7 @@ router.post("/selectMyOffers", urlencodedParser,
 
     let idOffers = request.body.selectOffers
     let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE Id = ${idOffers}`)
-   // console.log(sqlMyOff[0])
+    console.log(sqlMyOff[0][0])
     response.send(sqlMyOff[0][0])
 
 })

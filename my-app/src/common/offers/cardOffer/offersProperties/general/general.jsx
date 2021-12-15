@@ -14,25 +14,11 @@ import AddSendlerOffers from "./senlerAdditional";
 import {useContext} from "react";
 import Context from "../../../../context/Context";
 import {API_URL} from "../../../../../config";
-
+import {useDispatch, useSelector} from "react-redux";
 import {toStatus} from "../../../../../actions/offers";
+import { store } from "../../../../../reducers";
 
 
-function RequestSelectOffers() {
-    let idOffers = localStorage.getItem('idOffers');
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${idOffers}`);
-    console.log( xhr.response );
-    if (xhr.readyState === 4 && xhr.status === 200) {
-        
-        // выводим в консоль то что ответил сервер
-        console.log( xhr.responseText );
-      }
-
-    return xhr.response
-}
 
 function ReadDir() {
     let idOffers = localStorage.getItem('idOffers');
@@ -132,9 +118,9 @@ function FileList() {
 
 
 const CommonOffer = () => {
-    let offersData = JSON.parse(RequestSelectOffers());  //Данные из запроса
-    
-    //RequestAddSendlerOffers()
+   
+  const offersData =  useSelector(state => store.getState().offers.offer)
+   
     AddSendlerOffers()
     let stat = (offersData.status)
 
@@ -426,7 +412,7 @@ const CommonOffer = () => {
         }
     }
 
-    const [status, setStatus] = React.useState(`${stat}`);
+    const [status, setStatus] = React.useState(`${store.getState().offers.offer.status}`);
 
     let rejectStatus = ChangeStatRej()
 
