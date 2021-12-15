@@ -39,9 +39,12 @@ class Complete extends React.Component
 		this.setState({show: false,
 						input_changed_value: new_value});
 
-        post(`${API_URL}api/user/search`, {search: new_value}).then((res) => {
-            this.setState({options: this.create_options(new_value, res)});
-        })
+		clearTimeout(this.timer);
+
+		this.timer = setTimeout(() => {
+			post(`${API_URL}api/user/search`, {search: new_value}).then((res) => {
+				this.setState({options: this.create_options(new_value, res)});
+        })}, 500);
 
 		this.props.onSearch?.(value);
 	}
@@ -145,8 +148,8 @@ class Complete extends React.Component
 						fontWeight: "bold"
 					}}
 					value = {this.state.input_changed_value}
-					options ={this.state.options}
-					onSearch={this.search_value}
+					options = {this.state.options}
+					onSearch = {this.search_value}
 				>
 					<Input placeholder = "Введите текст для поиска" size="large" style={{ fontSize: '14px', textAlign: "center"}}/>
 				</AutoComplete>
