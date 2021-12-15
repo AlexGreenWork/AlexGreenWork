@@ -6,6 +6,7 @@ const fs = require('fs');
 const fileUpload = require("express-fileupload");
 const {isDate} = require("moment");
 const moment = require("moment");
+const { on } = require("events");
 
 router.use(fileUpload({}));
 
@@ -41,7 +42,18 @@ router.get("/allOffers",
 
 
         async function sqlSelectOffers() {
-            let selectOffers = await pool.execute(`SELECT * FROM offers`);
+            let selectOffers = await pool.execute(`SELECT
+														o.nameOffer,
+														o.Id,
+														o.date,
+														o.status,
+														o.tabelNum,
+														ow.name AS nameSendler,
+														ow.surname AS surnameSendler,
+														ow.middlename AS middlenameSendler
+													FROM offers AS o
+													INNER JOIN offersworker AS ow
+														ON ow.tabelNum = o.tabelNum`);
             response.setHeader('Content-Type', 'application/json');
             response.send(JSON.stringify(selectOffers[0], null, 3));
 
@@ -70,9 +82,21 @@ router.post("/myOffers", urlencodedParser,
 
 async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber) {
    
-    let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE (tabelNum = ${tabelNumber} AND email = "${email}")`)
+    let sqlMyOff = await pool.execute(`SELECT
+											o.nameOffer,
+											o.Id,
+											o.date,
+											o.status,
+											o.tabelNum,
+											ow.name AS nameSendler,
+											ow.surname AS surnameSendler,
+											ow.middlename AS middlenameSendler
+										FROM offers AS o
+										INNER JOIN offersworker AS ow
+											ON ow.tabelNum = o.tabelNum
+										WHERE (ow.tabelNum = ${tabelNumber}
+											AND ow.email = "${email}")`)
        
-        
     return [sqlMyOff]
 
 }
@@ -81,7 +105,16 @@ router.post("/selectMyOffers", urlencodedParser,
     async function (request, response) {
 
     let idOffers = request.body.selectOffers
-    let sqlMyOff = await pool.execute(`SELECT * FROM offers WHERE Id = ${idOffers}`)
+    let sqlMyOff = await pool.execute(`SELECT 
+											o.*,
+											ow.name AS nameSendler,
+											ow.surname AS surnameSendler,
+											ow.middlename AS middlenameSendler,
+											ow.email AS email
+										FROM offers AS o
+										INNER JOIN offersworker AS ow
+											ON ow.tabelNum = o.tabelNum
+										WHERE o.Id = ${idOffers}`)
    // console.log(sqlMyOff[0])
     response.send(sqlMyOff[0][0])
 
@@ -91,24 +124,38 @@ router.post("/userInfo", urlencodedParser,
     async function (request, response) {
 
     let userTab = request.body.userTab;
-    //console.log(request.body)
 
-    let sqlKadry = await pool.execute(`SELECT * FROM kadry_all WHERE tabnum = ${userTab}`);
-    let sqlDivision = await pool.execute(`SELECT * FROM division WHERE department = ${sqlKadry[0][0].department} AND id = ${sqlKadry[0][0].division}`);
-    let sqlDepartament = await pool.execute(`SELECT * FROM department WHERE id = ${sqlKadry[0][0].department}`);
-   // console.log(request.body);
+	try{
+			const sqlUserInfo = `SELECT
+							ka.profname,
+							d.fullname,
+							d2.name,
+							ue.email
+						FROM kadry_all AS ka
+						LEFT JOIN department AS d
+							ON d.id = ka.department
+						LEFT JOIN division AS d2
+							ON d2.department = ka.department
+								AND d2.id = ka.division
+						LEFT JOIN users_emails AS ue
+							ON ue.tabnum = ka.tabnum
+						WHERE ka.tabnum = ${userTab}`
 
-    let reqJson = {
+			const stmt = await pool.execute(sqlUserInfo);
 
-        department: sqlDepartament[0][0].fullname,
-        division: sqlDivision[0][0].name,
-        position: sqlKadry[0][0].profname
+			let reqJson = {
+				department: stmt[0][0].fullname,
+				division: stmt[0][0].name,
+				position: stmt[0][0].profname,
+				email: stmt[0][0].email
+			}
 
-    }
-
-    response.send(reqJson);
-
-
+			response.send(reqJson);
+	}
+	catch(e)
+	{
+		console.log(e)
+	}
 })
 
 
@@ -171,27 +218,18 @@ router.post("/FilesMyOffers", urlencodedParser,
                            
                             fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
                                 if(err) throw err; 
-                               
                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
-                                  
-                              
-                                  
-                                 response.send(files)
+                                response.send(files)
                              })
          
                             });
                         } else {
                             
                         }
-                       
-                      
                     }
                  }
             }
- 
         })
-
-
     })
 
 
@@ -201,7 +239,9 @@ router.post("/toStatus", urlencodedParser,
            let view = request.body.view
            let category = request.body.category
            let status = request.body.status
+		try{
          await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
+		}catch(e){console.log(e)}
 })
 
 router.post("/toDbDateComission", urlencodedParser,
@@ -220,33 +260,28 @@ router.post("/toDbDateComission", urlencodedParser,
 router.get("/downloadMyFile", urlencodedParser, async function(request, response){
     let idOffers = request.query.idOffers;
     let fileName = request.query.fileName;
- 
     
     fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, async (err, filesName) => {
         
-
-        filesName.push('exit');
-       
-       for(let i = 0 ; i < filesName.length; i++ ){
-           
-            if(filesName[i] == fileName ){
-
-                let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
-            
-
-                response.download(file); 
-                
-                
-                break;
-                
-            } else{
-                  if(filesName[i] == 'exit'){
-                    response.send("Нет файла")
-                  
-                }
-            }
-    } 
-} )
+		filesName.push('exit');
+		   
+		for(let i = 0 ; i < filesName.length; i++ )
+		{
+			if(filesName[i] == fileName )
+			{
+				let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
+				response.download(file); 
+				break;
+			}
+			else
+			{
+				if(filesName[i] == 'exit')
+				{
+					response.send("Нет файла")
+				}
+			}
+		} 
+	})
 })
 
 router.post("/sendAdd", urlencodedParser,
@@ -265,14 +300,9 @@ router.post("/sendAdd", urlencodedParser,
            
             response.send('null')
         }
-        
-      
-      
-       
+} )
 
-    } )
-
-    router.post("/sendAddInfo", urlencodedParser,
+router.post("/sendAddInfo", urlencodedParser,
     async function (request, response){
         
         let idOffers = request.body.selectOffers;
@@ -287,43 +317,99 @@ router.post("/sendAdd", urlencodedParser,
         response.send('null')
     }
 
-    } )
-    router.post("/toDbSaveResposibleRG", urlencodedParser,
+})
+
+async function register_responsible_for_offer(tb, offerId, responsible_tabnum, date_open)
+{
+	const sqlRegisterResponsible = `INSERT INTO ${tb}
+										(offer_id, responsible_tabnum, open)
+									VALUES ('${offerId}', '${responsible_tabnum}', '${date_open}')`;
+	await pool.query(sqlRegisterResponsible);
+}
+
+async function delete_responsible_for_offer(tb, offerId, responsible_tabnum)
+{
+	const sqlResponsible = `UPDATE ${tb}
+							SET deleted = 1
+							WHERE offer_id = ${offerId}
+								AND responsible_tabnum = ${responsible_tabnum}
+								AND deleted <> 1`
+
+	await pool.query(sqlResponsible);
+}
+
+async function update_responsible(tb, tbl_alias, idOffers, respTabnum)
+{
+	if(!respTabnum)
+	{
+		const sqlOffer = `SELECT ${tbl_alias}, Id FROM offers WHERE Id = '${idOffers}'`;
+		const changedOffers = await pool.query(sqlOffer);
+		const changedResponsibleTabnum = changedOffers[0][0][tbl_alias];
+		const changedOffesId = changedOffers[0][0].Id;
+		
+		if(changedOffesId && changedResponsibleTabnum)
+		{
+		console.log(changedOffers[0][0])
+			delete_responsible_for_offer(tb, changedOffesId, changedResponsibleTabnum);
+		}
+	}
+	else
+	{
+		const sqlAvalibleResponsibles = `SELECT COUNT(*) AS available
+										FROM ${tb}
+										WHERE offer_id = ${idOffers}
+											AND responsible_tabnum = '${respTabnum}'
+											AND deleted <> 1`
+
+		const avaliableResponsibles = await pool.query(sqlAvalibleResponsibles);
+		if(!avaliableResponsibles[0][0].available)
+		{
+			register_responsible_for_offer(tb, idOffers, respTabnum, moment().format('YYYY-MM-DD'));
+		}
+	}
+
+	await pool.query(`UPDATE offers
+						SET ${tbl_alias} = '${respTabnum}'
+					WHERE Id = '${idOffers}'`)
+
+}
+
+router.post("/toDbSaveResposibleRG", urlencodedParser,
         async function (request, response){
 
             let idOffers = request.body.idOffer;
             let respTabnum = request.body.respTabnum;
-            let respName = request.body.respName;
-            await pool.query(`UPDATE offers SET responsibleRG = ${respTabnum} , nameResponsibleRG = "${respName}", dateRespRG = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
 
-    })
-    router.post("/toDbSaveResposible1", urlencodedParser,
+			update_responsible('offersresponsible_rg', 'responsibleRG', idOffers, respTabnum);
+})
+
+
+router.post("/toDbSaveResposible1", urlencodedParser,
         async function (request, response){
 
-            let idOffers = request.body.idOffer;
-            let respTabnum = request.body.respTabnum;
-            let respName = request.body.respName;
-            await pool.query(`UPDATE offers SET responsible1 = ${respTabnum} , nameResponsible1 = "${respName}", dateResp1 = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
+			let idOffers = request.body.idOffer;
+			let respTabnum = request.body.respTabnum;
 
-    })
-    router.post("/toDbSaveResposible2", urlencodedParser,
+			update_responsible('offersresponsible', 'responsible1', idOffers, respTabnum);
+})
+
+router.post("/toDbSaveResposible2", urlencodedParser,
         async function (request, response){
 
-            let idOffers = request.body.idOffer;
-            let respTabnum = request.body.respTabnum;
-            let respName = request.body.respName;
-            await pool.query(`UPDATE offers SET responsible2 = ${respTabnum} , nameResponsible2 = "${respName}", dateResp2 = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
+			let idOffers = request.body.idOffer;
+			let respTabnum = request.body.respTabnum;
 
-    })
-    router.post("/toDbSaveResposible3", urlencodedParser,
+			update_responsible('offersresponsible', 'responsible2', idOffers, respTabnum);
+})
+
+router.post("/toDbSaveResposible3", urlencodedParser,
         async function (request, response){
 
-            let idOffers = request.body.idOffer;
-            let respTabnum = request.body.respTabnum;
-            let respName = request.body.respName;
-            await pool.query(`UPDATE offers SET responsible3 = ${respTabnum} , nameResponsible3 = "${respName}", dateResp3 = "${moment().format('YYYY-MM-DD')}" WHERE  Id = (${idOffers})`)
+			let idOffers = request.body.idOffer;
+			let respTabnum = request.body.respTabnum;
 
-    })
+			update_responsible('offersresponsible', 'responsible3', idOffers, respTabnum);
+})
 
 
 module.exports = router
