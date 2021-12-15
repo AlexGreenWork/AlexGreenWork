@@ -4,27 +4,89 @@ import s from "./sendOffer/offerForm/offers.module.css"
 import {API_URL} from "../../config";
 import {useContext} from "react";
 import Context from "../context/Context";
+import { useDispatch } from "react-redux";
+import { addSendler, selectMyOffers } from "../../reducers/offerReducer";
 
-let requestResult;
-//contextFunction
+
 
 
 const Offer = (props) => {
 
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState('');
-function clickOnOfferLink(){
-  
-    value.contextFunction(props.id, props.tabelNum)
-    localStorage.setItem('idOffers', props.id);
-    localStorage.setItem('dateComission', props.dateComission);
-    setDateComission(localStorage.getItem('dateComission'))
-}
+
+    const dispatch = useDispatch();
+    
+    function DispatchOffers(){
+        RequestSelectOffers();
+
+        function RequestSelectOffers() {
+           
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, true); 
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+           
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let offersData = JSON.parse(xhr.response);           
+                    console.log(offersData)     
+                   
+                     dispatch(selectMyOffers(offersData.Id, offersData.nameOffer, offersData.date, offersData.tabelNum,
+                        offersData.nameSendler, offersData.surnameSendler, offersData.middlenameSendler, offersData.email,
+                        offersData.status, offersData.descriptionProblem , offersData.responsible1, offersData.responsible2, 
+                        offersData.responsible3, offersData.answerRG , offersData.answerTEO, offersData.textOffer,
+                        offersData.phoneNumber, offersData.note )) 
+                              
+                }
+            }     
+
+            xhr.send(`selectOffers=${props.id}`);
+           
+        }
+
+    
+
+      
+    }
+
+    function DispatchAddSendler(){
+        RequestAddSendlerOffers();
+
+        function RequestAddSendlerOffers() {
+            let idOffers = props.id;
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', `${API_URL}api/offers/sendAddInfo`, true); 
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(xhr.response)         
+                    dispatch(addSendler(xhr.response))
+                              
+                }
+            }  
+            xhr.send(`selectOffers=${idOffers}`);
+        
+        
+        
+            return xhr.response
+        }
+
+          
+    }
+
+    function clickOnOfferLink(){
+        localStorage.setItem('idOffers', props.id);
+        value.contextFunction(props.id, props.tabelNum)
+        
+        localStorage.setItem('dateComission', props.dateComission);
+        setDateComission(localStorage.getItem('dateComission'))
+    }
 
 
     return (
         <div>
-            <NavLink to='/cardOffer' onClick={clickOnOfferLink}>
+            <NavLink to='/cardOffer' onClick={()=>{clickOnOfferLink(); DispatchOffers(); DispatchAddSendler()}}>
                 <div className={s.header}>
                     <div className={s.offerPreview}>
                         <div className={s.from}>
@@ -56,8 +118,8 @@ const OffersLink = (props) => {
 }
 
 const Offers = () => {
-    let portotypeResponse= `[{"Id":"","nameOffer":"","date":"","tabelNum":"","nameSendler":"","surnameSendler":"","middlenameSendler":"","email":"","status":null,"descriptionProblem":"","responsible1":null,"markRespons1":null,"responsible2":null,"markRespons2":null,"responsible3":null,"markRespons3":null,"answerRG":null,"answerTEO":null,"textOffer":"","phoneNumber":" 3","note":null}]`;
-    const [reqMyOff, setReqMyOff] = useState(portotypeResponse);
+   
+    const [reqMyOff, setReqMyOff] = useState(0);
 
     function Resp() {
 
@@ -71,7 +133,7 @@ const Offers = () => {
         let userEmail = localStorage.getItem('userEmail');
     
     
-        xhr.open('POST', `${API_URL}api/offers/myOffers`, true); /// СИНХРОННЫЙ ЗАПРОС!!!
+        xhr.open('POST', `${API_URL}api/offers/myOffers`, true); /// AСИНХРОННЫЙ ЗАПРОС!!!
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         
            
@@ -90,10 +152,20 @@ const Offers = () => {
         return xhr.response
     }
     Resp()
+
+    function ChangeOff(){
+        if(reqMyOff != 0){
+            return <OffersLink request={reqMyOff}/>
+
+        }else{
+            return null
+        }
+    }
     return (
         <div className={s.offersContainer}>
-            <div className={s.titleHeader}>Мои предложения</div>
-            <OffersLink request={reqMyOff}/>
+            <div className={s.titleHeader} >Мои предложения</div>
+            <ChangeOff />
+          
 
         </div>
     )

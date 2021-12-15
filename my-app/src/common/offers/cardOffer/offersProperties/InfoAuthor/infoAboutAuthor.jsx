@@ -1,18 +1,23 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import s from "./infoAboutAuthor.module.css"
 import { API_URL } from "../../../../../config";
+import Context from "../../../../context/Context";
 
 function RequestAddSendlerOffers() {
     let idOffers = localStorage.getItem('idOffers');
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `${API_URL}api/offers/sendAddInfo`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    
+    
     xhr.send(`selectOffers=${idOffers}`);
-   
+
+
+
     return xhr.response
 }
 
@@ -20,14 +25,14 @@ function RequestAddSendlerOffers() {
 
 
 function Resp(tab, name, surname, middlename, email, phoneNumber) {
-    
+   
     let userPhoneNumber = localStorage.getItem('userPhoneNumber');
     let userTabelNum = localStorage.getItem('userTabelNum');
     let userName = localStorage.getItem('userName');
     let userSurName = localStorage.getItem('userSurName');
     let userMiddleName = localStorage.getItem('userMiddleName');
     let userEmail = localStorage.getItem('userEmail');
-   
+    
     if(tab === userTabelNum){
        
         let xhr = new XMLHttpRequest();
@@ -41,7 +46,7 @@ function Resp(tab, name, surname, middlename, email, phoneNumber) {
                xhr.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     let result = this.responseText;
-                                   
+                   
                     return result
           }
     
@@ -60,13 +65,7 @@ function Resp(tab, name, surname, middlename, email, phoneNumber) {
 
         return xhr.response
 
-       
-
     }
-    
-       
-   
-    
     
 }
 
@@ -123,6 +122,7 @@ function validElem(){
 
 const InfoAboutAuthor = (props) => {
     let offersDataStart = JSON.parse(Resp(localStorage.getItem('userTabelNum')));
+   // console.log(Resp(localStorage.getItem('userTabelNum')))
    
     const [value, setValue] = useState(0);
     const [name, setName] = useState(offersDataStart[0].nameSendler);
@@ -201,7 +201,13 @@ const InfoAboutAuthor = (props) => {
    
     if(tabelNumber !== 0){
      userInfo = JSON.parse(UserInfo(tabelNumber));
+     
     }
+
+   /*  function ChangeRender(){
+        if()
+    } */
+
     return (
         <div className={s.cardOfferContainer}>
                       <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
