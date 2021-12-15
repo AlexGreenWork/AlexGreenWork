@@ -26,7 +26,15 @@ function ReadDir() {
     xhr.open('POST', `${API_URL}api/offers/FilesMyOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`idOffers=${idOffers}`);
-
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let offersData = JSON.parse(xhr.response);           
+            console.log(offersData)     
+           
+             
+                      
+        }
+    }   
     return xhr.response
 }
 
@@ -118,6 +126,9 @@ function FileList() {
 
 
 const CommonOffer = () => {
+
+    const [listFile, setFileList] = useState(<FileList/>);
+
    
   const offersData =  useSelector(state => store.getState().offers.offer)
    
@@ -614,8 +625,7 @@ const CommonOffer = () => {
     };
 
 
-    const [listFile, setFileList] = useState(<FileList/>);
-
+  
 
     function UploadFileCard(file) {
 
