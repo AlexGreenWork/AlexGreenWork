@@ -101,7 +101,7 @@ class Search
 								ka.CEHCODE AS department_code,
 								ka.DISTRFULLN AS division
 							FROM
-								offersendler.kadryok AS ka
+								offersendler.kadry_ok AS ka
 						) AS outer_tbl
 						WHERE outer_tbl.${alias.field} LIKE ?`
 
@@ -132,7 +132,7 @@ class Search
 									cl.PROFNAME AS prof,
 									ka.BRIGFULLN AS brig,
 									ue.email AS email
-						FROM offersendler.kadryok AS ka
+						FROM offersendler.kadry_ok AS ka
 						LEFT JOIN offersendler.clpost AS cl ON cl.PROFCODE = ka.PROFCODE
 						LEFT JOIN offersendler.department AS d ON d.id = ka.CEHCODE
 						LEFT JOIN offersendler.division AS d2 ON d2.department = d.id AND d2.id = ka.DISTRCODE

@@ -7,6 +7,7 @@ const fileUpload = require("express-fileupload");
 const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
+const responsible = require("../controllers/responsibleController.js");
 
 router.use(fileUpload({}));
 
@@ -327,68 +328,13 @@ router.post("/sendAddInfo", urlencodedParser,
 
 })
 
-async function register_responsible_for_offer(tb, offerId, responsible_tabnum, date_open)
-{
-	const sqlRegisterResponsible = `INSERT INTO ${tb}
-										(offer_id, responsible_tabnum, open)
-									VALUES ('${offerId}', '${responsible_tabnum}', '${date_open}')`;
-	await pool.query(sqlRegisterResponsible);
-}
-
-async function delete_responsible_for_offer(tb, offerId, responsible_tabnum)
-{
-	const sqlResponsible = `UPDATE ${tb}
-							SET deleted = 1
-							WHERE offer_id = ${offerId}
-								AND responsible_tabnum = ${responsible_tabnum}
-								AND deleted <> 1`
-
-	await pool.query(sqlResponsible);
-}
-
-async function update_responsible(tb, tbl_alias, idOffers, respTabnum)
-{
-	if(!respTabnum)
-	{
-		const sqlOffer = `SELECT ${tbl_alias}, Id FROM offers WHERE Id = '${idOffers}'`;
-		const changedOffers = await pool.query(sqlOffer);
-		const changedResponsibleTabnum = changedOffers[0][0][tbl_alias];
-		const changedOffesId = changedOffers[0][0].Id;
-		
-		if(changedOffesId && changedResponsibleTabnum)
-		{
-		console.log(changedOffers[0][0])
-			delete_responsible_for_offer(tb, changedOffesId, changedResponsibleTabnum);
-		}
-	}
-	else
-	{
-		const sqlAvalibleResponsibles = `SELECT COUNT(*) AS available
-										FROM ${tb}
-										WHERE offer_id = ${idOffers}
-											AND responsible_tabnum = '${respTabnum}'
-											AND deleted <> 1`
-
-		const avaliableResponsibles = await pool.query(sqlAvalibleResponsibles);
-		if(!avaliableResponsibles[0][0].available)
-		{
-			register_responsible_for_offer(tb, idOffers, respTabnum, moment().format('YYYY-MM-DD'));
-		}
-	}
-
-	await pool.query(`UPDATE offers
-						SET ${tbl_alias} = '${respTabnum}'
-					WHERE Id = '${idOffers}'`)
-
-}
-
 router.post("/toDbSaveResposibleRG", urlencodedParser,
         async function (request, response){
 
             let idOffers = request.body.idOffer;
             let respTabnum = request.body.respTabnum;
 
-			update_responsible('offersresponsible_rg', 'responsibleRG', idOffers, respTabnum);
+			responsible.update_responsible('offersresponsible_rg', 'responsibleRG', idOffers, respTabnum);
 })
 
 
@@ -398,7 +344,7 @@ router.post("/toDbSaveResposible1", urlencodedParser,
 			let idOffers = request.body.idOffer;
 			let respTabnum = request.body.respTabnum;
 
-			update_responsible('offersresponsible', 'responsible1', idOffers, respTabnum);
+			responsible.update_responsible('offersresponsible', 'responsible1', idOffers, respTabnum);
 })
 
 router.post("/toDbSaveResposible2", urlencodedParser,
@@ -407,7 +353,7 @@ router.post("/toDbSaveResposible2", urlencodedParser,
 			let idOffers = request.body.idOffer;
 			let respTabnum = request.body.respTabnum;
 
-			update_responsible('offersresponsible', 'responsible2', idOffers, respTabnum);
+			responsible.update_responsible('offersresponsible', 'responsible2', idOffers, respTabnum);
 })
 
 router.post("/toDbSaveResposible3", urlencodedParser,
@@ -416,7 +362,7 @@ router.post("/toDbSaveResposible3", urlencodedParser,
 			let idOffers = request.body.idOffer;
 			let respTabnum = request.body.respTabnum;
 
-			update_responsible('offersresponsible', 'responsible3', idOffers, respTabnum);
+			responsible.update_responsible('offersresponsible', 'responsible3', idOffers, respTabnum);
 })
 
 
