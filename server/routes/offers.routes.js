@@ -144,10 +144,18 @@ router.post("/userInfo", urlencodedParser,
 			const stmt = await pool.execute(sqlUserInfo);
 
 			let reqJson = {
-				department: stmt[0][0].fullname,
-				division: stmt[0][0].name,
-				position: stmt[0][0].profname,
-				email: stmt[0][0].email
+				department: null,
+				division: null,
+				position: null,
+				email: null,
+			}
+
+			if(stmt[0][0])
+			{
+				reqJson.department = stmt[0][0].fullname;
+				reqJson.division = stmt[0][0].name;
+				reqJson.position = stmt[0][0].profname,
+				reqJson.email = stmt[0][0].email
 			}
 
 			response.send(reqJson);
