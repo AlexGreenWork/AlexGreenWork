@@ -113,7 +113,7 @@ router.post("/selectMyOffers", urlencodedParser,
 
 		let idOffers = request.body.selectOffers
 
-		let sqlMyOffers = await pool.execute(`SELECT 
+		let sqlMyOffers = await pool.query(`SELECT 
 												o.*,
 												ow.name AS nameSendler,
 												ow.surname AS surnameSendler,
@@ -122,9 +122,9 @@ router.post("/selectMyOffers", urlencodedParser,
 											FROM offers AS o
 											INNER JOIN offersworker AS ow
 												ON ow.tabelNum = o.tabelNum
-											WHERE o.Id = ${idOffers}`)
+											WHERE o.Id = ?`, [idOffers])
 
-		const sqlOfferResponsoble = await pool.execute(`SELECT
+		const sqlOfferResponsoble = await pool.query(`SELECT
 															osr.offer_id,
 															ka.fiofull,
 															osr.responsible_tabnum,
@@ -137,10 +137,10 @@ router.post("/selectMyOffers", urlencodedParser,
 														INNER JOIN kadry_all AS ka 
 																ON ka.tabnum = osr.responsible_tabnum
 														WHERE
-															osr.offer_id = ${idOffers}
-														AND osr.deleted <> 1`)
+															osr.offer_id = ?
+														AND osr.deleted <> 1`, [idOffers])
 
-		const sqlOfferResponsoble_Rg = await pool.execute(`SELECT
+		const sqlOfferResponsoble_Rg = await pool.query(`SELECT
 															osr_rg.offer_id,
 															ka.fiofull,
 															osr_rg.responsible_tabnum,
@@ -153,8 +153,8 @@ router.post("/selectMyOffers", urlencodedParser,
 														INNER JOIN kadry_all AS ka 
 																ON ka.tabnum = osr_rg.responsible_tabnum
 														WHERE
-															osr_rg.offer_id = ${idOffers}
-														AND osr_rg.deleted <> 1`)
+															osr_rg.offer_id = ?
+														AND osr_rg.deleted <> 1`, [idOffers])
 		response.send({
 							...sqlMyOffers[0][0],
 							responsibles: [
