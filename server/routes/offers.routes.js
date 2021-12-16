@@ -108,6 +108,7 @@ router.post("/selectMyOffers", urlencodedParser,
 		if(!('selectOffers' in request.body)
 			|| !request.body.selectOffers)
 		{
+			response.status(400);
 			response.send();
 		}
 
@@ -375,12 +376,34 @@ router.post("/sendAddInfo", urlencodedParser,
 })
 
 router.post("/toDbSaveResposibleRG", urlencodedParser,
-        async function (request, response){
+	async function (request, response)
+	{
+		if((!('idOffer' in request.body)
+			|| !request.body.idOffer)
+				|| (!('respTabnum' in request.body)
+					|| !request.body.respTabnum))
+		{
+			response.status(400);
+			response.send();
+		}
 
-            let idOffers = request.body.idOffer;
-            let respTabnum = request.body.respTabnum;
+		let idOffers = request.body.idOffer;
+		let respTabnum = request.body.respTabnum;
 
-			responsible.update_responsible('offersresponsible_rg', 'responsibleRG', idOffers, respTabnum);
+		const sqlResponsible = `UPDATE offersresponsible_rg
+								SET deleted = 1
+								WHERE offer_id = ?
+									AND deleted <> 1`
+		await pool.query(sqlResponsible, [idOffers]);
+
+		const sqlNewResponsible = `INSERT INTO offersresponsible_rg
+										(offer_id, responsible_tabnum, open)
+									VALUES (?, ?, ?)`
+
+		pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
+
+		response.status(200);
+		response.send();
 })
 
 
