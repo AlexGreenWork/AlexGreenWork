@@ -1,0 +1,31 @@
+.scroll
+{
+	border-radius: 5px;
+	position: fixed; 
+	width: 50px;
+	bottom: 10%;
+	right: 5px;
+	height: 70%;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+}
+
+.scrollButton
+{
+	opacity: 0.3;
+	position: absolute;
+	top: 50%;
+	font-size: 40px;
+}
+
+.scroll:hover
+{
+	background-color: #4268d7;
+}
+
+.scroll:hover > .scrollButton
+{
+	opacity: 1;
+	color: #ffffff;
+}

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
-import { useHistory } from "react-router-dom";
+
 
 export const registration = async (name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions) => {
     try {
@@ -62,7 +62,7 @@ export const login = (email, password) => {
 export const auth = () => {
     return async dispatch => {
 
-        if (localStorage.getItem('token') && 0 > new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 8) {
+        if (localStorage.getItem('token') && new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 8) {
 
                 const user = {
                     id: localStorage.getItem('userId'),

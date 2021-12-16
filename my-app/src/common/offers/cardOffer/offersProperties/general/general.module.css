@@ -28,7 +28,7 @@
 .nameCategoryOfOffer{
     width:150px;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 
 }
 .title {
@@ -186,9 +186,9 @@ select::after {
     display: flex;
 }
 
-.ExecutWorker {
-    display: flex;
-}
+/*.ExecutWorker {*/
+/*    display: flex;*/
+/*}*/
 
 .filesConclusion {
     display: flex;

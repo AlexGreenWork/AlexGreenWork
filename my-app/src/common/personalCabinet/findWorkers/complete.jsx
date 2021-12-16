@@ -1,6 +1,7 @@
 import React from "react";
 import {AutoComplete, Input} from "antd";
 import {API_URL} from "../../../config.js"
+import Translit from "./translit.js"
 const {post} = require("axios");
 
 
@@ -9,7 +10,8 @@ class Complete extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {options: []}
+		this.state = {options: [],
+						input_changed_value: ""}
 
 		this.search_result_category = new Map([
 												["1", "Табельный номер"],
@@ -21,6 +23,7 @@ class Complete extends React.Component
 		this.select_value = this.select_value.bind(this);
 		this.header_click = this.header_click.bind(this);
 
+		this.text_translite = new Translit();
 	}
 
 
@@ -31,10 +34,17 @@ class Complete extends React.Component
 
 	search_value(value)
 	{
-		this.setState({show: false});
-        post(`${API_URL}api/user/search`, {search: value}).then((res) => {
-            this.setState({options: this.create_options(value, res)});
-        })
+		const new_value = this.text_translite.convert(value);
+
+		this.setState({show: false,
+						input_changed_value: new_value});
+
+		clearTimeout(this.timer);
+
+		this.timer = setTimeout(() => {
+			post(`${API_URL}api/user/search`, {search: new_value}).then((res) => {
+				this.setState({options: this.create_options(new_value, res)});
+        })}, 500);
 
 		this.props.onSearch?.(value);
 	}
@@ -137,11 +147,11 @@ class Complete extends React.Component
 						fontSize: '14px',
 						fontWeight: "bold"
 					}}
-					options ={this.state.options}
-					onSearch={this.search_value}
+					value = {this.state.input_changed_value}
+					options = {this.state.options}
+					onSearch = {this.search_value}
 				>
-					<Input.Search size="large" style={{ fontSize: '14px', textAlign: 'center', }}
-						enterButton/>
+					<Input placeholder = "Введите текст для поиска" size="large" style={{ fontSize: '14px', textAlign: "center"}}/>
 				</AutoComplete>
 		</>);
 	}

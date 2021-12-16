@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {createDir, getFiles, uploadFile} from "../../../actions/file";
+import {getFiles, uploadFile} from "../../../actions/file";
 import FileList from "./fileList/FileList";
 import './disk.css'
 import Popup from "./Popup";
@@ -15,9 +15,9 @@ const Disk = () => {
     const [dragEnter, setDragEnter] = useState(false)
     const [sort, setSort] = useState('type')
 
-    useEffect(() => {
-        dispatch(getFiles(currentDir, sort))
-    }, [currentDir, sort])
+    // useEffect(() => {
+    //     dispatch(getFiles(currentDir, sort))
+    // }, [currentDir, sort])
 
     function showPopupHandler() {
         dispatch(setPopupDisplay('flex'))
