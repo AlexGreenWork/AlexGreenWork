@@ -31,12 +31,23 @@ const Offer = (props) => {
                     let offersData = JSON.parse(xhr.response);           
                     console.log(offersData)     
                    
-                     dispatch(selectMyOffers(offersData.Id, offersData.nameOffer, offersData.date, offersData.tabelNum,
-                        offersData.nameSendler, offersData.surnameSendler, offersData.middlenameSendler, offersData.email,
-                        offersData.status, offersData.descriptionProblem , offersData.responsible1, offersData.responsible2, 
-                        offersData.responsible3, offersData.answerRG , offersData.answerTEO, offersData.textOffer,
-                        offersData.phoneNumber, offersData.note )) 
-                              
+                     dispatch(selectMyOffers(offersData.Id,
+												offersData.nameOffer,
+												offersData.date,
+												offersData.tabelNum,
+												offersData.nameSendler,
+												offersData.surnameSendler,
+												offersData.middlenameSendler,
+												offersData.email,
+												offersData.status,
+												offersData.descriptionProblem,
+												offersData.category,
+												offersData.view,
+												offersData.responsibles, 
+												offersData.responsibles_rg,
+												offersData.textOffer,
+												offersData.phoneNumber,
+												offersData.dateCommision)) 
                 }
             }     
 
