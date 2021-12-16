@@ -106,8 +106,8 @@ router.post("/selectMyOffers", urlencodedParser,
     async function (request, response) {
 
     let idOffers = request.body.selectOffers
-
-    let sqlMyOff = await pool.execute(`SELECT 
+console.log(idOffers);
+	let sqlMyOffers = await pool.execute(`SELECT 
 											o.*,
 											ow.name AS nameSendler,
 											ow.surname AS surnameSendler,
@@ -117,9 +117,47 @@ router.post("/selectMyOffers", urlencodedParser,
 										INNER JOIN offersworker AS ow
 											ON ow.tabelNum = o.tabelNum
 										WHERE o.Id = ${idOffers}`)
-   // console.log(sqlMyOff[0])
 
-    response.send(sqlMyOff[0][0])
+	const sqlOfferResponsoble = await pool.execute(`SELECT
+														osr.offer_id,
+														ka.fiofull,
+														osr.responsible_tabnum,
+														osr.mark,
+														osr.open,
+														osr.close,
+														osr.rating
+													FROM
+														offersresponsible AS osr
+													INNER JOIN kadry_all AS ka 
+															ON ka.tabnum = osr.responsible_tabnum
+													WHERE
+														osr.offer_id = ${idOffers}
+													AND osr.deleted <> 1`)
+
+	const sqlOfferResponsoble_Rg = await pool.execute(`SELECT
+														osr_rg.offer_id,
+														ka.fiofull,
+														osr_rg.responsible_tabnum,
+														osr_rg.mark,
+														osr_rg.open,
+														osr_rg.close,
+														osr_rg.rating
+													FROM
+														offersresponsible_rg AS osr_rg
+													INNER JOIN kadry_all AS ka 
+															ON ka.tabnum = osr_rg.responsible_tabnum
+													WHERE
+														osr_rg.offer_id = ${idOffers}
+													AND osr_rg.deleted <> 1`)
+	response.send({
+						...sqlMyOffers[0][0],
+						responsibles: [
+							...sqlOfferResponsoble[0]
+						],
+						responsibles_rg: [
+							...sqlOfferResponsoble_Rg[0]
+						]
+					});
 
 })
 
