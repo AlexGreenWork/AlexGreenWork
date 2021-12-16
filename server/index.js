@@ -36,6 +36,7 @@ app.use(express.json())
 app.use("/api/files", require('./routes/file.routes'))
 app.use("/api/offers", require('./routes/offers.routes'))
 app.use("/api/user", require('./routes/worker_finder.routes'))
+app.use("/api/task", require('./routes/task.routes'))
 app.use(express.static('static'))
 
 
