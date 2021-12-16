@@ -301,10 +301,24 @@ router.post("/forms", urlencodedParser, async (request, response)=> {
             return "Такое предложение уже есть";
 
         } else {
-
-            await pool.query(`INSERT INTO offers (nameSendler, surnameSendler, middlenameSendler, tabelNum, email, phoneNumber,` +
-                `nameOffer, textOffer, descriptionProblem, date) VALUES ("${firstName}",  "${lastName}", "${middleName}", "${tabelNumber}",` +
-                `"${emailInput}", "${phoneNumber}","${nameOffer}", "${offer}", "${problem}", "${moment().format('YYYY-MM-DD')}")`);
+try{
+            await pool.query(`INSERT INTO offers
+									(tabelNum,
+									nameOffer,
+									textOffer,
+									descriptionProblem,
+									date)
+								VALUES ("${tabelNumber}",
+										"${nameOffer}",
+										"${offer}",
+										"${problem}",
+										"${moment().format('YYYY-MM-DD')}"
+										)`);
+		}
+		catch (e)
+		{
+			console.log(e);
+		}
             console.log("Предложение добавлено")
             await uploadFile.CheckLastEntry();
             //const sqlLstEntry = await uploadFile.sqlCheckLastEntry();

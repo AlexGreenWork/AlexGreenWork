@@ -1,20 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
 
 import s from "./conclusion.module.css"
-import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
+// import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
 import Button from "@material-ui/core/Button";
-import TextField from "@mui/material/TextField";
-import Complete from "../../../../personalCabinet/findWorkers/complete";
+// import TextField from "@mui/material/TextField";
+// import Complete from "../../../../personalCabinet/findWorkers/complete";
 import ConclusionCard from "./conclusionCard";
+import {store} from "../../../../../reducers";
+import {API_URL} from "../../../../../config";
+import axios from "axios";
 
+
+console.log(store.getState().search.searchUser)
 
 const ConclusionOffer = () => {
+
+
 
     const [viewChange, setViewChange] = React.useState(false);
 
     function changeViewSelect() {
         if (viewChange === true) {
+
             setViewChange(false)
         }
         if (viewChange === false) {
@@ -60,7 +68,13 @@ const ConclusionOffer = () => {
                             <Button style={{
                                 width: "300px",
                                 border: "1px solid #1890ff"
-                            }} onClick={changeViewSelect}>Прикрепить сотрудника к предложению</Button>
+                            }} onClick={saveResponsible}>Добавить / Изменить
+                            </Button>
+                            <Button style={{
+                                width: "300px",
+                                border: "1px solid #1890ff"
+                            }} onClick={changeViewSelect}>Отменить
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -141,24 +155,24 @@ const ConclusionOffer = () => {
 
            return (
                <div>
-               <ConclusionCard id={1}/>
+               <ConclusionCard name = {1}/>
                </div>
            )
         }
         if (isVisible == 2) {
             return (
                 <div>
-                    <ConclusionCard  id={1}/>
-                    <ConclusionCard id={2}/>
+                    <ConclusionCard  name = {1}/>
+                    <ConclusionCard  name = {2}/>
                 </div>
             )
         }
         if (isVisible == 3) {
             return (
                 <div>
-                    <ConclusionCard  id={1}/>
-                    <ConclusionCard id={2}/>
-                    <ConclusionCard id={3}/>
+                    <ConclusionCard  name = {1}/>
+                    <ConclusionCard  name = {2}/>
+                    <ConclusionCard  name = {3}/>
                 </div>
             )
         }
@@ -172,7 +186,54 @@ const ConclusionOffer = () => {
             return <IsAdminUser/>
         }
     }
+    function AdminChange2(props) {
+        const isAdmin = props.isAdmin;
+        if (isAdmin == 'wg') {
 
+            return (
+                <div>
+                    <div style={{
+                        textAlign: "center"
+                    }}>
+                    </div>
+                    <SelectChangeConclusionResponsible/>
+                </div>
+        )
+        } else {
+            return <div></div>
+        }
+    }
+
+const [searchNameToBase, setSearchNameToBase] = React.useState('')
+const [searchTabNumToBase, setSearchTabNumToBase] = React.useState('')
+    async function saveResponsible(){
+     try{
+         setViewChange(false)
+         const idOffer = localStorage.getItem('idOffers')
+        const respName = store.getState().search.searchUser.name
+        const respTabnum = store.getState().search.searchUser.tabnum
+
+        await axios.post(`${API_URL}api/offers/toDbSaveResposibleRG`, {
+            respTabnum,
+            respName,
+            idOffer
+
+        })
+        alert('Ответственный сотрудник добавлен')
+
+    } catch (e){
+        alert(e.response.data.message)
+    }
+}
+
+async function readResp(){
+        try{
+
+        }catch (e){
+            return (e.response.date.message)
+        }
+
+}
 
     return (
         <div className={s.cardOfferContainer}>
@@ -180,14 +241,9 @@ const ConclusionOffer = () => {
 
             <RespChange isVisible={sCount}/>
             <div className={s.header}>
-
-
-
-
-
                 <div className={s.date}>
                     <div>Дата:</div>
-                    <div> 12/09/21</div>
+                    <div>{readResp().date}</div>
                 </div>
                 <div className={s.nameWorkGroup}>
                     <div>Подразделение:</div>
@@ -196,10 +252,10 @@ const ConclusionOffer = () => {
 
                 <div className={s.ExecutWorker}>
                     <div>Ответственный сотрудник:</div>
-                    <div> Вася Пупкин </div>
+                    <div> {store.getState().search.searchUser.name}. Табельный: {store.getState().search.searchUser.tabnum} </div>
 
                 </div>
-                <FindWorkers/>
+                <AdminChange2 isAdmin={localStorage.getItem("userAdminOptions")}/>
                 <div className={s.filesConclusion}>
                     <div>Файлы заключения подразделения:</div>
                     <div className={s.conclusionFilesArea}> files area:
