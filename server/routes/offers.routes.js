@@ -128,6 +128,7 @@ router.post("/selectMyOffers", urlencodedParser,
 		const sqlOfferResponsoble = await pool.query(`SELECT
 															osr.offer_id,
 															ka.fiofull,
+															dep.fullname,
 															osr.responsible_tabnum,
 															osr.mark,
 															osr.open,
@@ -138,6 +139,9 @@ router.post("/selectMyOffers", urlencodedParser,
 														INNER JOIN kadry_all AS ka 
 																ON ka.tabnum = osr.responsible_tabnum
 																    AND ka.factory = 1 
+														INNER JOIN department AS dep
+															ON dep.id = ka.department
+																	AND dep.factory = ka.factory
 														WHERE
 															osr.offer_id = ?
 														AND osr.deleted <> 1`, [idOffers])
@@ -145,6 +149,7 @@ router.post("/selectMyOffers", urlencodedParser,
 		const sqlOfferResponsoble_Rg = await pool.query(`SELECT
 															osr_rg.offer_id,
 															ka.fiofull,
+															dep.fullname,
 															osr_rg.responsible_tabnum,
 															osr_rg.mark,
 															osr_rg.open,
@@ -155,6 +160,9 @@ router.post("/selectMyOffers", urlencodedParser,
 														INNER JOIN kadry_all AS ka 
 																ON ka.tabnum = osr_rg.responsible_tabnum
 																    AND ka.factory = 1
+														INNER JOIN department AS dep
+															ON dep.id = ka.department
+																	AND dep.factory = ka.factory
 														WHERE
 															osr_rg.offer_id = ?
 														AND osr_rg.deleted <> 1`, [idOffers])

@@ -38,9 +38,7 @@ class Tasks extends React.Component
 	{
 		if(this.props?.tabnum)
 		{
-			console.log(this.range_from_moment(moment), this.props.tabnum);
 			const range = this.range_from_moment(moment);
-			console.log("Update");
 			post(`${API_URL}api/task/search`,
 				{
 					beginMark: range.begin,
