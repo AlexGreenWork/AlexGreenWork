@@ -163,9 +163,9 @@ router.post("/selectMyOffers", urlencodedParser,
 							responsibles: [
 								...sqlOfferResponsoble[0]
 							],
-							responsibles_rg: [
-								...sqlOfferResponsoble_Rg[0]
-							]
+							responsibles_rg: 
+								sqlOfferResponsoble_Rg[0][0]
+							
 						});
 
 })

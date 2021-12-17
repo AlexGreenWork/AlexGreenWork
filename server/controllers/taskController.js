@@ -45,24 +45,18 @@ class Tasks
 
 		const beginTimespan = new Date(beginMark);
 		const endTimespan = new Date(endMark);
-		
-		const beginTimespanYear = beginTimespan.getFullYear();
-		const beginTimespanMonth = beginTimespan.getMonth();
-		const beginTimespanDay = beginTimespan.getDate();
-
-		const endTimespanYear = endTimespan.getFullYear();
-		const endTimespanMonth = endTimespan.getMonth();
-		const endTimespanDay = endTimespan.getDate();
 
 		const results = [];
+		let connection = null;
 
 		try
 		{
-			const connection = await Tasks.connection_to_database();
+			connection = await Tasks.connection_to_database();
 
 			const db_result = await connection.query(`SELECT
 															DISTINCT outer_tbl.offer_id,
-															offers.dateComission AS commission
+															offers.dateComission AS commission,
+															offers.nameOffer
 														FROM
 														(
 															(
@@ -81,26 +75,27 @@ class Tasks
 														WHERE 
 															offers.Id = outer_tbl.offer_id
 															AND outer_tbl.responsible_tabnum = ?
-															AND (
-																YEAR(offers.dateComission) BETWEEN ? AND ?
-																	AND MONTH(offers.dateComission) BETWEEN ? AND ?
-																		AND DAY(offers.dateComission) BETWEEN ? AND ?
-															)
+															AND offers.dateComission BETWEEN ? AND ?
 															AND outer_tbl.deleted <> 1`, [tabnum,
-																							beginTimespanYear, endTimespanYear,
-																							beginTimespanMonth + 1, endTimespanMonth + 1,
-																							beginTimespanDay, endTimespanDay]);
-
+																							beginTimespan.toISOString(),
+																							endTimespan.toISOString()]);
+			console.log(db_result[0]);
 			for(let result of db_result[0])
 			{
 				results.push({offer: result['offer_id'],
-								time: new Date(result.commission)
+								header: result['nameOffer'],
+								time: new Date(result['commission'])
 				});
 			}
+
 		}
 		catch(e)
 		{
 			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
 		}
 
 		res.json(results);
