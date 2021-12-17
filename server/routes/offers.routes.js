@@ -137,6 +137,7 @@ router.post("/selectMyOffers", urlencodedParser,
 															offersresponsible AS osr
 														INNER JOIN kadry_all AS ka 
 																ON ka.tabnum = osr.responsible_tabnum
+																    AND ka.factory = 1 
 														WHERE
 															osr.offer_id = ?
 														AND osr.deleted <> 1`, [idOffers])
@@ -153,6 +154,7 @@ router.post("/selectMyOffers", urlencodedParser,
 															offersresponsible_rg AS osr_rg
 														INNER JOIN kadry_all AS ka 
 																ON ka.tabnum = osr_rg.responsible_tabnum
+																    AND ka.factory = 1
 														WHERE
 															osr_rg.offer_id = ?
 														AND osr_rg.deleted <> 1`, [idOffers])
