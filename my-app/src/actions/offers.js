@@ -38,7 +38,14 @@ export const saveToDb3 = async (searchUser) => {
 
 export const toStatus = async (offerId, view, category, status) => {
     try {
-
+if(view==''){
+    console.log("null view")
+    view=0
+}
+if(category==''){
+    console.log("null view")
+    category=0
+}
         await axios.post(`${API_URL}api/offers/toStatus`, {
             offerId,
             view,

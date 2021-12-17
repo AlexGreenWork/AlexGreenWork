@@ -27,9 +27,9 @@ const defaultState = {
 
 
 export default function offerReducer(state = defaultState, action) {
-    console.log("State"+ state)
+    console.log(state)
     switch (action.type) {
-        case SELECT_MYOFFERS: 
+        case SELECT_MYOFFERS:
             state.offer = action.payload
             break;
         case ADD_SENDLER: 

@@ -6,6 +6,11 @@
     background-color: white;
 
 }
+.personal:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    cursor:pointer;
+}
 
 .date {
     font-size: .9em;
@@ -153,6 +158,7 @@ select::after {
 
 .ExecutWorker {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .filesConclusion {

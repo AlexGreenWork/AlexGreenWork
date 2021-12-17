@@ -4,9 +4,6 @@ const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
-const {isDate} = require("moment");
-const moment = require("moment");
-const { on } = require("events");
 const responsible = require("../controllers/responsibleController.js");
 
 router.use(fileUpload({}));
@@ -146,9 +143,12 @@ console.log(idOffers);
 														offersresponsible_rg AS osr_rg
 													INNER JOIN kadry_all AS ka 
 															ON ka.tabnum = osr_rg.responsible_tabnum
+															    AND ka.factory = 1
 													WHERE
 														osr_rg.offer_id = ${idOffers}
 													AND osr_rg.deleted <> 1`)
+
+        console.log(sqlOfferResponsoble_Rg[0])
 	response.send({
 						...sqlMyOffers[0][0],
 						responsibles: [
@@ -288,7 +288,9 @@ router.post("/toStatus", urlencodedParser,
            let view = request.body.view
            let category = request.body.category
            let status = request.body.status
+
 		try{
+
          await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
 		}catch(e){console.log(e)}
 })

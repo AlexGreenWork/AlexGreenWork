@@ -1,11 +1,7 @@
 import React, {useState} from "react";
-
 import s from "./conclusion.module.css"
-// import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
 import Button from "@material-ui/core/Button";
-// import TextField from "@mui/material/TextField";
-// import Complete from "../../../../personalCabinet/findWorkers/complete";
 import ConclusionCard from "./conclusionCard";
 import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
@@ -135,14 +131,28 @@ const ConclusionOffer = () => {
         )
     }
 
-    function IsAdminUser(props) {
+    function IsAdminUser() {
         return (
             <div></div>
         )
     }
 
     function RespChange(props) {
-            const isVisible= props.isVisible;
+            let isVisible;
+            if(store.getState().offers.offer.responsible1 == null){
+                isVisible = props.isVisible;
+            }
+            if(store.getState().offers.offer.responsible2 == null && store.getState().offers.offer.responsible1 !== null){
+                isVisible = 1;
+            }
+            if(store.getState().offers.offer.responsible3 == null && store.getState().offers.offer.responsible2 !== null && store.getState().offers.offer.responsible1 !== null){
+                isVisible = 2;
+            }
+            if(store.getState().offers.offer.responsible3 !== null && store.getState().offers.offer.responsible2 !== null && store.getState().offers.offer.responsible1 !== null){
+                isVisible = 3;
+            }
+
+
         if (isVisible == 0) {
 
             return (
@@ -155,24 +165,24 @@ const ConclusionOffer = () => {
 
            return (
                <div>
-               <ConclusionCard name = {1}/>
+               <ConclusionCard name = {1} resp = {store.getState().offers.offer.responsible1} />
                </div>
            )
         }
         if (isVisible == 2) {
             return (
                 <div>
-                    <ConclusionCard  name = {1}/>
-                    <ConclusionCard  name = {2}/>
+                    <ConclusionCard  name = {2} resp = {store.getState().offers.offer.responsible2}/>
+                    <ConclusionCard  name = {1} resp = {store.getState().offers.offer.responsible1}/>
                 </div>
             )
         }
         if (isVisible == 3) {
             return (
                 <div>
-                    <ConclusionCard  name = {1}/>
-                    <ConclusionCard  name = {2}/>
-                    <ConclusionCard  name = {3}/>
+                    <ConclusionCard  name = {3} resp = {store.getState().offers.offer.responsible3}/>
+                    <ConclusionCard  name = {2} resp = {store.getState().offers.offer.responsible2}/>
+                    <ConclusionCard  name = {1} resp = {store.getState().offers.offer.responsible3}/>
                 </div>
             )
         }
@@ -204,8 +214,7 @@ const ConclusionOffer = () => {
         }
     }
 
-const [searchNameToBase, setSearchNameToBase] = React.useState('')
-const [searchTabNumToBase, setSearchTabNumToBase] = React.useState('')
+
     async function saveResponsible(){
      try{
          setViewChange(false)
@@ -252,7 +261,7 @@ async function readResp(){
 
                 <div className={s.ExecutWorker}>
                     <div>Ответственный сотрудник:</div>
-                    <div> {store.getState().search.searchUser.name}. Табельный: {store.getState().search.searchUser.tabnum} </div>
+                    <div> {store.getState().offers.offer.nameResponsibleRG}. Табельный: {store.getState().offers.offer.responsibleRG} </div>
 
                 </div>
                 <AdminChange2 isAdmin={localStorage.getItem("userAdminOptions")}/>

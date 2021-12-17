@@ -211,7 +211,7 @@ function changeViewSelect() {
 
                     <div className={s.ExecutWorker}>
                         <div>Ответственный сотрудник:</div>
-                        <div > табельный: {searchUser}</div>
+                        <div > табельный: {props.resp}</div>
 
                     </div>
                     <AdminChange name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
@@ -247,7 +247,7 @@ function changeViewSelect() {
     return (
         <div className={s.cardOfferContainer}>
             <div>
-                <CardDivisionConclusion/>
+                <CardDivisionConclusion />
             </div>
 
 
