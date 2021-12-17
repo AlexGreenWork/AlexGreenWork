@@ -11,12 +11,11 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import AddSendlerOffers from "./senlerAdditional";
-import {useContext} from "react";
-import Context from "../../../../context/Context";
 import {API_URL} from "../../../../../config";
 import {useDispatch, useSelector} from "react-redux";
 import {toStatus} from "../../../../../actions/offers";
 import { store } from "../../../../../reducers";
+
 
 
 
@@ -129,11 +128,23 @@ const CommonOffer = () => {
 
     const [listFile, setFileList] = useState(<FileList/>);
 
-   
-  const offersData =  useSelector(state => store.getState().offers.offer)
-   
+    const [viewChange, setViewChange] = React.useState('');
+    const [category, setCategory] = React.useState('');
+    const [view, setView] = React.useState('');
+
+
+
+
+
+       const offersData =  useSelector(state => store.getState().offers.offer)
+
+
+    const [status, setStatus] = React.useState(`${localStorage.getItem('status')}`);
+
+
+
     AddSendlerOffers()
-    let stat = (offersData.status)
+
 
     if (offersData.category == 1) {
         offersData.category = "По организации производства"
@@ -146,44 +157,46 @@ const CommonOffer = () => {
     }
 
 
+let nameStatus;
+
     if (offersData.status == 1) {
-        offersData.status = "Подано"
+        nameStatus = "Подано"
     }
     if (offersData.status == 2) {
-        offersData.status = "Рассматривается первоначальной рабочей группой"
+        nameStatus = "Рассматривается первоначальной рабочей группой"
     }
     if (offersData.status == 3) {
-        offersData.status = "Отклонено первоначальной рабочей группой"
+        nameStatus = "Отклонено первоначальной рабочей группой"
     }
     if (offersData.status == 4) {
-        offersData.status = "Направлено в подразделения для подготовки заключения и предварительного обоснования"
+        nameStatus = "Направлено в подразделения для подготовки заключения и предварительного обоснования"
     }
     if (offersData.status == 5) {
-        offersData.status = "Рассматривается рабочей группой"
+        nameStatus = "Рассматривается рабочей группой"
     }
     if (offersData.status == 6) {
-        offersData.status = "Отклонено рабочей группой после рассмотрения подразделением(ями)"
+        nameStatus = "Отклонено рабочей группой после рассмотрения подразделением(ями)"
     }
     if (offersData.status == 7) {
-        offersData.status = "Направлено секретарю комиссии"
+        nameStatus = "Направлено секретарю комиссии"
     }
     if (offersData.status == 8) {
-        offersData.status = "Запланировано к рассмотрению комиссией"
+        nameStatus = "Запланировано к рассмотрению комиссией"
     }
     if (offersData.status == 9) {
-        offersData.status = "Рассмотрено комиссией. Оформление результатов"
+        nameStatus = "Рассмотрено комиссией. Оформление результатов"
     }
     if (offersData.status == 10) {
-        offersData.status = "Результаты рассмотрения комиссией оформлены"
+        nameStatus = "Результаты рассмотрения комиссией оформлены"
     }
     if (offersData.status == 11) {
-        offersData.status = "Отклонено комиссией"
+        nameStatus = "Отклонено комиссией"
     }
     if (offersData.status == 12) {
-        offersData.status = "Направлено для внедрения"
+        nameStatus = "Направлено для внедрения"
     }
     if (offersData.status == 13) {
-        offersData.status = "Внедрено"
+        nameStatus = "Внедрено"
     }
 
     if (offersData.view == 1) {
@@ -214,7 +227,7 @@ const CommonOffer = () => {
     }
 
 
-    const [viewChange, setViewChange] = React.useState('');
+
 
     function changeViewMultiSelect() {
 
@@ -246,6 +259,7 @@ const CommonOffer = () => {
     }
 
     function saveStatus() {
+
 
         toStatus(offerId, view, category, status)
         setViewChange(false)
@@ -380,7 +394,7 @@ const CommonOffer = () => {
 
     const steps = ['Подано ', 'Первоначальное рассмотрение', 'Рассмотрение подразделениями', 'Рассмотрение комиссией', 'Внедрение'];
 
-    const [category, setCategory] = React.useState('');
+
 
     const handleChange = (event) => {
         setCategory(event.target.value)
@@ -399,10 +413,10 @@ const CommonOffer = () => {
         }
     }
 
-    const [view, setview] = React.useState('');
+
 
     const handleChangeView = (event) => {
-        setview(event.target.value);
+        setView(event.target.value);
     };
 
     function viewOfView(view) {
@@ -423,13 +437,14 @@ const CommonOffer = () => {
         }
     }
 
-    const [status, setStatus] = React.useState(`${store.getState().offers.offer.status}`);
+
+
 
     let rejectStatus = ChangeStatRej()
 
     function ChangeStatRej(rejectStatus) {
 
-        const ev = `${stat}`
+        const ev = `${status}`
 
         if (ev == 1) {
             rejectStatus = -1;
@@ -483,7 +498,7 @@ const CommonOffer = () => {
     function ChangeStatStep(stepStatus) {
 
 
-        const ev = `${stat}`
+        const ev = `${status}`
         if (ev == 1) {
             stepStatus = 0;
             return stepStatus
@@ -655,7 +670,7 @@ const CommonOffer = () => {
         }
     }
 
-    
+
 
     return (
         <div className={s.nameOffer}>
@@ -735,7 +750,7 @@ const CommonOffer = () => {
                             fontFamily: "serif",
 
                             padding: "10px"
-                        }}>{offersData.status}</div>
+                        }}>{nameStatus}</div>
                     </div>
                 </div>
                 <div className={s.fieldOfCategoryOffer}> Содержание предложения:

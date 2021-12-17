@@ -47,7 +47,7 @@ const Offer = (props) => {
 												offersData.responsibles_rg,
 												offersData.textOffer,
 												offersData.phoneNumber,
-												offersData.dateCommision)) 
+												offersData.dateComission))
                 }
             }     
 
@@ -88,8 +88,10 @@ const Offer = (props) => {
 
     function clickOnOfferLink(){
         localStorage.setItem('idOffers', props.id);
+        localStorage.setItem('status', props.status);
+        console.log("props.dateComission")
         value.contextFunction(props.id, props.tabelNum)
-        
+
         localStorage.setItem('dateComission', props.dateComission);
         setDateComission(localStorage.getItem('dateComission'))
     }

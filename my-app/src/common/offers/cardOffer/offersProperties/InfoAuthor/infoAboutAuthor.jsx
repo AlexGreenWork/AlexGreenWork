@@ -1,11 +1,10 @@
 import React, {useState, useContext} from "react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import s from "./infoAboutAuthor.module.css"
 import { API_URL } from "../../../../../config";
-import Context from "../../../../context/Context";
+
 
 function RequestAddSendlerOffers() {
     let idOffers = localStorage.getItem('idOffers');
@@ -120,7 +119,7 @@ function validElem(){
 
 
 
-const InfoAboutAuthor = (props) => {
+const InfoAboutAuthor = () => {
     let offersDataStart = JSON.parse(Resp(localStorage.getItem('userTabelNum')));
    // console.log(Resp(localStorage.getItem('userTabelNum')))
    
@@ -163,7 +162,7 @@ const InfoAboutAuthor = (props) => {
           )
       }
 
-      const SendlerTabList = (props) => {
+      const SendlerTabList = () => {
     
 
        
@@ -188,7 +187,7 @@ const InfoAboutAuthor = (props) => {
        
     }
     
-    const handleChange = (event, newValue) => {
+    const handleChange = () => {
         setValue(value);
       };
 
@@ -243,7 +242,7 @@ const InfoAboutAuthor = (props) => {
                 </div>
                 <div className={s.nameOffer}>
                     <div>E-mail:</div>
-                    <div> {email}</div>
+                    <div> {userInfo.email}</div>
                 </div>
                 <div className={s.insideOffers}>
                     <div>Поступившие предложения:</div>
