@@ -38,6 +38,7 @@ const Tasks = () => {
     }
 
     function dateCellRender(value) {
+		console.log(value.format("DD-MM-YYYY"))
         const listData = getListData(value);
         return (
             <ul className="events">

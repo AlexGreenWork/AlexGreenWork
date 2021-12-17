@@ -4,6 +4,9 @@ const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
+const {isDate} = require("moment");
+const moment = require("moment");
+const { on } = require("events");
 const responsible = require("../controllers/responsibleController.js");
 
 router.use(fileUpload({}));
@@ -100,64 +103,68 @@ async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, p
 }
 
 router.post("/selectMyOffers", urlencodedParser,
-    async function (request, response) {
+    async function (request, response)
+	{
+		if(!('selectOffers' in request.body)
+			|| !request.body.selectOffers)
+		{
+			response.status(400);
+			response.send();
+		}
 
-    let idOffers = request.body.selectOffers
-console.log(idOffers);
-	let sqlMyOffers = await pool.execute(`SELECT 
-											o.*,
-											ow.name AS nameSendler,
-											ow.surname AS surnameSendler,
-											ow.middlename AS middlenameSendler,
-											ow.email AS email
-										FROM offers AS o
-										INNER JOIN offersworker AS ow
-											ON ow.tabelNum = o.tabelNum
-										WHERE o.Id = ${idOffers}`)
+		let idOffers = request.body.selectOffers
 
-	const sqlOfferResponsoble = await pool.execute(`SELECT
-														osr.offer_id,
-														ka.fiofull,
-														osr.responsible_tabnum,
-														osr.mark,
-														osr.open,
-														osr.close,
-														osr.rating
-													FROM
-														offersresponsible AS osr
-													INNER JOIN kadry_all AS ka 
-															ON ka.tabnum = osr.responsible_tabnum
-													WHERE
-														osr.offer_id = ${idOffers}
-													AND osr.deleted <> 1`)
+		let sqlMyOffers = await pool.query(`SELECT 
+												o.*,
+												ow.name AS nameSendler,
+												ow.surname AS surnameSendler,
+												ow.middlename AS middlenameSendler,
+												ow.email AS email
+											FROM offers AS o
+											INNER JOIN offersworker AS ow
+												ON ow.tabelNum = o.tabelNum
+											WHERE o.Id = ?`, [idOffers])
 
-	const sqlOfferResponsoble_Rg = await pool.execute(`SELECT
-														osr_rg.offer_id,
-														ka.fiofull,
-														osr_rg.responsible_tabnum,
-														osr_rg.mark,
-														osr_rg.open,
-														osr_rg.close,
-														osr_rg.rating
-													FROM
-														offersresponsible_rg AS osr_rg
-													INNER JOIN kadry_all AS ka 
-															ON ka.tabnum = osr_rg.responsible_tabnum
-															    AND ka.factory = 1
-													WHERE
-														osr_rg.offer_id = ${idOffers}
-													AND osr_rg.deleted <> 1`)
+		const sqlOfferResponsoble = await pool.query(`SELECT
+															osr.offer_id,
+															ka.fiofull,
+															osr.responsible_tabnum,
+															osr.mark,
+															osr.open,
+															osr.close,
+															osr.rating
+														FROM
+															offersresponsible AS osr
+														INNER JOIN kadry_all AS ka 
+																ON ka.tabnum = osr.responsible_tabnum
+														WHERE
+															osr.offer_id = ?
+														AND osr.deleted <> 1`, [idOffers])
 
-        console.log(sqlOfferResponsoble_Rg[0])
-	response.send({
-						...sqlMyOffers[0][0],
-						responsibles: [
-							...sqlOfferResponsoble[0]
-						],
-						responsibles_rg: [
-							...sqlOfferResponsoble_Rg[0]
-						]
-					});
+		const sqlOfferResponsoble_Rg = await pool.query(`SELECT
+															osr_rg.offer_id,
+															ka.fiofull,
+															osr_rg.responsible_tabnum,
+															osr_rg.mark,
+															osr_rg.open,
+															osr_rg.close,
+															osr_rg.rating
+														FROM
+															offersresponsible_rg AS osr_rg
+														INNER JOIN kadry_all AS ka 
+																ON ka.tabnum = osr_rg.responsible_tabnum
+														WHERE
+															osr_rg.offer_id = ?
+														AND osr_rg.deleted <> 1`, [idOffers])
+		response.send({
+							...sqlMyOffers[0][0],
+							responsibles: [
+								...sqlOfferResponsoble[0]
+							],
+							responsibles_rg: [
+								...sqlOfferResponsoble_Rg[0]
+							]
+						});
 
 })
 
@@ -288,9 +295,7 @@ router.post("/toStatus", urlencodedParser,
            let view = request.body.view
            let category = request.body.category
            let status = request.body.status
-
 		try{
-
          await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
 		}catch(e){console.log(e)}
 })
@@ -371,12 +376,34 @@ router.post("/sendAddInfo", urlencodedParser,
 })
 
 router.post("/toDbSaveResposibleRG", urlencodedParser,
-        async function (request, response){
+	async function (request, response)
+	{
+		if((!('idOffer' in request.body)
+			|| !request.body.idOffer)
+				|| (!('respTabnum' in request.body)
+					|| !request.body.respTabnum))
+		{
+			response.status(400);
+			response.send();
+		}
 
-            let idOffers = request.body.idOffer;
-            let respTabnum = request.body.respTabnum;
+		let idOffers = request.body.idOffer;
+		let respTabnum = request.body.respTabnum;
 
-			responsible.update_responsible('offersresponsible_rg', 'responsibleRG', idOffers, respTabnum);
+		const sqlResponsible = `UPDATE offersresponsible_rg
+								SET deleted = 1
+								WHERE offer_id = ?
+									AND deleted <> 1`
+		await pool.query(sqlResponsible, [idOffers]);
+
+		const sqlNewResponsible = `INSERT INTO offersresponsible_rg
+										(offer_id, responsible_tabnum, open)
+									VALUES (?, ?, ?)`
+
+		pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
+
+		response.status(200);
+		response.send();
 })
 
 
