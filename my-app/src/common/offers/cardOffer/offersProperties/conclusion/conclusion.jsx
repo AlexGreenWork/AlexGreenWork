@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import s from "./conclusion.module.css"
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
 import Button from "@material-ui/core/Button";
@@ -222,12 +222,19 @@ const ConclusionOffer = () => {
         const respName = store.getState().search.searchUser.name
         const respTabnum = store.getState().search.searchUser.tabnum
 
+
         await axios.post(`${API_URL}api/offers/toDbSaveResposibleRG`, {
             respTabnum,
             respName,
             idOffer
 
         })
+
+             setNameRg(store.getState().search.searchUser.name)
+             setDateRg(store.getState().offers.offer.responsibles_rg?.open)
+             setTabelRg(store.getState().search.searchUser.tabnum)
+
+
         alert('Ответственный сотрудник добавлен')
 
     } catch (e){
@@ -244,6 +251,13 @@ async function readResp(){
 
 }
 
+const [nameRG, setNameRg]= React.useState(`${store.getState().offers.offer.responsibles_rg?.fiofull}`)
+const [dateRG, setDateRg]= React.useState(`${store.getState().offers.offer.responsibles_rg?.open}`)
+const [tabelRG, setTabelRg]= React.useState(`${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`)
+console.log(dateRG)
+    console.log(store.getState().offers.offer.responsibles_rg?.fiofull)
+    console.log(store.getState().offers.offer.responsibles_rg?.open)
+
     return (
         <div className={s.cardOfferContainer}>
             <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
@@ -252,18 +266,29 @@ async function readResp(){
             <div className={s.header}>
                 <div className={s.date}>
                     <div>Дата:</div>
-                    <div>{readResp().date}</div>
+                    <div>{dateRG}</div>
                 </div>
                 <div className={s.nameWorkGroup}>
                     <div>Подразделение:</div>
-                    <div> Рабочая группа</div>
+                    <div>Рабочая группа</div>
                 </div>
 
                 <div className={s.ExecutWorker}>
-                    <div>Ответственный сотрудник:</div>
-                    <div> {store.getState().offers.offer.nameResponsibleRG}. Табельный: {store.getState().offers.offer.responsibleRG} </div>
 
+                    <div>Ответственный сотрудник:</div>
+
+                    <div>
+                        <div style={{
+                        backgroundImage: `url(${API_URL + 'files/photos/' + tabelRG + ".jpg"})`,
+                        width:"20px",
+                        height:"20px",
+                        backgroundSize: "cover",
+                        borderRadius:"50%",
+                        float: "left"
+                    }}></div> {nameRG}</div>
+                    <div> Табельный: {tabelRG} </div>
                 </div>
+
                 <AdminChange2 isAdmin={localStorage.getItem("userAdminOptions")}/>
                 <div className={s.filesConclusion}>
                     <div>Файлы заключения подразделения:</div>

@@ -27,7 +27,6 @@ const defaultState = {
 
 
 export default function offerReducer(state = defaultState, action) {
-    console.log(state)
     switch (action.type) {
         case SELECT_MYOFFERS:
             state.offer = action.payload
