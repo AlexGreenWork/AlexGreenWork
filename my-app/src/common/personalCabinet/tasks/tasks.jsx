@@ -16,6 +16,7 @@ class Tasks extends React.Component
 
 		this.state = {
 			tasks: [],
+			year_task_count: [],
 			moment: moment()
 		}
 
@@ -23,26 +24,44 @@ class Tasks extends React.Component
 		this.shift = ANTD_CALENDAR_CELLS;
 
 		this.dateCellRender = this.dateCellRender.bind(this);
-		this.load = this.load.bind(this);
+		this.monthCellRender = this.monthCellRender.bind(this);
+		this.month = this.month.bind(this);
+		this.year = this.year.bind(this);
 		this.on_change = this.on_change.bind(this);
 
-		this.load(this.state.moment)
+		this.month(this.state.moment)
+		this.year(this.state.moment)
 	}
 
 	componentDidUpdate(props)
 	{
 		if(this.props != props)
 		{
-			this.load(this.state.moment)
+			this.month(this.state.moment)
 		}
 	}
 
-	load(moment)
+	year(moment)
+	{
+		if(this.props?.tabnum)
+		{
+			post(`${API_URL}api/task/year`,
+				{
+					year: moment.year(),
+					respTabnum: this.props.tabnum
+				}).
+				then((res) => {
+					this.setState({year_task_count: res.data})
+				})
+		}
+	}
+
+	month(moment)
 	{
 		if(this.props?.tabnum)
 		{
 			const range = this.range_from_moment(moment);
-			post(`${API_URL}api/task/search`,
+			post(`${API_URL}api/task/range`,
 				{
 					beginMark: range.begin,
 					endMark: range.end,
@@ -99,7 +118,7 @@ class Tasks extends React.Component
 	{
 		if(this.state.moment.month() !== newMoment.month())
 		{
-			this.load(newMoment);
+			this.month(newMoment);
 		}
 	}
 
@@ -107,19 +126,44 @@ class Tasks extends React.Component
 	{
         const listData = this.get_tasks_list(value);
         return (
-            <ul className="events">
+            <ul className={s.events}>
                 {listData.map(item => (
-					<Badge status={item.type} text={item.content} />
+					<li key={item.content}>
+						<Badge status={item.type} text={item.content} />
+					</li>
                 ))}
             </ul>
         );
+    }
+
+    getMonthData(value)
+	{
+		for(let tasks of this.state.year_task_count)
+		{
+			if (value.month() + 1 === tasks.month)
+			{
+				return tasks.count;
+			}
+		}
+    }
+
+    monthCellRender(value)
+	{
+        const num = this.getMonthData(value);
+        return num ? (
+            <div className={s.notes_month}>
+                <section><p style = {{color: "Green"}}>Запланированных задач: {num}</p></section>
+            </div>
+        ) : null;
     }
 
 	render()
 	{
 		return (
 			<div className={s.sendOfferContainer}>
-				<Calendar onChange = {this.on_change} dateCellRender={this.dateCellRender} />
+				<Calendar onChange = {this.on_change}
+							dateCellRender = {this.dateCellRender}
+							monthCellRender = {this.monthCellRender}/>
 			</div>
 		)
 	}

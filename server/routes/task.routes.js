@@ -9,6 +9,7 @@ router.use((req, res, next) => {
     return next();
 })
 
-router.post('/search', task_controller.search);
+router.post('/range', task_controller.range);
+router.post('/year', task_controller.year);
 
 module.exports = router;
