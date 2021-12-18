@@ -106,8 +106,12 @@ class Tasks extends React.Component
 	}
 
 	/**
+		* @typedef {Object} DateRange
+		* @property {String} begin
+		* @property {String} end
+		*
 		* @param {moment.Moment} moment
-		* @returns {{ begin: String, end: String }}
+		* @returns {DateRange}
 	**/
 	range_from_moment(moment)
 	{
@@ -148,7 +152,8 @@ class Tasks extends React.Component
 			if(time.format("YYYY-MM-DD") === taskMoment.format("YYYY-MM-DD"))
 			{
                 task_.push(
-                    { type: `${this.get_task_type(task.category)}`, content: `В ${taskMoment.format("HH:mm")} ${task.header}` },
+                    { type: `${this.get_task_type(task.category)}`,
+						content: `В ${taskMoment.format("HH:mm")} ${task.header}` },
 				)
 			}
 		}
