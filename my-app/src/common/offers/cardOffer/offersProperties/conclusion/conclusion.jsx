@@ -300,8 +300,6 @@ const dispatch = useDispatch()
     console.log(newDate);
 
 
-
-
     return (
         <div className={s.cardOfferContainer}>
             <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
