@@ -56,6 +56,7 @@ class Tasks
 			const db_result = await connection.query(`SELECT
 															DISTINCT outer_tbl.offer_id,
 															offers.dateComission AS commission,
+															offers.category AS category,
 															offers.nameOffer
 														FROM
 														(
@@ -83,6 +84,7 @@ class Tasks
 			{
 				results.push({offer: result['offer_id'],
 								header: result['nameOffer'],
+								category: result['category'],
 								time: new Date(result['commission'])
 				});
 			}
