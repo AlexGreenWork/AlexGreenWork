@@ -19,6 +19,9 @@ class Tasks extends React.Component
 			moment: moment()
 		}
 
+		const ANTD_CALENDAR_CELLS = 42;
+		this.shift = ANTD_CALENDAR_CELLS;
+
 		this.dateCellRender = this.dateCellRender.bind(this);
 		this.load = this.load.bind(this);
 		this.on_change = this.on_change.bind(this);
@@ -45,26 +48,34 @@ class Tasks extends React.Component
 					endMark: range.end,
 					respTabnum: this.props.tabnum
 				}).
-				then((res) => this.setState({tasks: res.data, moment: moment}))
+				then((res) => {
+						this.setState({tasks: res.data, moment: moment})
+				})
 		}
+	}
+
+	get_calendar_moment(current_moment)
+	{
+		const begin = new Date(current_moment.year(), current_moment.month(), 1);
+		begin.setDate(begin.getDate() - begin.getDay())
+
+		return moment(begin);
+	}
+
+	shift_moment(current_moment, item)
+	{
+		const shift_day = current_moment.date() + item;
+
+		return moment(new Date(current_moment.year(), current_moment.month(), shift_day));
 	}
 
 	range_from_moment(moment)
 	{
-		const ANTD_CALENDAR_CELLS = 42;
-		const currentYear = moment.format("YYYY");
-		const currentMonth = moment.format("MM");
-		const begin = new Date(currentYear, currentMonth - 1, 0);
-		begin.setDate(begin.getDate() - begin.getDay())
-		const end = new Date(begin.getFullYear(),
-								begin.getMonth(),
-								begin.getDate() + ANTD_CALENDAR_CELLS)
+		const begin = this.get_calendar_moment(moment);
+		const end = this.shift_moment(begin, this.shift);
 
-		const beginMark = begin.toDateString();
-		const endMark = end.toDateString();
-
-		return {begin: beginMark,
-				end: endMark}
+		return {begin: begin.format("YYYY-MM-DD"),
+				end: end.format("YYYY-MM-DD")}
 	}
 
 	get_tasks_list(time)
@@ -104,30 +115,11 @@ class Tasks extends React.Component
         );
     }
 
-    getMonthData(value)
-	{
-        if (value.month() === 8)
-		{
-            return 1394;
-        }
-    }
-
-    monthCellRender(value)
-	{
-        const num = this.getMonthData(value);
-        return num ? (
-            <div className="notes-month">
-                <section>{num}</section>
-                <span>Backlog number</span>
-            </div>
-        ) : null;
-    }
-
 	render()
 	{
 		return (
 			<div className={s.sendOfferContainer}>
-				<Calendar onChange = {this.on_change} dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} />
+				<Calendar onChange = {this.on_change} dateCellRender={this.dateCellRender} />
 			</div>
 		)
 	}
