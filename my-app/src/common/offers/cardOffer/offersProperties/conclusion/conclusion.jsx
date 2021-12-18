@@ -279,6 +279,28 @@ const dispatch = useDispatch()
         return  responsibles.map((index) =>
             <ConclusionCard name={index} id={index} resp={index.fiofull} tabel={index.responsible_tabnum} /> )
     }
+    var month = [
+        'Января',
+        'Февраля',
+        'Марта',
+        'Апреля',
+        'Мая',
+        'Июня',
+        'Июля',
+        'Августа',
+        'Сентября',
+        'Октября',
+        'Ноября',
+        'Декабря'
+    ];
+
+    var d = new Date(`${dateRG}`);
+    var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
+
+    console.log(newDate);
+
+
+
 
     return (
         <div className={s.cardOfferContainer}>
@@ -288,8 +310,8 @@ const dispatch = useDispatch()
 
             <div className={s.header}>
                 <div className={s.date}>
-                    <div>Дата:</div>
-                    <div>{dateRG}</div>
+                    <div>Дата начала обработки:</div>
+                    <div>{newDate}{' ' +d.getFullYear()}</div>
                 </div>
                 <div className={s.nameWorkGroup}>
                     <div>Подразделение:</div>
