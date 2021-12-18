@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import s from "./tasks.module.css"
 import 'antd/dist/antd.css';
 import { Calendar, Badge } from 'antd';
@@ -41,6 +41,10 @@ class Tasks extends React.Component
 		}
 	}
 
+	/**
+		* @param {moment.Moment} moment
+		* @returns {void}
+	**/
 	year(moment)
 	{
 		if(this.props?.tabnum)
@@ -56,6 +60,10 @@ class Tasks extends React.Component
 		}
 	}
 
+	/**
+		* @param {moment.Moment} moment
+		* @returns {void}
+	**/
 	month(moment)
 	{
 		if(this.props?.tabnum)
@@ -73,6 +81,10 @@ class Tasks extends React.Component
 		}
 	}
 
+	/**
+		* @param {moment.Moment} current_moment
+		* @returns {moment.Moment}
+	**/
 	get_calendar_moment(current_moment)
 	{
 		const begin = new Date(current_moment.year(), current_moment.month(), 1);
@@ -81,6 +93,11 @@ class Tasks extends React.Component
 		return moment(begin);
 	}
 
+	/**
+		* @param {moment.Moment} current_moment
+		* @param {Number} item
+		* @returns {moment.Moment}
+	**/
 	shift_moment(current_moment, item)
 	{
 		const shift_day = current_moment.date() + item;
@@ -88,6 +105,10 @@ class Tasks extends React.Component
 		return moment(new Date(current_moment.year(), current_moment.month(), shift_day));
 	}
 
+	/**
+		* @param {moment.Moment} moment
+		* @returns {{ begin: String, end: String }}
+	**/
 	range_from_moment(moment)
 	{
 		const begin = this.get_calendar_moment(moment);
@@ -97,6 +118,10 @@ class Tasks extends React.Component
 				end: end.format("YYYY-MM-DD")}
 	}
 
+	/**
+		* @param {Number} category
+		* @returns {String}
+	**/
 	get_task_type(category)
 	{
 		switch(category)
@@ -110,6 +135,10 @@ class Tasks extends React.Component
 		}
 	}
 
+	/**
+		* @param {moment.Moment} time
+		* @returns {Array}
+	**/
 	get_tasks_list(time)
 	{
         let task_ = [];
@@ -127,6 +156,10 @@ class Tasks extends React.Component
         return task_ || [];
     }
 
+	/**
+		* @param {moment.Moment} newMoment
+		* @returns {void}
+	**/
 	on_change(newMoment)
 	{
 		if(this.state.moment.month() !== newMoment.month())
@@ -135,6 +168,10 @@ class Tasks extends React.Component
 		}
 	}
 
+	/**
+		* @param {moment.Moment} value
+		* @returns {React.ReactFragment}
+	**/
     dateCellRender(value)
 	{
         const listData = this.get_tasks_list(value);
@@ -149,6 +186,10 @@ class Tasks extends React.Component
         );
     }
 
+	/**
+		* @param {moment.Moment} value
+		* @returns {Number}
+	**/
     getMonthData(value)
 	{
 		for(let tasks of this.state.year_task_count)
@@ -160,6 +201,10 @@ class Tasks extends React.Component
 		}
     }
 
+	/**
+		* @param {moment.Moment} value
+		* @returns {React.ReactFragment}
+	**/
     monthCellRender(value)
 	{
         const num = this.getMonthData(value);
