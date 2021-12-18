@@ -97,6 +97,19 @@ class Tasks extends React.Component
 				end: end.format("YYYY-MM-DD")}
 	}
 
+	get_task_type(category)
+	{
+		switch(category)
+		{
+			case '1':
+				return 'success'
+			case '2':
+				return 'warning'
+			case '3':
+				return 'error'
+		}
+	}
+
 	get_tasks_list(time)
 	{
         let task_ = [];
@@ -106,7 +119,7 @@ class Tasks extends React.Component
 			if(time.format("YYYY-MM-DD") === taskMoment.format("YYYY-MM-DD"))
 			{
                 task_.push(
-                    { type: 'warning', content: `В ${taskMoment.format("HH:mm")} ${task.header}` },
+                    { type: `${this.get_task_type(task.category)}`, content: `В ${taskMoment.format("HH:mm")} ${task.header}` },
 				)
 			}
 		}
