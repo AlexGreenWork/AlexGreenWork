@@ -16,11 +16,7 @@
   grid-column-start: 6;
   justify-self: center;
 }
-.fileplate {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 20px 0;
-}
+
 .file-enter-active {
   animation: file-enter 500ms forwards;
 }
@@ -35,3 +31,41 @@
   }
 }
 /*# sourceMappingURL=fileList.css.map */
+.files-block{
+  border: solid 1px black;
+  background-color: rgb(212, 240, 137);
+  
+
+}
+ .responsible-block{
+  background-color: rgb(247, 247, 247);
+  border: solid 1px black;
+  display:flex;
+  flex-wrap:wrap;
+  width: 150%;
+} 
+
+.departament{
+  background-color: rgb(197, 197, 187);
+  border: solid 1px black;
+  flex: 0 1 33%;
+  margin-left: -5%;
+  
+}
+
+.division{
+  background-color: rgb(192, 168, 148);
+  border: solid 1px black;
+  flex: 0 1 25%;
+
+}
+
+.responsible{
+  background-color: rgb(148, 156, 192);
+  border: solid 1px black;
+  flex: 0 1 25%;
+}
+.sendlerFiles{
+  background-color: rgb(178, 148, 192);
+  border: solid 1px black;
+}
