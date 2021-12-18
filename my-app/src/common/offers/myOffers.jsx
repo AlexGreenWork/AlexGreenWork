@@ -31,7 +31,8 @@ const Offer = (props) => {
                     let offersData = JSON.parse(xhr.response);           
                     console.log("offersdata - ",offersData)
                    
-                     dispatch(selectMyOffers(offersData.Id,
+                     dispatch(selectMyOffers(
+                                                offersData.Id,
 												offersData.nameOffer,
 												offersData.date,
 												offersData.tabelNum,
@@ -52,12 +53,7 @@ const Offer = (props) => {
             }     
 
             xhr.send(`selectOffers=${props.id}`);
-           
         }
-
-    
-
-      
     }
 
     function DispatchAddSendler(){
