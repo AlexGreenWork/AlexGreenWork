@@ -210,10 +210,39 @@ function changeViewSelect() {
                     </div>
 
                     <div className={s.ExecutWorker}>
-                        <div>Ответственный сотрудник:</div>
-                        <div > табельный: {props.resp}</div>
 
+                        <div style={{    display: "flex",
+                            alignItems: "center"}}>Ответственный сотрудник:</div>
+                        <div style={{
+                            display:"flex"
+
+                        }}>
+                            <div style={{
+                                boxShadow: "0px 4px 8px 0px rgba(34, 60, 80, 0.2)",
+                                display: "flex",
+                                borderBottomLeftRadius: "15px",
+                                borderTopLeftRadius: "15px"
+                            }}>
+                                <div style={{
+                                    backgroundImage: `url(${API_URL + 'files/photos/' + props.tabel + ".jpg"})`,
+                                    width: "30px",
+                                    height: "30px",
+                                    backgroundSize: "cover",
+                                    borderRadius: "50%"
+                                }}>
+                                </div>
+
+                                <div style={{marginRight:'5px',marginLeft:'5px', display: "flex",
+                                    alignItems: "center"}}>{props.resp}</div>
+                                <div style={{marginRight:'5px',marginLeft:'5px', display: "flex",
+                                    alignItems: "center"}}> Табельный: {props.tabel} </div>
+                            </div>
+                        </div>
                     </div>
+
+
+
+
                     <AdminChange name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
                     <div className={s.filesConclusion}>
                         <div>Файлы заключения подразделения:</div>
