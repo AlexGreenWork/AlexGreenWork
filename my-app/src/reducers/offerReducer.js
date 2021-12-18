@@ -1,5 +1,6 @@
 const SELECT_MYOFFERS = "SELECT_MYOFFERS"
 const ADD_SENDLER = "ADD_SENDLER"
+const SELECT_TO_MYOFFER = "SELECT_TO_MYOFFER"
 
 const defaultState = {
   
@@ -33,15 +34,28 @@ export default function offerReducer(state = defaultState, action) {
             break;
         case ADD_SENDLER: 
             state.addSendler = action.payload
-            break; 
-
-        default:
+            break;
+		case SELECT_TO_MYOFFER:
+			state.offer.responsibles_rg = action.payload
+			break;
+		default:
             break;
            
     }
     return state
 }
 
+export const selectToMyOffer = (
+	fio,tabnum
+
+)=>({type:SELECT_TO_MYOFFER, payload:{
+
+		fiofull:fio,
+		responsible_tabnum:tabnum
+
+
+
+	}})
     export const selectMyOffers = (Id,
 									nameOffer,
 									date,
