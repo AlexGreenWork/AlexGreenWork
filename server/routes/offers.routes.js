@@ -125,54 +125,37 @@ router.post("/selectMyOffers", urlencodedParser,
 												ON ow.tabelNum = o.tabelNum
 											WHERE o.Id = ?`, [idOffers])
 
-		const sqlOfferResponsoble = await pool.query(`SELECT
-															osr.offer_id,
-															ka.fiofull,
-															dep.fullname,
-															osr.responsible_tabnum,
-															osr.mark,
-															osr.open,
-															osr.close,
-															osr.rating
-														FROM
-															offersresponsible AS osr
-														INNER JOIN kadry_all AS ka 
-																ON ka.tabnum = osr.responsible_tabnum
-																    AND ka.factory = 1 
-														INNER JOIN department AS dep
-															ON dep.id = ka.department
-																	AND dep.factory = ka.factory
-														WHERE
-															osr.offer_id = ?
-														AND osr.deleted <> 1`, [idOffers])
+		const query = `SELECT
+						osr.offer_id,
+						ka.fiofull,
+						dep.fullname,
+						osr.responsible_tabnum,
+						osr.mark,
+						osr.open,
+						osr.close,
+						osr.rating
+					FROM
+						?? AS osr
+					INNER JOIN kadry_all AS ka 
+						ON ka.tabnum = osr.responsible_tabnum
+							AND ka.factory = 1 
+					INNER JOIN department AS dep
+						ON dep.id = ka.department
+							AND dep.factory = ka.factory
+					WHERE
+						osr.offer_id = ?
+					AND osr.deleted <> 1`
 
-		const sqlOfferResponsoble_Rg = await pool.query(`SELECT
-															osr_rg.offer_id,
-															ka.fiofull,
-															dep.fullname,
-															osr_rg.responsible_tabnum,
-															osr_rg.mark,
-															osr_rg.open,
-															osr_rg.close,
-															osr_rg.rating
-														FROM
-															offersresponsible_rg AS osr_rg
-														INNER JOIN kadry_all AS ka 
-																ON ka.tabnum = osr_rg.responsible_tabnum
-																    AND ka.factory = 1
-														INNER JOIN department AS dep
-															ON dep.id = ka.department
-																	AND dep.factory = ka.factory
-														WHERE
-															osr_rg.offer_id = ?
-														AND osr_rg.deleted <> 1`, [idOffers])
+		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
+		const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
+
 		response.send({
 							...sqlMyOffers[0][0],
 							responsibles: [
-								...sqlOfferResponsoble[0]
+								...sqlOfferResponsible[0]
 							],
 							responsibles_rg: 
-								sqlOfferResponsoble_Rg[0][0]
+								sqlOfferResponsible_Rg[0][0]
 							
 						});
 
