@@ -271,8 +271,9 @@ router.post("/toDbDateComission", urlencodedParser,
 router.get("/downloadMyFile", urlencodedParser, async function(request, response){
     let idOffers = request.query.idOffers;
     let fileName = request.query.fileName;
-    
-    fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, async (err, filesName) => {
+    let folder = request.query.folder;
+   
+    fs.readdir(`../server/files/offers/idOffers/id${idOffers}/${folder}/`, async (err, filesName) => {
         
 		filesName.push('exit');
 		   
@@ -280,7 +281,7 @@ router.get("/downloadMyFile", urlencodedParser, async function(request, response
 		{
 			if(filesName[i] == fileName )
 			{
-				let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
+				let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/${folder}/${fileName}`;
 				response.download(file); 
 				break;
 			}
