@@ -2,8 +2,7 @@ import React from "react";
 import {AutoComplete, Input} from "antd";
 import {API_URL} from "../../../config.js"
 import Translit from "./translit.js"
-const {post} = require("axios");
-
+import server from "../../../actions/server.js";
 
 class Complete extends React.Component
 {
@@ -42,7 +41,7 @@ class Complete extends React.Component
 		clearTimeout(this.timer);
 
 		this.timer = setTimeout(() => {
-			post(`${API_URL}api/user/search`, {search: new_value}).then((res) => {
+			server.send_post_request(`${API_URL}api/user/search`, {search: new_value}).then((res) => {
 				this.setState({options: this.create_options(new_value, res)});
         })}, 500);
 

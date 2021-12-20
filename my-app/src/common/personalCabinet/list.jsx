@@ -3,6 +3,7 @@ import Card from "./card";
 import ScrollButton from "./scroll.jsx"
 import {API_URL} from "../../../config.js"
 import style from "./list.module.css"
+import server from "../../actions/server";
 const {post} = require("axios");
 
 class List extends React.Component
@@ -89,7 +90,7 @@ class List extends React.Component
 	load(category, search)
 	{
 		const search_category = this.search_result_category.get(category);
-		post(`${API_URL}api/user/show_category`,
+		server.send_post_request(`${API_URL}api/user/show_category`,
 					{
 						search: search,
 						category: search_category

@@ -2,9 +2,9 @@ import React from "react";
 import s from "./tasks.module.css"
 import 'antd/dist/antd.css';
 import { Calendar, Badge } from 'antd';
-import {post} from "axios"
 import { connect } from "react-redux";
 import {API_URL} from "../../../config.js"
+import server from "../../../actions/server"
 
 const moment = require('moment')
 
@@ -49,7 +49,7 @@ class Tasks extends React.Component
 	{
 		if(this.props?.tabnum)
 		{
-			post(`${API_URL}api/task/year`,
+			server.send_post_request(`${API_URL}api/task/year`,
 				{
 					year: moment.year(),
 					respTabnum: this.props.tabnum
@@ -69,7 +69,7 @@ class Tasks extends React.Component
 		if(this.props?.tabnum)
 		{
 			const range = this.range_from_moment(moment);
-			post(`${API_URL}api/task/range`,
+			server.send_post_request(`${API_URL}api/task/range`,
 				{
 					beginMark: range.begin,
 					endMark: range.end,

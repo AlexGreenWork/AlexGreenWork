@@ -4,7 +4,7 @@ import style from "./card.module.css"
 import {selectcard} from "../../../actions/search";
 
 import {API_URL} from "../../../config.js"
-const {post} = require("axios");
+import server from "../../../actions/server"
 
 class Cart extends React.Component
 {
@@ -32,7 +32,7 @@ class Cart extends React.Component
 				) 
 			)
 		{
-			post(`${API_URL}api/user/info`, {search: props.info}).then((res) => {
+			server.send_post_request(`${API_URL}api/user/info`, {search: props.info}).then((res) => {
 				this.setState({info: res.data});
 			})
 		}
