@@ -63,7 +63,7 @@ const Disk = () => {
 
     return ( !dragEnter ?
             <div className="disk" onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
-                <div className="disk__btns">
+                {/* <div className="disk__btns">
                     <button className="disk__back" onClick={() => backClickHandler()}>Назад</button>
                     <button className="disk__create" onClick={() => showPopupHandler()}>Создать папку</button>
                     <div className="disk__upload">
@@ -79,10 +79,10 @@ const Disk = () => {
                     </select>
                     <button className="disk__plate" onClick={() => dispatch(setFileView('plate'))}/>
                     <button className="disk__list" onClick={() => dispatch(setFileView('list'))}/>
-                </div>
+                </div> */}
                 <FileList/>
-                <Popup/>
-                <Uploader/>
+               {/*  <Popup/>
+                <Uploader/> */}
             </div>
             :
             <div className="drop-area" onDrop={dropHandler} onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>

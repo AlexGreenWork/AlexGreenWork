@@ -216,7 +216,7 @@ const InfoAboutAuthor = () => {
     </Box>
             <div className={s.header}>
                 <div className="img" style={{ backgroundImage: `url(${photo})`,
-                backgroundRepeat: "round", width: "160px", minHeight: "200px"}}>
+                backgroundRepeat: "round", width: "150px", minHeight: "200px", borderRadius: "10px"}}>
                     
                 </div>
 
