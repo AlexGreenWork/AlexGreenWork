@@ -6,6 +6,7 @@ import ConclusionCard from "./conclusionCard";
 import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
 import axios from "axios";
+import server from "../../../../../actions/server";
 
 
 console.log(store.getState().search.searchUser)
@@ -222,7 +223,7 @@ const ConclusionOffer = () => {
         const respName = store.getState().search.searchUser.name
         const respTabnum = store.getState().search.searchUser.tabnum
 
-        await axios.post(`${API_URL}api/offers/toDbSaveResposibleRG`, {
+        await server.send_post_request(`${API_URL}api/offers/toDbSaveResposibleRG`, {
             respTabnum,
             respName,
             idOffer

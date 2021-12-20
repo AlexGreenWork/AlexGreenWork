@@ -1,11 +1,12 @@
 import axios from 'axios'
 import {API_URL} from "../config";
+import server from "./server";
 
 
 export const saveToDb1 = async (searchUser) => {
     try {
 
-        await axios.post(`${API_URL}api/offers/saveToDb1`, {
+        await server.send_post_request(`${API_URL}api/offers/saveToDb1`, {
             searchUser
         })
 
@@ -16,7 +17,7 @@ export const saveToDb1 = async (searchUser) => {
 export const saveToDb2 = async (searchUser) => {
     try {
 
-        await axios.post(`${API_URL}api/offers/saveToDb2`, {
+        await server.send_post_request(`${API_URL}api/offers/saveToDb2`, {
             searchUser
         })
 
@@ -27,7 +28,7 @@ export const saveToDb2 = async (searchUser) => {
 export const saveToDb3 = async (searchUser) => {
     try {
 
-        await axios.post(`${API_URL}api/offers/saveToDb3`, {
+        await server.send_post_request(`${API_URL}api/offers/saveToDb3`, {
             searchUser
         })
 
@@ -46,7 +47,7 @@ if(category==''){
     console.log("null view")
     category=0
 }
-        await axios.post(`${API_URL}api/offers/toStatus`, {
+        await server.send_post_request(`${API_URL}api/offers/toStatus`, {
             offerId,
             view,
             category,
@@ -60,7 +61,7 @@ if(category==''){
 export const toDbDateComission = async (offerId, dateComission) => {
     try {
 
-        await axios.post(`${API_URL}api/offers/toDbDateComission`, {
+        await server.send_post_request(`${API_URL}api/offers/toDbDateComission`, {
             offerId,
             dateComission
         })
