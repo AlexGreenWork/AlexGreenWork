@@ -22,16 +22,16 @@ function Files(props){
     for(let j = 0; j < numberOfFiles; j++){
 
         let fileName = allfilesObj[props.dirName].files[j];
-        let elFile = React.createElement("div", {className:"qwer", key:`keyFileContainer`+j} ,
-            <div key={`keyFile`+j} style={{marginLeft: '20px', color: 'red'}} onChange={(e) => {}}> {fileName} </div>, 
-             <input type="submit" value="скачать" onClick={()=>{ 
-             window.location = `${API_URL}api/offers/downloadMyFile?idOffers=${idOffers}&folder=${downloadFolder}&fileName=${fileName}`;}}/> );
+        let elFile = React.createElement("div", {className:"files", key:`keyFileContainer`+j} ,
+            <div key={`keyFile`+j} className="files-name" onChange={(e) => {}}> {fileName} </div>, 
+             <div className='btn-download'><input type="submit"  value="скачать"  onClick={()=>{ 
+             window.location = `${API_URL}api/offers/downloadMyFile?idOffers=${idOffers}&folder=${downloadFolder}&fileName=${fileName}`;}}/> </div> );
         
         elemFilesArr.push(elFile)
       
     }
 
-    return React.createElement("div", {className:"sendlerFiles"} , <div>   {elemFilesArr}</div>);
+    return React.createElement("div", {className:"sendlerFiles"} ,<div className='files-list'>  Список файлов </div> , <div className='files-list-container'>   {elemFilesArr}</div>);
 }
 
 
@@ -53,7 +53,9 @@ function Folders(props){
         if(dirName[i] !== "SendlerFiles"){
                 let elem = React.createElement("div", {className:"responsible-block", key:`keyDirContainer`+i} , 
                 <div  key={`keyDir`+i} className='responsible'> Член комиссии: {allfilesObj[dirName[i]].fioResp}</div>,
-                <div className='departament'>Цех/Управление: {allfilesObj[dirName[i]].department}</div> ,<div className='division'>Участок/Отдел: {allfilesObj[dirName[i]].division}</div>,
+                <div className='departament'>Цех/Управление: {allfilesObj[dirName[i]].department}</div> ,
+                <div className='tabnum'>Табельный номер: {dirName[i]}</div> ,
+                <div className='division'>Участок/Отдел: {allfilesObj[dirName[i]].division}</div>,
                 <Files allFiles = {props.allFiles} dirName = {dirName[i]} /> );
                  arrElem.push(elem) 
         } else {
