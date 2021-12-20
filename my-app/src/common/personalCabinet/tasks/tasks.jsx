@@ -87,10 +87,8 @@ class Tasks extends React.Component
 	**/
 	get_calendar_moment(current_moment)
 	{
-		const begin = new Date(current_moment.year(), current_moment.month(), 1);
-		begin.setDate(begin.getDate() - begin.getDay())
-
-		return moment(begin);
+		const begin = current_moment.clone().startOf('month');
+		return begin.subtract(begin.day(), 'days');
 	}
 
 	/**
@@ -100,9 +98,7 @@ class Tasks extends React.Component
 	**/
 	shift_moment(current_moment, item)
 	{
-		const shift_day = current_moment.date() + item;
-
-		return moment(new Date(current_moment.year(), current_moment.month(), shift_day));
+		return current_moment.clone().add(item, 'days');
 	}
 
 	/**
