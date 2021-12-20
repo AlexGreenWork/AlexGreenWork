@@ -119,8 +119,8 @@ class Tasks extends React.Component
 	}
 
 	/**
-		* @param {Number} category
-		* @returns {String}
+		* @param {String} category
+		* @returns {import("antd/lib/_util/colors").PresetStatusColorType}
 	**/
 	get_task_type(category)
 	{
@@ -136,8 +136,12 @@ class Tasks extends React.Component
 	}
 
 	/**
+		* @typedef {Object} Content
+		* @property {String} type
+		* @property {String} content
+		*
 		* @param {moment.Moment} time
-		* @returns {Array}
+		* @returns {Array.<Content>}
 	**/
 	get_tasks_list(time)
 	{
