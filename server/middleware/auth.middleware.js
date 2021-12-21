@@ -2,23 +2,27 @@ const jwt = require('jsonwebtoken')
 const config = require('config')
 
 module.exports = (req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    return next()
-  }
+	if (req.method === 'OPTIONS')
+	{
+		return next()
+	}
 
-  try {
+	try
+	{
+		const token = req.headers.authorization.split(' ')[1] // "Bearer TOKEN"
 
-    const token = req.headers.authorization.split(' ')[1] // "Bearer TOKEN"
+		if (!token)
+		{
+			return res.status(401).json({ message: 'Нет авторизации' })
+		}
 
-    if (!token) {
-      return res.status(401).json({ message: 'Нет авторизации' })
-    }
+		const decoded = jwt.verify(token, config.get('secretKey'))
+		req.user = decoded
+		next()
 
-    const decoded = jwt.verify(token, config.get('secretKey'))
-    req.user = decoded
-    next()
-
-  } catch (e) {
-    res.status(401).json({ message: 'Нет авторизации' })
-  }
+	}
+	catch (e)
+	{
+		res.status(401).json({ message: 'Нет авторизации' })
+	}
 }
