@@ -4,9 +4,16 @@ class Server
 {
 	constructor()
 	{
+		/**
+			* @type {import('axios').AxiosRequestConfig<any>} default_config
+		**/
 		this.default_config	= {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
 	}
 
+	/**
+	 	* @param {import('axios').AxiosRequestConfig<any>} user_config - user request params
+		* @returns {import('axios').AxiosRequestConfig<any>}
+	**/
 	concat_request_configs(user_config)
 	{
 		return {...this.default_config,
@@ -16,8 +23,8 @@ class Server
 	/**
 		* @param {String} router - server path
 		* @param {Object} data - user request data
-	 	* @param {Object} config - user request params
-		* @returns {Promise}
+	 	* @param {import('axios').AxiosRequestConfig<any>} config - user request params
+		* @returns {Promise<import('axios').AxiosResponse<any>>}
 	**/
 	async send_post_request(router, data, config = { })
 	{
@@ -28,8 +35,8 @@ class Server
 
 	/**
 		* @param {String} router - server router path
-		* @param {Object} config - user request params
-		* @return {Promise}
+	 	* @param {import('axios').AxiosRequestConfig<any>} config - user request params
+		* @returns {Promise<import('axios').AxiosResponse<any>>}
 	**/
 	async send_get_request(router, config = { })
 	{
@@ -39,10 +46,10 @@ class Server
 	}
 
 	/**
-	 * @param {String} router - server router path
-	 * @param {Object} config - user request params
-	 * @return {Promise}
-	 **/
+		* @param {String} router - server router path
+		* @param {import('axios').AxiosRequestConfig<any>} config - user request params
+		* @returns {Promise<import('axios').AxiosResponse<any>>}
+	**/
 	async send_delete_request(router, config = { })
 	{
 		const url = router;

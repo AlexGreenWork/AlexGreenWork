@@ -83,7 +83,7 @@ export const auth = () => {
             } else {
                 try {
 
-                    const response = await axios.get(`${API_URL}api/auth/auth`)
+                    const response = await server.send_get_request(`${API_URL}api/auth/auth`)
 
                     localStorage.setItem('token', response.data.token)
                     console.log(response.data.id)
@@ -116,7 +116,7 @@ export const uploadAvatar = (file) => {
 export const deleteAvatar = () => {
     return async dispatch => {
         try {
-            const response = await axios.delete(`${API_URL}api/files/avatar`)
+            const response = await server.send_delete_request(`${API_URL}api/files/avatar`)
 
             localStorage.setItem('userAvatar','')
             dispatch(setUser(response.data))
