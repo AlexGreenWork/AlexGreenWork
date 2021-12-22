@@ -1,36 +1,53 @@
 import React from "react"
+import {store} from "../../../../../reducers";
+import ConclusionCard from "./conclusionCard";
+import {connect} from "react-redux";
 
-export class ConclusionList extends React.Component {
-    constructor(props) {
+
+
+const Item = ({ index, handleRemove }) => (
+
+    store.getState().offers.offer.responsibles.map((index) =>
+        <ConclusionCard name={index} id={index} resp={index.fiofull} tabel={index.responsible_tabnum} /> ).reverse()
+);
+
+
+class ConclusionList extends React.Component {
+
+    constructor(props)
+    {
         super(props);
-        this.addResposible = this.addResposible.bind(this);
-        this.handleLogoutClick = this.handleLogoutClick.bind(this);
-        this.state = {isLoggedIn: false};
+        this.state = {items:  store.getState().offers.offer.responsibles};
+        this.componentDidUpdate = this.componentDidUpdate.bind(this);
+        this.update = this.update.bind(this);
+        this.update(props);
     }
 
-    addResposible() {
-
-        this.setState({sCount: {sCount}});
+    componentDidUpdate(props)
+    {
+        console.log("Upgrade")
     }
 
-    handleLogoutClick() {
-        this.setState({isLoggedIn: false});
+    update(props)
+    {
+       this.state.items = props.responsibles
+        console.log("update")
     }
+
+    handleRemove = index => this.setState({
+        items: this.state.items.filter(( item, i ) => i !== index)
+    });
 
     render() {
-        const isLoggedIn = this.state.isLoggedIn;
-        let button;
-        if (isLoggedIn) {
-            button = <LogoutButton onClick={this.handleLogoutClick} />;
-        } else {
-            button = <LoginButton onClick={this.handleLoginClick} />;
-        }
+        return this.state.items.map(( item, i ) => (
+            <ConclusionCard name={item} id={item} resp={item.fiofull} tabel={item.responsible_tabnum} open = {item.open} close = {item.close} rating = {item.rating}  mark = {item.mark}
+                            handleRemove={ () => this.handleRemove(i) }
+            />
 
-        return (
-            <div>
-                <Greeting isLoggedIn={isLoggedIn} />
-                {button}
-            </div>
-        );
+
+        )).reverse();
     }
 }
+
+const maping = (state) => {return {offer: state.offers}}
+export default connect(maping)(ConclusionList)
