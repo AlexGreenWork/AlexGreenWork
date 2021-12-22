@@ -159,13 +159,14 @@ class FileController {
     async uploadAvatar(req, res) {
 
         try {
+
+            console.log(req.files)
             const uid = req.user.id
             const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
             const user = userD[0][0]
             const avaOld = user.avatar
             const file = req.files.file
             console.log(req.files.file)
-
 
 
             console.log(req.files.file)
@@ -177,11 +178,11 @@ class FileController {
 
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
 
-            if(avaOld !== null && avaOld !== "") {
+            if (avaOld !== null && avaOld !== "") {
 
-                  fs.unlinkSync("./files/avatar/"+ avaOld)
+                fs.unlinkSync("./files/avatar/" + avaOld)
 
-            }else {
+            } else {
 
             }
 
@@ -201,19 +202,19 @@ class FileController {
             const user = userD[0][0]
             const avaOld = user.avatar
 
-            if(avaOld !== '' && avaOld !== null ){
-                if (fs.existsSync("./files/avatar/"+ avaOld)) {
+            if (avaOld !== '' && avaOld !== null) {
+                if (fs.existsSync("./files/avatar/" + avaOld)) {
                     fs.unlinkSync("./files/avatar/" + avaOld)
                 }
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
 
-            }else{
+            } else {
                 await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
             }
 
             user.avatar = ""
             //await user.save()
-           return res.json(user)
+            return res.json(user)
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Delete avatar error'})

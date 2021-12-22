@@ -17,6 +17,7 @@ const Profile = () => {
         const file = e.target.files[0]
 
 
+
         if ( /\.(jpe?g|png)$/i.test(file.name) === false ) {
             return alert('Выберите картинку формата jpg, jpeg, png')
         }
@@ -24,6 +25,7 @@ const Profile = () => {
          if (file.size > 2000000){
             return alert('Выберите картинку меньшего размера')
         }
+
         dispatch(uploadAvatar(file))
     }
 
@@ -46,8 +48,8 @@ const Profile = () => {
                 </div>
                 <div>
 
-                    <div>Фамилия: {currentUser.name}</div>
-                    <div>Имя: {currentUser.surname}</div>
+                    <div>Фамилия: {currentUser.surname}</div>
+                    <div>Имя: {currentUser.name}</div>
                     <div>Отчество:{currentUser.middlename}</div>
                     <div>Табельный номер: {currentUser.tabelNum}</div>
                     <div>Телефон: {currentUser.phoneNumber}</div>

@@ -409,7 +409,7 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
 })
 
 
-router.post("/toDbSaveResposible1", urlencodedParser,
+router.post("/toDbSaveResposible", urlencodedParser,
         async function (request, response){
 
 			let idOffers = request.body.idOffer;

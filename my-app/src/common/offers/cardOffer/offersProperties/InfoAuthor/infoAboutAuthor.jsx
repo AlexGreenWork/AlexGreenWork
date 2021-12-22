@@ -210,7 +210,11 @@ const InfoAboutAuthor = () => {
     return (
         <div className={s.cardOfferContainer}>
                       <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-      <Tabs value={value} onChange={handleChange} centered  orientation="vertical">
+      <Tabs value={value} onChange={handleChange} style={{
+          display: "flex",
+          flexDirection: "inherit",
+          justifyContent: "flex-start"
+      }}>
         <SendlerTabList/>
       </Tabs>
     </Box>
