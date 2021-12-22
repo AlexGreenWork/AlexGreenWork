@@ -119,7 +119,7 @@ router.post('/login',
                 return res.status(400).json({message: "Пароль не корректен"})
             }
 
-            const token = jwt.sign({id: user[0][0].id}, conf.get("secretKey"), {expiresIn: "1h"})
+            const token = jwt.sign({id: user[0][0].id}, conf.get("secretKey"), {expiresIn: "8h"})
             return res.json({
                 token,
                 user: {
