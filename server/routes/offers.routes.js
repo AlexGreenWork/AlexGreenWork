@@ -81,7 +81,7 @@ router.post("/myOffers", urlencodedParser,
         response.send(sqlResult[0][0])
     })
 
-async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber) {
+async function sqlMyOffers(tabelNumber, email) {
    
     let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,

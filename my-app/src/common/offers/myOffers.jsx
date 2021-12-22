@@ -30,29 +30,52 @@ const Offer = (props) => {
                 if (this.readyState == 4 && this.status == 200) {
                     let offersData = JSON.parse(xhr.response);           
                     console.log("offersdata - ",offersData)
-                   
-                     dispatch(selectMyOffers(
-                                                offersData.Id,
-												offersData.nameOffer,
-												offersData.date,
-												offersData.tabelNum,
-												offersData.nameSendler,
-												offersData.surnameSendler,
-												offersData.middlenameSendler,
-												offersData.email,
-												offersData.status,
-												offersData.descriptionProblem,
-												offersData.category,
-												offersData.view,
-												offersData.responsibles, 
-												offersData.responsibles_rg,
-												offersData.textOffer,
-												offersData.phoneNumber,
-												offersData.dateComission))
-                }
+                    requestInfoAutor(xhr.response);
+                                                                    
+                } 
             }     
 
             xhr.send(`selectOffers=${props.id}`);
+        }
+
+        function requestInfoAutor(xhr){
+            let req = new XMLHttpRequest();
+            req.open('POST', `${API_URL}api/files/workData`, true); 
+            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            req.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                  
+                   let offersData = JSON.parse(xhr); 
+                   let workData = JSON.parse(req.response); 
+                   
+                   dispatch(selectMyOffers(
+                                            offersData.Id,
+                                            offersData.nameOffer,
+                                            offersData.date,
+                                            offersData.tabelNum,
+                                            offersData.nameSendler,
+                                            offersData.surnameSendler,
+                                            offersData.middlenameSendler,
+                                            offersData.email,
+                                            offersData.status,
+                                            offersData.descriptionProblem,
+                                            offersData.category,
+                                            offersData.view,
+                                            offersData.responsibles, 
+                                            offersData.responsibles_rg,
+                                            offersData.textOffer,
+                                            offersData.phoneNumber,
+                                            offersData.dateComission,
+                                            workData[1],
+                                            workData[2]))
+                              
+                } else{
+                    console.log("false response")
+                }
+        
+            }
+        
+            req.send(`tabNum=${props.tabelNum}`);
         }
     }
 
@@ -149,16 +172,18 @@ const Offers = () => {
             if (this.readyState == 4 && this.status == 200) {
                
                setReqMyOff(xhr.response)
-                          
+               
             }
     
         }
-    
         xhr.send(`firstName=${userName}&userSurName=${userSurName}&middleName=${userMiddleName}&email=${userEmail}` +
-            `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}&phoneNumber=${userPhoneNumber}`);
+        `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}&phoneNumber=${userPhoneNumber}`);
+        
     
-        return xhr.response
+        //return xhr.response
     }
+
+    
     Resp()
 
     function ChangeOff(){
