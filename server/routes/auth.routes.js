@@ -389,4 +389,37 @@ router.post('/uploadMyCard',  async function (req, res) {
 });
 
 
+router.post("/conclusComissionUpload", urlencodedParser, async function(req, res){
+    let idOffers = req.body.idOffers;
+   
+try{
+
+   fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/`, function(err, dirRoot){  
+           
+       if(dirRoot.includes("conclusionCommission") == true){        //проверка на наличие папки conclusionCommission
+
+           fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/conclusionCommission`, function(err, dirCommission){ //!!!
+              
+              if(req.files != null){
+                  
+                req.files.fileConcCommission.mv(`${__dirname}/../files/offers/idOffers/id${idOffers}/conclusionCommission/`+req.files.fileConcCommission.name);
+                res.send("Файл загружен")
+
+              } else{
+                res.send("Файл не выбран");   
+              }
+           })
+
+       } else{
+              res.send("Нет папки conclusionCommission")
+       }
+   })
+
+
+} catch (e){
+   console.log(e)
+}
+})
+
+
 module.exports = router

@@ -28,10 +28,7 @@ function ReadDir() {
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let offersData = JSON.parse(xhr.response);           
-            console.log(offersData)     
-           
-             
-                      
+           // console.log(offersData)      
         }
     }   
     return xhr.response
@@ -90,7 +87,7 @@ function IMG(props) {
 }
 
 function downloadFile(obj) {
-    console.log(obj.props.children[0].props.children)
+   // console.log(obj.props.children[0].props.children)
     let idOffers = localStorage.getItem('idOffers');
     window.location = `${API_URL}api/offers/downloadMyFile?idOffers=${idOffers}&folder=SendlerFiles&fileName=${obj.props.children[0].props.children}`;
 }
