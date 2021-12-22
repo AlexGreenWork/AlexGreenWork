@@ -32,7 +32,8 @@ router.post('/registration',
     ],
 
     async (req, res) => {
-        try {
+        try
+		{
             const mysqlConfig = {
                 host: config.database.host,
                 user: config.database.user,
@@ -44,23 +45,21 @@ router.post('/registration',
             const connection = mysql.createPool(mysqlConfig);
 
             const errors = validationResult(req)
-            if (!errors.isEmpty()) {
+            if (!errors.isEmpty())
+			{
                 return res.status(400).json({message: "Не корректный запрос", errors})
             }
 
             const {surname, name,  middlename, tabelNum, email, phoneNumber, password, fired, adminOptions,date} = req.body
-            console.log("dody reqest ",req.body)
 
             const candidate = await connection.query(`SELECT * FROM offersworker WHERE email = '${email}' OR tabelNum = '${tabelNum}' AND ${tabelNum}<>0`);
 
-
-            console.log('Есть в базе? - ' + candidate[0][0])
-            if (candidate[0][0]) {
+            if (candidate[0][0])
+			{
                 return res.status(400).json({message: `Пользователь с таким email: ${email} или табельным номером: ${tabelNum} уже существует`})
             }
 
             const hashPassword = await bcrypt.hash(password, 8)
-            const hashAdminOptions = await bcrypt.hash(password, 8)
             const user = ({
                 date,
                 surname,
@@ -74,26 +73,27 @@ router.post('/registration',
                 adminOptions
 
             })
-            console.log(user)
 
-            await connection.query('INSERT INTO offersworker SET ?', user, function (error, results, fields) {
-                if (error) throw error;
-                res.end(JSON.stringify(results));
-            });
+            await connection.query('INSERT INTO offersworker SET ?', user,
+										function (error, results, fields)
+										{
+											if (error) throw error;
+											res.end(JSON.stringify(results));
+										});
 
             return res.json({message: "Пользователь создан"})
 
-        } catch (e) {
-            console.log(e)
+        }
+		catch (e)
+		{
             res.send({message: "Ошибка сервера"})
         }
     })
 
 router.post('/login',
-
-
     async (req, res) => {
-        try {
+        try
+		{
             const mysqlConfig = {
                 host: config.database.host,
                 user: config.database.user,
@@ -107,13 +107,15 @@ router.post('/login',
             const user = await connection.query(`SELECT * FROM offersworker WHERE email = '${email}' OR tabelNum = '${email}'`);
 
 
-            if (!user[0][0]) {
+            if (!user[0][0])
+			{
                 return res.status(404).json({message: "Пользователь не найден"})
             }
 
             const isPassValid = bcrypt.compareSync(password, user[0][0].password)
 
-            if (!isPassValid) {
+            if (!isPassValid)
+			{
                 return res.status(400).json({message: "Пароль не корректен"})
             }
 
@@ -133,31 +135,29 @@ router.post('/login',
                     adminOptions: user[0][0].adminOptions
                 }
             })
-        } catch (e) {
+        }
+		catch (e)
+		{
             console.log(e)
             res.send({message: "Server error"})
         }
-    })
+})
+
 router.get('/auth', authMiddleware,
     async (req, res) => {
-        try {
-            //     const mysqlConfig = {
-            //     host: config.database.host,
-            //     user: config.database.user,
-            //     password: config.database.password,
-            //     database: config.database.database,
-            // }
-            //
-            //     const connection = mysql.createPool(mysqlConfig);
-            console.log(req.user[0][0].id);
-            const user = await connection.query(`SELECT * FROM offers WHERE id = req.user[0][0].id`);
-                //await User.findOne({_id: req.user[0][0].id}) !!!!!!!!!!!!!!!!!!!!!!!!!!!! можно поменять местами
-            // );
+        try
+		{
+            const mysqlConfig = {
+                host: config.database.host,
+                user: config.database.user,
+                password: config.database.password,
+                database: config.database.database,
+            }
 
+            const connection = mysql.createPool(mysqlConfig);
+            const user = await connection.query(`SELECT * FROM offersworker WHERE Id = ${req.user.id}`);
 
-            console.log('секция AUTH')
-            console.log(user);
-            const token = jwt.sign({id: user[0][0].id}, conf.get("secretKey"), {expiresIn: "8h"})
+            const token = jwt.sign({id: user[0][0].Id}, conf.get("secretKey"), {expiresIn: "8h"})
             return res.json({
                 token,
                 user: {
@@ -173,14 +173,16 @@ router.get('/auth', authMiddleware,
                     adminOptions: user.adminOptions
                 }
             })
-        } catch (e) {
+        }
+		catch (e)
+		{
             console.log(e)
             res.send({message: "Server error"})
         }
     })
 
 
-router.post("/forms", urlencodedParser, async (request, response)=> {
+router.post("/forms", urlencodedParser, async (request, response) => {
     console.log(request.body)
     let firstName = request.body.firstName; // имя
     let middleName = request.body.middleName; // отчество
