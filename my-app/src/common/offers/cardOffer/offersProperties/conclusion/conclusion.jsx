@@ -5,12 +5,12 @@ import Button from "@material-ui/core/Button";
 import ConclusionCard from "./conclusionCard";
 import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
-import axios from "axios";
 import {responseToOffer, selectMyOffers, selectToMyOffer} from "../../../../../reducers/offerReducer";
 import {useDispatch} from "react-redux";
 import {render} from "react-dom";
 import ConclusionList from "./conclusionList";
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
+import server from "../../../../../actions/server";
 
 
 console.log(store.getState().search.searchUser)
@@ -246,11 +246,10 @@ const ConclusionOffer = () => {
             const respTabnum = store.getState().search.searchUser.tabnum
 
 
-            await axios.post(`${API_URL}api/offers/toDbSaveResposibleRG`, {
+            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposibleRG`, {
                 respTabnum,
                 respName,
                 idOffer
-
             })
             let fio = store.getState().search.searchUser.name
             let tabnum = store.getState().search.searchUser.tabnum
