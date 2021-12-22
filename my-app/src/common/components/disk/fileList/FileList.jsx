@@ -72,7 +72,7 @@ function Folders(props){
         
     }
         if(allfilesObj[dirName[0]] !== undefined){
-            return  React.createElement("div", {className:"files-block"} , <div> Файлы предложений{ arrElem}</div> )
+            return  React.createElement("div", {className:"files-block"} , <div> Файлы предложения{ arrElem}</div> )
         } else {
             
         }
