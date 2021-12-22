@@ -74,7 +74,9 @@ export const selectToMyOffer = (
 									responsibles_rg,
 									textOffer, 
 									phoneNumber,
-									dateCommision) => ({ type:SELECT_MYOFFERS, payload:{
+									dateCommision,
+									departament,
+									division) => ({ type:SELECT_MYOFFERS, payload:{
 												Id: Id,
 												nameOffer: nameOffer,
 												date: date,
@@ -91,7 +93,10 @@ export const selectToMyOffer = (
 												responsibles_rg: responsibles_rg,
 												textOffer: textOffer, 
 												phoneNumber: phoneNumber, 
-												dateComission : dateCommision
+												dateComission : dateCommision,
+												departament : departament,
+												division : division,
+												
                 } 
             })
 
