@@ -9,8 +9,8 @@ import {useSelector} from "react-redux";
 
 import {saveToDb1 ,saveToDb2, saveToDb3 } from "../../../../../actions/offers"
 import {store} from "../../../../../reducers";
-import axios from "axios";
 import {API_URL} from "../../../../../config";
+import server from "../../../../../actions/server";
 
 const ConclusionCard = (props) => {
 
@@ -94,7 +94,7 @@ function changeViewSelect() {
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await axios.post(`${API_URL}api/offers/toDbSaveResposible`, {
+            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible`, {
                 respTabnum,
                 respName,
                 idOffer
@@ -113,7 +113,7 @@ function changeViewSelect() {
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await axios.post(`${API_URL}api/offers/toDbSaveResposible2`, {
+            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible2`, {
                 respTabnum,
                 respName,
                 idOffer
@@ -132,7 +132,7 @@ function changeViewSelect() {
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await axios.post(`${API_URL}api/offers/toDbSaveResposible3`, {
+            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible3`, {
                 respTabnum,
                 respName,
                 idOffer
