@@ -66,16 +66,16 @@ const Registration = () => {
                                                   onChange={() => setFired(!fired)}/><span>Я работник Белаза</span>
                 </div>
                 <div>{inputIn}</div>
+                <input className={s.inp} onChange={inpSur} type="text" placeholder="Введите фамилию..."/>
                 <input className={s.inp} onChange={inpName} type="text" placeholder="Имя"/>
                 <input className={s.inp} onChange={inpMid} type="text" placeholder="Введите отчество..."/>
-                <input className={s.inp} onChange={inpSur} type="text" placeholder="Введите фамилию..."/>
                 <input className={s.inp} onChange={inpEmail} type="text" placeholder="Введите email..."/>
                 <input className={s.inp} onChange={inpPhoneNumber} type="number"
                        placeholder="Введите номер телефона..."/>
                 <input className={s.inp} onChange={inpPassword} type="password" placeholder="Введите пароль..."/>
 
                 <button className="authorization__btn"
-                        onClick={() => registration(name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions)}>Зарегистрироваться
+                        onClick={() => registration(surname, name, middlename,  email, tabelNum, phoneNumber, password, fired, adminOptions)}>Зарегистрироваться
                 </button>
             </div>
         </div>

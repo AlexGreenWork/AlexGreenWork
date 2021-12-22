@@ -48,8 +48,8 @@ router.post('/registration',
                 return res.status(400).json({message: "Не корректный запрос", errors})
             }
 
-            const {name, surname, middlename, tabelNum, email, phoneNumber, password, fired, adminOptions,date} = req.body
-
+            const {surname, name,  middlename, tabelNum, email, phoneNumber, password, fired, adminOptions,date} = req.body
+            console.log("dody reqest ",req.body)
 
             const candidate = await connection.query(`SELECT * FROM offersworker WHERE email = '${email}' OR tabelNum = '${tabelNum}' AND ${tabelNum}<>0`);
 
@@ -63,8 +63,8 @@ router.post('/registration',
             const hashAdminOptions = await bcrypt.hash(password, 8)
             const user = ({
                 date,
-                name,
                 surname,
+                name,
                 middlename,
                 tabelNum,
                 email,
@@ -104,7 +104,7 @@ router.post('/login',
             const connection = mysql.createPool(mysqlConfig);
 
             const {email, tabelNum, password} = req.body
-            const user = await connection.query(`SELECT * FROM offersworker WHERE email = '${email}' OR tabelNum = '${tabelNum}'`);
+            const user = await connection.query(`SELECT * FROM offersworker WHERE email = '${email}' OR tabelNum = '${email}'`);
 
 
             if (!user[0][0]) {
@@ -387,6 +387,39 @@ router.post('/uploadMyCard',  async function (req, res) {
    }
 
 });
+
+
+router.post("/conclusComissionUpload", urlencodedParser, async function(req, res){
+    let idOffers = req.body.idOffers;
+   
+try{
+
+   fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/`, function(err, dirRoot){  
+           
+       if(dirRoot.includes("conclusionCommission") == true){        //проверка на наличие папки conclusionCommission
+
+           fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/conclusionCommission`, function(err, dirCommission){ //!!!
+              
+              if(req.files != null){
+                  
+                req.files.fileConcCommission.mv(`${__dirname}/../files/offers/idOffers/id${idOffers}/conclusionCommission/`+req.files.fileConcCommission.name);
+                res.send("Файл загружен")
+
+              } else{
+                res.send("Файл не выбран");   
+              }
+           })
+
+       } else{
+              res.send("Нет папки conclusionCommission")
+       }
+   })
+
+
+} catch (e){
+   console.log(e)
+}
+})
 
 
 module.exports = router

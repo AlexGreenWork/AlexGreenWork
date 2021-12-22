@@ -11,7 +11,6 @@ import {saveToDb1 ,saveToDb2, saveToDb3 } from "../../../../../actions/offers"
 import {store} from "../../../../../reducers";
 import axios from "axios";
 import {API_URL} from "../../../../../config";
-import server from "../../../../../actions/server";
 
 const ConclusionCard = (props) => {
 
@@ -32,30 +31,11 @@ function changeViewSelect() {
         let propName = props.name;
     function changeViewSelectSave(props) {
 
-        if (propName == 1) {
 
-            saveToDb1(searchUser)
+
+            saveToDb(searchUser)
             setViewChange(false)
             alert("Изменения сохранены 1")
-        }
-       if (propName == 2) {
-
-            saveToDb2(searchUser)
-            setViewChange(false)
-            alert("Изменения сохранены 2")
-        }
-       if (propName == 3) {
-
-            saveToDb3(searchUser)
-            setViewChange(false)
-            alert("Изменения сохранены 3")
-        }
-       if (propName == "RG") {
-
-            saveToDb1(searchUser)
-            setViewChange(false)
-            alert("Изменения сохранены")
-        }
 
 
     }
@@ -107,14 +87,14 @@ function changeViewSelect() {
         }
 
     }
-    async function saveToDb1(){
+    async function saveToDb(){
         try{
             setViewChange(false)
             const idOffer = localStorage.getItem('idOffers')
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible1`, {
+            await axios.post(`${API_URL}api/offers/toDbSaveResposible`, {
                 respTabnum,
                 respName,
                 idOffer
@@ -133,7 +113,7 @@ function changeViewSelect() {
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible2`, {
+            await axios.post(`${API_URL}api/offers/toDbSaveResposible2`, {
                 respTabnum,
                 respName,
                 idOffer
@@ -152,7 +132,7 @@ function changeViewSelect() {
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible3`, {
+            await axios.post(`${API_URL}api/offers/toDbSaveResposible3`, {
                 respTabnum,
                 respName,
                 idOffer
@@ -192,6 +172,48 @@ function changeViewSelect() {
             }
         }
 
+        var month = [
+            'Января',
+            'Февраля',
+            'Марта',
+            'Апреля',
+            'Мая',
+            'Июня',
+            'Июля',
+            'Августа',
+            'Сентября',
+            'Октября',
+            'Ноября',
+            'Декабря'
+        ];
+
+        var d = new Date(`${props.open}`);
+        var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
+
+        function IsAdminRGUpload() {
+            return (<div className={s.fileUpload}>
+                    <input type="file" name="filename"/>
+                </div>
+
+            )
+        }
+
+        function IsAdminUser() {
+            return (
+                <div></div>
+            )
+        }
+
+        function AdminChangeUploadFile(props) {
+            const isAdmin = props.isAdmin;
+            if (isAdmin == 'wg') {
+                return <IsAdminRGUpload/>;
+
+            } else {
+                return <IsAdminUser/>
+            }
+        }
+
 
 
         return (
@@ -203,36 +225,68 @@ function changeViewSelect() {
 
                     <div className={s.date}>
                         <div>Дата:</div>
-                        <div> 12/09/21</div>
+                        <div> {newDate}{' ' +d.getFullYear()}</div>
                     </div>
                     <div className={s.nameWorkGroup}>
                         <div>Подразделение:</div>
-                        <div> Рабочая группа</div>
+                        <div> ///Подразделение////</div>
                     </div>
 
                     <div className={s.ExecutWorker}>
-                        <div>Ответственный сотрудник:</div>
-                        <div > табельный: {props.resp}</div>
 
-                    </div>
-                    <AdminChange name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
-                    <div className={s.filesConclusion}>
-                        <div>Файлы заключения подразделения:</div>
-                        <div className={s.conclusionFilesArea}> files area:
-                            <div>
-                                <ViewFileDoc/>
-                                <div>Заключение</div>
-                            </div>
-                            <div>
-                                <ViewFileDoc/>
-                                <div>Заключение</div>
-                            </div>
-                            <div className={s.fileUpload}>
-                                <input type="file" name="filename"/>
+                        <div style={{    display: "flex",
+                            alignItems: "center"}}>Ответственный сотрудник:</div>
+                        <div style={{
+                            display:"flex"
+
+                        }}>
+                            <div style={{
+                                boxShadow: "0px 4px 8px 0px rgba(34, 60, 80, 0.2)",
+                                display: "flex",
+                                borderBottomLeftRadius: "15px",
+                                borderTopLeftRadius: "15px"
+                            }}>
+                                <div style={{
+                                    backgroundImage: `url(${API_URL + 'files/photos/' + props.tabel + ".jpg"})`,
+                                    width: "30px",
+                                    height: "30px",
+                                    backgroundSize: "cover",
+                                    borderRadius: "50%"
+                                }}>
+                                </div>
+
+                                <div style={{marginRight:'5px',marginLeft:'5px', display: "flex",
+                                    alignItems: "center"}}>{props.resp}</div>
+                                <div style={{marginRight:'5px',marginLeft:'5px', display: "flex",
+                                    alignItems: "center"}}> Табельный: {props.tabel} </div>
                             </div>
                         </div>
                     </div>
-                    <div className={s.shortAnotation}>
+
+
+
+
+                    <AdminChange name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
+                    <div className={s.filesConclusion}>
+                        <div style={{
+                            borderBottom: "1px solid #dfdcdc",
+                            marginBottom: "11px"
+                        }}>Файлы заключения //подразделения//:</div>
+                        <div className={s.conclusionFilesArea}>
+                            <div className={s.conclusionFilesAreaFile} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                cursor: "pointer"
+                            }}>
+                                <ViewFileDoc/>
+                                <div>Заключение</div>
+                            </div>
+
+
+                        </div>
+                        <AdminChangeUploadFile isAdmin={localStorage.getItem("userAdminOptions")}/>
+                    </div>
+                    <div className={s.filesConclusion11}>
                         <div>Краткая аннотация заключения подразделения:</div>
                         <div className={s.conclusionTextArea}> text of conclusion area: Lorem ipsum dolor sit amet,
                             consectetur adipisicing elit. Autem dolore excepturi hic nemo nihil quae reiciendis sunt

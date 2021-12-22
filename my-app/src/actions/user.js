@@ -1,20 +1,19 @@
 import axios from 'axios'
 import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
-import server from "./server";
 
 
-export const registration = async (name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions) => {
+export const registration = async (surname, name, middlename,  email, tabelNum, phoneNumber, password, fired, adminOptions) => {
     try {
 
         const date= new Date().toISOString().slice(0, 10);
 
 
         console.log(date)
-        const response = await server.send_post_request(`${API_URL}api/auth/registration`, {
+        const response = await axios.post(`${API_URL}api/auth/registration`, {
+            surname,
             name,
             middlename,
-            surname,
             email,
             tabelNum,
             phoneNumber,
@@ -33,7 +32,7 @@ export const registration = async (name, middlename, surname, email, tabelNum, p
 export const login = (email, password) => {
     return async dispatch => {
         try {
-            const response = await server.send_post_request(`${API_URL}api/auth/login`, {
+            const response = await axios.post(`${API_URL}api/auth/login`, {
                 email,
                 password
             })
@@ -83,7 +82,9 @@ export const auth = () => {
             } else {
                 try {
 
-                    const response = await server.send_get_request(`${API_URL}api/auth/auth`)
+                    const response = await axios.get(`${API_URL}api/auth/auth`,
+                        {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
+                    )
 
                     localStorage.setItem('token', response.data.token)
                     console.log(response.data.id)
@@ -102,11 +103,13 @@ export const uploadAvatar = (file) => {
             formData.append('file', file)
 
 
-            const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData)
+            const response = await axios.post(`${API_URL}api/files/avatar`, formData,
+                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
+            )
             localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
 
-            // dispatch(setUser(response.data))
+
         } catch (e) {
             console.log(e)
         }
@@ -116,7 +119,9 @@ export const uploadAvatar = (file) => {
 export const deleteAvatar = () => {
     return async dispatch => {
         try {
-            const response = await server.send_delete_request(`${API_URL}api/files/avatar`)
+            const response = await axios.delete(`${API_URL}api/files/avatar`,
+                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
+            )
 
             localStorage.setItem('userAvatar','')
             dispatch(setUser(response.data))
@@ -129,7 +134,7 @@ export const getToMyOffers = (currentTabelnum) => {
     return async dispatch => {
         try {
 
-            const response = await server.send_post_request(`${API_URL}api/offers/myOffers`, {
+            const response = await axios.post(`${API_URL}api/offers/myOffers`, {
                 currentTabelnum
             })
             console.log(response)
@@ -152,7 +157,7 @@ export const getToMyOffers = (currentTabelnum) => {
 
 // export const formToBaseFree = async (name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer) => {
 //     try {
-//         const response = await server.send_post_request(`${API_URL}api/auth/form`, {
+//         const response = await axios.post(`${API_URL}api/auth/form`, {
 //             name,
 //             middlename,
 //             surname,
