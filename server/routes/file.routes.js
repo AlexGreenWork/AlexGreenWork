@@ -66,13 +66,13 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                             
                             arrAllFiles[docFiles]= {files, fioResp, department, division }
                             
-                        }else{
+                        }else if(dirRoot[i] == "SendlerFiles" ) {
                             arrAllFiles[dirRoot[i]]= {files}
                         }
                      
                         if(i  == dirRoot.length-1){
-                            
-                            setTimeout(()=>{res.send(arrAllFiles); /* console.log("ответ сервера по поводу файлов ");  console.log(arrAllFiles) */ ; } , 200)
+                           
+                            setTimeout(()=>{res.send(arrAllFiles);} , 200)
                             
                         } else {
                             
@@ -88,6 +88,80 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
 
 })
 
+router.post("/FilesConclusionCommission", urlencodedParser,
+    async function (request, response) {
+        
+        let idOffers = request.body.idOffers
+       
+      fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
+     
+            if(folder.includes("conclusionCommission") == false){
+                
+                fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, { recursive: true }, err => {
+                    if(err) throw err; // не удалось создать папки
+                   // console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
+
+                    fs.readdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, (err, files) => {
+                    
+                        response.send(files)
+                    })
+
+                })
+
+            } else {
+                    let a = 0;
+                for(let i = 0; i< folder.length; i++){
+                              
+                    if(folder[i] == `id${idOffers}`){
+                    
+                        
+                        fs.readdir(`../server/files/offers/idOffers/id${idOffers}/`, (err, folder) => {
+                        
+                            if(folder[0] == "SendlerFiles"){
+                             
+                             fs.readdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, (err, files) => {
+                                 
+                                 response.send(files)
+                             })
+                               
+                             i = folder.length
+                               
+                            } else {
+                                   
+                             fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, { recursive: true }, err => {
+                                 if(err) throw err; // не удалось создать папки
+                                 //console.log(`Папка SendlerFiles внутри id${idOffers} создана `);
+     
+                                 fs.readdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, (err, files) => {
+                                 
+                                     response.send(files)
+                                 })
+     
+                             })
+                             i = folder.length
+                            }
+                        })
+                       
+        
+                    } else {
+                         a++;
+                        if( a == folder.length){
+                           
+                            fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, { recursive: true }, err => {
+                                if(err) throw err; 
+                                fs.readdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, (err, files) => {
+                                response.send(files)
+                             })
+         
+                            });
+                        } else {
+                            
+                        }
+                    }
+                 }
+            }
+        })
+    })
 /* router.post("/responsible", urlencodedParser, async function(req, res){
 
     let membCommision = req.body.tabREsponsoble;
@@ -101,5 +175,9 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
     console.log("ответ сервера по поводу членов ")
     res.send([sqlMembCommision[0][0].fiofull, sqlDepartment[0][0].fullname, sqlDivision[0][0].name])
 }) */
+
+
+
+
 
 module.exports = router
