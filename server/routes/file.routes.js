@@ -72,7 +72,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                      
                         if(i  == dirRoot.length-1){
                            
-                            setTimeout(()=>{res.send(arrAllFiles);} , 200)
+                            setTimeout(()=>{res.send(arrAllFiles);} , 50)
                             
                         } else {
                             

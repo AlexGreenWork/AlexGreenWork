@@ -63,14 +63,14 @@ export const login = (email, password) => {
 
 export const auth = () => {
     return async dispatch => {
-
 		const current_date = new Date();
 		const token_date = new Date(localStorage.getItem('tokenExpires'));
-		const sub_date = new Date(current_date - token_date);
+		const hours_diff = Math.abs(Math.floor((current_date - token_date) / (1000 * 3600)));
+		const SERVER_TOKEN_LIFE_HOURS = 8;
 
         if (localStorage.getItem('token'))
 		{
-			if(sub_date.getDate() < 8)
+			if(hours_diff < SERVER_TOKEN_LIFE_HOURS)
 			{
 				const user = {
 					id: localStorage.getItem('userId'),
