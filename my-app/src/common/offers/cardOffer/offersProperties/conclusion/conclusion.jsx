@@ -378,10 +378,11 @@ console.log(annotationInp)
                         }}>
                             <div style={{
                                 backgroundImage: `url(${API_URL + 'files/photos/' + tabelRG + ".jpg"})`,
-                                width: "30px",
-                                height: "30px",
+                                width: "40px",
+                                height: "40px",
                                 backgroundSize: "cover",
-                                borderRadius: "50%"
+                                borderRadius: "50%",
+                                backgroundPosition: "center"
                             }}>
                             </div>
 

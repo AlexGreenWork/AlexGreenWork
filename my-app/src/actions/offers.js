@@ -60,7 +60,7 @@ if(category==''){
 }
 export const toDbDateComission = async (offerId, dateComission) => {
     try {
-
+        console.log(dateComission)
         await server.send_post_request(`${API_URL}api/offers/toDbDateComission`, {
             offerId,
             dateComission

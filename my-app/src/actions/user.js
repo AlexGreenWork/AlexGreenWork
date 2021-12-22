@@ -1,6 +1,7 @@
 import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
 import server from './server';
+import axios from "axios";
 
 
 export const registration = async (surname, name, middlename,  email, tabelNum, phoneNumber, password, fired, adminOptions) => {
@@ -107,11 +108,12 @@ export const auth = () => {
 export const uploadAvatar = (file) => {
     return async dispatch => {
         try {
+            console.log("const uploadAvatar", file)
             const formData = new FormData()
             formData.append('file', file)
-
-
-            const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData)
+            const response = await axios.post(`${API_URL}api/auth/avatar`, formData,
+                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+            })
             localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
 
@@ -125,7 +127,9 @@ export const uploadAvatar = (file) => {
 export const deleteAvatar = () => {
     return async dispatch => {
         try {
-            const response = await server.send_delete_request(`${API_URL}api/files/avatar`)
+            const response = await axios.post(`${API_URL}api/auth/deleteAvatar`,null,
+            {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+            })
 
             localStorage.setItem('userAvatar','')
             dispatch(setUser(response.data))

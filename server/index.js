@@ -22,11 +22,12 @@ app.use("/files", fileRouter)
 app.use("/offers", offersRouter)
 app.use(express.static(__dirname));
 app.use('/files', express.static('avatar'));
+app.use('/files', express.static('avatar'));
 app.post('/files', express.static('upload'));
 app.post('/files', express.static('offers'));
 app.use(corsMiddleware)
 app.use(express.json({ extended: true }))
-// app.use(express.static('./files/avatar'))
+app.use(express.static('./files/avatar'))
 app.use(express.static(__dirname + '/files/avatar'))
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/link', require('./routes/link.routes'))
