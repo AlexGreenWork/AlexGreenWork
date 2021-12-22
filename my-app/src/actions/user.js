@@ -31,12 +31,12 @@ export const registration = async (surname, name, middlename,  email, tabelNum, 
 
 export const login = (email, password) => {
     return async dispatch => {
-        try {
+        try
+		{
             const response = await server.send_post_request(`${API_URL}api/auth/login`, {
                 email,
                 password
             })
-
 
             localStorage.setItem('userAvatar', response.data.user.avatar)
             localStorage.setItem('token', response.data.token)
@@ -52,7 +52,9 @@ export const login = (email, password) => {
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
 
             dispatch(setUser(response.data.user))
-        } catch (e) {
+        }
+		catch (e)
+		{
             console.log("Error Level: "+ e);
             alert(e.response.data.message)
         }
@@ -62,37 +64,45 @@ export const login = (email, password) => {
 export const auth = () => {
     return async dispatch => {
 
-        if (localStorage.getItem('token') && new Date().getDate() - new Date(localStorage.getItem('tokenExpires')).getDate() < 8) {
+		const current_date = new Date();
+		const token_date = new Date(localStorage.getItem('tokenExpires'));
+		const sub_date = new Date(current_date - token_date);
 
-                const user = {
-                    id: localStorage.getItem('userId'),
-                    name: localStorage.getItem('userName'),
-                    surname: localStorage.getItem('userSurName'),
-                    middlename: localStorage.getItem('userMiddleName'),
-                    tabelNum: localStorage.getItem('userUserTabelNum'),
-                    email: localStorage.getItem('userEmail'),
-                    phoneNumber: localStorage.getItem('userPhoneNumber'),
-                    fired: localStorage.getItem('userFired'),
-                    adminOptions: localStorage.getItem('userAdminOptions'),
-                    avatar: localStorage.getItem('userAvatar'),
-                }
-                dispatch(setUserLocal(user))
+        if (localStorage.getItem('token'))
+		{
+			if(sub_date.getDate() < 8)
+			{
+				const user = {
+					id: localStorage.getItem('userId'),
+					name: localStorage.getItem('userName'),
+					surname: localStorage.getItem('userSurName'),
+					middlename: localStorage.getItem('userMiddleName'),
+					tabelNum: localStorage.getItem('userUserTabelNum'),
+					email: localStorage.getItem('userEmail'),
+					phoneNumber: localStorage.getItem('userPhoneNumber'),
+					fired: localStorage.getItem('userFired'),
+					adminOptions: localStorage.getItem('userAdminOptions'),
+					avatar: localStorage.getItem('userAvatar'),
+				}
+				dispatch(setUserLocal(user))
+			}
+			else
+			{
+				try
+				{
+					const response = await server.send_get_request(`${API_URL}api/auth/auth`)
 
-
-            } else {
-                try {
-
-                    const response = await server.send_get_request(`${API_URL}api/auth/auth`)
-
-                    localStorage.setItem('token', response.data.token)
-                    console.log(response.data.id)
-                    dispatch(setUser(response.data.user))
-                } catch (e) {
-                    console.log('auth error' + e)
-                }
-            }
-        }
-    }
+					localStorage.setItem('token', response.data.token)
+					dispatch(setUser(response.data.user))
+				}
+				catch (e)
+				{
+					console.log('Auth Action ' + e)
+				}
+			}
+		}
+	}
+}
 
 export const uploadAvatar = (file) => {
     return async dispatch => {
@@ -101,9 +111,7 @@ export const uploadAvatar = (file) => {
             formData.append('file', file)
 
 
-            const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData,
-                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
-            )
+            const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData)
             localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
 
