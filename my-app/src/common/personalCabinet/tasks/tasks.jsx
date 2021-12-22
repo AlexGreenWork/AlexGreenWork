@@ -47,17 +47,13 @@ class Tasks extends React.Component
 	**/
 	year(moment)
 	{
-		if(this.props?.tabnum)
-		{
-			server.send_post_request(`${API_URL}api/task/year`,
-				{
-					year: moment.year(),
-					respTabnum: this.props.tabnum
-				}).
-				then((res) => {
-					this.setState({year_task_count: res.data})
-				})
-		}
+		server.send_post_request(`${API_URL}api/task/year`,
+			{
+				year: moment.year(),
+			}).
+			then((res) => {
+				this.setState({year_task_count: res.data})
+			})
 	}
 
 	/**
@@ -66,19 +62,15 @@ class Tasks extends React.Component
 	**/
 	month(moment)
 	{
-		if(this.props?.tabnum)
-		{
-			const range = this.range_from_moment(moment);
-			server.send_post_request(`${API_URL}api/task/range`,
-				{
-					beginMark: range.begin,
-					endMark: range.end,
-					respTabnum: this.props.tabnum
-				}).
-				then((res) => {
-						this.setState({tasks: res.data, moment: moment})
-				})
-		}
+		const range = this.range_from_moment(moment);
+		server.send_post_request(`${API_URL}api/task/range`,
+			{
+				beginMark: range.begin,
+				endMark: range.end,
+			}).
+			then((res) => {
+					this.setState({tasks: res.data, moment: moment})
+			})
 	}
 
 	/**
@@ -232,8 +224,4 @@ class Tasks extends React.Component
 	}
 }
 
-const redux_state_to_task_props = (state) => ({
-	tabnum: state.user.currentUser.tabelNum
-})
-
-export default connect(redux_state_to_task_props)(Tasks);
+export default connect()(Tasks);

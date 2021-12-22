@@ -25,10 +25,29 @@ class Tasks
 
 	static check_all(req)
 	{
-		if(Tasks.check('beginMark', req) && Tasks.check('endMark', req) && Tasks.check('respTabnum', req))
+		if(Tasks.check('beginMark', req)
+			&& Tasks.check('endMark', req)
+				&& ('user' in req)
+					&& ('id' in req.user)
+			)
+		{
 			return true;
+		}
 
 		return false;
+	}
+
+	static async get_current_user_tabnum(connection, user_id)
+	{
+		connection = await Tasks.connection_to_database();
+
+		const user_tabnum_db_result = await connection.query(`SELECT
+														tabelNum AS tabnum
+													FROM
+														offersworker
+													WHERE id = ?`, [user_id] )
+
+		return await user_tabnum_db_result[0][0].tabnum;
 	}
 
 	async range(req, res)
@@ -36,12 +55,11 @@ class Tasks
 		if(!Tasks.check_all(req))
 		{
 			res.status(400);
-			res.send();
+			res.send('Error');
 		}
 
 		const beginMark = req.body.beginMark;
 		const endMark = req.body.endMark;
-		const tabnum = req.body.respTabnum;
 
 		const beginTimespan = new Date(beginMark);
 		const endTimespan = new Date(endMark);
@@ -52,6 +70,13 @@ class Tasks
 		try
 		{
 			connection = await Tasks.connection_to_database();
+
+			const tabnum = await Tasks.get_current_user_tabnum(connection, req.user.id);
+			if(!tabnum)
+			{
+				res.status(400);
+				res.send('Error');
+			}
 
 			const db_result = await connection.query(`SELECT
 															DISTINCT outer_tbl.offer_id,
@@ -104,14 +129,16 @@ class Tasks
 
 	async year(req, res)
 	{
-		if(!Tasks.check('year', req) && !Tasks.check('respTabnum', req))
+		if(!Tasks.check('year', req) 
+				&& !('user' in req)
+					&& !('id' in req.user)
+			)
 		{
 			res.status(400);
 			res.send();
 		}
 
 		const year = req.body.year;
-		const tabnum = req.body.respTabnum;
 
 		const results = [];
 		let connection = null;
@@ -119,6 +146,13 @@ class Tasks
 		try
 		{
 			connection = await Tasks.connection_to_database();
+
+			const tabnum = await Tasks.get_current_user_tabnum(connection, req.user.id);
+			if(!tabnum)
+			{
+				res.status(400);
+				res.send('Error');
+			}
 
 			const db_result = await connection.query(`SELECT
 															COUNT(offers.dateComission) AS count,
