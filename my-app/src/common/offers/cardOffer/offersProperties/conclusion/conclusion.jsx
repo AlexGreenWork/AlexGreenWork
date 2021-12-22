@@ -11,6 +11,7 @@ import {render} from "react-dom";
 import ConclusionList from "./conclusionList";
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import server from "../../../../../actions/server";
+import {element} from "prop-types";
 
 
 console.log(store.getState().search.searchUser)
@@ -124,9 +125,18 @@ const ConclusionOffer = () => {
 
         )
     }
+    const [annotationInp, setAnnotationInp] = React.useState('')
+    function AnnotationInput(e){
+        setAnnotationInp(e.target.value)
+        console.log(e.target.value)
+    }
+
+    function saveRespRGAnnotation(){
+console.log(annotationInp)
+    }
     function IsAdminRGUploadAnnotation() {
         return (<div className={s.fileUpload}>
-            <Button style={{
+            <Button onClick={saveRespRGAnnotation} style={{
                 background:"#e9e9ff",
                 margin:"5px"
             }}>Отправить аннотацию</Button>
@@ -246,10 +256,11 @@ const ConclusionOffer = () => {
             const respTabnum = store.getState().search.searchUser.tabnum
 
 
-            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposibleRG`, {
+            await axios.post(`${API_URL}api/offers/toDbSaveResposibleRG`, {
                 respTabnum,
                 respName,
                 idOffer
+
             })
             let fio = store.getState().search.searchUser.name
             let tabnum = store.getState().search.searchUser.tabnum
@@ -410,7 +421,7 @@ const ConclusionOffer = () => {
                     <div>Краткая аннотация заключения рабочей группы:</div>
                     <div contenteditable="true" className={s.conclusionTextArea} style={{
                         width:"100%"
-                    }}> {store.getState().offers.offer.responsibles_rg?.mark}
+                    }} onInput={AnnotationInput}> {store.getState().offers.offer.responsibles_rg?.mark}
                     </div>
                     <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userAdminOptions")}/>
                 </div>
