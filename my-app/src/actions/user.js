@@ -3,7 +3,7 @@ import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
 
 
-export const registration = async (name, middlename, surname, email, tabelNum, phoneNumber, password, fired, adminOptions) => {
+export const registration = async (surname, name, middlename,  email, tabelNum, phoneNumber, password, fired, adminOptions) => {
     try {
 
         const date= new Date().toISOString().slice(0, 10);
@@ -11,9 +11,9 @@ export const registration = async (name, middlename, surname, email, tabelNum, p
 
         console.log(date)
         const response = await axios.post(`${API_URL}api/auth/registration`, {
+            surname,
             name,
             middlename,
-            surname,
             email,
             tabelNum,
             phoneNumber,
@@ -109,7 +109,7 @@ export const uploadAvatar = (file) => {
             localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
 
-            // dispatch(setUser(response.data))
+
         } catch (e) {
             console.log(e)
         }

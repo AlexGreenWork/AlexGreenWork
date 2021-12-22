@@ -2,6 +2,7 @@ const SELECT_MYOFFERS = "SELECT_MYOFFERS"
 const ADD_SENDLER = "ADD_SENDLER"
 const SELECT_TO_MYOFFER = "SELECT_TO_MYOFFER"
 
+
 const defaultState = {
   
     offer :{
@@ -56,6 +57,7 @@ export const selectToMyOffer = (
 
 
 	}})
+
     export const selectMyOffers = (Id,
 									nameOffer,
 									date,

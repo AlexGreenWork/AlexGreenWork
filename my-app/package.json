@@ -28,6 +28,7 @@
     "fileupload": "^1.0.0",
     "material-ui": "^0.20.2",
     "materialize-css": "^1.0.0-rc.2",
+
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "prop-types": "^15.7.2",
@@ -71,7 +72,7 @@
   },
   "devDependencies": {
     "@mui/lab": "^5.0.0-alpha.50",
-    "eslint": "^7.0.0",
+    "eslint": "^8.5.0",
     "eslint-config-react-app": "^7.0.0",
     "eslint-plugin-import": "^2.24.2",
     "webpack-cli": "^4.9.1"

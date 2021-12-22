@@ -31,30 +31,11 @@ function changeViewSelect() {
         let propName = props.name;
     function changeViewSelectSave(props) {
 
-        if (propName == 1) {
 
-            saveToDb1(searchUser)
+
+            saveToDb(searchUser)
             setViewChange(false)
             alert("Изменения сохранены 1")
-        }
-       if (propName == 2) {
-
-            saveToDb2(searchUser)
-            setViewChange(false)
-            alert("Изменения сохранены 2")
-        }
-       if (propName == 3) {
-
-            saveToDb3(searchUser)
-            setViewChange(false)
-            alert("Изменения сохранены 3")
-        }
-       if (propName == "RG") {
-
-            saveToDb1(searchUser)
-            setViewChange(false)
-            alert("Изменения сохранены")
-        }
 
 
     }
@@ -106,14 +87,14 @@ function changeViewSelect() {
         }
 
     }
-    async function saveToDb1(){
+    async function saveToDb(){
         try{
             setViewChange(false)
             const idOffer = localStorage.getItem('idOffers')
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await axios.post(`${API_URL}api/offers/toDbSaveResposible1`, {
+            await axios.post(`${API_URL}api/offers/toDbSaveResposible`, {
                 respTabnum,
                 respName,
                 idOffer
@@ -191,6 +172,48 @@ function changeViewSelect() {
             }
         }
 
+        var month = [
+            'Января',
+            'Февраля',
+            'Марта',
+            'Апреля',
+            'Мая',
+            'Июня',
+            'Июля',
+            'Августа',
+            'Сентября',
+            'Октября',
+            'Ноября',
+            'Декабря'
+        ];
+
+        var d = new Date(`${props.open}`);
+        var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
+
+        function IsAdminRGUpload() {
+            return (<div className={s.fileUpload}>
+                    <input type="file" name="filename"/>
+                </div>
+
+            )
+        }
+
+        function IsAdminUser() {
+            return (
+                <div></div>
+            )
+        }
+
+        function AdminChangeUploadFile(props) {
+            const isAdmin = props.isAdmin;
+            if (isAdmin == 'wg') {
+                return <IsAdminRGUpload/>;
+
+            } else {
+                return <IsAdminUser/>
+            }
+        }
+
 
 
         return (
@@ -202,11 +225,11 @@ function changeViewSelect() {
 
                     <div className={s.date}>
                         <div>Дата:</div>
-                        <div> 12/09/21</div>
+                        <div> {newDate}{' ' +d.getFullYear()}</div>
                     </div>
                     <div className={s.nameWorkGroup}>
                         <div>Подразделение:</div>
-                        <div> Рабочая группа</div>
+                        <div> ///Подразделение////</div>
                     </div>
 
                     <div className={s.ExecutWorker}>
@@ -245,22 +268,25 @@ function changeViewSelect() {
 
                     <AdminChange name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
                     <div className={s.filesConclusion}>
-                        <div>Файлы заключения подразделения:</div>
-                        <div className={s.conclusionFilesArea}> files area:
-                            <div>
+                        <div style={{
+                            borderBottom: "1px solid #dfdcdc",
+                            marginBottom: "11px"
+                        }}>Файлы заключения //подразделения//:</div>
+                        <div className={s.conclusionFilesArea}>
+                            <div className={s.conclusionFilesAreaFile} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                cursor: "pointer"
+                            }}>
                                 <ViewFileDoc/>
                                 <div>Заключение</div>
                             </div>
-                            <div>
-                                <ViewFileDoc/>
-                                <div>Заключение</div>
-                            </div>
-                            <div className={s.fileUpload}>
-                                <input type="file" name="filename"/>
-                            </div>
+
+
                         </div>
+                        <AdminChangeUploadFile isAdmin={localStorage.getItem("userAdminOptions")}/>
                     </div>
-                    <div className={s.shortAnotation}>
+                    <div className={s.filesConclusion11}>
                         <div>Краткая аннотация заключения подразделения:</div>
                         <div className={s.conclusionTextArea}> text of conclusion area: Lorem ipsum dolor sit amet,
                             consectetur adipisicing elit. Autem dolore excepturi hic nemo nihil quae reiciendis sunt
