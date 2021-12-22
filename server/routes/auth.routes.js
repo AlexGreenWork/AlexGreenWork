@@ -180,7 +180,7 @@ router.get('/auth', authMiddleware,
     })
 
 
-router.post("/forms", urlencodedParser, async (request, response)=> {
+router.post("/forms", urlencodedParser,  authMiddleware, async (request, response)=> {
     console.log(request.body)
     let firstName = request.body.firstName; // имя
     let middleName = request.body.middleName; // отчество

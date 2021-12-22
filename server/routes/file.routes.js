@@ -72,7 +72,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                      
                         if(i  == dirRoot.length-1){
                            
-                            setTimeout(()=>{res.send(arrAllFiles);} , 200)
+                            setTimeout(()=>{res.send(arrAllFiles);} , 50)
                             
                         } else {
                             
@@ -162,9 +162,10 @@ router.post("/FilesConclusionCommission", urlencodedParser,
             }
         })
     })
-/* router.post("/responsible", urlencodedParser, async function(req, res){
+router.post("/workData", urlencodedParser, async function(req, res){
 
-    let membCommision = req.body.tabREsponsoble;
+    let membCommision = req.body.tabNum;
+    console.log('req.body')
     console.log(req.body)
     let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${membCommision} `);
     console.log(sqlMembCommision[0][0].fiofull);
@@ -174,7 +175,7 @@ router.post("/FilesConclusionCommission", urlencodedParser,
     console.log(sqlDivision[0][0]);
     console.log("ответ сервера по поводу членов ")
     res.send([sqlMembCommision[0][0].fiofull, sqlDepartment[0][0].fullname, sqlDivision[0][0].name])
-}) */
+})
 
 
 
