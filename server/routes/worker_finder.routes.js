@@ -1,6 +1,7 @@
 const auth = require('../middleware/auth.middleware')
 const Router = require("express");
 const search_controller = require("../controllers/searchController")
+const info_controller = require("../controllers/infoController")
 const router = new Router();
 
 router.use((req, res, next) => {
@@ -10,7 +11,7 @@ router.use((req, res, next) => {
 })
 
 router.post('/search', search_controller.search);
-router.post('/info', auth, search_controller.get_full_info);
+router.post('/info', auth, info_controller.get_full_info);
 router.post('/show_category', auth, search_controller.get_all_by_category);
 
 module.exports = router;

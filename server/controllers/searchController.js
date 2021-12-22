@@ -1,7 +1,6 @@
 const mysql = require("mysql2/promise");
 const config = require("./../config/default.json");
 const search_model = require("../models/search.js")
-const search_model_full = require("../models/search_full.js")
 const search_user_model = require("../models/search_user_list")
 
 class Search
@@ -23,14 +22,14 @@ class Search
 		return new Map([
 			["number",
 				[
-					{db: "ka", field: "tabnum"},
-					{db: "ka", field: "department_code"}
+					"tabnum",
+					"department_code"
 				]
 			],
 			["string",
 				[
-					{db: "ka", field: "fiofull"},
-					{db: "d", field: "department"}
+					"fiofull",
+					"department"
 				]
 			]
 		]);
@@ -59,10 +58,10 @@ class Search
 	static category_alias_by_name()
 	{
 		return new Map([
-			["1", {db: "outer_tbl", field: "tabnum"}],
-			["2", {db: "outer_tbl", field: "fiofull"}],
-			["3", {db: "outer_tbl", field: "department_code"}],
-			["4", {db: "outer_tbl", field: "department"}]
+			["1", "tabnum"],
+			["2", "fiofull"],
+			["3", "department_code"],
+			["4", "department"]
 		]);
 	}
 
@@ -103,44 +102,11 @@ class Search
 							FROM
 								offersendler.kadry_ok AS ka
 						) AS outer_tbl
-						WHERE outer_tbl.${alias.field} LIKE ?`
+						WHERE outer_tbl.${alias} LIKE ?`
 
 		return query;
 	}
 
-	static query_full_user_info_by_tabnum()
-	{
-		const query = `SELECT ka.TABNUM AS tabnum,
-								CONCAT(
-										CONCAT(
-												SUBSTR(ka.NAME1, 1, 1),
-												LCASE(SUBSTR(ka.NAME1, 2)),
-												" "
-											),
-										CONCAT(
-												SUBSTR(ka.NAME2, 1, 1),
-												LCASE(SUBSTR(ka.NAME2, 2)),
-												" "
-											),
-										CONCAT(
-												SUBSTR(ka.NAME3, 1, 1),
-												LCASE(SUBSTR(ka.NAME3, 2))
-											)
-									) AS fiofull,
-									d2.name AS division,
-									CONCAT(d.fullname," (", d.name,")") AS department,
-									cl.PROFNAME AS prof,
-									ka.BRIGFULLN AS brig,
-									ue.email AS email
-						FROM offersendler.kadry_ok AS ka
-						LEFT JOIN offersendler.clpost AS cl ON cl.PROFCODE = ka.PROFCODE
-						LEFT JOIN offersendler.department AS d ON d.id = ka.CEHCODE
-						LEFT JOIN offersendler.division AS d2 ON d2.department = d.id AND d2.id = ka.DISTRCODE
-						LEFT JOIN offersendler.users_emails AS ue ON ue.tabnum = ka.TABNUM
-						WHERE ka.TABNUM = ?`;
-
-		return query;
-	}
 
 	static get_value_type(value)
 	{
@@ -177,7 +143,7 @@ class Search
 			for (const field of obj)
 			{
 			    let db_result = await Search.find_value_by_alias(connection, value, field);
-				result.set(field.field, db_result[0]);
+				result.set(field, db_result[0]);
 			}
 		}
 		return result;
@@ -188,40 +154,8 @@ class Search
 	    let result = new Map();
 		const key = Search.category_db_alias_by_name(alias);
 		let db_result = await Search.find_value_by_alias(connection, value, key);
-		result.set(alias.field, db_result[0]);
+		result.set(alias, db_result[0]);
 		return result;
-	}
-
-	async get_full_info(req, res)
-	{
-	    let result = [];
-		
-		if(req['body'])
-		{
-			if (req.body['search'] && req.body.search)
-			{
-				const request = req.body.search;
-				let connection = await Search.connection_to_database();
-				let db_results = await Search.query(connection, Search.query_full_user_info_by_tabnum(), [request]);
-				await connection.end();
-				const db_result = db_results[0][0];
-
-				if (!db_result) return res.json([]);
-
-				result = new search_model_full({
-					name: db_result.fiofull,
-					tabnum: db_result.tabnum,
-					prof: db_result.prof,
-					department: db_result.department,
-					division: db_result.division,
-					brigada: db_result.brig,
-					email: db_result.email
-				})
-
-			}
-		}
-
-		res.json(result);
 	}
 
 	async search(req, res)

@@ -9,7 +9,7 @@ router.use((req, res, next) => {
     return next();
 })
 
-router.post('/range', task_controller.range);
-router.post('/year', task_controller.year);
+router.post('/range', authMiddleware, task_controller.range);
+router.post('/year', authMiddleware, task_controller.year);
 
 module.exports = router;
