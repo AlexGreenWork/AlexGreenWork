@@ -103,20 +103,24 @@ export const auth = () => {
 		}
 	}
 }
-
+/**
+	* @param {File} file
+**/
 export const uploadAvatar = (file) => {
     return async dispatch => {
-        try {
+        try
+		{
             const formData = new FormData()
-            formData.append('file', file)
-
+            formData.append('files', file)
 
             const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData)
+
             localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
 
-
-        } catch (e) {
+        }
+		catch (e)
+		{
             console.log(e)
         }
     }
