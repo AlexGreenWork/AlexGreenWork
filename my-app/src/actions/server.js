@@ -7,7 +7,6 @@ class Server
 		/**
 			* @type {import('axios').AxiosRequestConfig<any>} default_config
 		**/
-		this.default_config	= {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
 	}
 
 	/**
@@ -16,7 +15,8 @@ class Server
 	**/
 	concat_request_configs(user_config)
 	{
-		return {...this.default_config,
+		const default_config	= {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
+		return {...default_config,
 				...user_config}
 	}
 
@@ -30,6 +30,7 @@ class Server
 	{
 		const url = router
 		const request_config = this.concat_request_configs(config);
+		console.log(request_config.headers)
 		return axios.post(url, data, request_config);
 	}
 

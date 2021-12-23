@@ -3,9 +3,11 @@ const router = new Router()
 const authMiddleware = require('../middleware/auth.middleware')
 const fileController = require('../controllers/fileController')
 const mysql = require("mysql2/promise");
-const fileUpload = require('express-fileupload');
-const fs = require('fs'); 
 const dataBaseConfig = require("../config/default.json")
+const urlencodedParser = Router.urlencoded({extended: false});
+
+const fs = require('fs'); 
+const fileUpload = require('express-fileupload');
 
 router.use(fileUpload({}));
 router.use(Router.static('public'));
@@ -18,21 +20,19 @@ const pool = mysql.createPool({
 });
 
 router.use((req, res, next)=>{
-    res.header('Access-Control-Allow-Methods', 'GET, POST ');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
     res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
 });
 
-const urlencodedParser = Router.urlencoded({extended: false});
-
 router.post('', authMiddleware, fileController.createDir)
 router.post('/upload', authMiddleware, fileController.uploadFile)
-// router.post('/avatar', authMiddleware, fileController.uploadAvatar)
+router.post('/avatar', authMiddleware, fileController.uploadAvatar)
 router.get('', authMiddleware, fileController.getFiles)
 router.get('/download', authMiddleware, fileController.downloadFile)
 router.get('/search', authMiddleware, fileController.searchFile)
 router.delete('/', authMiddleware, fileController.deleteFile)
-// router.delete('/avatar', authMiddleware, fileController.deleteAvatar)
+router.delete('/avatar', authMiddleware, fileController.deleteAvatar)
 
 
 router.post("/allFiles", urlencodedParser, async function(req, res){
@@ -165,17 +165,17 @@ router.post("/FilesConclusionCommission", urlencodedParser,
 router.post("/workData", urlencodedParser, async function(req, res){
 
     let membCommision = req.body.tabNum;
-    console.log('req.body')
-    console.log(req.body)
+
     let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${membCommision} `);
-    console.log(sqlMembCommision[0][0].fiofull);
+
     let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
-    console.log(sqlDepartment[0][0].fullname);
+
     let sqlDivision = await pool.query(`SELECT * FROM division WHERE department=${sqlMembCommision[0][0].department} AND id=${sqlMembCommision[0][0].division}`);
-    console.log(sqlDivision[0][0]);
-    console.log("ответ сервера по поводу членов ")
+
+
     res.send([sqlMembCommision[0][0].fiofull, sqlDepartment[0][0].fullname, sqlDivision[0][0].name])
 })
+
 
 
 

@@ -31,7 +31,7 @@ class ConclusionList extends React.Component {
     update(props)
     {
        this.state.items = props.responsibles
-        console.log("update")
+
     }
 
     handleRemove = index => this.setState({
