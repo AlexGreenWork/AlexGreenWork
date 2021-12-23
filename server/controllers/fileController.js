@@ -163,7 +163,7 @@ class FileController {
             const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
             const user = userD[0][0]
             const avaOld = user.avatar
-            const file = req.files.files
+            const file = req.files.file
 
             // const user = await User.findById(req.user.id)
             const avatarName = Uuid.v4() + ".jpg"

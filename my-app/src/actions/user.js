@@ -111,7 +111,7 @@ export const uploadAvatar = (file) => {
         try
 		{
             const formData = new FormData()
-            formData.append('files', file)
+            formData.append('file', file)
 
             const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData)
 
