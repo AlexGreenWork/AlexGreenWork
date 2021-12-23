@@ -43,7 +43,8 @@ router.get("/allOffers",
 
 
         async function sqlSelectOffers() {
-            let selectOffers = await pool.execute(`SELECT
+           
+			let selectOffers = await pool.execute(`SELECT
 														o.nameOffer,
 														o.Id,
 														o.date,
@@ -55,7 +56,9 @@ router.get("/allOffers",
 													FROM offers AS o
 													INNER JOIN offersworker AS ow
 														ON ow.tabelNum = o.tabelNum`);
+
             response.setHeader('Content-Type', 'application/json');
+			console.log(selectOffers[0])
             response.send(JSON.stringify(selectOffers[0], null, 3));
 
             // response.send(selectOffers[0]);
@@ -69,20 +72,51 @@ router.get("/allOffers",
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
         
-        let firstName = request.body.firstName; // имя
-        let middleName = request.body.middleName; // отчество
-        let surname = request.body.userSurName; // фамилия
-        let tabelNumber = request.body.tabelNumber;
-        let phoneNumber = request.body.phoneNumber;
+      
+		let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
-        
-        let sqlResult = await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
-       
+        let idOffers = request.body.idOffers;
+        let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
+		//console.log(sqlResult[0][0])
         response.send(sqlResult[0][0])
+
     })
 
-async function sqlMyOffers(tabelNumber, email) {
-   
+async function sqlMyOffers(tabelNumber, email, idOffers, place) {
+/* 	console.log('tabelNumber')
+	console.log(tabelNumber)
+	console.log('email')
+	console.log(email)
+	console.log('idOffers')
+	console.log(idOffers)
+	console.log('place')
+	console.log(place) */
+	if(idOffers != undefined){  //условие для корректной работы Предложений для обработки
+		let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
+		let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
+		
+		let sqlMyOff = await pool.execute(`SELECT
+											o.nameOffer,
+											o.Id,
+											o.date,
+											o.status,
+											o.tabelNum,
+											ow.name AS nameSendler,
+											ow.surname AS surnameSendler,
+											ow.middlename AS middlenameSendler,
+											ow.email AS email
+										FROM offers AS o
+										INNER JOIN offersworker AS ow
+											ON ow.tabelNum = o.tabelNum
+										WHERE (ow.tabelNum = ${sqlOffersTabel[0][0].tabelNum}
+											AND ow.email = "${sqlemailOffers[0][0].email}")`);
+										
+		
+			//console.log(sqlMyOff[0])
+		return [sqlMyOff]
+
+	}
+	
     let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
@@ -97,8 +131,10 @@ async function sqlMyOffers(tabelNumber, email) {
 											ON ow.tabelNum = o.tabelNum
 										WHERE (ow.tabelNum = ${tabelNumber}
 											AND ow.email = "${email}")`)
-       
-    return [sqlMyOff]
+											
+	//console.log(sqlMyOff[0])
+    
+	return [sqlMyOff]
 
 }
 
@@ -171,7 +207,8 @@ router.post("/userInfo", urlencodedParser,
 							ka.profname,
 							d.fullname,
 							d2.name,
-							ue.email
+							ue.email,
+							o.email
 						FROM kadry_all AS ka
 						LEFT JOIN department AS d
 							ON d.id = ka.department
@@ -180,6 +217,8 @@ router.post("/userInfo", urlencodedParser,
 								AND d2.id = ka.division
 						LEFT JOIN users_emails AS ue
 							ON ue.tabnum = ka.tabnum
+						LEFT JOIN offersworker AS o
+							ON o.tabelNum = ka.tabnum
 						WHERE ka.tabnum = ${userTab}`
 
 			const stmt = await pool.execute(sqlUserInfo);

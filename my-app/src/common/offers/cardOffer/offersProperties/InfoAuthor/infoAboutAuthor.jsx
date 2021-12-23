@@ -23,34 +23,41 @@ function RequestAddSendlerOffers() {
 
 
 
-function Resp(tab, name, surname, middlename, email, phoneNumber) {
+function Resp(tab, email) {
    
+    /* console.log(tab);
+    console.log(email); */
+   // console.log(idOffers);
+
     let userPhoneNumber = localStorage.getItem('userPhoneNumber');
     let userTabelNum = localStorage.getItem('userTabelNum');
     let userName = localStorage.getItem('userName');
     let userSurName = localStorage.getItem('userSurName');
     let userMiddleName = localStorage.getItem('userMiddleName');
     let userEmail = localStorage.getItem('userEmail');
-    
+    let idOffers = localStorage.getItem('idOffers');
+
     if(tab === userTabelNum){
        
         let xhr = new XMLHttpRequest();
 
         xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.send(`firstName=${userName}&userSurName=${userSurName}&middleName=${userMiddleName}&email=${userEmail}`+
-                `&tabelNumber=${userTabelNum}&phoneNumber=${userPhoneNumber}`);
-                     
+        
               
                xhr.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    let result = this.responseText;
                    
-                    return result
+                    let tabSendSelectOffer = JSON.parse(xhr.response)
+                   // console.log(tabSendSelectOffer[0].tabelNum)
+                  //  console.log(tabSendSelectOffer)
+                    localStorage.setItem('sendlerTabWG', tabSendSelectOffer[0].tabelNum);
+                   
           }
     
         }
-        
+        xhr.send(`email=${userEmail}&tabelNumber=${userTabelNum}&idOffers=${idOffers}`);
+             
         return xhr.response
     }else{
         
@@ -58,8 +65,8 @@ function Resp(tab, name, surname, middlename, email, phoneNumber) {
 
         xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.send(`firstName=${name}&userSurName=${surname}&middleName=${middlename}&email=${email}`+
-                `&tabelNumber=${tab}&phoneNumber=${phoneNumber}`);  
+        xhr.send(`email=${email}`+
+                `&tabelNumber=${tab}&phoneNumber=${idOffers}`);  
       
 
         return xhr.response
@@ -79,8 +86,16 @@ function UserInfo(userTabelNum){
 
 const CreateCompMyOffers = (props)=>{
       //  name={name} surname={surname} middlename={middlename} email={email} tabelNumber={tabelNumber}
-    let offersData = JSON.parse(Resp(props.tabelNumber, props.name, props.surname, props.middlename,  props.email, props.phoneNumber));  //Данные из запроса
+      let idOffers = localStorage.getItem('idOffers');
+    console.log(props)
+    console.log('idOffers', idOffers)
     
+    let email = props.email
+    console.log('email',  email)
+    let offersData = JSON.parse(Resp(props.tabelNumber,  email, undefined, "CreateCompMyOffers" ));  
+    console.log(offersData);
+    
+    console.log(Resp(props.tabelNumber,  props.email, idOffers));
     return offersData.map((number, index)=><MyOffersComp id={number.Id} date={number.date}
                                             nameOffer={number.nameOffer}  counter={index+1}/>)
 }
@@ -121,7 +136,7 @@ function validElem(){
 
 const InfoAboutAuthor = () => {
     let offersDataStart = JSON.parse(Resp(localStorage.getItem('userTabelNum')));
-   // console.log(Resp(localStorage.getItem('userTabelNum')))
+   console.log(offersDataStart[0]);
    
     const [value, setValue] = useState(0);
     const [name, setName] = useState(offersDataStart[0].nameSendler);
@@ -130,8 +145,9 @@ const InfoAboutAuthor = () => {
     const [email, setEmail] = useState(offersDataStart[0].email);
     const [tabelNumber, setTabelNumber] = useState(offersDataStart[0].tabelNum);
     const [phoneNumber, setPhoneNumber] = useState(offersDataStart[0].phoneNumber);
-    const [photo, setPoto] = useState(`${ API_URL }files/photos/${localStorage.getItem('userTabelNum')}.jpg`);
+    const [photo, setPoto] = useState(`${ API_URL }files/photos/${localStorage.getItem('sendlerTabWG')}.jpg`);
     
+   
 
     const SendlerTab = (props) => {
                 

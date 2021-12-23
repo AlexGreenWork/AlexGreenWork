@@ -29,7 +29,7 @@ const Offer = (props) => {
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     let offersData = JSON.parse(xhr.response);           
-                    console.log("offersdata - ",offersData)
+                   
                     requestInfoAutor(xhr.response);
                                                                     
                 } 
@@ -162,7 +162,7 @@ const Offers = () => {
         let userSurName = localStorage.getItem('userSurName');
         let userMiddleName = localStorage.getItem('userMiddleName');
         let userEmail = localStorage.getItem('userEmail');
-    
+        
     
         xhr.open('POST', `${API_URL}api/offers/myOffers`, true); /// AСИНХРОННЫЙ ЗАПРОС!!!
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

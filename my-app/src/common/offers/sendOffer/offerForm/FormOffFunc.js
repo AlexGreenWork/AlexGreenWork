@@ -13,7 +13,7 @@ function OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, na
            
             let xhr = new XMLHttpRequest();
             xhr.open('POST', `${API_URL}api/auth/forms`)
-            xhr.setRequestHeader("Authorization", `Bearer ${localStorage.getItem('token')}`  ,"Content-type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
            
             xhr.send(`firstName=${name}&lastName=${lastName}&middleName=${middleName}&emailInput=${Email}&tabelNumber=${tabelNumber}`+
                     `&phoneNumber=${phoneNumber}&nameOffer=${nameOffer}&problem=${problem}&offer=${offer}&yetSendler=${allYetSendler}`)
