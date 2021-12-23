@@ -157,19 +157,14 @@ class FileController {
     }
 
     async uploadAvatar(req, res) {
-
-        try {
-
-            console.log(req.files)
+        try
+		{
             const uid = req.user.id
             const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
             const user = userD[0][0]
             const avaOld = user.avatar
-            const file = req.files.file
-            console.log(req.files.file)
+            const file = req.files.files
 
-
-            console.log(req.files.file)
             // const user = await User.findById(req.user.id)
             const avatarName = Uuid.v4() + ".jpg"
             await file.mv('../server/files/avatar/' + avatarName)
@@ -178,16 +173,14 @@ class FileController {
 
             await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
 
-            if (avaOld !== null && avaOld !== "") {
-
+            if (avaOld !== null && avaOld !== "")
+			{
                 fs.unlinkSync("./files/avatar/" + avaOld)
-
-            } else {
+            }
+			else
+			{
 
             }
-
-            //await user.save()
-            // res.send(user);
             return res.json(user)
         } catch (e) {
             console.log(e)

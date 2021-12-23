@@ -3,9 +3,11 @@ const router = new Router()
 const authMiddleware = require('../middleware/auth.middleware')
 const fileController = require('../controllers/fileController')
 const mysql = require("mysql2/promise");
-const fileUpload = require('express-fileupload');
-const fs = require('fs'); 
 const dataBaseConfig = require("../config/default.json")
+const urlencodedParser = Router.urlencoded({extended: false});
+
+const fs = require('fs'); 
+const fileUpload = require('express-fileupload');
 
 router.use(fileUpload({}));
 router.use(Router.static('public'));
@@ -18,12 +20,10 @@ const pool = mysql.createPool({
 });
 
 router.use((req, res, next)=>{
-    res.header('Access-Control-Allow-Methods', 'GET, POST ');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
     res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
 });
-
-const urlencodedParser = Router.urlencoded({extended: false});
 
 router.post('', authMiddleware, fileController.createDir)
 router.post('/upload', authMiddleware, fileController.uploadFile)

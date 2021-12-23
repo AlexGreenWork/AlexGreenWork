@@ -16,8 +16,12 @@ class Server
 	**/
 	concat_request_configs(user_config)
 	{
-		return {...this.default_config,
-				...user_config}
+		return {
+				...user_config,
+				headers: {...this.default_config.headers,
+							...user_config.headers
+						}
+			}
 	}
 
 	/**
