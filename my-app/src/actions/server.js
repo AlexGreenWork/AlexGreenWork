@@ -2,12 +2,12 @@ import axios from 'axios'
 
 class Server
 {
-	constructor()
+	/**
+		* @returns {import('axios').AxiosRequestConfig<any>}
+	**/
+	generate_default_auth_header()
 	{
-		/**
-			* @type {import('axios').AxiosRequestConfig<any>} default_config
-		**/
-		this.default_config	= {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
+		return {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}}
 	}
 
 	/**
@@ -16,9 +16,11 @@ class Server
 	**/
 	concat_request_configs(user_config)
 	{
+		const header = this.generate_default_auth_header();
+
 		return {
 				...user_config,
-				headers: {...this.default_config.headers,
+				headers: {...header.headers,
 							...user_config.headers
 						}
 			}
