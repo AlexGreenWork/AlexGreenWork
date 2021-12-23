@@ -51,6 +51,7 @@ export const login = (email, password) => {
             localStorage.setItem('userFired', response.data.user.fired)
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
 
+
             dispatch(setUser(response.data.user))
         }
 		catch (e)

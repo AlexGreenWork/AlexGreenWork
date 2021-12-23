@@ -16,7 +16,7 @@ const Profile = () => {
 
         const file = e.target.files[0]
 
-
+        document.querySelector('input[type=file]').value = ''
 
         if ( /\.(jpe?g|png)$/i.test(file.name) === false ) {
             return alert('Выберите картинку формата jpg, jpeg, png')
