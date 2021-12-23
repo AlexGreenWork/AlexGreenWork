@@ -1,7 +1,6 @@
 import {setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
 import server from './server';
-import axios from "axios";
 
 
 export const registration = async (surname, name, middlename,  email, tabelNum, phoneNumber, password, fired, adminOptions) => {
@@ -51,6 +50,7 @@ export const login = (email, password) => {
             localStorage.setItem('userPhoneNumber', response.data.user.phoneNumber)
             localStorage.setItem('userFired', response.data.user.fired)
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
+
 
             dispatch(setUser(response.data.user))
         }
@@ -104,21 +104,24 @@ export const auth = () => {
 		}
 	}
 }
-
+/**
+	* @param {File} file
+**/
 export const uploadAvatar = (file) => {
     return async dispatch => {
-        try {
-            console.log("const uploadAvatar", file)
+        try
+		{
             const formData = new FormData()
             formData.append('file', file)
-            const response = await axios.post(`${API_URL}api/auth/avatar`, formData,
-                {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
-            })
+
+            const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData)
+
             localStorage.setItem('userAvatar', response.data.avatar)
             dispatch(setUser(response.data))
 
-
-        } catch (e) {
+        }
+		catch (e)
+		{
             console.log(e)
         }
     }
@@ -127,9 +130,7 @@ export const uploadAvatar = (file) => {
 export const deleteAvatar = () => {
     return async dispatch => {
         try {
-            const response = await axios.post(`${API_URL}api/auth/deleteAvatar`,null,
-            {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
-            })
+            const response = await server.send_delete_request(`${API_URL}api/files/avatar`)
 
             localStorage.setItem('userAvatar','')
             dispatch(setUser(response.data))

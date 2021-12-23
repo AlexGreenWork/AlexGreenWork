@@ -3,46 +3,28 @@ const config = require('config')
 const mysql = require("mysql2")
 const path = require('path')
 const corsMiddleware = require('./middleware/cors.middleware')
-const fileUpload = require("express-fileupload")
 
 const app = express()
-const authRouter = require("./routes/auth.routes")
-const fileRouter = require("./routes/file.routes")
-const offersRouter = require("./routes/offers.routes")
 
 app.use((req, res, next)=>{
-
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");
     res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
 })
 
-app.use("/auth", authRouter)
-app.use("/files", fileRouter)
-app.use("/offers", offersRouter)
+app.use(express.json())
 app.use(express.static(__dirname));
-app.use('/files', express.static('avatar'));
-app.use('/files', express.static('avatar'));
-app.post('/files', express.static('upload'));
-app.post('/files', express.static('offers'));
 app.use(corsMiddleware)
 app.use(express.json({ extended: true }))
-app.use(express.static('./files/avatar'))
 app.use(express.static(__dirname + '/files/avatar'))
+app.use('/t', require('./routes/redirect.routes'))
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/link', require('./routes/link.routes'))
-app.use('/t', require('./routes/redirect.routes'))
-app.use(fileUpload({}))
-app.use(express.json())
-app.use("/api/files", require('./routes/file.routes'))
-app.use("/api/offers", require('./routes/offers.routes'))
 app.use("/api/user", require('./routes/worker_finder.routes'))
 app.use("/api/task", require('./routes/task.routes'))
+app.use("/api/files", require('./routes/file.routes'))
+app.use("/api/offers", require('./routes/offers.routes'))
 app.use(express.static('static'))
-
-
-
-
 
 if (process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'my-app', 'build')))

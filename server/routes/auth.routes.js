@@ -1,5 +1,5 @@
 const Router = require("express");
-
+const User = require("../models/user")
 const bcrypt = require("bcryptjs")
 const config = require("../config/default.json")
 const conf = require("config")
@@ -14,29 +14,15 @@ const urlencodedParser = Router.urlencoded({extended: false});
 const fs = require('fs');
 const uploadFile = require('../filesUpload/filesUpload')
 const fileUpload = require("express-fileupload");
-const Uuid = require("uuid");
 
 router.use(fileUpload({}));
-
-
-
-
 router.use((req, res, next) => {
 
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS ');
     res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
-});
+})
 
-const mysqlConfig = {
-    host: config.database.host,
-    user: config.database.user,
-    password: config.database.password,
-    database: config.database.database,
-
-}
-
-const connection = mysql.createPool(mysqlConfig);
 
 router.post('/registration',
     [
@@ -89,7 +75,7 @@ router.post('/registration',
             })
 
             await connection.query('INSERT INTO offersworker SET ?', user,
-										function (error, results)
+										function (error, results, fields)
 										{
 											if (error) throw error;
 											res.end(JSON.stringify(results));
@@ -196,9 +182,7 @@ router.get('/auth', authMiddleware,
     })
 
 
-
 router.post("/forms", urlencodedParser, async (request, response) => {
-
     console.log(request.body)
     let firstName = request.body.firstName; // имя
     let middleName = request.body.middleName; // отчество
@@ -405,65 +389,6 @@ router.post('/uploadMyCard',  async function (req, res) {
    }
 
 });
-router.post("/deleteAvatar", authMiddleware, async function (req, res) {
-    try {
-        const uid = req.user.id
-        const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
-        const user = userD[0][0]
-        const avaOld = user.avatar
-
-        if (avaOld !== '' && avaOld !== null) {
-            if (fs.existsSync("./files/avatar/" + avaOld)) {
-                fs.unlinkSync("./files/avatar/" + avaOld)
-            }
-            await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
-
-        } else {
-            await connection.query(`UPDATE offersworker SET avatar = ''   WHERE id = ${uid} `);
-        }
-
-        user.avatar = ""
-        //await user.save()
-        return res.json(user)
-    } catch (e) {
-        console.log(e)
-        return res.status(400).json({message: 'Delete avatar error'})
-    }
-});
-router.post("/avatar",authMiddleware, async function (req, res) {
-
-
-    try {
-        const uid = req.user.id
-        const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
-        const user = userD[0][0]
-        const avaOld = user.avatar
-        const file = req.files.file
-
-        // const user = await User.findById(req.user.id)
-        const avatarName = Uuid.v4() + ".jpg"
-        await file.mv('../server/files/avatar/' + avatarName)
-
-        user.avatar = avatarName
-
-        await connection.query(`UPDATE offersworker SET avatar = '${avatarName}'   WHERE id = ${uid} `);
-
-        if (avaOld !== null && avaOld !== "") {
-
-            fs.unlinkSync("./files/avatar/" + avaOld)
-
-        } else {
-
-        }
-
-        //await user.save()
-        // res.send(user);
-        return res.json(user)
-    } catch (e) {
-        console.log(e)
-        return res.status(400).json({message: 'Upload avatar error'})
-    }
-})
 
 
 router.post("/conclusComissionUpload", urlencodedParser, async function(req, res){
