@@ -283,7 +283,7 @@ const ComissionOffer = () => {
         let str = `${dateComission}`;
         let newstr = str.replace(T, " В ");
         localStorage.setItem('dateComission', newstr )
-        toDbDateComission(offerId, newstr)
+        toDbDateComission(offerId, dateComission)
         setViewChangeCom(false)
         alert("Изменения сохранены")
     }

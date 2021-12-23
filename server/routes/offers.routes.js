@@ -1,4 +1,4 @@
-const Router = require("express");
+﻿const Router = require("express");
 const config = require("../config/default.json");
 const mysql = require("mysql2/promise");
 const router = new Router();
@@ -68,21 +68,21 @@ router.get("/allOffers",
 
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
-        
+
         let firstName = request.body.firstName; // имя
         let middleName = request.body.middleName; // отчество
         let surname = request.body.userSurName; // фамилия
         let tabelNumber = request.body.tabelNumber;
         let phoneNumber = request.body.phoneNumber;
         let email = request.body.email;
-        
+
         let sqlResult = await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
-       
+
         response.send(sqlResult[0][0])
     })
 
-async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber) {
-   
+async function sqlMyOffers(tabelNumber, email) {
+
     let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
@@ -97,24 +97,24 @@ async function sqlMyOffers(tabelNumber, email, firstName, middleName, surname, p
 											ON ow.tabelNum = o.tabelNum
 										WHERE (ow.tabelNum = ${tabelNumber}
 											AND ow.email = "${email}")`)
-       
+
     return [sqlMyOff]
 
 }
 
 router.post("/selectMyOffers", urlencodedParser,
     async function (request, response)
-	{
-		if(!('selectOffers' in request.body)
-			|| !request.body.selectOffers)
-		{
-			response.status(400);
-			response.send();
-		}
+    {
+        if(!('selectOffers' in request.body)
+            || !request.body.selectOffers)
+        {
+            response.status(400);
+            response.send();
+        }
 
-		let idOffers = request.body.selectOffers
+        let idOffers = request.body.selectOffers
 
-		let sqlMyOffers = await pool.query(`SELECT 
+        let sqlMyOffers = await pool.query(`SELECT 
 												o.*,
 												ow.name AS nameSendler,
 												ow.surname AS surnameSendler,
@@ -125,7 +125,7 @@ router.post("/selectMyOffers", urlencodedParser,
 												ON ow.tabelNum = o.tabelNum
 											WHERE o.Id = ?`, [idOffers])
 
-		const query = `SELECT
+        const query = `SELECT
 						osr.offer_id,
 						ka.fiofull,
 						dep.fullname,
@@ -146,28 +146,28 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.offer_id = ?
 					AND osr.deleted <> 1`
 
-		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
-		const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
+        const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
+        const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
 
-		response.send({
-							...sqlMyOffers[0][0],
-							responsibles: [
-								...sqlOfferResponsible[0]
-							],
-							responsibles_rg: 
-								sqlOfferResponsible_Rg[0][0]
-							
-						});
+        response.send({
+            ...sqlMyOffers[0][0],
+            responsibles: [
+                ...sqlOfferResponsible[0]
+            ],
+            responsibles_rg:
+                sqlOfferResponsible_Rg[0][0]
 
-})
+        });
+
+    })
 
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {
 
-    let userTab = request.body.userTab;
+        let userTab = request.body.userTab;
 
-	try{
-			const sqlUserInfo = `SELECT
+        try{
+            const sqlUserInfo = `SELECT
 							ka.profname,
 							d.fullname,
 							d2.name,
@@ -182,101 +182,101 @@ router.post("/userInfo", urlencodedParser,
 							ON ue.tabnum = ka.tabnum
 						WHERE ka.tabnum = ${userTab}`
 
-			const stmt = await pool.execute(sqlUserInfo);
+            const stmt = await pool.execute(sqlUserInfo);
 
-			let reqJson = {
-				department: null,
-				division: null,
-				position: null,
-				email: null,
-			}
+            let reqJson = {
+                department: null,
+                division: null,
+                position: null,
+                email: null,
+            }
 
-			if(stmt[0][0])
-			{
-				reqJson.department = stmt[0][0].fullname;
-				reqJson.division = stmt[0][0].name;
-				reqJson.position = stmt[0][0].profname,
-				reqJson.email = stmt[0][0].email
-			}
+            if(stmt[0][0])
+            {
+                reqJson.department = stmt[0][0].fullname;
+                reqJson.division = stmt[0][0].name;
+                reqJson.position = stmt[0][0].profname,
+                    reqJson.email = stmt[0][0].email
+            }
 
-			response.send(reqJson);
-	}
-	catch(e)
-	{
-		console.log(e)
-	}
-})
+            response.send(reqJson);
+        }
+        catch(e)
+        {
+            console.log(e)
+        }
+    })
 
 
 router.post("/FilesMyOffers", urlencodedParser,
     async function (request, response) {
 
-      fs.readdir(`../server/files/offers/idOffers/`, (err, folder) => {
-           
+        fs.readdir(`../server/files/offers/idOffers/`, (err, folder) => {
+
             if(folder.length == 0){
-                
+
                 fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
                     if(err) throw err; // не удалось создать папки
-                   // console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
+                    // console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
 
                     fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
-                    
+
                         response.send(files)
                     })
 
                 })
 
             } else {
-                    let a = 0;
+                let a = 0;
                 for(let i = 0; i< folder.length; i++){
-                              
+
                     if(folder[i] == `id${request.body.idOffers}`){
-                    
-                        
+
+
                         fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/`, (err, folder) => {
-                        
+
                             if(folder[0] == "SendlerFiles"){
-                             
-                             fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
-                                 
-                                 response.send(files)
-                             })
-                               
-                             i = folder.length
-                               
+
+                                fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
+
+                                    response.send(files)
+                                })
+
+                                i = folder.length
+
                             } else {
-                                   
-                             fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
-                                 if(err) throw err; // не удалось создать папки
-                                 //console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
-     
-                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
-                                 
-                                     response.send(files)
-                                 })
-     
-                             })
-                             i = folder.length
+
+                                fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
+                                    if(err) throw err; // не удалось создать папки
+                                    //console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
+
+                                    fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
+
+                                        response.send(files)
+                                    })
+
+                                })
+                                i = folder.length
                             }
                         })
-                       
-        
+
+
                     } else {
-                         a++;
+                        a++;
                         if( a == folder.length){
-                           
+
                             fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
-                                if(err) throw err; 
+                                if(err) throw err;
                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
-                                response.send(files)
-                             })
-         
+                                    response.send(files)
+                                })
+
                             });
                         } else {
-                            
+
                         }
                     }
-                 }
+                }
             }
         })
     })
@@ -284,20 +284,20 @@ router.post("/FilesMyOffers", urlencodedParser,
 
 router.post("/toStatus", urlencodedParser,
     async function (request, response) {
-           let id = request.body.offerId
-           let view = request.body.view
-           let category = request.body.category
-           let status = request.body.status
-		try{
-         await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
-		}catch(e){console.log(e)}
-})
+        let id = request.body.offerId
+        let view = request.body.view
+        let category = request.body.category
+        let status = request.body.status
+        try{
+            await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
+        }catch(e){console.log(e)}
+    })
 
 router.post("/toDbDateComission", urlencodedParser,
     async function (request, response) {
         let id = request.body.offerId
         let dateComission = JSON.stringify(request.body.dateComission)
-      await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
+        await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
     })
 // router.post("/saveToDb", urlencodedParser,
 //     async function (request, response) {
@@ -309,123 +309,123 @@ router.post("/toDbDateComission", urlencodedParser,
 router.get("/downloadMyFile", urlencodedParser, async function(request, response){
     let idOffers = request.query.idOffers;
     let fileName = request.query.fileName;
-    
+
     fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, async (err, filesName) => {
-        
-		filesName.push('exit');
-		   
-		for(let i = 0 ; i < filesName.length; i++ )
-		{
-			if(filesName[i] == fileName )
-			{
-				let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
-				response.download(file); 
-				break;
-			}
-			else
-			{
-				if(filesName[i] == 'exit')
-				{
-					response.send("Нет файла")
-				}
-			}
-		} 
-	})
+
+        filesName.push('exit');
+
+        for(let i = 0 ; i < filesName.length; i++ )
+        {
+            if(filesName[i] == fileName )
+            {
+                let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
+                response.download(file);
+                break;
+            }
+            else
+            {
+                if(filesName[i] == 'exit')
+                {
+                    response.send("Нет файла")
+                }
+            }
+        }
+    })
 })
 
 router.post("/sendAdd", urlencodedParser,
     async function (request, response){
-        
+
         let idOffers = request.body.selectOffers;
 
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
-       
+
         if(sqlSendAdd[0][0] != undefined){
-            
+
             let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
-            
+
             response.send(SendAddValid)
         } else{
-           
+
             response.send('null')
         }
-} )
+    } )
 
 router.post("/sendAddInfo", urlencodedParser,
     async function (request, response){
-        
+
         let idOffers = request.body.selectOffers;
 
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
-       
-       if(sqlSendAdd[0][0] != undefined){
-        let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
-       
-        response.send(SendAddValid)
-    } else{
-        response.send('null')
-    }
 
-})
+        if(sqlSendAdd[0][0] != undefined){
+            let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+
+            response.send(SendAddValid)
+        } else{
+            response.send('null')
+        }
+
+    })
 
 router.post("/toDbSaveResposibleRG", urlencodedParser,
-	async function (request, response)
-	{
-		if((!('idOffer' in request.body)
-			|| !request.body.idOffer)
-				|| (!('respTabnum' in request.body)
-					|| !request.body.respTabnum))
-		{
-			response.status(400);
-			response.send();
-		}
+    async function (request, response)
+    {
+        if((!('idOffer' in request.body)
+                || !request.body.idOffer)
+            || (!('respTabnum' in request.body)
+                || !request.body.respTabnum))
+        {
+            response.status(400);
+            response.send();
+        }
 
-		let idOffers = request.body.idOffer;
-		let respTabnum = request.body.respTabnum;
+        let idOffers = request.body.idOffer;
+        let respTabnum = request.body.respTabnum;
 
-		const sqlResponsible = `UPDATE offersresponsible_rg
+        const sqlResponsible = `UPDATE offersresponsible_rg
 								SET deleted = 1
 								WHERE offer_id = ?
 									AND deleted <> 1`
-		await pool.query(sqlResponsible, [idOffers]);
+        await pool.query(sqlResponsible, [idOffers]);
 
-		const sqlNewResponsible = `INSERT INTO offersresponsible_rg
+        const sqlNewResponsible = `INSERT INTO offersresponsible_rg
 										(offer_id, responsible_tabnum, open)
 									VALUES (?, ?, ?)`
 
-		pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
+        pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
 
-		response.status(200);
-		response.send();
-})
+        response.status(200);
+        response.send();
+    })
 
 
 router.post("/toDbSaveResposible1", urlencodedParser,
-        async function (request, response){
+    async function (request, response){
 
-			let idOffers = request.body.idOffer;
-			let respTabnum = request.body.respTabnum;
+        let idOffers = request.body.idOffer;
+        let respTabnum = request.body.respTabnum;
 
-			responsible.update_responsible('offersresponsible', 'responsible1', idOffers, respTabnum);
-})
+        responsible.update_responsible('offersresponsible', 'responsible1', idOffers, respTabnum);
+    })
 
 router.post("/toDbSaveResposible2", urlencodedParser,
-        async function (request, response){
+    async function (request, response){
 
-			let idOffers = request.body.idOffer;
-			let respTabnum = request.body.respTabnum;
+        let idOffers = request.body.idOffer;
+        let respTabnum = request.body.respTabnum;
 
-			responsible.update_responsible('offersresponsible', 'responsible2', idOffers, respTabnum);
-})
+        responsible.update_responsible('offersresponsible', 'responsible2', idOffers, respTabnum);
+    })
 
 router.post("/toDbSaveResposible3", urlencodedParser,
-        async function (request, response){
+    async function (request, response){
 
-			let idOffers = request.body.idOffer;
-			let respTabnum = request.body.respTabnum;
+        let idOffers = request.body.idOffer;
+        let respTabnum = request.body.respTabnum;
 
-			responsible.update_responsible('offersresponsible', 'responsible3', idOffers, respTabnum);
-})
+        responsible.update_responsible('offersresponsible', 'responsible3', idOffers, respTabnum);
+    })
 
 
 module.exports = router
