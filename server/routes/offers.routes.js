@@ -77,7 +77,9 @@ router.post("/myOffers", urlencodedParser,
         let email = request.body.email;
         let idOffers = request.body.idOffers;
         let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
-		console.log(sqlResult[0][0])
+		
+
+		//console.log(sqlResult[0][0])
         response.send(sqlResult[0][0])
 
     })
@@ -114,13 +116,18 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 										WHERE (ow.tabelNum = ${sqlOffersTabel[0][0].tabelNum}
 											AND ow.email = "${sqlemailOffers[0][0].email}")`);
 										
-		
+	
 			//console.log(sqlMyOff[0])
 		return [sqlMyOff]
 
 	}
 	
-    let sqlMyOff = await pool.execute(`SELECT
+ 
+											
+	
+	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`)
+	console.log('sqlParty[0]',sqlParty[0])
+	let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
 											o.date,
@@ -135,10 +142,40 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 										WHERE (ow.tabelNum = ${tabelNumber}
 											AND ow.email = "${email}")`)
 											
-	//console.log(sqlMyOff[0])
-    
-	return [sqlMyOff]
+											console.log('sqlMyOff[0][0]', sqlMyOff[0])
+	/* 	let a =sqlParty[0].concat(sqlMyOff[0]) 	
+		console.log("все", a) */	
+		let b ;						
+	for(let i=0; i<sqlParty[0].length; i++ ){
+		console.log("for")
+		console.log(sqlParty[0][i].IdOffers)
+		let sqlOffers = await pool.execute(`SELECT * FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);
+		sqlMyOff[0].concat(sqlOffers[0][0]) 
+		console.log("for sqlMyOff ")
+		console.log(sqlMyOff[0])
+	}
+	console.log(sqlMyOff[0])
+	/* let sqlOffersTabel = await pool.execute(`SELECT id FROM offers WHERE tabelNum=${tabelNumber}`);
+	console.log('sqlOffersTabel[0]', sqlOffersTabel[0]) */
+	//let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
 
+	let sqlMyOff1 = await pool.execute(`SELECT
+											o.nameOffer,
+											o.Id,
+											o.date,
+											o.status,
+											o.tabelNum,
+											ow.name AS nameSendler,
+											ow.surname AS surnameSendler,
+											ow.middlename AS middlenameSendler
+										FROM offers AS o
+										INNER JOIN offersworker AS ow
+											ON ow.tabelNum = o.tabelNum
+										WHERE (ow.tabelNum = ${tabelNumber}
+											AND ow.email = "${email}")`)
+
+
+return [sqlMyOff]
 }
 
 router.post("/selectMyOffers", urlencodedParser,
