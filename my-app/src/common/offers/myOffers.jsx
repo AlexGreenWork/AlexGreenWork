@@ -70,7 +70,7 @@ const Offer = (props) => {
                                             workData[2]))
                               
                 } else{
-                    console.log("false response")
+                    //console.log("false response")
                 }
         
             }

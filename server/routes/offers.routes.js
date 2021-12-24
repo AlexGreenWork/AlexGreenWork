@@ -58,7 +58,7 @@ router.get("/allOffers",
 														ON ow.tabelNum = o.tabelNum`);
 
             response.setHeader('Content-Type', 'application/json');
-			console.log(selectOffers[0])
+		
             response.send(JSON.stringify(selectOffers[0], null, 3));
 
             // response.send(selectOffers[0]);
@@ -71,13 +71,13 @@ router.get("/allOffers",
 
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
-        
-      
+        console.log(request.body)
+		
 		let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
         let idOffers = request.body.idOffers;
         let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
-		//console.log(sqlResult[0][0])
+		console.log(sqlResult[0][0])
         response.send(sqlResult[0][0])
 
     })
@@ -91,6 +91,9 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 	console.log(idOffers)
 	console.log('place')
 	console.log(place) */
+
+	
+
 	if(idOffers != undefined){  //условие для корректной работы Предложений для обработки
 		let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
 		let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
@@ -372,7 +375,7 @@ router.get("/downloadMyFile", urlencodedParser, async function(request, response
 	})
 })
 
-router.post("/sendAdd", urlencodedParser,
+/* router.post("/sendAdd", urlencodedParser,
     async function (request, response){
         
         let idOffers = request.body.selectOffers;
@@ -388,19 +391,26 @@ router.post("/sendAdd", urlencodedParser,
            
             response.send('null')
         }
-} )
+} ) */
 
 router.post("/sendAddInfo", urlencodedParser,
     async function (request, response){
-        
+        let arr =[];
         let idOffers = request.body.selectOffers;
 
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
+		for(let i = 0; i < sqlSendAdd[0].length; i++){
+			
+			let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
+			let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
+			arr[i] = sqlCoAuthorData[0][0];
+		//	arr.push(sqlCoAuthorData[0][0])
+		}
+      
+       if(sqlSendAdd[0] != undefined){
+      //  let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
        
-       if(sqlSendAdd[0][0] != undefined){
-        let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
-       
-        response.send(SendAddValid)
+        response.send(arr)
     } else{
         response.send('null')
     }
