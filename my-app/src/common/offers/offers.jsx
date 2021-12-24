@@ -66,7 +66,7 @@ const Offer = (props) => {
                                             workData[2]))
                               
                 } else{
-                    console.log("false response")
+                   // console.log("false response")
                 }
         
             }
@@ -136,8 +136,8 @@ const Offer = (props) => {
 
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
-   console.log(offersData)
-    return offersData.map((number) => <Offer id={number.Id} date={number.date} name={number.nameSendler}
+  
+    return offersData.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
                                              status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum}
                                              email={number.email}/>)
@@ -157,9 +157,9 @@ const Offers = () => {
         xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
+    
                 setReqAllOff(xhr.response)
-            console.log("true")
-            
+               
             }
         }
         xhr.send();

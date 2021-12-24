@@ -14,6 +14,7 @@ const urlencodedParser = Router.urlencoded({extended: false});
 const fs = require('fs');
 const uploadFile = require('../filesUpload/filesUpload')
 const fileUpload = require("express-fileupload");
+const { KeyObject } = require("crypto");
 
 router.use(fileUpload({}));
 router.use((req, res, next) => {
@@ -181,7 +182,7 @@ router.get('/auth', authMiddleware,
         }
     })
 
-
+  
 
 router.post("/forms", urlencodedParser, async (request, response) => {
 
@@ -324,11 +325,11 @@ try{
 		}
             console.log("Предложение добавлено")
             await uploadFile.CheckLastEntry();
-            //const sqlLstEntry = await uploadFile.sqlCheckLastEntry();
+            
           let sqlLstEntry= await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);")
           console.log(sqlLstEntry[0][0].Id) 
-          await pool.query(`INSERT INTO senleradditional (IdOffers, Sendlers) VALUES("${sqlLstEntry[0][0].Id}", '"${senleradditional}"' )`)
-          // `SELECT * FROM senleradditional WHERE tabelNum IN (${tabelNumber})`
+          coAuthorRegistration(senleradditional)
+       
             return "Предложение зарегистрировано";
             
         }
@@ -338,6 +339,54 @@ try{
    
 
 });
+async function coAuthorRegistration(coAuthor){
+
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+    const pool = mysql.createPool(mysqlConfig);
+
+    const password1 = Math.random().toString(36).slice(-8);
+    const hashPassword = await bcrypt.hash(password1, 8);
+    const password = hashPassword;
+
+    let sqlLstEntry= await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);");
+   
+    // первый ключ объекта всегда 0 !!!!!!!!
+
+    let parseSenlerAdd = JSON.parse(coAuthor);
+    let keyParseSenlerAdd = Object.keys(parseSenlerAdd)
+    for(let i = 1; i<keyParseSenlerAdd.length; i++){
+         
+        let key = keyParseSenlerAdd[i];
+        const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${parseSenlerAdd[key].tabelNumber})`);
+        const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${parseSenlerAdd[key].email}")`);
+        const checkFired = await pool.execute(`SELECT deleted FROM kadry_all WHERE tabnum IN ("${parseSenlerAdd[key].tabelNumber}")`);
+        console.log("tab in kadryall", checkFired[0][0].deleted);
+
+       if(checkTab[0].length != 0 || checkEmail[0].length != 0 ){
+             console.log("Табельный или емейл есть");
+       } else{
+
+        console.log("Табельный или емейл отсуствует");
+    
+        await pool.query(`INSERT INTO offersworker (name, middlename, surname,
+                                 tabelNum, email, phoneNumber,
+                                 password, adminOptions, date, fired)` +
+                            `VALUES("${parseSenlerAdd[key].name}", "${parseSenlerAdd[key].middlename}", "${parseSenlerAdd[key].surname}", 
+                                 "${parseSenlerAdd[key].tabelNumber}","${parseSenlerAdd[key].email}", "${parseSenlerAdd[key].phoneNumber}", 
+                                 "${password}", "user", "${moment().format('YYYY-MM-DD')}", "${checkFired[0][0].deleted}" ) `);
+
+         await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+        // await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+        }
+    }
+}
+
 
 router.post('/upload', function (req, res) {
 
