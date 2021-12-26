@@ -29,8 +29,26 @@ const Offer = (props) => {
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     let offersData = JSON.parse(xhr.response);           
-                   
-                    requestInfoAutor(xhr.response);
+                   dispatch(selectMyOffers(
+                    offersData.Id,
+                    offersData.nameOffer,
+                    offersData.date,
+                    offersData.tabelNum,
+                    offersData.nameSendler,
+                    offersData.surnameSendler,
+                    offersData.middlenameSendler,
+                    offersData.email,
+                    offersData.status,
+                    offersData.descriptionProblem,
+                    offersData.category,
+                    offersData.view,
+                    offersData.responsibles, 
+                    offersData.responsibles_rg,
+                    offersData.textOffer,
+                    offersData.phoneNumber,
+                    offersData.dateComission
+                    ))
+                   // requestInfoAutor(xhr.response);
                                                                     
                 } 
             }     
@@ -48,7 +66,7 @@ const Offer = (props) => {
                    let offersData = JSON.parse(xhr); 
                    let workData = JSON.parse(req.response); 
                    
-                   dispatch(selectMyOffers(
+                   /* dispatch(selectMyOffers(
                                             offersData.Id,
                                             offersData.nameOffer,
                                             offersData.date,
@@ -67,7 +85,7 @@ const Offer = (props) => {
                                             offersData.phoneNumber,
                                             offersData.dateComission,
                                             workData[1],
-                                            workData[2]))
+                                            workData[2])) */
                               
                 } else{
                     //console.log("false response")
@@ -117,17 +135,19 @@ const Offer = (props) => {
 
     return (
         <div>
-            <NavLink to='/cardOffer' onClick={()=>{clickOnOfferLink(); DispatchOffers(); DispatchAddSendler()}}>
+            <NavLink to='/cardOffer' onClick={()=>{clickOnOfferLink(); DispatchAddSendler(); DispatchOffers(); }}>
                 <div className={s.header}>
                     <div className={s.offerPreview}>
                         <div className={s.from}>
                             <div className={s.date}> {props.id}</div>
                             <div className={s.date}> {props.date.slice(0, 10)}</div>
-                            <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
-
+                            <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename }</div>
+                             <div className={s.offerText}>{props.coAuthor}</div>
                             <div className={s.status}>  {props.status}</div>
                         </div>
                         <div className={s.offerText}>{props.nameOffer}</div>
+
+                       
                     </div>
                 </div>
             </NavLink>
@@ -139,12 +159,12 @@ const Offer = (props) => {
 
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
-   
+    console.log(offersData)
        
     return offersData.map((number) =>
         <Offer id={number.Id} date={number.date} name={number.nameSendler}
                surname={number.surnameSendler} midlename={number.middlenameSendler}
-               status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} />)
+               status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} coAuthor={number.coAuthor} />)
 
 }
 
@@ -170,7 +190,7 @@ const Offers = () => {
            
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-               
+               console.log(xhr.response)
                setReqMyOff(xhr.response)
                
             }

@@ -72,7 +72,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                      
                         if(i  == dirRoot.length-1){
                            
-                            setTimeout(()=>{res.send(arrAllFiles);} , 50)
+                            setTimeout(()=>{res.send(arrAllFiles);} , 200)
                             
                         } else {
                             
@@ -165,15 +165,15 @@ router.post("/FilesConclusionCommission", urlencodedParser,
 router.post("/workData", urlencodedParser, async function(req, res){
 
     let membCommision = req.body.tabNum;
-    console.log('req.body')
-    console.log(req.body)
+  //  console.log('req.body')
+ //   console.log(req.body)
     let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${membCommision} `);
-    console.log(sqlMembCommision[0][0].fiofull);
+ //   console.log(sqlMembCommision[0][0].fiofull);
     let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
-    console.log(sqlDepartment[0][0].fullname);
+ //   console.log(sqlDepartment[0][0].fullname);
     let sqlDivision = await pool.query(`SELECT * FROM division WHERE department=${sqlMembCommision[0][0].department} AND id=${sqlMembCommision[0][0].division}`);
-    console.log(sqlDivision[0][0]);
-    console.log("ответ сервера по поводу членов ")
+ //   console.log(sqlDivision[0][0]);
+   // console.log("ответ сервера по поводу членов ")
     res.send([sqlMembCommision[0][0].fiofull, sqlDepartment[0][0].fullname, sqlDivision[0][0].name])
 })
 

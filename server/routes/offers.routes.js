@@ -71,33 +71,22 @@ router.get("/allOffers",
 
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
-        console.log(request.body)
+        //console.log(request.body)
 		
 		let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
         let idOffers = request.body.idOffers;
         let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
-		
-
-		//console.log(sqlResult[0][0])
-        response.send(sqlResult[0][0])
+	
+        response.send(sqlResult[0])
 
     })
 
 async function sqlMyOffers(tabelNumber, email, idOffers, place) {
-/* 	console.log('tabelNumber')
-	console.log(tabelNumber)
-	console.log('email')
-	console.log(email)
-	console.log('idOffers')
-	console.log(idOffers)
-	console.log('place')
-	console.log(place) */
-
-	
 
 	if(idOffers != undefined){  //условие для корректной работы Предложений для обработки
 		let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
+		//console.log(sqlOffersTabel, sqlOffersTabel[0])
 		let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
 		
 		let sqlMyOff = await pool.execute(`SELECT
@@ -116,17 +105,13 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 										WHERE (ow.tabelNum = ${sqlOffersTabel[0][0].tabelNum}
 											AND ow.email = "${sqlemailOffers[0][0].email}")`);
 										
-	
 			//console.log(sqlMyOff[0])
 		return [sqlMyOff]
 
-	}
+	}				
 	
- 
-											
+	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
 	
-	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`)
-	console.log('sqlParty[0]',sqlParty[0])
 	let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
@@ -142,40 +127,32 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 										WHERE (ow.tabelNum = ${tabelNumber}
 											AND ow.email = "${email}")`)
 											
-											console.log('sqlMyOff[0][0]', sqlMyOff[0])
-	/* 	let a =sqlParty[0].concat(sqlMyOff[0]) 	
-		console.log("все", a) */	
-		let b ;						
+										
+			
+		let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений		
 	for(let i=0; i<sqlParty[0].length; i++ ){
-		console.log("for")
-		console.log(sqlParty[0][i].IdOffers)
-		let sqlOffers = await pool.execute(`SELECT * FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);
-		sqlMyOff[0].concat(sqlOffers[0][0]) 
-		console.log("for sqlMyOff ")
-		console.log(sqlMyOff[0])
+		let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
+		
+		let sqlOffersqwe = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);	// нашли табельный автора подавшего предложения
+		
+		 
+		let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
+	
+		let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+		newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
+		newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
+		newObject['middlenameSendler'] =sqlinfoOffersCoAuthor[0][0].middlename;
+		newObject['coAuthor'] ="Соавтор"; //опметка соавтор
+		
+		let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
+				
+		infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
+		
+		myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
+		
 	}
-	console.log(sqlMyOff[0])
-	/* let sqlOffersTabel = await pool.execute(`SELECT id FROM offers WHERE tabelNum=${tabelNumber}`);
-	console.log('sqlOffersTabel[0]', sqlOffersTabel[0]) */
-	//let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
 
-	let sqlMyOff1 = await pool.execute(`SELECT
-											o.nameOffer,
-											o.Id,
-											o.date,
-											o.status,
-											o.tabelNum,
-											ow.name AS nameSendler,
-											ow.surname AS surnameSendler,
-											ow.middlename AS middlenameSendler
-										FROM offers AS o
-										INNER JOIN offersworker AS ow
-											ON ow.tabelNum = o.tabelNum
-										WHERE (ow.tabelNum = ${tabelNumber}
-											AND ow.email = "${email}")`)
-
-
-return [sqlMyOff]
+return [myAllOfffers]
 }
 
 router.post("/selectMyOffers", urlencodedParser,
