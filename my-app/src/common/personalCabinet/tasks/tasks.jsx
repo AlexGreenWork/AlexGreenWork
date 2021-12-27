@@ -2,7 +2,6 @@ import React from "react";
 import s from "./tasks.module.css"
 import 'antd/dist/antd.css';
 import { Calendar, Badge } from 'antd';
-import { connect } from "react-redux";
 import {API_URL} from "../../../config.js"
 import server from "../../../actions/server"
 
@@ -17,7 +16,8 @@ class Tasks extends React.Component
 		this.state = {
 			tasks: [],
 			year_task_count: [],
-			moment: moment()
+			moment: null,
+			mode: "month"
 		}
 
 		const ANTD_CALENDAR_CELLS = 42;
@@ -28,14 +28,21 @@ class Tasks extends React.Component
 		this.month = this.month.bind(this);
 		this.year = this.year.bind(this);
 		this.on_change = this.on_change.bind(this);
+		this.on_select = this.on_select.bind(this);
+		this.mode_change = this.mode_change.bind(this);
 
-		this.month(this.state.moment)
-		this.year(this.state.moment)
+		this.componentDidMount = this.componentDidMount.bind(this);
+		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 	}
 
-	componentDidUpdate(props)
+	componentDidMount()
 	{
-		if(this.props != props)
+		this.setState({moment: moment()})
+	}
+
+	componentDidUpdate(last_props, last_state)
+	{
+		if(this.state.moment && last_state.moment != this.state.moment)
 		{
 			this.month(this.state.moment)
 		}
@@ -69,7 +76,7 @@ class Tasks extends React.Component
 				endMark: range.end,
 			}).
 			then((res) => {
-					this.setState({tasks: res.data, moment: moment})
+					this.setState({tasks: res.data})
 			})
 	}
 
@@ -154,14 +161,28 @@ class Tasks extends React.Component
     }
 
 	/**
-		* @param {moment.Moment} newMoment
+		* @param {moment.Moment} moment
 		* @returns {void}
 	**/
-	on_change(newMoment)
+	on_change(moment)
 	{
-		if(this.state.moment.month() !== newMoment.month())
+		if(this.state.mode === "year")
 		{
-			this.month(newMoment);
+			this.setState({mode: "month"})
+		}
+	}
+
+	mode_change(newMoment, mode)
+	{
+		if(mode === "year") this.year(newMoment)
+		this.setState({mode: mode})
+	}
+
+	on_select(moment)
+	{
+		if(this.state.moment.month() !== moment.month())
+		{
+			this.setState({moment: moment});
 		}
 	}
 
@@ -216,12 +237,15 @@ class Tasks extends React.Component
 	{
 		return (
 			<div className={s.sendOfferContainer}>
-				<Calendar onChange = {this.on_change}
-							dateCellRender = {this.dateCellRender}
-							monthCellRender = {this.monthCellRender}/>
+				<Calendar mode = {this.state.mode}
+						onChange = {this.on_change}
+						onSelect = {this.on_select}
+						onPanelChange = {this.mode_change}
+						dateCellRender = {this.dateCellRender}
+						monthCellRender = {this.monthCellRender}/>
 			</div>
 		)
 	}
 }
 
-export default connect()(Tasks);
+export default Tasks;
