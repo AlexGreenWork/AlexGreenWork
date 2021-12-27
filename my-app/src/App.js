@@ -23,6 +23,7 @@ import OffersForm from "./common/offers/sendOffer/FormOffers";
 import Tasks from "./common/personalCabinet/tasks/tasks";
 import FindWorkers from "./common/personalCabinet/findWorkers/findWorkers";
 import Context from "./common/context/Context";
+import Offers1 from "./common/offers/myOffers1";
 
 
 
@@ -93,6 +94,7 @@ function App(props) {
                     <Route path='/personalCabinet' component={PersonalCabinet}/>
                     <Route path='/personalCabinet/messages' component={Messages}/>
                     <Route path='/personalCabinet/offers' component={Offers}/>
+
 
                 </div>
 

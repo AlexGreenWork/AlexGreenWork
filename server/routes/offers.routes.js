@@ -24,7 +24,7 @@ const pool = mysql.createPool(mysqlConfig);
 
 router.use((req, res, next) => {
 
-    res.header('Access-Control-Allow-Methods', 'GET, POST ');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
     res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
 })
@@ -400,7 +400,7 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
     })
 
 
-router.post("/toDbSaveResposible1", urlencodedParser,
+router.post("/toDbSaveResponsible", urlencodedParser,
     async function (request, response){
 
         let idOffers = request.body.idOffer;
@@ -425,6 +425,17 @@ router.post("/toDbSaveResposible3", urlencodedParser,
         let respTabnum = request.body.respTabnum;
 
         responsible.update_responsible('offersresponsible', 'responsible3', idOffers, respTabnum);
+    })
+router.post("/saveRespRGAnnotationToDb", urlencodedParser,
+    async function (request, response){
+
+        let annotationRg = request.body.w
+        let offerId = request.body.id
+        let offerRespId = request.body.respID
+        await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
+
+
+       
     })
 
 

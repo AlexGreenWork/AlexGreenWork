@@ -35,7 +35,7 @@ class Responsible
 		await this.pool.query(sqlResponsible);
 	}
 
-	async update_responsible(tb, tbl_alias, idOffers, respTabnum)
+	async update_responsible(tb, idOffers, respTabnum)
 	{
 		if(!respTabnum)
 		{

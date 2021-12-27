@@ -3,11 +3,12 @@ import {API_URL} from "../../../../../config";
 
 function RequestAddSendlerOffers() {
     let idOffers = localStorage.getItem('idOffers');
+
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `${API_URL}api/offers/sendAdd`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`selectOffers=${idOffers}`);
-   
+
     return xhr.response
 }
 

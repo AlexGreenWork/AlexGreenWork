@@ -4,6 +4,7 @@ import {addUploadFile, changeUploadFile, showUploader} from "../reducers/uploadR
 import {hideLoader, showLoader} from "../reducers/appReducer";
 import {API_URL} from "../config";
 import server from "./server";
+import {store} from "../reducers";
 
 
 export function getFiles(dirId, sort) {
@@ -112,6 +113,20 @@ export function searchFiles(search) {
             alert(e?.response?.data?.message)
         } finally {
             dispatch(hideLoader())
+        }
+    }
+}
+export function saveRespRGAnnotationToDb(w) {
+    return async () => {
+        try {
+            console.log(w)
+            let respID = store.getState().offers.offer.responsibles_rg?.responsible_tabnum
+            console.log(respID)
+            let id = localStorage.getItem("idOffers")
+            await axios.post(`${API_URL}api/offers/saveRespRGAnnotationToDb`,{w, id, respID} )
+            // dispatch(setFiles(response.data))
+        } catch (e) {
+            alert(e)
         }
     }
 }
