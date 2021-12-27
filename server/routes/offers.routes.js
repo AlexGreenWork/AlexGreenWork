@@ -71,25 +71,7 @@ router.get("/allOffers",
 
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
-/* <<<<<<< HEAD
 
-        let firstName = request.body.firstName; // имя
-        let middleName = request.body.middleName; // отчество
-        let surname = request.body.userSurName; // фамилия
-        let tabelNumber = request.body.tabelNumber;
-        let phoneNumber = request.body.phoneNumber;
-        let email = request.body.email;
-
-        let sqlResult = await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
-
-        response.send(sqlResult[0][0])
-    })
-
-async function sqlMyOffers(tabelNumber, email) {
-
-    let sqlMyOff = await pool.execute(`SELECT
-======= */
-        //console.log(request.body)
 		
 		let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
@@ -131,7 +113,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
 	
 	let sqlMyOff = await pool.execute(`SELECT
->>>>>>> trus
+
 											o.nameOffer,
 											o.Id,
 											o.date,
@@ -145,12 +127,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											ON ow.tabelNum = o.tabelNum
 										WHERE (ow.tabelNum = ${tabelNumber}
 											AND ow.email = "${email}")`)
-/* <<<<<<< HEAD
-
-    return [sqlMyOff]
-======= */
-											
-										
+					
 			
 		let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений		
 	for(let i=0; i<sqlParty[0].length; i++ ){
