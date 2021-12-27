@@ -482,6 +482,34 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
     })
 
 
+router.post("/toDbDeleteResponsible", urlencodedParser,
+	async function (request, response)
+	{
+        let idOffers = request.body.idOffer;
+        let respTabnum = request.body.respTabnum;
+console.log(idOffers, respTabnum)
+		if(!idOffers
+			&& !respTabnum)
+		{
+			response.status(400)
+			response.send();
+		}
+
+		let placeholders = [idOffers, respTabnum];
+
+		query = `UPDATE
+					offersendler.offersresponsible
+				SET deleted = 1
+				WHERE offer_id = ?
+				AND responsible_tabnum = ?`
+
+		pool.query(query, placeholders);
+
+		response.status(200);
+
+		response.send();
+    })
+
 router.post("/toDbSaveResponsible", urlencodedParser,
     async function (request, response)
 	{
@@ -495,45 +523,18 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 			response.send();
 		}
 
-		let query = `SELECT
-							count(*) AS count
-						FROM
-							offersendler.offersresponsible
-						WHERE offer_id = ?
-						AND responsible_tabnum = ?
-						AND deleted <> 1`
+		let placeholders = [idOffers, respTabnum, moment().format('YYYY-MM-DD')];
 
-		const db_result = await pool.query(query, [idOffers, respTabnum]);
-		if(db_result[0][0])
-		{
+		query = `INSERT INTO offersendler.offersresponsible
+								(offer_id, responsible_tabnum, open)
+							VALUES (?, ?, ?)`
 
-			let placeholders = [idOffers, respTabnum];
+		placeholders.push();
 
-			if(db_result[0][0].count > 0)
-			{
-				query = `UPDATE
-							offersendler.offersresponsible
-						SET deleted = 1
-						WHERE offer_id = ?
-						AND responsible_tabnum = ?`
-			}
-			else
-			{
-				query = `INSERT INTO offersendler.offersresponsible
-										(offer_id, responsible_tabnum, open)
-									VALUES (?, ?, ?)`
+		pool.query(query, placeholders);
 
-				placeholders.push(moment().format('YYYY-MM-DD'));
-			}
-
-			pool.query(query, placeholders);
-
-			response.status(200);
-			response.send();
-		}
-		
-		response.status(400)
-		response.send("");
+		response.status(200);
+		response.send();
     })
 
 router.post("/saveRespRGAnnotationToDb", urlencodedParser,
