@@ -28,6 +28,7 @@ import Context from "./common/context/Context";
 
 
 
+
 function App(props) {
     const [change, setChange] = useState(0)
     const [secondCotext, setSecondCotext] = useState(0)
@@ -93,6 +94,7 @@ function App(props) {
                     <Route path='/personalCabinet' component={PersonalCabinet}/>
                     <Route path='/personalCabinet/messages' component={Messages}/>
                     <Route path='/personalCabinet/offers' component={Offers}/>
+
 
                 </div>
 

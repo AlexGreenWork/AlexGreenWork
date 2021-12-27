@@ -1,5 +1,16 @@
-import React from "react";
-import { store } from "../../../../../reducers";
+import React, {useState} from "react";
+import {API_URL} from "../../../../../config";
+import {store} from "../../../../../reducers";
+
+function RequestAddSendlerOffers() {
+    let idOffers = localStorage.getItem('idOffers');
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', `${API_URL}api/offers/sendAdd`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`selectOffers=${idOffers}`);
+   
+    return xhr.response
+}
 
 
 function AddSendlerOffers(){
@@ -9,11 +20,11 @@ function AddSendlerOffers(){
    Object.assign(obj, store.getState().offers)
    
    if(obj?.addSendler.length !== 0 && obj?.addSendler !== "[null]" ){
-   
+
     let objYetSendlers = JSON.parse(obj.addSendler)
    
     let key =  Object.keys(objYetSendlers)
-  
+
         for(let i = 0; i<key.length; i++ ){
 
         let name = objYetSendlers[key[i]].nameSendler
@@ -29,16 +40,16 @@ function AddSendlerOffers(){
     elemArr = []
 
     }
-  
+
   if(elemArr.length !== 0){
     return (
-        React.createElement("div", {className:"formFildsAll"} , <div>Соавторы:</div> ,elemArr ) 
+        React.createElement("div", {className:"formFildsAll"} , <div>Соавторы:</div> ,elemArr )
     )
   } else{
 
   }
 return (
-    React.createElement("div", {className:"formFilds"} ) 
+    React.createElement("div", {className:"formFilds"} )
 )
 }
 
