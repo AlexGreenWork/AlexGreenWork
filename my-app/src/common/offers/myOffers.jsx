@@ -161,7 +161,7 @@ const Offer = (props) => {
 
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
-    console.log(offersData)
+   
        
     return offersData.map((number) =>
         <Offer id={number.Id} date={number.date} name={number.nameSendler}
@@ -192,7 +192,7 @@ const Offers = () => {
            
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-               console.log(xhr.response)
+             
                setReqMyOff(xhr.response)
                
             }

@@ -71,21 +71,20 @@ router.get("/allOffers",
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
 
-		
 		let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
         let idOffers = request.body.idOffers;
         let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
-	
+		
         response.send(sqlResult[0])
 
     })
 
-async function sqlMyOffers(tabelNumber, email, idOffers, place) {
+async function sqlMyOffers(tabelNumber, email, idOffers) {
 
 	if(idOffers != undefined){  //условие для корректной работы Предложений для обработки
 		let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
-		//console.log(sqlOffersTabel, sqlOffersTabel[0])
+		
 		let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
 		
 		let sqlMyOff = await pool.execute(`SELECT
@@ -104,7 +103,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 										WHERE (ow.tabelNum = ${sqlOffersTabel[0][0].tabelNum}
 											AND ow.email = "${sqlemailOffers[0][0].email}")`);
 										
-			//console.log(sqlMyOff[0])
+		
 		return [sqlMyOff]
 
 	}				
@@ -424,15 +423,23 @@ router.post("/sendAddInfo", urlencodedParser,
 
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
 		for(let i = 0; i < sqlSendAdd[0].length; i++){
+
+			
 			
 			let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
 			let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
-			arr[i] = sqlCoAuthorData[0][0];
-		//	arr.push(sqlCoAuthorData[0][0])
+			let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+			newObject["nameSendler"] = sqlCoAuthorData[0][0].name;
+			newObject['surnameSendler'] = sqlCoAuthorData[0][0].surname;
+			newObject['middlenameSendler'] =sqlCoAuthorData[0][0].middlename; 
+			newObject['tabelNum'] =sqlCoAuthorData[0][0].tabelNum;
+			newObject['email'] =sqlCoAuthorData[0][0].email;
+			newObject['phoneNumber'] =sqlCoAuthorData[0][0].phoneNumber;
+			arr[i] =newObject;
+		
 		}
       
        if(sqlSendAdd[0] != undefined){
-       // let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
 
         response.send(arr)
     } else{
