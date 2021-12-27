@@ -14,6 +14,7 @@ const urlencodedParser = Router.urlencoded({extended: false});
 const fs = require('fs');
 const uploadFile = require('../filesUpload/filesUpload')
 const fileUpload = require("express-fileupload");
+const { KeyObject } = require("crypto");
 
 router.use(fileUpload({}));
 router.use((req, res, next) => {
@@ -182,8 +183,11 @@ router.get('/auth', authMiddleware,
     })
 
 
+  
+
 router.post("/forms", urlencodedParser, async (request, response) => {
-    console.log(request.body)
+
+
     let firstName = request.body.firstName; // имя
     let middleName = request.body.middleName; // отчество
     let lastName = request.body.lastName; // фамилия
@@ -197,7 +201,7 @@ router.post("/forms", urlencodedParser, async (request, response) => {
     const password1 = Math.random().toString(36).slice(-8);
     const hashPassword = await bcrypt.hash(password1, 8);
     const password = hashPassword;
-    console.log(hashPassword)
+   // console.log(hashPassword)
 
     const mysqlConfig = {
         host: config.database.host,
@@ -212,7 +216,7 @@ router.post("/forms", urlencodedParser, async (request, response) => {
     async function Messages() {
         let message = await CheckUniqueTabAndEmail(tabelNumber, emailInput, phoneNumber);
 
-        console.log("message = " + message)
+      //  console.log("message = " + message)
         response.send(message);
 
     }
@@ -236,13 +240,13 @@ router.post("/forms", urlencodedParser, async (request, response) => {
         let upd = codes[2][0] // запрос обновления строки
         let messageSend = "";
         if (tb[0] != undefined || eml[0] != undefined) {
-            console.log("Такой табельный или емейл уже зарегистрирован в системе");
+          //  console.log("Такой табельный или емейл уже зарегистрирован в системе");
 
             if (upd.changedRows != 0) { // запрос.количество затронутых строк
                 messageSend = messageSend + "Такой пользователь уже зарегистрирован " + `${await InsertTabOffers(nameOffer, offer)}`;
             } else {
 
-                console.log("данные пользователя не записаны");
+              //  console.log("данные пользователя не записаны");
                 if (upd.affectedRows != 0) {
 
                     messageSend = messageSend + "Такой пользователь уже зарегистрирован " + `${await InsertTabOffers(nameOffer, offer)}`
@@ -255,11 +259,11 @@ router.post("/forms", urlencodedParser, async (request, response) => {
                         
                         await pool.query(`INSERT INTO offersworker (name, middlename, surname, tabelNum, email, phoneNumber, password, adminOptions, date)` +
                             `VALUES("${firstName}", "${middleName}", "${lastName}", "${tabelNumber}", "${emailInput}", "${phoneNumber}", "${password}", "user", "${moment().format('YYYY-MM-DD')}")`);
-                        console.log("Пользователь зарегистрирован");
+                     //   console.log("Пользователь зарегистрирован");
                         await InsertTabOffers(nameOffer, offer)
 
                     } else {
-                        console.log("email или табельный уже зарегистрирован");
+                      //  console.log("email или табельный уже зарегистрирован");
                         messageSend = messageSend + "Не совпадение данных Email и табельного уже зарегистрированого пользователя";
                     }
 
@@ -271,11 +275,11 @@ router.post("/forms", urlencodedParser, async (request, response) => {
 
         } else {
 
-            console.log("Табельный и емейл отсуствует");
+          //  console.log("Табельный и емейл отсуствует");
 
             await pool.query(`INSERT INTO offersworker (name, middlename, surname, tabelNum, email, phoneNumber, password, adminOptions, date)` +
                 `VALUES("${firstName}", "${middleName}", "${lastName}", "${tabelNumber}", "${emailInput}", "${phoneNumber}", "${password}", "user", "${moment().format('YYYY-MM-DD')}" )`);
-            console.log("Пользователь зарегистрирован");
+           /// console.log("Пользователь зарегистрирован");
 
             messageSend = messageSend + "Пользователь зарегистрирован " + `${await InsertTabOffers(nameOffer, offer)}`;
 
@@ -321,13 +325,13 @@ try{
 		{
 			console.log(e);
 		}
-            console.log("Предложение добавлено")
+          //  console.log("Предложение добавлено")
             await uploadFile.CheckLastEntry();
-            //const sqlLstEntry = await uploadFile.sqlCheckLastEntry();
+            
           let sqlLstEntry= await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);")
-          console.log(sqlLstEntry[0][0].Id) 
-          await pool.query(`INSERT INTO senleradditional (IdOffers, Sendlers) VALUES("${sqlLstEntry[0][0].Id}", '"${senleradditional}"' )`)
-          // `SELECT * FROM senleradditional WHERE tabelNum IN (${tabelNumber})`
+         // console.log(sqlLstEntry[0][0].Id) 
+          coAuthorRegistration(senleradditional)
+       
             return "Предложение зарегистрировано";
             
         }
@@ -337,20 +341,68 @@ try{
    
 
 });
+async function coAuthorRegistration(coAuthor){
+
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+    const pool = mysql.createPool(mysqlConfig);
+
+    const password1 = Math.random().toString(36).slice(-8);
+    const hashPassword = await bcrypt.hash(password1, 8);
+    const password = hashPassword;
+
+    let sqlLstEntry= await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);");
+   
+    // первый ключ объекта всегда 0 !!!!!!!!
+
+    let parseSenlerAdd = JSON.parse(coAuthor);
+    let keyParseSenlerAdd = Object.keys(parseSenlerAdd)
+    for(let i = 1; i<keyParseSenlerAdd.length; i++){
+         
+        let key = keyParseSenlerAdd[i];
+        const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${parseSenlerAdd[key].tabelNumber})`);
+        const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${parseSenlerAdd[key].email}")`);
+        const checkFired = await pool.execute(`SELECT deleted FROM kadry_all WHERE tabnum IN ("${parseSenlerAdd[key].tabelNumber}")`);
+      //  console.log("tab in kadryall", checkFired[0][0].deleted);
+
+       if(checkTab[0].length != 0 || checkEmail[0].length != 0 ){
+          //   console.log("Табельный или емейл есть");
+       } else{
+
+       // console.log("Табельный или емейл отсуствует");
+    
+        await pool.query(`INSERT INTO offersworker (name, middlename, surname,
+                                 tabelNum, email, phoneNumber,
+                                 password, adminOptions, date, fired)` +
+                            `VALUES("${parseSenlerAdd[key].name}", "${parseSenlerAdd[key].middlename}", "${parseSenlerAdd[key].surname}", 
+                                 "${parseSenlerAdd[key].tabelNumber}","${parseSenlerAdd[key].email}", "${parseSenlerAdd[key].phoneNumber}", 
+                                 "${password}", "user", "${moment().format('YYYY-MM-DD')}", "${checkFired[0][0].deleted}" ) `);
+
+         await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+        // await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+        }
+    }
+}
+
 
 router.post('/upload', function (req, res) {
 
-    console.log("начало auth-rou upload")
-    console.log(req.body)
+  //  console.log("начало auth-rou upload")
+  //  console.log(req.body)
 
 
     if (!req.files) {
-        console.log("not file")
+      //  console.log("not file")
     } else {
         fs.readdir('../server/files/upload/', (err, files) => {     //очищаем папку загрузки перед загрузкой файла
 
-            console.log('auth-rou : ' + files);
-            console.log( files);
+          //  console.log('auth-rou : ' + files);
+          //  console.log( files);
             if(files == null){
                 console.log("file null")
             }
@@ -360,13 +412,13 @@ router.post('/upload', function (req, res) {
 
                 fs.unlink(`../server/files/upload/${files[i]}`, err => {
                     if (err) throw err; // не удалось удалить файл
-                    console.log('Файл успешно удалён');
+                  //  console.log('Файл успешно удалён');
                 });
 
             }
 
         });
-        console.log("перед записью")
+       // console.log("перед записью")
         req.files.myFile.mv('../server/files/upload/' + req.files.myFile.name);
        
         res.end(req.files.myFile.name);

@@ -261,7 +261,7 @@ const ConclusionOffer = () => {
             const respTabnum = store.getState().search.searchUser.tabnum
 
 
-            await axios.post(`${API_URL}api/offers/toDbSaveResposibleRG`, {
+            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposibleRG`, {
                 respTabnum,
                 respName,
                 idOffer
