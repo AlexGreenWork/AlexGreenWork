@@ -42,8 +42,11 @@ const Profile = () => {
                         backgroundSize: "cover",
                         borderRadius:10
                     }}></div>
-                    <button  onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
-                    <input accept="image/*" onChange={e => changeHandler(e)} type="file"
+                    <button className = {s.deleteButton}
+							onClick={() => {if(window.confirm(`Удалить аватар ${currentUser.avatar}?`)) dispatch(deleteAvatar())}}>
+						Удалить аватар
+					</button>
+                    <input accept="image/*" className = {s.loadButton} onChange={e => changeHandler(e)} type="file"
                            placeholder="Загрузить аватар"/>
                 </div>
                 <div>
