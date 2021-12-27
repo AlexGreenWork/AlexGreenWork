@@ -24,124 +24,79 @@ function RequestAddSendlerOffers() {
 
 
 
-
-function Resp(tab, email) {
-
-    let userTabelNum = localStorage.getItem('userTabelNum');
-    let userEmail = localStorage.getItem('userEmail');
-    let idOffers = localStorage.getItem('idOffers');
-        if(tab === userTabelNum){
-        try{
-            axios.post(`${API_URL}api/offers/myOffers`, {  tabelNumber: userTabelNum,
-                                                        email: userEmail,
-                                                        idOffers: idOffers,
-                                                        })
-                                                        .then(res => {
-                                                            console.log(res);
-                                                            console.log(res.data);
-                                                        })
-        } catch (e){
-            alert(e.response.message)
-        }
-    } else{
-        try{
-            axios.post(`${API_URL}api/offers/myOffers`, {  tabelNumber: tab,
-                                                           email: email,
-                                                           idOffers: idOffers,
-                                                        })
-                                                        .then(res => {
-                                                            console.log(res);
-                                                            console.log(res.data);
-                                                        })
-        } catch (e){
-            alert(e.response.message)
-        }
-    }
-    
-    
-   
-   
-/* 
-    if(tab === userTabelNum){
-       
-        let xhr = new XMLHttpRequest();
-
-        xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        
-              
-               xhr.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                   
-                    let tabSendSelectOffer = JSON.parse(xhr.response)
-                   // console.log(tabSendSelectOffer[0].tabelNum)
-                  //  console.log(tabSendSelectOffer)
-                    localStorage.setItem('sendlerTabWG', tabSendSelectOffer[0].tabelNum);
-                   
-          }
-    
-        }
-        xhr.send(`email=${userEmail}&tabelNumber=${userTabelNum}&idOffers=${idOffers}`);
-             
-        return xhr.response
-    }else{
-        
-        let xhr = new XMLHttpRequest();
-
-        xhr.open('POST', `${API_URL}api/offers/myOffers`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.send(`email=${email}`+
-                `&tabelNumber=${tab}&phoneNumber=${idOffers}`);  
-      
-
-        return xhr.response
-
-    } */
-    
-}
-
 function UserInfo(userTabelNum){
     let xhr = new XMLHttpRequest();
-   // let userTabelNum = localStorage.getItem('userTabelNum');
+  
     xhr.open('POST', `${API_URL}api/offers/userInfo`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(`userTab=${userTabelNum}`)
     return xhr.response
 }
-
+let  offersDataCount;
 const CreateCompMyOffers = (props)=>{
-      //  name={name} surname={surname} middlename={middlename} email={email} tabelNumber={tabelNumber}
-      let idOffers = localStorage.getItem('idOffers');
-    console.log(props)
-    console.log('idOffers', idOffers)
-    
-   
+     
+    const  [offersData, SetOffersData] = useState(0)
 
-  
+    if(offersData === 0 ){
+      
+        Resp(props.tabelNumber,  props.email );
+        
+    } else if(offersDataCount === offersData){
+      
+        Resp(props.tabelNumber,  props.email );
+    }
 
+    function Resp(tab, email) {
+      
+        let userTabelNum = localStorage.getItem('userTabelNum');
+        let userEmail = localStorage.getItem('userEmail');
+      
+            if(tab === userTabelNum){
+            try{
+                axios.post(`${API_URL}api/offers/myOffers`, {  tabelNumber: userTabelNum,
+                                                            email: userEmail,
+                                                          //  idOffers: idOffers,
+                                                            })
+                                                            .then(res => {
+                                                                SetOffersData(res.data);
+                                                                offersDataCount = res.data;
+                                                                
+                                                            })
+            } catch (e){
+                alert(e.response.message)
+            }
+        } else{
+            try{
+                axios.post(`${API_URL}api/offers/myOffers`, {  tabelNumber: tab,
+                                                               email: email,
+                                                            //   idOffers: idOffers,
+                                                            })
+                                                            .then(res => {
+                                                                SetOffersData(res.data)   
+                                                                offersDataCount = res.data;
+                                                               
+                                                            })
+            } catch (e){
+                alert(e.response.message)
+            }
+        }
+        
+    } 
+ 
+    if(offersData !== 0){
+     
+        return offersData.map((number, index)=><MyOffersComp key = {"myOffComp"+number.Id} id={number.Id} date={number.date}
+        nameOffer={number.nameOffer}  counter={index+1} coAuthor = {number.coAuthor}/>)
 
-
-    let email = props.email
-    console.log('email',  email)
-   // let offersData = JSON.parse(Resp(props.tabelNumber,  email, undefined, "CreateCompMyOffers" ));  
-   // console.log(offersData);
-    let a = 0
-   // console.log(Resp(props.tabelNumber,  props.email, idOffers));
-    if(a!=0){
-        let offersData = JSON.parse(Resp(props.tabelNumber,  email, undefined, "CreateCompMyOffers" ));  
-        return offersData.map((number, index)=><MyOffersComp id={number.Id} date={number.date}
-        nameOffer={number.nameOffer}  counter={index+1}/>)
     } else {
         return(
             <div>
-                ТСП
+               Нет предложений
             </div>
         )
     }
     
 }
-
-
 
 const MyOffersComp = (props) => {
 
@@ -150,8 +105,10 @@ const MyOffersComp = (props) => {
             <div>{props.counter}</div>
             <div>{props.date.slice(0, 10)}</div>
             <div className={s.offerText}>
-               №{props.id} {props.nameOffer}        
+               №{props.id} {props.nameOffer}           
             </div>
+            <div> {props.coAuthor}</div>
+            
         </div>
     )
 }
@@ -176,17 +133,12 @@ function validElem(){
 
 
 const InfoAboutAuthor = () => {
-   
-  
+     
    let obj = {};
-   let elemArr = [];
+   
    Object.assign(obj, store.getState().offers)
    let objYetSendlers = JSON.parse(obj.addSendler)
-   console.log(objYetSendlers)
-   console.log(obj.offer)
-
-   //let objSendler = JSON.parse(obj.offer)
-
+  
     const [value, setValue] = useState(0);
     const [name, setName] = useState(obj.offer.nameSendler);
     const [surname, setSurname] = useState(obj.offer.surnameSendler);
@@ -194,59 +146,23 @@ const InfoAboutAuthor = () => {
     const [email, setEmail] = useState(obj.offer.email);
     const [tabelNumber, setTabelNumber] = useState(obj.offer.tabelNum);
     const [phoneNumber, setPhoneNumber] = useState(obj.offer.phoneNumber);
-    const [photo, setPoto] = useState(`${ API_URL }files/photos/${localStorage.getItem('sendlerTabWG')}.jpg`);
+   
+    const [photo, setPoto] = useState(`${ API_URL }files/photos/${ store.getState().offers.offer.tabelNum}.jpg`);
     const [sendlersOffers, setSendlersOffers] = useState(objYetSendlers)
 
-    function Resp(tab, email) {
-
-        let userTabelNum = localStorage.getItem('userTabelNum');
-        let userEmail = localStorage.getItem('userEmail');
-        let idOffers = localStorage.getItem('idOffers');
-          
-        if(tab === userTabelNum){
-            try{
-                axios.post(`${API_URL}api/offers/myOffers`, {  tabelNumber: userTabelNum,
-                                                            email: userEmail,
-                                                            setOffers: "setOffers true"
-                                                            })
-                                                            .then(res => {
-                                                                
-                                                                console.log(sendlersOffers)
-                                                                console.log(res);
-                                                                console.log(res.data);
-                                                            })
-            } catch (e){
-                alert(e.response.message)
-            }
-        } else{
-            try{
-                axios.post(`${API_URL}api/offers/myOffers`, {  tabelNumber: tab,
-                                                               email: email,
-                                                               setOffers: "setOffers false"
-                                                            })
-                                                            .then(res => {
-                                                                console.log(res);
-                                                                console.log(res.data);
-                                                            })
-            } catch (e){
-                alert(e.response.message)
-            }
-        }
-    }
-
     const SendlerTab = (props) => {
-                
+        
           return (
               <Tab label={`Автор ${props.numAut}`} onChange={()=>{
                 if(props.numAut === 1){
-                    let offersData = JSON.parse(Resp(localStorage.getItem('userTabelNum')));  //Данные из запроса
-                        setName(/* offersData[0].nameSendler */);
-                        setSurname(/* offersData[0].surnameSendler */);
-                        setMiddlename(/* offersData[0].middlenameSendler */);
-                        setEmail(/* offersData[0].email */);
-                        setTabelNumber(/* offersData[0].tabelNum */);
-                        setPhoneNumber(/* offersDataStart[0].phoneNumber */)
-                        setPoto(`${ API_URL }files/photos/${/* offersData[0].tabelNum */1}.jpg`)
+                   // let offersData = JSON.parse(Resp(localStorage.getItem('userTabelNum')));  //Данные из запроса
+                        setName(store.getState().offers.offer.nameSendler);
+                        setSurname(store.getState().offers.offer.surnameSendler);
+                        setMiddlename(store.getState().offers.offer.middlenameSendler);
+                        setEmail(store.getState().offers.offer.email);
+                        setTabelNumber(store.getState().offers.offer.tabelNum);
+                        setPhoneNumber(store.getState().offers.offer.phoneNumber)
+                        setPoto(`${ API_URL }files/photos/${store.getState().offers.offer.tabelNum}.jpg`)
                 }else{
                         setName(props.name);
                         setSurname(props.surname);
@@ -265,30 +181,34 @@ const InfoAboutAuthor = () => {
 
       const SendlerTabList = () => {
     
-
-       
-    if(RequestAddSendlerOffers() !== 'null'){
-       
-        //let offersData = JSON.parse(RequestAddSendlerOffers());
-        let obj = {};
-        Object.assign(obj, store.getState().offers)
-
-        let objYetSendlers = JSON.parse(obj.addSendler)   
-      
-        if(tabelNumber !== 0){
-         
-            userInfo = JSON.parse(UserInfo(tabelNumber));
-
-       }
+        if(RequestAddSendlerOffers() !== 'null'){
+        
+            let obj = {};
+            let objAll = {};
+        
+            objAll["0"] = store.getState().offers.offer;
+            Object.assign(obj, store.getState().offers)
             
-    return Object.keys(objYetSendlers).map((key, i)=><SendlerTab key={`numAut${i}`} numAut={i+1} name={[key].name}
-                                              surname={[key].surname} middlename={[key].middlename} 
-                                              email={[key].email} tabelNumber={[key].tabelNumber}
-                                              phoneNumber={[key].phoneNumber}/>)
-    } else{
-        return ( <SendlerTab numAut={1}/>)
+            let objYetSendlers = JSON.parse(obj.addSendler)   //обьект с доп пользователями
+            let a = Object.keys(objYetSendlers)
+        
+            for(let i = 0; i<a.length; i++){
+                objAll[`${i+1}`] = objYetSendlers[i]
+            }
+        
+            /* if(tabelNumber !== 0){
+            
+            // userInfo = JSON.parse(UserInfo(tabelNumber));
 
-    }
+        } */
+        
+        return Object.keys(objAll).map((key, i)=><SendlerTab key={`numAut${i}`} numAut={i+1} name={objAll[key].nameSendler}
+                                                surname={objAll[key].surnameSendler} middlename={objAll[key].middlenameSendler} 
+                                                email={objAll[key].email} tabelNumber={objAll[key].tabelNum}
+                                                phoneNumber={objAll[key].phoneNumber }/>)
+            } else{
+            return ( <SendlerTab numAut={1}/>)
+            }
        
     }
     
@@ -307,10 +227,6 @@ const InfoAboutAuthor = () => {
      userInfo = JSON.parse(UserInfo(tabelNumber));
      
     }
-
-   /*  function ChangeRender(){
-        if()
-    } */
 
     return (
         <div className={s.cardOfferContainer}>
