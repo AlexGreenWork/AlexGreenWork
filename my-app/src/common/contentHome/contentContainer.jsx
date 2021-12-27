@@ -11,7 +11,7 @@ const ContentContainer = () => {
                 </NavLink>
             </div>
             <div className={s.button2}>
-                <NavLink id="production" className={s.btnA} to="/production">
+                <NavLink id="production" className={s.btnA} to="/personalCabinet/offers1">
                     Продукция
 
                 </NavLink>

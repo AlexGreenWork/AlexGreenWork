@@ -7,7 +7,6 @@ const fileUpload = require("express-fileupload");
 const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
-const responsible = require("../controllers/responsibleController.js");
 
 router.use(fileUpload({}));
 
@@ -24,7 +23,7 @@ const pool = mysql.createPool(mysqlConfig);
 
 router.use((req, res, next) => {
 
-    res.header('Access-Control-Allow-Methods', 'GET, POST ');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
     res.setHeader('Access-Control-Allow-Origin', '*');
     return next();
 })
@@ -441,20 +440,20 @@ router.post("/sendAddInfo", urlencodedParser,
 		}
       
        if(sqlSendAdd[0] != undefined){
-      
+
         response.send(arr)
     } else{
         response.send('null')
     }
 //>>>>>>> trus
 
-        if(sqlSendAdd[0][0] != undefined){
-            let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
-
-            response.send(SendAddValid)
-        } else{
-            response.send('null')
-        }
+        // if(sqlSendAdd[0][0] != undefined){
+        //     let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+        //
+        //     response.send(SendAddValid)
+        // } else{
+        //     response.send('null')
+        // }
 
     })
 
@@ -490,31 +489,67 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
     })
 
 
-router.post("/toDbSaveResposible1", urlencodedParser,
-    async function (request, response){
-
+router.post("/toDbSaveResponsible", urlencodedParser,
+    async function (request, response)
+	{
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
 
-        responsible.update_responsible('offersresponsible', 'responsible1', idOffers, respTabnum);
+		if(!idOffers
+			&& !respTabnum)
+		{
+			response.status(400)
+			response.send();
+		}
+
+		let query = `SELECT
+							count(*) AS count
+						FROM
+							offersendler.offersresponsible
+						WHERE offer_id = ?
+						AND responsible_tabnum = ?
+						AND deleted <> 1`
+
+		const db_result = await pool.query(query, [idOffers, respTabnum]);
+		if(db_result[0][0])
+		{
+
+			let placeholders = [idOffers, respTabnum];
+
+			if(db_result[0][0].count > 0)
+			{
+				query = `UPDATE
+							offersendler.offersresponsible
+						SET deleted = 1
+						WHERE offer_id = ?
+						AND responsible_tabnum = ?`
+			}
+			else
+			{
+				query = `INSERT INTO offersendler.offersresponsible
+										(offer_id, responsible_tabnum, open)
+									VALUES (?, ?, ?)`
+
+				placeholders.push(moment().format('YYYY-MM-DD'));
+			}
+
+			pool.query(query, placeholders);
+
+			response.status(200);
+			response.send();
+		}
+		
+		response.status(400)
+		response.send("");
     })
 
-router.post("/toDbSaveResposible2", urlencodedParser,
+router.post("/saveRespRGAnnotationToDb", urlencodedParser,
     async function (request, response){
 
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
-
-        responsible.update_responsible('offersresponsible', 'responsible2', idOffers, respTabnum);
-    })
-
-router.post("/toDbSaveResposible3", urlencodedParser,
-    async function (request, response){
-
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
-
-        responsible.update_responsible('offersresponsible', 'responsible3', idOffers, respTabnum);
+        let annotationRg = request.body.w
+        let offerId = request.body.id
+        let offerRespId = request.body.respID
+        await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
     })
 
 

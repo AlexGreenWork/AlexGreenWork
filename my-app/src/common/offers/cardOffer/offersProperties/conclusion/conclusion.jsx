@@ -12,6 +12,7 @@ import ConclusionList from "./conclusionList";
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import server from "../../../../../actions/server";
 import {element} from "prop-types";
+import {saveRespRGAnnotationToDb} from "../../../../../actions/file";
 
 
 console.log(store.getState().search.searchUser)
@@ -125,21 +126,25 @@ const ConclusionOffer = () => {
 
         )
     }
-    const [annotationInp, setAnnotationInp] = React.useState('')
-    function AnnotationInput(e){
-        setAnnotationInp(e.target.value)
-        console.log(e.target.value)
-    }
 
-    function saveRespRGAnnotation(){
-console.log(annotationInp)
+    const [annotationRGMark, setAnnotationRGMark] = useState(`${store.getState().offers.offer.responsibles_rg?.mark}`)
+    // function AnnotationInput(){
+    //     const w = document.getElementById("textAreaRGConc").innerText
+    //     // setAnnotationRGMark(w)
+    //     console.log(w)
+    // }
+
+    async function saveRespRGAnnotation(){
+        const w = document.getElementById("textAreaRGConc").innerText
+      dispatch(saveRespRGAnnotationToDb(w))
+
     }
     function IsAdminRGUploadAnnotation() {
         return (<div className={s.fileUpload}>
             <Button onClick={saveRespRGAnnotation} style={{
                 background:"#e9e9ff",
-                margin:"5px"
-            }}>Отправить аннотацию</Button>
+                margin:"25px"
+            }}>Добавить аннотацию</Button>
         </div>
 
         )
@@ -332,7 +337,6 @@ console.log(annotationInp)
     var d = new Date(`${dateRG}`);
     var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
 
-    //console.log(newDate);
 
     return (
         <div id="OffContainer" className={s.cardOfferContainer}>
@@ -419,10 +423,13 @@ console.log(annotationInp)
                     <AdminChangeUploadFile isAdmin={localStorage.getItem("userAdminOptions")}/>
                 </div>
                 <div className={s.filesConclusion11}>
-                    <div>Краткая аннотация заключения рабочей группы:</div>
-                    <div contenteditable="true" className={s.conclusionTextArea} style={{
-                        width:"100%"
-                    }} onInput={AnnotationInput}> {store.getState().offers.offer.responsibles_rg?.mark}
+                    <div style={{
+                        marginBottom: "25px",
+                    }}>Краткая аннотация заключения рабочей группы:</div>
+                    <div contentEditable={"true"} id="textAreaRGConc" className={s.conclusionTextArea} style={{
+                        width:"100%",
+                        flexDirection:"column"
+                    }} > {annotationRGMark}
                     </div>
                     <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userAdminOptions")}/>
                 </div>

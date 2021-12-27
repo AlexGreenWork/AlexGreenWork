@@ -94,7 +94,7 @@ function changeViewSelect() {
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible`, {
+            await server.send_post_request(`${API_URL}api/offers/toDbSaveResponsible`, {
                 respTabnum,
                 respName,
                 idOffer

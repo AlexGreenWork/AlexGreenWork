@@ -24,7 +24,7 @@
 .avatarContainer{
     width:150px;
     height:200px;
-margin:10px;
+	margin:10px auto 10px auto;
     background-position: center center;
 }
 .avatar{
@@ -36,4 +36,23 @@ margin:10px;
 .headerProfile{
     display: flex;
     flex-wrap: wrap;
+}
+
+.deleteButton
+{
+	margin-bottom: 20px;
+	background-color: rgba(180, 0, 0, 0.8);
+	color: white;
+	font-size: 16px;
+	border: 2px solid black;
+	border-radius: 5px;
+}
+
+.loadButton
+{
+	background-color: rgba(0, 170, 0, 0.8);
+	color: black;
+	font-size: 16px;
+	border: 2px solid black;
+	border-radius: 5px;
 }

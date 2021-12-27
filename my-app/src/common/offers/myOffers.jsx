@@ -10,13 +10,15 @@ import { addSendler, selectMyOffers } from "../../reducers/offerReducer";
 
 
 
+
 const Offer = (props) => {
 
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState('');
 
     const dispatch = useDispatch();
-    
+
+
     function DispatchOffers(){
         RequestSelectOffers();
 
@@ -56,7 +58,7 @@ const Offer = (props) => {
             xhr.send(`selectOffers=${props.id}`);
         }
 
-        function requestInfoAutor(xhr){
+        async function requestInfoAutor(xhr){
             let req = new XMLHttpRequest();
             req.open('POST', `${API_URL}api/files/workData`, true); 
             req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
