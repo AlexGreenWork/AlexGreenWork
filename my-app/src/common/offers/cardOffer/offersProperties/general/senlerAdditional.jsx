@@ -1,41 +1,43 @@
-import React, {useState} from "react";
-import {API_URL} from "../../../../../config";
-
-function RequestAddSendlerOffers() {
-    let idOffers = localStorage.getItem('idOffers');
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_URL}api/offers/sendAdd`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${idOffers}`);
-   
-    return xhr.response
-}
+import React from "react";
+import { store } from "../../../../../reducers";
 
 
 function AddSendlerOffers(){
-    let elemArr = [];
-    if(RequestAddSendlerOffers() != 'null'){
-        let addSendlers = JSON.parse(RequestAddSendlerOffers());  //Данные из запроса
-    //RequestAddSendlerOffers()
-    let key =  Object.keys(addSendlers)
+
+   let obj = {};
+   let elemArr = [];
+   Object.assign(obj, store.getState().offers)
    
-    
+   if(obj?.addSendler.length !== 0 && obj?.addSendler !== "[null]" ){
+   
+    let objYetSendlers = JSON.parse(obj.addSendler)
+    let key =  Object.keys(objYetSendlers)
+  
+        for(let i = 0; i<key.length; i++ ){
 
-    
-    for(let i = 0; i<key.length; i++ ){
-     
-       let name = addSendlers[key[i]].name
-       let surname = addSendlers[key[i]].surname
-       let middlename = addSendlers[key[i]].middlename
-       elemArr[i] = React.createElement("div", {className:"formFilds"} , <label id={`sendler${[i]}`} >{surname} {name} {middlename}</label> ) ;
+        let name = objYetSendlers[key[i]].name
+        let surname = objYetSendlers[key[i]].surname
+        let middlename = objYetSendlers[key[i]].middlename
+        elemArr[i] = React.createElement("div", {className:"formFilds",  key:`qw${key[i].toString()}` , value:i }, <label id={`sendler${[i]}`} key={key[i]}> {i+1}: {surname} {name} {middlename}</label> ) ;
+      /*   key={number.toString()}
+                  value={number} */
+        }
+
+   } else {
+
+    elemArr = []
 
     }
-    } else {
-        elemArr = []
-    }
-    
+  
+  if(elemArr.length !== 0){
+    return (
+        React.createElement("div", {className:"formFildsAll"} , <div>Соавторы:</div> ,elemArr ) 
+    )
+  } else{
+
+  }
 return (
-    React.createElement("div", {className:"formFilds"} , elemArr ) 
+    React.createElement("div", {className:"formFilds"} ) 
 )
 }
 
