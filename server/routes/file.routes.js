@@ -72,7 +72,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                      
                         if(i  == dirRoot.length-1){
                            
-                            setTimeout(()=>{res.send(arrAllFiles);} , 50)
+                            setTimeout(()=>{res.send(arrAllFiles);} , 200)
                             
                         } else {
                             
@@ -166,11 +166,14 @@ router.post("/workData",  urlencodedParser, async function(req, res){
 
     let membCommision = req.body.tabNum;
 
+
     let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${membCommision} `);
 
     let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
 
     let sqlDivision = await pool.query(`SELECT * FROM division WHERE department=${sqlMembCommision[0][0].department} AND id=${sqlMembCommision[0][0].division}`);
+
+
 
 
     res.send([sqlMembCommision[0][0].fiofull, sqlDepartment[0][0].fullname, sqlDivision[0][0].name])

@@ -128,19 +128,8 @@ const CommonOffer = () => {
     const [viewChange, setViewChange] = React.useState('');
     const [category, setCategory] = React.useState('');
     const [view, setView] = React.useState('');
-
-
-
-
-
-       const offersData =  useSelector(state => store.getState().offers.offer)
-
-
+    const offersData =  useSelector(state => store.getState().offers.offer)
     const [status, setStatus] = React.useState(`${localStorage.getItem('status')}`);
-
-
-
-    AddSendlerOffers()
 
 
     if (offersData.category == 1) {
@@ -720,7 +709,8 @@ let nameStatus;
                             padding: "10px"
 
                         }}>{offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
-                        <AddSendlerOffers/>
+                        <AddSendlerOffers />
+                       
                     </div>
                     <div className={s.fieldOfCategoryOffer}>
                         <div className={s.nameCategoryOfOffer}> Категория предложения:</div>

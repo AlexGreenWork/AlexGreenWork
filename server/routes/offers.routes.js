@@ -43,7 +43,8 @@ router.get("/allOffers",
 
 
         async function sqlSelectOffers() {
-            let selectOffers = await pool.execute(`SELECT
+           
+			let selectOffers = await pool.execute(`SELECT
 														o.nameOffer,
 														o.Id,
 														o.date,
@@ -55,7 +56,9 @@ router.get("/allOffers",
 													FROM offers AS o
 													INNER JOIN offersworker AS ow
 														ON ow.tabelNum = o.tabelNum`);
+
             response.setHeader('Content-Type', 'application/json');
+		
             response.send(JSON.stringify(selectOffers[0], null, 3));
 
             // response.send(selectOffers[0]);
@@ -69,21 +72,48 @@ router.get("/allOffers",
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
 
-        let firstName = request.body.firstName; // имя
-        let middleName = request.body.middleName; // отчество
-        let surname = request.body.userSurName; // фамилия
-        let tabelNumber = request.body.tabelNumber;
-        let phoneNumber = request.body.phoneNumber;
+		
+		let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
+        let idOffers = request.body.idOffers;
+        let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
+	
+        response.send(sqlResult[0])
 
-        let sqlResult = await sqlMyOffers(tabelNumber, email, firstName, middleName, surname, phoneNumber)
-
-        response.send(sqlResult[0][0])
     })
 
-async function sqlMyOffers(tabelNumber, email) {
+async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 
-    let sqlMyOff = await pool.execute(`SELECT
+	if(idOffers != undefined){  //условие для корректной работы Предложений для обработки
+		let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
+		//console.log(sqlOffersTabel, sqlOffersTabel[0])
+		let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
+		
+		let sqlMyOff = await pool.execute(`SELECT
+											o.nameOffer,
+											o.Id,
+											o.date,
+											o.status,
+											o.tabelNum,
+											ow.name AS nameSendler,
+											ow.surname AS surnameSendler,
+											ow.middlename AS middlenameSendler,
+											ow.email AS email
+										FROM offers AS o
+										INNER JOIN offersworker AS ow
+											ON ow.tabelNum = o.tabelNum
+										WHERE (ow.tabelNum = ${sqlOffersTabel[0][0].tabelNum}
+											AND ow.email = "${sqlemailOffers[0][0].email}")`);
+										
+			//console.log(sqlMyOff[0])
+		return [sqlMyOff]
+
+	}				
+	
+	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
+	
+	let sqlMyOff = await pool.execute(`SELECT
+
 											o.nameOffer,
 											o.Id,
 											o.date,
@@ -97,9 +127,33 @@ async function sqlMyOffers(tabelNumber, email) {
 											ON ow.tabelNum = o.tabelNum
 										WHERE (ow.tabelNum = ${tabelNumber}
 											AND ow.email = "${email}")`)
+					
+			
+		let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений		
+	for(let i=0; i<sqlParty[0].length; i++ ){
+		let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
+		
+		let sqlOffersqwe = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);	// нашли табельный автора подавшего предложения
+		
+		 
+		let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
+	
+		let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+		newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
+		newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
+		newObject['middlenameSendler'] =sqlinfoOffersCoAuthor[0][0].middlename;
+		newObject['coAuthor'] ="Соавтор"; //опметка соавтор
+		
+		let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
+				
+		infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
+		
+		myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
+		
+	}
+/* >>>>>>> trus */
 
-    return [sqlMyOff]
-
+return [myAllOfffers]
 }
 
 router.post("/selectMyOffers", urlencodedParser,
@@ -171,7 +225,8 @@ router.post("/userInfo", urlencodedParser,
 							ka.profname,
 							d.fullname,
 							d2.name,
-							ue.email
+							ue.email,
+							o.email
 						FROM kadry_all AS ka
 						LEFT JOIN department AS d
 							ON d.id = ka.department
@@ -180,6 +235,8 @@ router.post("/userInfo", urlencodedParser,
 								AND d2.id = ka.division
 						LEFT JOIN users_emails AS ue
 							ON ue.tabnum = ka.tabnum
+						LEFT JOIN offersworker AS o
+							ON o.tabelNum = ka.tabnum
 						WHERE ka.tabnum = ${userTab}`
 
             const stmt = await pool.execute(sqlUserInfo);
@@ -333,7 +390,7 @@ router.get("/downloadMyFile", urlencodedParser, async function(request, response
     })
 })
 
-router.post("/sendAdd", urlencodedParser,
+/* router.post("/sendAdd", urlencodedParser,
     async function (request, response){
 
         let idOffers = request.body.selectOffers;
@@ -349,6 +406,7 @@ router.post("/sendAdd", urlencodedParser,
 
             response.send('null')
         }
+<<<<<<< HEAD
     } )
 
 router.post("/sendAddInfo", urlencodedParser,
@@ -357,6 +415,31 @@ router.post("/sendAddInfo", urlencodedParser,
         let idOffers = request.body.selectOffers;
 
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
+//=======
+} ) */
+
+router.post("/sendAddInfo", urlencodedParser,
+    async function (request, response){
+        let arr =[];
+        let idOffers = request.body.selectOffers;
+
+        let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
+		for(let i = 0; i < sqlSendAdd[0].length; i++){
+			
+			let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
+			let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
+			arr[i] = sqlCoAuthorData[0][0];
+		//	arr.push(sqlCoAuthorData[0][0])
+		}
+      
+       if(sqlSendAdd[0] != undefined){
+      //  let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+       
+        response.send(arr)
+    } else{
+        response.send('null')
+    }
+//>>>>>>> trus
 
         if(sqlSendAdd[0][0] != undefined){
             let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
