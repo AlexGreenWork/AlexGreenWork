@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {API_URL} from "../../../../../config";
+import {store} from "../../../../../reducers";
 
 function RequestAddSendlerOffers() {
     let idOffers = localStorage.getItem('idOffers');

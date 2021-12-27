@@ -119,12 +119,15 @@ export function searchFiles(search) {
 export function saveRespRGAnnotationToDb(w) {
     return async () => {
         try {
-            console.log(w)
+
             let respID = store.getState().offers.offer.responsibles_rg?.responsible_tabnum
-            console.log(respID)
             let id = localStorage.getItem("idOffers")
-            await axios.post(`${API_URL}api/offers/saveRespRGAnnotationToDb`,{w, id, respID} )
-            // dispatch(setFiles(response.data))
+            if(respID == undefined){
+                alert("Выберите ответственного рабочей группы")
+            }else {
+                await axios.post(`${API_URL}api/offers/saveRespRGAnnotationToDb`, {w, id, respID})
+                // dispatch(setFiles(response.data))
+            }
         } catch (e) {
             alert(e)
         }

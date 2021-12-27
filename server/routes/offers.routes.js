@@ -433,21 +433,21 @@ router.post("/sendAddInfo", urlencodedParser,
 		}
       
        if(sqlSendAdd[0] != undefined){
-      //  let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
-       
+       // let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+
         response.send(arr)
     } else{
         response.send('null')
     }
 //>>>>>>> trus
 
-        if(sqlSendAdd[0][0] != undefined){
-            let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
-
-            response.send(SendAddValid)
-        } else{
-            response.send('null')
-        }
+        // if(sqlSendAdd[0][0] != undefined){
+        //     let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
+        //
+        //     response.send(SendAddValid)
+        // } else{
+        //     response.send('null')
+        // }
 
     })
 
