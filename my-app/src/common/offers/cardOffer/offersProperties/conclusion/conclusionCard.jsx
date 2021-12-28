@@ -22,12 +22,9 @@ const ConclusionCard = (props) => {
 	{
 		const idOffer = localStorage.getItem('idOffers')
 		const respTabnum = store.getState().search.searchUser.tabnum
-
 		deleteResponsible(idOffer, props.tabel);
 		saveToDb(idOffer, respTabnum, props.name);
-
 		setViewChange(false)
-		alert("Изменения сохранены 1")
     }
 
     function SelectChangeConclusionResponsible(props)
@@ -83,14 +80,14 @@ const ConclusionCard = (props) => {
 
 	async function deleteResponsible(idOffer, respTabnum)
 	{
+
         try
 		{
             await server.send_post_request(`${API_URL}api/offers/toDbDeleteResponsible`, {
                 respTabnum,
                 idOffer
             })
-            alert('Ответственный сотрудник добавлен')
-
+            alert('Ответственный сотрудник удален')
         } catch (e)
 		{
             alert(e.response.data.message)
@@ -106,8 +103,8 @@ const ConclusionCard = (props) => {
                 idOffer,
 				position
             })
-            alert('Ответственный сотрудник добавлен')
 
+            alert('Ответственный сотрудник добавлен')
         } catch (e)
 		{
             alert(e.response.data.message)
@@ -185,21 +182,19 @@ const ConclusionCard = (props) => {
         function IsAdminCloseBtn(){
             return (
                 <div>
-                    <button className={style.closeBtn} >X</button>
+                    <button className={style.closeBtn} onClick={(value) => {deleteResponsible(props.id.offer_id, props.tabel)}}>X</button>
                 </div>
             )
         }
 
-        function closeConclusion(props){
-            console.log('work')
-            document.getElementsByName(`${props.name}`)
-            console.log(props.name)
-        }
+
 
         function AdminChangeCloseBtn(props){
     const isAdmin = props.isAdmin;
+
     if (isAdmin == 'wg') {
-        return <IsAdminCloseBtn onClick={closeConclusion}/>;
+
+        return <IsAdminCloseBtn />;
 
     } else {
         return <IsAdminUser/>
@@ -212,7 +207,7 @@ const ConclusionCard = (props) => {
                 position:"relative",
                 display:"block"
             }} name={props.name}>
-                <AdminChangeCloseBtn name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
+                <AdminChangeCloseBtn {...props}  isAdmin={localStorage.getItem("userAdminOptions")}/>
 
                 <div className={s.header}>
 

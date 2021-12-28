@@ -516,10 +516,11 @@ router.post("/toDbDeleteResponsible", urlencodedParser,
 router.post("/toDbSaveResponsible", urlencodedParser,
     async function (request, response)
 	{
+
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
         let position = request.body.position;
-
+        console.log(position)
 		if(!idOffers
 			|| !respTabnum
 				|| !position)
@@ -530,7 +531,8 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 
 		async function restore(connection, idOffer, tabnum, position)
 		{
-			const query = `UPDATE
+            try{
+                const query = `UPDATE
 								offersresponsible
 							SET
 								deleted = 0,
@@ -542,17 +544,22 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 							ORDER BY id DESC
 							LIMIT 1`
 
-			let placeholders = [position, idOffer, tabnum];
+                let placeholders = [position, idOffer, tabnum];
 
-			return await connection.query(query, placeholders);
+                return await connection.query(query, placeholders);
+
+            }catch(e) {
+                console.log(e)
+            }
+
 		}
 
-		async function insert(connection, idOffer, tabnum)
+		async function insert(connection, idOffer, tabnum, position)
 		{
 			const query = `INSERT INTO offersendler.offersresponsible
 								(offer_id, responsible_tabnum, open, position)
 							VALUES (?, ?, ?, ?)`
-
+            console.log(position)
 			let placeholders = [idOffer, tabnum, moment().format('YYYY-MM-DD'), position];
 
 			return await connection.query(query, placeholders);
@@ -579,11 +586,11 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 
 		if(await check(pool, idOffers, respTabnum))
 		{
-			await restore(pool, idOffers, respTabnum)
+			await restore(pool, idOffers, respTabnum, position)
 		}
 		else
 		{
-			await insert(pool, idOffers, respTabnum)
+			await insert(pool, idOffers, respTabnum, position)
 		}
 
 		response.status(200);
