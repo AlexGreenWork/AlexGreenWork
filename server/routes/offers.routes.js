@@ -71,20 +71,21 @@ router.get("/allOffers",
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
 
+		
 		let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
         let idOffers = request.body.idOffers;
         let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
-		
+	
         response.send(sqlResult[0])
 
     })
 
-async function sqlMyOffers(tabelNumber, email, idOffers) {
+async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 
 	if(idOffers != undefined){  //условие для корректной работы Предложений для обработки
 		let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
-		
+		//console.log(sqlOffersTabel, sqlOffersTabel[0])
 		let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
 		
 		let sqlMyOff = await pool.execute(`SELECT
@@ -103,7 +104,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers) {
 										WHERE (ow.tabelNum = ${sqlOffersTabel[0][0].tabelNum}
 											AND ow.email = "${sqlemailOffers[0][0].email}")`);
 										
-		
+			//console.log(sqlMyOff[0])
 		return [sqlMyOff]
 
 	}				
@@ -111,7 +112,6 @@ async function sqlMyOffers(tabelNumber, email, idOffers) {
 	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
 	
 	let sqlMyOff = await pool.execute(`SELECT
-
 											o.nameOffer,
 											o.Id,
 											o.date,
@@ -185,7 +185,8 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
-						osr.rating
+						osr.rating,
+						osr.position
 					FROM
 						?? AS osr
 					INNER JOIN kadry_all AS ka 
@@ -196,7 +197,8 @@ router.post("/selectMyOffers", urlencodedParser,
 							AND dep.factory = ka.factory
 					WHERE
 						osr.offer_id = ?
-					AND osr.deleted <> 1`
+					AND osr.deleted <> 1
+					ORDER BY osr.position DESC`
 
         const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
         const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
@@ -362,18 +364,20 @@ router.post("/toDbDateComission", urlencodedParser,
 //     })
 
 router.get("/downloadMyFile", urlencodedParser, async function(request, response){
+	
     let idOffers = request.query.idOffers;
     let fileName = request.query.fileName;
+    let folderName = request.query.folder;
 
-    fs.readdir(`../server/files/offers/idOffers/id${idOffers}/SendlerFiles/`, async (err, filesName) => {
-
+    fs.readdir(`../server/files/offers/idOffers/id${idOffers}/${folderName}/`, async (err, filesName) => {
+       
         filesName.push('exit');
 
         for(let i = 0 ; i < filesName.length; i++ )
         {
             if(filesName[i] == fileName )
             {
-                let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/SendlerFiles/${fileName}`;
+                let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/${folderName}/${fileName}`;
                 response.download(file);
                 break;
             }
@@ -423,23 +427,15 @@ router.post("/sendAddInfo", urlencodedParser,
 
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
 		for(let i = 0; i < sqlSendAdd[0].length; i++){
-
-			
 			
 			let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
 			let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
-			let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
-			newObject["nameSendler"] = sqlCoAuthorData[0][0].name;
-			newObject['surnameSendler'] = sqlCoAuthorData[0][0].surname;
-			newObject['middlenameSendler'] =sqlCoAuthorData[0][0].middlename; 
-			newObject['tabelNum'] =sqlCoAuthorData[0][0].tabelNum;
-			newObject['email'] =sqlCoAuthorData[0][0].email;
-			newObject['phoneNumber'] =sqlCoAuthorData[0][0].phoneNumber;
-			arr[i] =newObject;
-		
+			arr[i] = sqlCoAuthorData[0][0];
+		//	arr.push(sqlCoAuthorData[0][0])
 		}
       
        if(sqlSendAdd[0] != undefined){
+       // let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
 
         response.send(arr)
     } else{
@@ -494,7 +490,7 @@ router.post("/toDbDeleteResponsible", urlencodedParser,
 	{
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
-console.log(idOffers, respTabnum)
+
 		if(!idOffers
 			&& !respTabnum)
 		{
@@ -522,23 +518,73 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 	{
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
+        let position = request.body.position;
 
 		if(!idOffers
-			&& !respTabnum)
+			|| !respTabnum
+				|| !position)
 		{
 			response.status(400)
 			response.send();
 		}
 
-		let placeholders = [idOffers, respTabnum, moment().format('YYYY-MM-DD')];
+		async function restore(connection, idOffer, tabnum, position)
+		{
+			const query = `UPDATE
+								offersresponsible
+							SET
+								deleted = 0,
+								position = ?
+							WHERE
+								offer_id = ?
+								AND responsible_tabnum = ?
+								AND deleted <> 0
+							ORDER BY id DESC
+							LIMIT 1`
 
-		query = `INSERT INTO offersendler.offersresponsible
-								(offer_id, responsible_tabnum, open)
-							VALUES (?, ?, ?)`
+			let placeholders = [position, idOffer, tabnum];
 
-		placeholders.push();
+			return await connection.query(query, placeholders);
+		}
 
-		pool.query(query, placeholders);
+		async function insert(connection, idOffer, tabnum)
+		{
+			const query = `INSERT INTO offersendler.offersresponsible
+								(offer_id, responsible_tabnum, open, position)
+							VALUES (?, ?, ?, ?)`
+
+			let placeholders = [idOffer, tabnum, moment().format('YYYY-MM-DD'), position];
+
+			return await connection.query(query, placeholders);
+		}
+
+		async function check(connection, idOffer, tabnum)
+		{
+			const query = `SELECT
+								COUNT(id) AS count
+							FROM
+								offersendler.offersresponsible
+							WHERE
+								offer_id = ?
+							AND 
+								responsible_tabnum = ?`
+
+			let placeholders = [idOffer, tabnum];
+
+			const db_result = await connection.query(query, placeholders);
+
+			return (db_result[0][0]) && (db_result[0][0].count > 0)
+		}
+
+
+		if(await check(pool, idOffers, respTabnum))
+		{
+			await restore(pool, idOffers, respTabnum)
+		}
+		else
+		{
+			await insert(pool, idOffers, respTabnum)
+		}
 
 		response.status(200);
 		response.send();
