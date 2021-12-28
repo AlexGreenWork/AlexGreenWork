@@ -24,30 +24,37 @@
     color:black;
 }
 .from{
-    display: grid;
+    display: flex;
+    flex-direction: row-reverse;
     flex-wrap: wrap;
-    grid-template-columns: 10% 30% 50% 10%;
-
+}
+from div{
+    padding-left: 5px;
+    padding-right: 5px;
 }
 .header{
     display: flex;
-    background-color: white;
+
     border: 1px solid;
     border-radius: 15px;
     padding: 10px;
-
+    background: rgb(0,112,255);
+    background: linear-gradient(180deg, rgba(0,112,255,0.23) 0%, rgba(255,255,255,0.23012955182072825) 15%, rgba(245,249,255,1) 85%, rgba(0,112,255,0.23012955182072825) 100%);
 }
 .header:hover{
     background-color: #aad1ff;
+    transform: translateY(-1px);
 }
 .offerPreview{
     display: flex;
     width: 100%;
-    flex-direction: column;
+    flex-direction: column-reverse;
     justify-content: space-around;
     padding: 10px;
 }
 .fromName{
+    padding-left: 5px;
+    padding-right: 5px;
     font-weight: bold;
 }
 @media (max-width: 553px) {
