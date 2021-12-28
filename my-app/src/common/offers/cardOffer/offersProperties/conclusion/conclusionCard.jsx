@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
 import server from "../../../../../actions/server";
+import style from "./conclusionCard.module.css"
 
 const ConclusionCard = (props) => {
     const [viewChange, setViewChange] = React.useState(false);
@@ -53,6 +54,7 @@ const ConclusionCard = (props) => {
 		{
             return (
                 <div>
+
                     <div style={{
                         textAlign: "center"
                     }}>
@@ -179,14 +181,39 @@ const ConclusionCard = (props) => {
             }
         }
 
+        function IsAdminCloseBtn(){
+            return (
+                <div>
+                    <button className={style.closeBtn} >X</button>
+                </div>
+            )
+        }
+
+        function closeConclusion(props){
+            console.log('work')
+            document.getElementsByName(`${props.name}`)
+            console.log(props.name)
+        }
+
+        function AdminChangeCloseBtn(props){
+    const isAdmin = props.isAdmin;
+    if (isAdmin == 'wg') {
+        return <IsAdminCloseBtn onClick={closeConclusion}/>;
+
+    } else {
+        return <IsAdminUser/>
+    }
+}
 
 
         return (
-            <div name={props.name}>
+            <div style={{
+                position:"relative",
+                display:"block"
+            }} name={props.name}>
+                <AdminChangeCloseBtn name={props.name} isAdmin={localStorage.getItem("userAdminOptions")}/>
+
                 <div className={s.header}>
-
-
-
 
                     <div className={s.date}>
                         <div>Дата:</div>

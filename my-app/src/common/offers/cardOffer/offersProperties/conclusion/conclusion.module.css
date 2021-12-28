@@ -1,3 +1,21 @@
+@keyframes fromUpToDown1 {
+    0% {
+        position: absolute;
+        top: 2000px;
+        width: 100%;
+    }
+    100% {
+        position: absolute;
+        top: 18vh;
+        width: 100%;
+    }
+}
+
+.cardOfferContainer1{
+    animation: fromUpToDown1;
+    animation-duration: .5s;
+}
+
 .cardOfferContainer {
     display: flex;
     flex-direction: column;
@@ -69,6 +87,7 @@
     -moz-box-shadow: 0px 1px 11px 6px rgba(34, 60, 80, 0.2);
     box-shadow: 0px 1px 11px 6px rgba(34, 60, 80, 0.2);
     margin-bottom: 10px;
+
 }
 .finder {
  overflow: hidden;
@@ -260,7 +279,7 @@ color:#7100f3;
 }
 @media (max-width: 553px) {
     .header {
-        padding: 0;
+         padding: 0;
         -moz-box-shadow: 1px 0px 10px rgba(0, 0, 0, 0.4);
         -webkit-box-shadow: 1px 0px 10px rgba(0, 0, 0, 0.4);
         box-shadow: 1px 0px 10px rgba(0, 0, 0, 0.4);
@@ -268,5 +287,6 @@ color:#7100f3;
         padding-left: 5px;
 
     }
+
 
 }
