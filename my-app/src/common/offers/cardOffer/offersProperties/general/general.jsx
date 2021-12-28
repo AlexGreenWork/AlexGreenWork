@@ -105,7 +105,7 @@ function FileList() {
 
 
                 let format = offersFile[i].slice(j)
-                arr[i] = React.createElement("div", {className: "fileElement"}, <div>{offersFile[i]}</div>, <IMG
+                arr[i] = React.createElement("div", {className: "fileElement", key:"fileElement"+i}, <div>{offersFile[i]}</div>, <IMG
                     type={format}/>, <input className="downloadFileFromGeneral download" type="submit" value="скачать"
                                             onClick={() => {
                                                 downloadFile(offersFile[i])
