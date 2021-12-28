@@ -198,7 +198,7 @@ router.post("/selectMyOffers", urlencodedParser,
 					WHERE
 						osr.offer_id = ?
 					AND osr.deleted <> 1
-					ORDER BY osr.position ASC`
+					ORDER BY osr.position DESC`
 
         const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
         const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
