@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import s from './results.module.css'
+
 
 function createData(name, actuality, innovation, cost, duration, evulation) {
     return {
@@ -142,7 +144,8 @@ const rows = [
 const ResultsOffer = () => {
 
     return (
-        <div >
+        <div className={s.containerOff} >
+
             <TableContainer component={Paper}>
                 <Table aria-label="collapsible table">
                     <TableHead>
@@ -162,8 +165,6 @@ const ResultsOffer = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-
-
 
         </div>
 
