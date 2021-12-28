@@ -428,7 +428,7 @@ const ConclusionOffer = () => {
                     <div style={{
                         marginBottom: "25px",
                     }}>Краткая аннотация заключения рабочей группы:</div>
-                    <div contentEditable={"true"} id="textAreaRGConc" className={s.conclusionTextArea} style={{
+                    <div contentEditable={"true"} id="textAreaRGConc" placeholder="Напишите краткую аннотацию..." className={s.conclusionTextArea} style={{
                         width:"100%",
                         flexDirection:"column"
                     }} > {annotationRGMark}

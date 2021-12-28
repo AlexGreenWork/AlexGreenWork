@@ -9,6 +9,8 @@ import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
 import server from "../../../../../actions/server";
 import style from "./conclusionCard.module.css"
+import {useDispatch} from "react-redux";
+import {deleteResp} from "./conclusion";
 
 const ConclusionCard = (props) => {
     const [viewChange, setViewChange] = React.useState(false);
@@ -80,14 +82,17 @@ const ConclusionCard = (props) => {
 
 	async function deleteResponsible(idOffer, respTabnum)
 	{
-
         try
 		{
             await server.send_post_request(`${API_URL}api/offers/toDbDeleteResponsible`, {
                 respTabnum,
                 idOffer
             })
-            alert('Ответственный сотрудник удален')
+
+           if(respTabnum !== undefined){
+               alert('Ответственный сотрудник удален')
+           }
+
         } catch (e)
 		{
             alert(e.response.data.message)
@@ -217,7 +222,7 @@ const ConclusionCard = (props) => {
                     </div>
                     <div className={s.nameWorkGroup}>
                         <div>Подразделение:</div>
-                        <div> ///Подразделение////</div>
+                        <div> {props.id.fullname}</div>
                     </div>
 
                     <div className={s.ExecutWorker}>
@@ -260,7 +265,7 @@ const ConclusionCard = (props) => {
                         <div style={{
                             borderBottom: "1px solid #dfdcdc",
                             marginBottom: "11px"
-                        }}>Файлы заключения //подразделения//:</div>
+                        }}>Файлы заключения ({props.id.fullname}):</div>
                         <div className={s.conclusionFilesArea}>
                             <div className={s.conclusionFilesAreaFile} style={{
                                 display: "flex",
@@ -276,10 +281,10 @@ const ConclusionCard = (props) => {
                         <AdminChangeUploadFile isAdmin={localStorage.getItem("userAdminOptions")}/>
                     </div>
                     <div className={s.filesConclusion11}>
-                        <div>Краткая аннотация заключения подразделения:</div>
-                        <div className={s.conclusionTextArea}> text of conclusion area: Lorem ipsum dolor sit amet,
-                            consectetur adipisicing elit. Autem dolore excepturi hic nemo nihil quae reiciendis sunt
-                            voluptatum. A autem et iusto, nam numquam officia optio provident quas quibusdam voluptatem.
+                        <div style={{
+                            marginBottom: "25px"
+                        }}>Краткая аннотация заключения подразделения({props.id.fullname}):</div>
+                        <div style={{width: "100%"}} placeholder="Напишите краткую аннотацию..." contentEditable={"true"} className={s.conclusionTextArea} >
                         </div>
                     </div>
                 </div>

@@ -51,11 +51,11 @@ function Folders(props){
        if(fileName !== undefined){
        
         if(dirName[i] !== "SendlerFiles"){
-                let elem = React.createElement("div", {className:"responsible-block", key:`keyDirContainer`+i} , 
-                <div  key={`keyDir`+i} className='responsible'> Член комиссии: {allfilesObj[dirName[i]].fioResp}</div>,
-                <div className='departament'>Цех/Управление: {allfilesObj[dirName[i]].department}</div> ,
-                <div className='tabnum'>Табельный номер: {dirName[i]}</div> ,
-                <div className='division'>Участок/Отдел: {allfilesObj[dirName[i]].division}</div>,
+                let elem = React.createElement("div", {className:"responsible-block", key:`keyDirContainer`+i} ,
+                    <div className='departament'>Подразделение: {allfilesObj[dirName[i]].department}</div> ,
+                    <div  key={`keyDir`+i} className='responsible'> Член комиссии: {allfilesObj[dirName[i]].fioResp}</div>,
+                    <div className='tabnum'>Табельный номер: {dirName[i]}</div> ,
+                // <div className='division'>Участок/Отдел: {allfilesObj[dirName[i]].division}</div>,
                 <Files allFiles = {props.allFiles} dirName = {dirName[i]} /> );
                  arrElem.push(elem) 
         } else {
@@ -72,7 +72,8 @@ function Folders(props){
         
     }
         if(allfilesObj[dirName[0]] !== undefined){
-            return  React.createElement("div", {className:"files-block"} , <div> Файлы предложения{ arrElem}</div> )
+            return  React.createElement("div", {className:"files-block"}
+             , <div> Файлы предложения{ arrElem}</div> )
         } else {
             
         }
