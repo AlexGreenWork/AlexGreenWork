@@ -17,13 +17,13 @@ const ConclusionCard = (props) => {
 		setViewChange(true)
     }
 
-    function changeViewSelectSave(oldtabnum)
+    function changeViewSelectSave(props)
 	{
 		const idOffer = localStorage.getItem('idOffers')
 		const respTabnum = store.getState().search.searchUser.tabnum
 
-		deleteResponsible(idOffer, oldtabnum);
-		saveToDb(idOffer, respTabnum);
+		deleteResponsible(idOffer, props.tabel);
+		saveToDb(idOffer, respTabnum, props.name);
 
 		setViewChange(false)
 		alert("Изменения сохранены 1")
@@ -69,7 +69,7 @@ const ConclusionCard = (props) => {
                             <Button style={{
                                 width: "300px",
                                 border: "1px solid #1890ff"
-                            }} onClick={(value) => {changeViewSelectSave(props.tabel)}}>
+                            }} onClick={(value) => {changeViewSelectSave(props)}}>
 								Прикрепить сотрудника к предложению
 							</Button>
                         </div>
@@ -95,13 +95,14 @@ const ConclusionCard = (props) => {
         }
 	}
 
-    async function saveToDb(idOffer, respTabnum)
+    async function saveToDb(idOffer, respTabnum, position)
 	{
         try
 		{
             await server.send_post_request(`${API_URL}api/offers/toDbSaveResponsible`, {
                 respTabnum,
-                idOffer
+                idOffer,
+				position
             })
             alert('Ответственный сотрудник добавлен')
 

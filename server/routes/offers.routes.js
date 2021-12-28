@@ -112,7 +112,6 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
 	
 	let sqlMyOff = await pool.execute(`SELECT
-
 											o.nameOffer,
 											o.Id,
 											o.date,
@@ -186,7 +185,8 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
-						osr.rating
+						osr.rating,
+						osr.position
 					FROM
 						?? AS osr
 					INNER JOIN kadry_all AS ka 
@@ -197,7 +197,8 @@ router.post("/selectMyOffers", urlencodedParser,
 							AND dep.factory = ka.factory
 					WHERE
 						osr.offer_id = ?
-					AND osr.deleted <> 1`
+					AND osr.deleted <> 1
+					ORDER BY osr.position ASC`
 
         const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
         const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
@@ -517,20 +518,23 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 	{
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
+        let position = request.body.position;
 
 		if(!idOffers
-			&& !respTabnum)
+			|| !respTabnum
+				|| !position)
 		{
 			response.status(400)
 			response.send();
 		}
 
-		async function restore(connection, idOffer, tabnum)
+		async function restore(connection, idOffer, tabnum, position)
 		{
 			const query = `UPDATE
 								offersresponsible
 							SET
-								deleted = 0
+								deleted = 0,
+								position = ?
 							WHERE
 								offer_id = ?
 								AND responsible_tabnum = ?
@@ -538,7 +542,7 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 							ORDER BY id DESC
 							LIMIT 1`
 
-			let placeholders = [idOffer, tabnum];
+			let placeholders = [position, idOffer, tabnum];
 
 			return await connection.query(query, placeholders);
 		}
@@ -546,10 +550,10 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 		async function insert(connection, idOffer, tabnum)
 		{
 			const query = `INSERT INTO offersendler.offersresponsible
-								(offer_id, responsible_tabnum, open)
-							VALUES (?, ?, ?)`
+								(offer_id, responsible_tabnum, open, position)
+							VALUES (?, ?, ?, ?)`
 
-			let placeholders = [idOffer, tabnum, moment().format('YYYY-MM-DD')];
+			let placeholders = [idOffer, tabnum, moment().format('YYYY-MM-DD'), position];
 
 			return await connection.query(query, placeholders);
 		}
