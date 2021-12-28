@@ -164,7 +164,7 @@ const OffersLink = (props) => {
    
        
     return offersData.map((number) =>
-        <Offer id={number.Id} date={number.date} name={number.nameSendler}
+        <Offer key = {"offer"+number.Id} id={number.Id} date={number.date} name={number.nameSendler}
                surname={number.surnameSendler} midlename={number.middlenameSendler}
                status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} coAuthor={number.coAuthor} />)
 

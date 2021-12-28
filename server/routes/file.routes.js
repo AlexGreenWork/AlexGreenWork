@@ -36,14 +36,14 @@ router.delete('/avatar', authMiddleware, fileController.deleteAvatar)
 
 
 router.post("/allFiles", urlencodedParser, async function(req, res){
-   console.log(req.body) 
+  
         let arrAllFiles= {};  
        
         let idOffers = req.body.idOffers;
        // let membCommision = req.body.tabREsponsoble;
         try{
             fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/`, function(err, dirRoot){
-                console.log(dirRoot)
+               
                  if(err){
                  res.send( "no such file or directory");
                } else {
@@ -68,14 +68,14 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                              
                         }else if(dirRoot[i] == "SendlerFiles" ) {
                             arrAllFiles[dirRoot[i]]= {files}
-                            console.log(arrAllFiles)
+                           
                         }
                      
                         if(dirRoot.length == 1){
                             res.send(arrAllFiles)
                         } else{
                             if(Object.keys(arrAllFiles).length  == dirRoot.length-1){
-                                console.log('ответ') 
+                              
                               //  setTimeout(()=>{res.send(arrAllFiles);} , 200)
                               res.send(arrAllFiles)
                             } else {
