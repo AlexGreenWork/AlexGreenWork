@@ -123,7 +123,7 @@ export function saveRespRGAnnotationToDb(w) {
             let respID = store.getState().offers.offer.responsibles_rg?.responsible_tabnum
             let id = localStorage.getItem("idOffers")
             if(respID == undefined){
-                alert("Выберите ответственного рабочей группы")
+                alert("Не возможно добавить аннотацию пока не выберите ответственного рабочей группы")
             }else {
                 await axios.post(`${API_URL}api/offers/saveRespRGAnnotationToDb`, {w, id, respID})
                 // dispatch(setFiles(response.data))

@@ -1,3 +1,19 @@
+@keyframes fromUpToDown1 {
+    0% {
+        position: absolute;
+        top: 2000px;
+        width: 100%;
+    }
+    100% {
+        position: absolute;
+        top: 18vh;
+        width: 100%;
+    }
+}
+
+
+
+
 .cardOfferContainer {
     display: flex;
     flex-direction: column;
@@ -111,6 +127,8 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    animation: fromUpToDown1 ;
+    animation-duration: 1s;
 
 }
 
