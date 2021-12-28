@@ -17,7 +17,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink></div>
 
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/files">
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
                 </NavLink></div>
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/tasks">
@@ -45,7 +45,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink></div>
 
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/files">
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
                 </NavLink></div>
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/tasks">
@@ -75,7 +75,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink></div>
 
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/files">
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
                 </NavLink></div>
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/tasks">

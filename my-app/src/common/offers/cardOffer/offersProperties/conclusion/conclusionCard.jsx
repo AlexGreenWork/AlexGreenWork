@@ -5,68 +5,57 @@ import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
 import Button from "@material-ui/core/Button";
 // import Complete from "../../../../personalCabinet/findWorkers/complete";
-import {useSelector} from "react-redux";
-
-import {saveToDb1 ,saveToDb2, saveToDb3 } from "../../../../../actions/offers"
 import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
 import server from "../../../../../actions/server";
+import style from "./conclusionCard.module.css"
 
 const ConclusionCard = (props) => {
-
-    const searchUser = useSelector(state =>state.search.searchUser.searchUserTabnum)
-
     const [viewChange, setViewChange] = React.useState(false);
 
-
-
-
-
-function changeViewSelect() {
-
-            setViewChange(true)
-
-
-    }
-        let propName = props.name;
-    function changeViewSelectSave(props) {
-
-
-
-            saveToDb(searchUser)
-            setViewChange(false)
-            alert("Изменения сохранены 1")
-
-
+	function changeViewSelect()
+	{
+		setViewChange(true)
     }
 
+    function changeViewSelectSave(props)
+	{
+		const idOffer = localStorage.getItem('idOffers')
+		const respTabnum = store.getState().search.searchUser.tabnum
+		deleteResponsible(idOffer, props.tabel);
+		saveToDb(idOffer, respTabnum, props.name);
+		setViewChange(false)
+    }
 
-    function SelectChangeConclusionResponsible(props) {
-
-
-
-        if (viewChange ==false) {
-            return (<div style={{
-                    textAlign:"center"
-                }}>
-                       <Button sx={{
-                           border: '1px solid lightblue',
-                           boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
-                           margin: '10px'
-
-                        }}
-                            onClick={changeViewSelect}>Выбрать сотрудника</Button>
+    function SelectChangeConclusionResponsible(props)
+	{
+        if (viewChange ==false)
+		{
+            return (
+					<div style={{
+						textAlign:"center"
+					}}>
+						<Button sx={{
+							   border: '1px solid lightblue',
+							   boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
+							   margin: '10px'
+							}}
+							onClick={changeViewSelect}>
+								Выбрать сотрудника
+							</Button>
 
                     </div>
-
             )
         }
-        if (viewChange ==true) {
+        if (viewChange == true)
+		{
             return (
                 <div>
+
                     <div style={{
                         textAlign: "center"
-                    }}> Выберите отвественного сотрудника по заключению от подразделения:
+                    }}>
+						Выберите отвественного сотрудника по заключению от подразделения:
                     </div>
 
                     <div className={s.finder}>
@@ -79,78 +68,54 @@ function changeViewSelect() {
                             <Button style={{
                                 width: "300px",
                                 border: "1px solid #1890ff"
-                            }} onClick={changeViewSelectSave}>Прикрепить сотрудника к предложению</Button>
+                            }} onClick={(value) => {changeViewSelectSave(props)}}>
+								Прикрепить сотрудника к предложению
+							</Button>
                         </div>
                     </div>
                 </div>
             )
         }
-
     }
-    async function saveToDb(){
-        try{
-            setViewChange(false)
-            const idOffer = localStorage.getItem('idOffers')
-            const respName = store.getState().search.searchUser.name
-            const respTabnum = store.getState().search.searchUser.tabnum
 
+	async function deleteResponsible(idOffer, respTabnum)
+	{
+
+        try
+		{
+            await server.send_post_request(`${API_URL}api/offers/toDbDeleteResponsible`, {
+                respTabnum,
+                idOffer
+            })
+            alert('Ответственный сотрудник удален')
+        } catch (e)
+		{
+            alert(e.response.data.message)
+        }
+	}
+
+    async function saveToDb(idOffer, respTabnum, position)
+	{
+        try
+		{
             await server.send_post_request(`${API_URL}api/offers/toDbSaveResponsible`, {
                 respTabnum,
-                respName,
-                idOffer
-
+                idOffer,
+				position
             })
+
             alert('Ответственный сотрудник добавлен')
-
-        } catch (e){
-            alert(e.response.data.message)
-        }
-    }
-    async function saveToDb2(){
-        try{
-            setViewChange(false)
-            const idOffer = localStorage.getItem('idOffers')
-            const respName = store.getState().search.searchUser.name
-            const respTabnum = store.getState().search.searchUser.tabnum
-
-            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible2`, {
-                respTabnum,
-                respName,
-                idOffer
-
-            })
-            alert('Ответственный сотрудник добавлен')
-
-        } catch (e){
-            alert(e.response.data.message)
-        }
-    }
-    async function saveToDb3(){
-        try{
-            setViewChange(false)
-            const idOffer = localStorage.getItem('idOffers')
-            const respName = store.getState().search.searchUser.name
-            const respTabnum = store.getState().search.searchUser.tabnum
-
-            await server.send_post_request(`${API_URL}api/offers/toDbSaveResposible3`, {
-                respTabnum,
-                respName,
-                idOffer
-
-            })
-            alert('Ответственный сотрудник добавлен')
-
-        } catch (e){
+        } catch (e)
+		{
             alert(e.response.data.message)
         }
     }
 
     const CardDivisionConclusion = () => {
 
-
         function IsAdminRG() {
             return (<div>
-                    <SelectChangeConclusionResponsible name={props.name}/>
+                    <SelectChangeConclusionResponsible {...props}/>
                 </div>
             )
         }
@@ -214,14 +179,37 @@ function changeViewSelect() {
             }
         }
 
+        function IsAdminCloseBtn(){
+            return (
+                <div>
+                    <button className={style.closeBtn} onClick={(value) => {deleteResponsible(props.id.offer_id, props.tabel)}}>X</button>
+                </div>
+            )
+        }
+
+
+
+        function AdminChangeCloseBtn(props){
+    const isAdmin = props.isAdmin;
+
+    if (isAdmin == 'wg') {
+
+        return <IsAdminCloseBtn />;
+
+    } else {
+        return <IsAdminUser/>
+    }
+}
 
 
         return (
-            <div name={props.name}>
+            <div style={{
+                position:"relative",
+                display:"block"
+            }} name={props.name}>
+                <AdminChangeCloseBtn {...props}  isAdmin={localStorage.getItem("userAdminOptions")}/>
+
                 <div className={s.header}>
-
-
-
 
                     <div className={s.date}>
                         <div>Дата:</div>

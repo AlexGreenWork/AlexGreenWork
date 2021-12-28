@@ -40,7 +40,7 @@ class ConclusionList extends React.Component {
 
     render() {
         return this.state.items.map(( item, i ) => (
-            <ConclusionCard name={i} id={item} resp={item.fiofull} tabel={item.responsible_tabnum} open = {item.open} close = {item.close} rating = {item.rating}
+            <ConclusionCard name={i+1} id={item} resp={item.fiofull} tabel={item.responsible_tabnum} open = {item.open} close = {item.close} rating = {item.rating}
                             mark = {item.mark}
                             handleRemove={ () => this.handleRemove(i) }
             />

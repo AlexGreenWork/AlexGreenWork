@@ -1,0 +1,5 @@
+.personalCabinetContainer{
+    grid-column: 2/6;
+    grid-row: 2/5;
+    overflow: auto;
+}
