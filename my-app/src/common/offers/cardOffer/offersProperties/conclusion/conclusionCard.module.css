@@ -1,0 +1,15 @@
+.closeBtn{
+    position:absolute;
+    background:#ff656540;
+    right:0;
+    box-shadow: -4px 3px 8px 0px rgba(34, 60, 80, 0.2);
+    border:white 1px solid;
+    border-radius: 5px;
+}
+.closeBtn:hover{
+    transform: translateY(-1px);
+}
+.closeBtn:active{
+    transform: translateY(1px);
+    box-shadow: -7px 8px 8px 0px rgba(34, 60, 80, 0.2) inset;
+}

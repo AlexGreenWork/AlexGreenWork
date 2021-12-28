@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
 import server from "../../../../../actions/server";
+import style from "./conclusionCard.module.css"
 
 const ConclusionCard = (props) => {
     const [viewChange, setViewChange] = React.useState(false);
@@ -17,16 +18,13 @@ const ConclusionCard = (props) => {
 		setViewChange(true)
     }
 
-    function changeViewSelectSave(oldtabnum)
+    function changeViewSelectSave(props)
 	{
 		const idOffer = localStorage.getItem('idOffers')
 		const respTabnum = store.getState().search.searchUser.tabnum
-
-		deleteResponsible(idOffer, oldtabnum);
-		saveToDb(idOffer, respTabnum);
-
+		deleteResponsible(idOffer, props.tabel);
+		saveToDb(idOffer, respTabnum, props.name);
 		setViewChange(false)
-		alert("Изменения сохранены 1")
     }
 
     function SelectChangeConclusionResponsible(props)
@@ -53,6 +51,7 @@ const ConclusionCard = (props) => {
 		{
             return (
                 <div>
+
                     <div style={{
                         textAlign: "center"
                     }}>
@@ -69,7 +68,7 @@ const ConclusionCard = (props) => {
                             <Button style={{
                                 width: "300px",
                                 border: "1px solid #1890ff"
-                            }} onClick={(value) => {changeViewSelectSave(props.tabel)}}>
+                            }} onClick={(value) => {changeViewSelectSave(props)}}>
 								Прикрепить сотрудника к предложению
 							</Button>
                         </div>
@@ -81,30 +80,31 @@ const ConclusionCard = (props) => {
 
 	async function deleteResponsible(idOffer, respTabnum)
 	{
+
         try
 		{
             await server.send_post_request(`${API_URL}api/offers/toDbDeleteResponsible`, {
                 respTabnum,
                 idOffer
             })
-            alert('Ответственный сотрудник добавлен')
-
+            alert('Ответственный сотрудник удален')
         } catch (e)
 		{
             alert(e.response.data.message)
         }
 	}
 
-    async function saveToDb(idOffer, respTabnum)
+    async function saveToDb(idOffer, respTabnum, position)
 	{
         try
 		{
             await server.send_post_request(`${API_URL}api/offers/toDbSaveResponsible`, {
                 respTabnum,
-                idOffer
+                idOffer,
+				position
             })
-            alert('Ответственный сотрудник добавлен')
 
+            alert('Ответственный сотрудник добавлен')
         } catch (e)
 		{
             alert(e.response.data.message)
@@ -179,14 +179,37 @@ const ConclusionCard = (props) => {
             }
         }
 
+        function IsAdminCloseBtn(){
+            return (
+                <div>
+                    <button className={style.closeBtn} onClick={(value) => {deleteResponsible(props.id.offer_id, props.tabel)}}>X</button>
+                </div>
+            )
+        }
+
+
+
+        function AdminChangeCloseBtn(props){
+    const isAdmin = props.isAdmin;
+
+    if (isAdmin == 'wg') {
+
+        return <IsAdminCloseBtn />;
+
+    } else {
+        return <IsAdminUser/>
+    }
+}
 
 
         return (
-            <div name={props.name}>
+            <div style={{
+                position:"relative",
+                display:"block"
+            }} name={props.name}>
+                <AdminChangeCloseBtn {...props}  isAdmin={localStorage.getItem("userAdminOptions")}/>
+
                 <div className={s.header}>
-
-
-
 
                     <div className={s.date}>
                         <div>Дата:</div>

@@ -1,10 +1,24 @@
+@keyframes fromUpToDown1 {
+    0% {
+        position: absolute;
+        top: 2000px;
+        width: 100%;
+    }
+    100% {
+        position: absolute;
+        top: 18vh;
+        width: 100%;
+    }
+}
+
 .cardOfferContainer {
     display: flex;
     flex-direction: column;
     grid-column: 1/6;
     grid-row: 1/6;
     background-color: white;
-
+    animation: fromUpToDown1;
+    animation-duration: .5s;
 }
 
 .date {
