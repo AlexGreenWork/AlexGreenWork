@@ -362,7 +362,7 @@ router.post("/toDbDateComission", urlencodedParser,
 //     })
 
 router.get("/downloadMyFile", urlencodedParser, async function(request, response){
-	
+	console.log(request.query)
     let idOffers = request.query.idOffers;
     let fileName = request.query.fileName;
     let folderName = request.query.folder;

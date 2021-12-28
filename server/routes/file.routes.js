@@ -186,8 +186,34 @@ router.post("/workData",  urlencodedParser, async function(req, res){
 })
 
 
+router.post("/myFilesWG", urlencodedParser,
+    async function (req, res) {
+       
+        let tabResp = req.body.userTabelNum;
 
-
+        let sqlOffResp = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabResp} `);
+    
+        let files=[];
+        let a =0
+        for(let i = 0; i<sqlOffResp[0].length ; i++ ){
+          
+           
+            let idOffers = sqlOffResp[0][i].offer_id;
+           let dir = fs.readdirSync(`../server/files/offers/idOffers/id${idOffers}/responsible${tabResp}`);
+           let sqlOffers = await pool.query(`SELECT Id , nameOffer  FROM offers WHERE Id=${idOffers} `);
+           dir.push(sqlOffers[0][0].Id)
+           dir.push(sqlOffers[0][0].nameOffer) //добавляем в конец списка название предложения и его id
+           files[i] = dir;
+         
+      
+                if(i == sqlOffResp[0].length-1){
+                    a=1
+                    res.send(files);
+                }
+    
+        }
+    
+    })
 
 
 module.exports = router
