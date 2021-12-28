@@ -127,7 +127,9 @@ const ConclusionOffer = () => {
         )
     }
 
+
     const [annotationRGMark, setAnnotationRGMark] = useState(`${store.getState().offers.offer.responsibles_rg?.mark}`)
+
     // function AnnotationInput(){
     //     const w = document.getElementById("textAreaRGConc").innerText
     //     // setAnnotationRGMark(w)
@@ -339,9 +341,9 @@ const ConclusionOffer = () => {
 
 
     return (
-        <div id="OffContainer" className={s.cardOfferContainer}>
+        <div id="OffContainer" className={s.cardOfferContainer1}>
             <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
-            <ConclusionList responsibles={responsibles}/>
+            <ConclusionList responsibles={responsibles} />
 
 
             {/*{responsibles.map((index) =>*/}

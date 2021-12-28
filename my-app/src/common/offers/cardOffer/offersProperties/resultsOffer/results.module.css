@@ -1,0 +1,17 @@
+@keyframes fromUpToDown1 {
+    0% {
+        position: absolute;
+        top: 2000px;
+        width: 100%;
+    }
+    100% {
+        position: absolute;
+        top: 18vh;
+        width: 100%;
+    }
+}
+.containerOff{
+    position: relative;
+    animation: fromUpTodown1;
+    animation-duration: 3s;
+}
