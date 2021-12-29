@@ -145,7 +145,8 @@ const ConclusionOffer = () => {
         return (<div className={s.fileUpload}>
             <Button onClick={saveRespRGAnnotation} style={{
                 background:"#e9e9ff",
-                margin:"25px"
+                margin:"25px",
+                boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
             }}>Добавить аннотацию</Button>
         </div>
 
