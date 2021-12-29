@@ -26,6 +26,12 @@ const Header = () => {
 
             <img className={s.logotype} src={logo} alt="logo"></img>
         </div>
+       <div style={{
+           position: "absolute",
+           top: "9%",
+           left: "25%",
+           color: "white"
+       }}> Для помощи подачи предложения  можете обратиться по тел.</div>
         <div className={s.loginBar}>
             {!isAuth && <div className="navbar__login"><NavLink to="/authorization">Войти</NavLink></div>}
             {!isAuth &&
