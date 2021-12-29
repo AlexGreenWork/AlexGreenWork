@@ -4,6 +4,7 @@ const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
+const authMiddleware = require('../middleware/auth.middleware')
 const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
@@ -185,7 +186,6 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
-						osr.rating,
 						osr.position
 					FROM
 						?? AS osr
@@ -516,11 +516,10 @@ router.post("/toDbDeleteResponsible", urlencodedParser,
 router.post("/toDbSaveResponsible", urlencodedParser,
     async function (request, response)
 	{
-
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
         let position = request.body.position;
-        console.log(position)
+
 		if(!idOffers
 			|| !respTabnum
 				|| !position)
@@ -606,5 +605,108 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser,
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
     })
 
+router.post("/respResults", urlencodedParser, /**authMiddleware,**/
+    async function (request, response)
+	{
+        const idOffers =  request.body.idOffer;
+		//const userId = request.user.id;
+		const userId = '7';
+
+		const query = `SELECT
+							resp.*
+						FROM
+							offersendler.offersworker AS w
+						INNER JOIN offersendler.offers AS o
+								ON o.tabelNum = w.tabelNum
+						LEFT JOIN
+							(
+								SELECT
+									dep.name,
+									ka.fiofull,
+									resp.offer_id,
+									resp.responsible_tabnum,
+									resp.open,
+									resp.close,
+									resp.actual,
+									resp.innov,
+									resp.cost,
+									resp.extent
+								FROM ?? AS resp
+								INNER JOIN offersendler.kadry_all AS ka
+									ON ka.tabnum = resp.responsible_tabnum
+								INNER JOIN offersendler.department AS dep
+									ON dep.id = ka.department
+								WHERE resp.deleted <> 1
+							) AS resp ON resp.offer_id = o.Id
+						WHERE
+							w.id = ?
+							AND o.id = ?`
+
+		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
+		let placeholders_rg = ['offersendler.offersresponsible_rg', userId, idOffers];
+
+		const responsibles = await pool.query(query, placeholders)
+		const responsibles_rg = await pool.query(query, placeholders_rg)
+
+		if(!responsibles[0].length)
+		{
+			response.status(400)
+			response.send();
+		}
+
+		let result = {responsibles: {},
+						responsibles_rg: {}};
+
+		function init(data)
+		{
+			const pointer = new Map
+
+			for(value of data)
+			{
+				if(!pointer.hasOwnProperty(value.name))
+				{
+					pointer[value.name] = {data: [],
+											actual: 0,
+											innovation: 0,
+											cost: 0,
+											extent: 0};
+				}
+
+				const _pointer = pointer[value.name];
+
+				_pointer.data.push(
+					{
+						department: value.name,
+						fio: value.fiofull,
+						open: value.open,
+						close: value.close,
+						actuality: value.actual,
+						innovation: value.innov,
+						cost: value.cost,
+						duration: value.extent,
+						middle: (Math.round(value.actual + value.innov + value.cost + value.extent) / 4)
+					}
+				)
+				_pointer.actual += value.actual;
+				_pointer.innovation += value.innov;
+				_pointer.cost += value.cost;
+				_pointer.extent += value.extent
+			}
+
+			for(const value in pointer)
+			{
+				pointer[value].actual /= pointer[value].data.length;
+				pointer[value].innovation /= pointer[value].data.length;
+				pointer[value].cost /= pointer[value].data.length;
+				pointer[value].extent /= pointer[value].data.length;
+			}
+
+			return pointer;
+		}
+
+		result.responsibles = init(responsibles[0])
+
+		response.send(result)
+    })
 
 module.exports = router
