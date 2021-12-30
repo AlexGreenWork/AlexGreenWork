@@ -605,12 +605,11 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser,
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
     })
 
-router.post("/respResults", urlencodedParser, /**authMiddleware,**/
+router.post("/respResults", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
         const idOffers =  request.body.idOffer;
-		//const userId = request.user.id;
-		const userId = '7';
+		const userId = request.user.id;
 
 		const query = `SELECT
 							resp.*
@@ -704,7 +703,8 @@ router.post("/respResults", urlencodedParser, /**authMiddleware,**/
 			return pointer;
 		}
 
-		result.responsibles = init(responsibles[0])
+		result.responsibles = init(responsibles[0]);
+		result.responsibles_rg = init(responsibles_rg[0]);
 
 		response.send(result)
     })

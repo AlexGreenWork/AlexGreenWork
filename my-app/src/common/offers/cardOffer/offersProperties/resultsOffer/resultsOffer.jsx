@@ -171,6 +171,11 @@ class ResultTable extends React.Component
 		{
 			rows.push(this.create_row(header, data.responsibles[header]));
 		}
+		
+		for(const header in data.responsibles_rg)
+		{
+			rows.push(this.create_row(`Рабочая группа: ${header}`, data.responsibles_rg[header]));
+		}
 
 		this.setState({rows: rows})
 	}
