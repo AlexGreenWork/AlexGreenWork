@@ -74,7 +74,7 @@ const CreateCompMyOffers = (props)=>{
                                                             .then(res => {
                                                                 SetOffersData(res.data)   
                                                                 offersDataCount = res.data;
-                                                                console.log(offersDataCount)
+     
                                                             })
             } catch (e){
                 alert(e.response.message)
@@ -196,12 +196,8 @@ const InfoAboutAuthor = () => {
                 objAll[`${i+1}`] = objYetSendlers[i]
             }
         
-            /* if(tabelNumber !== 0){
-            
-            // userInfo = JSON.parse(UserInfo(tabelNumber));
-
-        } */
-        console.log(objAll)
+         
+       
         return Object.keys(objAll).map((key, i)=><SendlerTab key={`numAut${i}`} numAut={i+1} name={objAll[key].nameSendler}
                                                 surname={objAll[key].surnameSendler} middlename={objAll[key].middlenameSendler} 
                                                 email={objAll[key].email} tabelNumber={objAll[key].tabelNum}
