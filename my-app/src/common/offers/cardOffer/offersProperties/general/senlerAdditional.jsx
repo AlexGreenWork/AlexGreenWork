@@ -2,16 +2,6 @@ import React, {useState} from "react";
 import {API_URL} from "../../../../../config";
 import {store} from "../../../../../reducers";
 
-function RequestAddSendlerOffers() {
-    let idOffers = localStorage.getItem('idOffers');
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_URL}api/offers/sendAdd`, false); /// СИНХРОННЫЙ ЗАПРОС!!!
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.send(`selectOffers=${idOffers}`);
-   
-    return xhr.response
-}
-
 
 function AddSendlerOffers(){
 
@@ -24,15 +14,15 @@ function AddSendlerOffers(){
     let objYetSendlers = JSON.parse(obj.addSendler)
    
     let key =  Object.keys(objYetSendlers)
-
+    console.log(objYetSendlers)
         for(let i = 0; i<key.length; i++ ){
 
-        let name = objYetSendlers[key[i]].nameSendler
-        let surname = objYetSendlers[key[i]].surnameSendler
-        let middlename = objYetSendlers[key[i]].middlenameSendler
+        let name = objYetSendlers[key[i]].name
+        let surname = objYetSendlers[key[i]].surname
+        let middlename = objYetSendlers[key[i]].middlename
+     
         elemArr[i] = React.createElement("div", {className:"formFilds",  key:`qw${key[i].toString()}` , value:i }, <label id={`sendler${[i]}`} key={key[i]}> {i+1}: {surname} {name} {middlename}</label> ) ;
-      /*   key={number.toString()}
-                  value={number} */
+     
         }
 
    } else {
