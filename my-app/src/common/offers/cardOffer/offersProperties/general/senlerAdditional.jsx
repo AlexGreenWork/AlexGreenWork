@@ -17,12 +17,12 @@ function AddSendlerOffers(){
     console.log(objYetSendlers)
         for(let i = 0; i<key.length; i++ ){
 
-        let name = objYetSendlers[key[i]].name
-        let surname = objYetSendlers[key[i]].surname
-        let middlename = objYetSendlers[key[i]].middlename
-     
+        let name = objYetSendlers[key[i]].nameSendler
+        let surname = objYetSendlers[key[i]].surnameSendler
+        let middlename = objYetSendlers[key[i]].middlenameSendler
+       
         elemArr[i] = React.createElement("div", {className:"formFilds",  key:`qw${key[i].toString()}` , value:i }, <label id={`sendler${[i]}`} key={key[i]}> {i+1}: {surname} {name} {middlename}</label> ) ;
-     
+      
         }
 
    } else {
