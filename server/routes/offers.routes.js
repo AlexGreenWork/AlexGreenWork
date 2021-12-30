@@ -185,7 +185,6 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
-						osr.rating,
 						osr.position
 					FROM
 						?? AS osr
@@ -428,9 +427,20 @@ router.post("/sendAddInfo", urlencodedParser,
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
 		for(let i = 0; i < sqlSendAdd[0].length; i++){
 			
-			let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
+		/* 	let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
 			let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
 			arr[i] = sqlCoAuthorData[0][0];
+ */
+            let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
+			let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
+			let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+			newObject["nameSendler"] = sqlCoAuthorData[0][0].name;
+			newObject['surnameSendler'] = sqlCoAuthorData[0][0].surname;
+			newObject['middlenameSendler'] =sqlCoAuthorData[0][0].middlename; 
+			newObject['tabelNum'] =sqlCoAuthorData[0][0].tabelNum;
+			newObject['email'] =sqlCoAuthorData[0][0].email;
+			newObject['phoneNumber'] =sqlCoAuthorData[0][0].phoneNumber;
+			arr[i] =newObject;
 		//	arr.push(sqlCoAuthorData[0][0])
 		}
       
@@ -441,15 +451,6 @@ router.post("/sendAddInfo", urlencodedParser,
     } else{
         response.send('null')
     }
-//>>>>>>> trus
-
-        // if(sqlSendAdd[0][0] != undefined){
-        //     let SendAddValid = sqlSendAdd[0][0].Sendlers.slice(1, sqlSendAdd[0][0].Sendlers.length-1)
-        //
-        //     response.send(SendAddValid)
-        // } else{
-        //     response.send('null')
-        // }
 
     })
 

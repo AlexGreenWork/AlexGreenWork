@@ -88,7 +88,7 @@ const Offer = (props) => {
                 if (this.readyState == 4 && this.status == 200) {
 
                     dispatch(addSendler(xhr.response))
-                              
+                    console.log(xhr.response)  
                 }
             }  
             xhr.send(`selectOffers=${idOffers}`);
