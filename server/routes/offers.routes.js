@@ -185,7 +185,6 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
-						osr.rating,
 						osr.position
 					FROM
 						?? AS osr
