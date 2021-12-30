@@ -23,13 +23,13 @@ class Row extends React.Component
 {
 	constructor(props)
 	{
-		super(props);console.log(props)
+		super(props);
 		this.state = {open: false};
 	}
 
 	colored_by_rating(rating)
 	{
-		if(rating < 5)
+		if(rating < 5 && rating > 0)
 			return "Red"
 		else if(rating >= 5 && rating < 7)
 			return "Orange"
@@ -39,7 +39,12 @@ class Row extends React.Component
 
 	create_rating_ceil(rating)
 	{
-		return <TableCell align="right" style = {{color: this.colored_by_rating(rating)}}>{rating}</TableCell>;
+		return <TableCell style = {{color: this.colored_by_rating(rating),
+									fontSize: "16px",
+									fontWeight: "bold"
+								}}>
+			{rating}
+		</TableCell>;
 	}
 
 	render()
@@ -76,12 +81,12 @@ class Row extends React.Component
 								<Table size="small" aria-label="purchases">
 									<TableHead>
 										<TableRow>
-											<TableCell align="right">Проверил</TableCell>
-											<TableCell align="right">Актуальность</TableCell>
-											<TableCell align="right">Инновативность</TableCell>
-											<TableCell align="right">Затратность</TableCell>
-											<TableCell align="right">Протяженность</TableCell>
-											<TableCell align="right">Общая оценка</TableCell>
+											<TableCell style={{width: "250px"}}>Проверил</TableCell>
+											<TableCell>Актуальность</TableCell>
+											<TableCell>Инновативность</TableCell>
+											<TableCell>Затратность</TableCell>
+											<TableCell>Протяженность</TableCell>
+											<TableCell>Общая оценка</TableCell>
 										</TableRow>
 									</TableHead>
 									<TableBody>
@@ -94,16 +99,17 @@ class Row extends React.Component
 												{this.create_rating_ceil(historyRow.innovation)}
 												{this.create_rating_ceil(historyRow.cost)}
 												{this.create_rating_ceil(historyRow.duration)}
-												<TableCell rowSpan = "2" align="right"
+												<TableCell rowSpan = "2"
+															align = "center"
 															style = {{color: this.colored_by_rating(historyRow.middle)}}>
 													{historyRow.middle}
 												</TableCell>
 											</TableRow>
 											<TableRow key={historyRow.inspector}>
-												<TableCell align="right">Дата начала проверки</TableCell>
-												<TableCell align="right">{historyRow.dateStart}</TableCell>
-												<TableCell align="right">Дата окончания проверки</TableCell>
-												<TableCell align="right">{historyRow.dateFinish}</TableCell>
+												<TableCell style={{width: "200px"}}>Дата начала проверки</TableCell>
+												<TableCell>{historyRow.dateStart}</TableCell>
+												<TableCell style={{width: "250px"}}>Дата окончания проверки</TableCell>
+												<TableCell>{historyRow.dateFinish}</TableCell>
 											</TableRow>
 										</>))}
 									</TableBody>
@@ -149,15 +155,14 @@ class ResultTable extends React.Component
 		{
 			row.history.push(
 				{
-					dateStart: moment(value.open).format("DD-MM-YYYY"),
+					dateStart: value.open? moment(value.open).format("DD-MM-YYYY"): "N/A",
 					inspector: value.fio,
 					middle: value.middle,
-					dateFinish: value.close? moment(value.close).format("DD-MM-YYYY") : "Задача не закрыта",
+					dateFinish: value.close? moment(value.close).format("DD-MM-YYYY") : "N/A",
 					actuality: value.actuality,
 					innovation: value.innovation,
 					cost: value.cost,
 					duration : value.duration,
-					middle: value.middle,
 				});
 		}
 
@@ -201,10 +206,10 @@ class ResultTable extends React.Component
 						<TableRow>
 							<TableCell />
 							<TableCell>Проверяющий</TableCell>
-							<TableCell align="right">Актуальность</TableCell>
-							<TableCell align="right">Инновативность</TableCell>
-							<TableCell align="right">Затратность</TableCell>
-							<TableCell align="right">Протяженность</TableCell>
+							<TableCell>Актуальность</TableCell>
+							<TableCell>Инновативность</TableCell>
+							<TableCell>Затратность</TableCell>
+							<TableCell>Протяженность</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
