@@ -658,7 +658,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
 		function init(data)
 		{
-			const pointer = new Map
+			const pointer = new Map();
 
 			for(value of data)
 			{
