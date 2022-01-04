@@ -5,4 +5,16 @@
     font-family: Helvetica, sans-serif;
     font-weight: 100;
     font-size: 1.1em;
+    background: linear-gradient(90deg, #ffffff, #d3e1f3);
+}
+
+
+@media screen and (max-width: 600px) {
+    .personalCabinetContainer{
+        grid-column: 1/6;
+        grid-row: 1/5;
+        flex-direction: column;
+        background-color: whitesmoke;
+    
+    }
 }
