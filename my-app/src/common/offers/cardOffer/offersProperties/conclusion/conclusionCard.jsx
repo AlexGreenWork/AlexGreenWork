@@ -1,26 +1,35 @@
 import React from "react";
-
 import s from "./conclusion.module.css"
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
 import Button from "@material-ui/core/Button";
-// import Complete from "../../../../personalCabinet/findWorkers/complete";
 import {store} from "../../../../../reducers";
 import {API_URL} from "../../../../../config";
 import server from "../../../../../actions/server";
 import style from "./conclusionCard.module.css"
-import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
+import Paper from '@mui/material/Paper';
+import axios from "axios";
+import {setPopupDisplay} from "../../../../../reducers/fileReducer";
+
+import {useDispatch} from "react-redux";
+
+
 
 
 const ConclusionCard = (props) => {
     const [viewChange, setViewChange] = React.useState(false);
-
+    if(props.id.mark == null && props.id.responsible_tabnum == localStorage.getItem('userTabelNum')){
+        props.id.mark = ''
+    }else{
+        props.id.mark = 'Аннотации пока нет'
+    }
+    const [annot, setAnnot] = React.useState(`${props.id.mark}`)
     function changeViewSelect() {
         setViewChange(true)
     }
@@ -80,6 +89,22 @@ const ConclusionCard = (props) => {
                     </div>
                 </div>
             )
+        }
+    }
+    const dispatch = useDispatch()
+    async function saveAnnot(idOffer, tabNum){
+
+        try{
+            const ann = document.getElementById(`'annotation'${props.id.name}`).innerText
+            console.log(ann)
+            setAnnot(ann)
+            // await axios.post(`${API_URL}api/offers/toDbSaveAnnot`, {
+            //     idOffer,
+            //     tabNum
+            // })
+
+        }catch{
+
         }
     }
 
@@ -202,7 +227,7 @@ const ConclusionCard = (props) => {
                         margin: "25px",
                         boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
                     }} onClick={(value) => {
-                        deleteResponsible(props.id.offer_id, props.tabel)
+                        saveAnnot(props.id.offer_id, props.tabel, props.id.mark)
                     }}>Добавить Аннотацию</Button>
                 </div>
             )
@@ -263,6 +288,9 @@ const ConclusionCard = (props) => {
         }
 
         const [isActive, setIsActive] = React.useState(false);
+        const [resOtv, setResOtv] = React.useState(`${props.id}`);
+console.log(props)
+
 
         return (
             <div style={{
@@ -361,7 +389,7 @@ const ConclusionCard = (props) => {
                         }}>Краткая аннотация заключения подразделения({props.id.fullname}):
                         </div>
                         <div style={{width: "100%"}} placeholder="Напишите краткую аннотацию..."
-                             contentEditable={"true"} className={s.conclusionTextArea}>
+                            id={'annotation'+props.name} contentEditable={"true"} className={s.conclusionTextArea}>{annot}
                         </div>
                         <AdminChangeSaveAnnotation {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
                     </div>

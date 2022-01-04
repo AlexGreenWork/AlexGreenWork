@@ -6,7 +6,7 @@
     }
     100% {
         position: absolute;
-        top: 18vh;
+        top: 13vh;
         width: 100%;
     }
 }
@@ -15,6 +15,7 @@
 
 
 .nameOffer{
+    margin-top: 5vh;
     display: flex;
     padding: 20px;
     flex-direction: column;

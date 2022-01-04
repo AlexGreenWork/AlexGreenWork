@@ -6,7 +6,7 @@
     }
     100% {
         position: absolute;
-        top: 18vh;
+        top: 13vh;
         width: 100%;
     }
 }
@@ -124,6 +124,7 @@
     margin-right: 10px;
 }
 .nameOffer {
+    margin-top: 5vh;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
