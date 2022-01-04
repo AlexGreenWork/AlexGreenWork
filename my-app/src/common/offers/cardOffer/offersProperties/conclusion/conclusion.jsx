@@ -13,10 +13,23 @@ import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import server from "../../../../../actions/server";
 import {element} from "prop-types";
 import {saveRespRGAnnotationToDb} from "../../../../../actions/file";
+import axios from "axios";
+import style from "./conclusionCard.module.css";
+import TableContainer from "@mui/material/TableContainer";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableBody from "@mui/material/TableBody";
 
 
 console.log(store.getState().search.searchUser)
 
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 const ConclusionOffer = () => {
 
     const dispatch = useDispatch()
@@ -94,11 +107,11 @@ const ConclusionOffer = () => {
     useEffect(() => {
     })
 
-    function addResp(value) {
+     function addResp(value) {
         setResponsibles(responsibles.push({}));
     }
 
-    function deleteResp() {
+    function deleteResp(){
         setResponsibles(responsibles.pop({}));
     }
 

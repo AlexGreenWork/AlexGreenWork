@@ -60,8 +60,10 @@ const CardOffer = () => {
 
         
         <div className={s.cardOfferContainer}>
-            <Box sx={{width: '100%'}}>
-                <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+            <Box sx={{
+                width: '100%'
+            }}>
+                <Box sx={{borderBottom: 1, borderColor: 'divider', position:"fixed", zIndex:22, backgroundColor:"white"}}>
                     <Tabs value={value} onChange={handleChange} variant="scrollable"
                           scrollButtons
                           allowScrollButtonsMobile

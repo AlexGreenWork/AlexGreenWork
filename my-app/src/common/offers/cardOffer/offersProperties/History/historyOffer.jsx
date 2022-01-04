@@ -18,7 +18,12 @@ const HistoryOffer = () => {
 
     return (
         <div>
-            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            <Accordion
+                style={{
+                    marginTop: "5vh",
+
+                }}
+                expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"

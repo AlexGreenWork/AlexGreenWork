@@ -231,17 +231,19 @@ const InfoAboutAuthor = () => {
     return (
         <div className={s.cardOfferContainer}>
                       <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-      <Tabs value={value} onChange={handleChange} style={{
-          display: "flex",
-          flexDirection: "inherit",
-          justifyContent: "flex-start"
-      }}>
+                  <Tabs value={value} onChange={handleChange} style={{
+                     display: "flex",
+                       flexDirection: "inherit",
+                      justifyContent: "flex-start"
+                }}>
         <SendlerTabList/>
-      </Tabs>
-    </Box>
+            </Tabs>
+          </Box>
             <div className={s.header}>
                 <div className="img" style={{ backgroundImage: `url(${photo})`,
-                backgroundRepeat: "round", width: "150px", minHeight: "200px", borderRadius: "10px"}}>
+                backgroundRepeat: "round", width: "150px", minHeight: "200px", borderRadius: "10px",
+                    opacity: 1,
+                    transition: "0.2s ease-in-out"}}>
                     
                 </div>
 

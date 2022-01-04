@@ -119,7 +119,6 @@ export function searchFiles(search) {
 export function saveRespRGAnnotationToDb(w) {
     return async () => {
         try {
-
             let respID = store.getState().offers.offer.responsibles_rg?.responsible_tabnum
             let id = localStorage.getItem("idOffers")
             if(respID == undefined){

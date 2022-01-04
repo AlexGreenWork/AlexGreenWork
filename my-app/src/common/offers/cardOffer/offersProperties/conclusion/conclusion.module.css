@@ -6,7 +6,7 @@
     }
     100% {
         position: absolute;
-        top: 18vh;
+        top: 13vh;
         width: 100%;
     }
 }
@@ -40,6 +40,7 @@
 
 
 .cardOfferContainer1{
+    margin-top: 6vh;
     animation: fromUpToDown1;
     animation-duration: .5s;
 }
