@@ -136,7 +136,7 @@ const Offer = (props) => {
 
 
     return (
-        <div>
+        <div className={s.nlink}>
             <NavLink to='/cardOffer' onClick={()=>{clickOnOfferLink(); DispatchAddSendler(); DispatchOffers(); }}>
                 <div className={s.header}>
                     <div className={s.offerPreview}>
