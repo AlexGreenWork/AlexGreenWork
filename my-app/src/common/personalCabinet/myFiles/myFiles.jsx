@@ -115,8 +115,7 @@ function OffersBlock(props){
 }
 
 function OfferList(props){
-    console.log(props)
-  
+     
     return props.offers.map((count)=><OffersBlock key={'offerList'+count.Id} id={count.Id} nameOffer={count.nameOffer}/>)
 }
 
@@ -132,7 +131,7 @@ function FilesWg(props){
 
 function WgListFile(props){
     
-    return props.listFile.map((count, i)=><FilesWg key={'FilesWg'+count.Id} number={i} listFile = {count} idOffers = {props.idOffers}/>)
+    return props.listFile.map((count, i)=><FilesWg key={`FilesWg${props.idOffers}`+i} number={i} listFile = {count} idOffers = {props.idOffers}/>)
 }
 
 
@@ -253,7 +252,7 @@ const MyFiles = () => {
         return(
 
             <div className={`${s.personalCabinetContainer} `}  >
-               <div className='blockname'>Мои файлы</div> 
+               <div className='blockname'>Мои файлы </div> 
                 <OfferList  offers={reqMyOff}/>
                 <WgFilesList/>
             </div>
