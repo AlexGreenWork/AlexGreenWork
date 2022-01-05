@@ -4,13 +4,13 @@ const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
-const {isDate} = require("moment");
+const { isDate } = require("moment");
 const moment = require("moment");
 const { on } = require("events");
 
 router.use(fileUpload({}));
 
-const urlencodedParser = Router.urlencoded({extended: false});
+const urlencodedParser = Router.urlencoded({ extended: false });
 
 const mysqlConfig = {
     host: config.database.host,
@@ -42,8 +42,8 @@ router.get("/allOffers",
 
 
         async function sqlSelectOffers() {
-           
-			let selectOffers = await pool.execute(`SELECT
+
+            let selectOffers = await pool.execute(`SELECT
 														o.nameOffer,
 														o.Id,
 														o.date,
@@ -57,7 +57,7 @@ router.get("/allOffers",
 														ON ow.tabelNum = o.tabelNum`);
 
             response.setHeader('Content-Type', 'application/json');
-		
+
             response.send(JSON.stringify(selectOffers[0], null, 3));
 
             // response.send(selectOffers[0]);
@@ -71,24 +71,24 @@ router.get("/allOffers",
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
 
-		
-		let tabelNumber = request.body.tabelNumber;
+
+        let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
         let idOffers = request.body.idOffers;
         let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
-	
+
         response.send(sqlResult[0])
 
     })
 
 async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 
-	if(idOffers != undefined){  //условие для корректной работы Предложений для обработки
-		let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
-		//console.log(sqlOffersTabel, sqlOffersTabel[0])
-		let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
-		
-		let sqlMyOff = await pool.execute(`SELECT
+    if (idOffers != undefined) {  //условие для корректной работы Предложений для обработки
+        let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
+        //console.log(sqlOffersTabel, sqlOffersTabel[0])
+        let sqlemailOffers = await pool.execute(`SELECT email FROM offersworker WHERE tabelNum=${sqlOffersTabel[0][0].tabelNum}`)
+
+        let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
 											o.date,
@@ -103,15 +103,15 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											ON ow.tabelNum = o.tabelNum
 										WHERE (ow.tabelNum = ${sqlOffersTabel[0][0].tabelNum}
 											AND ow.email = "${sqlemailOffers[0][0].email}")`);
-										
-			//console.log(sqlMyOff[0])
-		return [sqlMyOff]
 
-	}				
-	
-	let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
-	
-	let sqlMyOff = await pool.execute(`SELECT
+        //console.log(sqlMyOff[0])
+        return [sqlMyOff]
+
+    }
+
+    let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
+
+    let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
 											o.date,
@@ -125,41 +125,39 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											ON ow.tabelNum = o.tabelNum
 										WHERE (ow.tabelNum = ${tabelNumber}
 											AND ow.email = "${email}")`)
-					
-			
-		let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений		
-	for(let i=0; i<sqlParty[0].length; i++ ){
-		let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
-		
-		let sqlOffersqwe = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);	// нашли табельный автора подавшего предложения
-		
-		 
-		let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
-	
-		let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
-		newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
-		newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
-		newObject['middlenameSendler'] =sqlinfoOffersCoAuthor[0][0].middlename;
-		newObject['coAuthor'] ="Соавтор"; //опметка соавтор
-		
-		let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
-				
-		infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
-		
-		myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
-		
-	}
-/* >>>>>>> trus */
 
-return [myAllOfffers]
+
+    let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений		
+    for (let i = 0; i < sqlParty[0].length; i++) {
+        let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
+
+        let sqlOffersqwe = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);	// нашли табельный автора подавшего предложения
+
+
+        let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
+
+        let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+        newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
+        newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
+        newObject['middlenameSendler'] = sqlinfoOffersCoAuthor[0][0].middlename;
+        newObject['coAuthor'] = "Соавтор"; //опметка соавтор
+
+        let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
+
+        infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
+
+        myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
+
+    }
+    /* >>>>>>> trus */
+
+    return [myAllOfffers]
 }
 
 router.post("/selectMyOffers", urlencodedParser,
-    async function (request, response)
-    {
-        if(!('selectOffers' in request.body)
-            || !request.body.selectOffers)
-        {
+    async function (request, response) {
+        if (!('selectOffers' in request.body)
+            || !request.body.selectOffers) {
             response.status(400);
             response.send();
         }
@@ -219,7 +217,7 @@ router.post("/userInfo", urlencodedParser,
 
         let userTab = request.body.userTab;
 
-        try{
+        try {
             const sqlUserInfo = `SELECT
 							ka.profname,
 							d.fullname,
@@ -247,8 +245,7 @@ router.post("/userInfo", urlencodedParser,
                 email: null,
             }
 
-            if(stmt[0][0])
-            {
+            if (stmt[0][0]) {
                 reqJson.department = stmt[0][0].fullname;
                 reqJson.division = stmt[0][0].name;
                 reqJson.position = stmt[0][0].profname,
@@ -257,8 +254,7 @@ router.post("/userInfo", urlencodedParser,
 
             response.send(reqJson);
         }
-        catch(e)
-        {
+        catch (e) {
             console.log(e)
         }
     })
@@ -269,10 +265,10 @@ router.post("/FilesMyOffers", urlencodedParser,
 
         fs.readdir(`../server/files/offers/idOffers/`, (err, folder) => {
 
-            if(folder.length == 0){
+            if (folder.length == 0) {
 
                 fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
-                    if(err) throw err; // не удалось создать папки
+                    if (err) throw err; // не удалось создать папки
                     // console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
 
                     fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
@@ -284,14 +280,14 @@ router.post("/FilesMyOffers", urlencodedParser,
 
             } else {
                 let a = 0;
-                for(let i = 0; i< folder.length; i++){
+                for (let i = 0; i < folder.length; i++) {
 
-                    if(folder[i] == `id${request.body.idOffers}`){
+                    if (folder[i] == `id${request.body.idOffers}`) {
 
 
                         fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/`, (err, folder) => {
 
-                            if(folder[0] == "SendlerFiles"){
+                            if (folder[0] == "SendlerFiles") {
 
                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
 
@@ -303,7 +299,7 @@ router.post("/FilesMyOffers", urlencodedParser,
                             } else {
 
                                 fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
-                                    if(err) throw err; // не удалось создать папки
+                                    if (err) throw err; // не удалось создать папки
                                     //console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
 
                                     fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
@@ -319,10 +315,10 @@ router.post("/FilesMyOffers", urlencodedParser,
 
                     } else {
                         a++;
-                        if( a == folder.length){
+                        if (a == folder.length) {
 
                             fs.mkdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, { recursive: true }, err => {
-                                if(err) throw err;
+                                if (err) throw err;
                                 fs.readdir(`../server/files/offers/idOffers/id${request.body.idOffers}/SendlerFiles/`, (err, files) => {
                                     response.send(files)
                                 })
@@ -344,9 +340,9 @@ router.post("/toStatus", urlencodedParser,
         let view = request.body.view
         let category = request.body.category
         let status = request.body.status
-        try{
+        try {
             await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
-        }catch(e){console.log(e)}
+        } catch (e) { console.log(e) }
     })
 
 router.post("/toDbDateComission", urlencodedParser,
@@ -362,28 +358,24 @@ router.post("/toDbDateComission", urlencodedParser,
 //       await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
 //     })
 
-router.get("/downloadMyFile", urlencodedParser, async function(request, response){
-	console.log(request.query)
+router.get("/downloadMyFile", urlencodedParser, async function (request, response) {
+    console.log(request.query)
     let idOffers = request.query.idOffers;
     let fileName = request.query.fileName;
     let folderName = request.query.folder;
 
     fs.readdir(`../server/files/offers/idOffers/id${idOffers}/${folderName}/`, async (err, filesName) => {
-       
+
         filesName.push('exit');
 
-        for(let i = 0 ; i < filesName.length; i++ )
-        {
-            if(filesName[i] == fileName )
-            {
+        for (let i = 0; i < filesName.length; i++) {
+            if (filesName[i] == fileName) {
                 let file = `${__dirname}/../files/offers/idOffers/id${idOffers}/${folderName}/${fileName}`;
                 response.download(file);
                 break;
             }
-            else
-            {
-                if(filesName[i] == 'exit')
-                {
+            else {
+                if (filesName[i] == 'exit') {
                     response.send("Нет файла")
                 }
             }
@@ -394,44 +386,42 @@ router.get("/downloadMyFile", urlencodedParser, async function(request, response
 
 
 router.post("/sendAddInfo", urlencodedParser,
-    async function (request, response){
-        let arr =[];
+    async function (request, response) {
+        let arr = [];
         let idOffers = request.body.selectOffers;
 
         let sqlSendAdd = await pool.query(`SELECT * FROM senleradditional WHERE IdOffers=${idOffers} `);
-		for(let i = 0; i < sqlSendAdd[0].length; i++){
-			
-	
+        for (let i = 0; i < sqlSendAdd[0].length; i++) {
+
+
             let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
-			let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
-			let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
-			newObject["nameSendler"] = sqlCoAuthorData[0][0].name;
-			newObject['surnameSendler'] = sqlCoAuthorData[0][0].surname;
-			newObject['middlenameSendler'] =sqlCoAuthorData[0][0].middlename; 
-			newObject['tabelNum'] =sqlCoAuthorData[0][0].tabelNum;
-			newObject['email'] =sqlCoAuthorData[0][0].email;
-			newObject['phoneNumber'] =sqlCoAuthorData[0][0].phoneNumber;
-			arr[i] =newObject;
-		
-		}
-      
-       if(sqlSendAdd[0] != undefined){
-      
-        response.send(arr)
-    } else{
-        response.send('null')
-    }
+            let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
+            let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+            newObject["nameSendler"] = sqlCoAuthorData[0][0].name;
+            newObject['surnameSendler'] = sqlCoAuthorData[0][0].surname;
+            newObject['middlenameSendler'] = sqlCoAuthorData[0][0].middlename;
+            newObject['tabelNum'] = sqlCoAuthorData[0][0].tabelNum;
+            newObject['email'] = sqlCoAuthorData[0][0].email;
+            newObject['phoneNumber'] = sqlCoAuthorData[0][0].phoneNumber;
+            arr[i] = newObject;
+
+        }
+
+        if (sqlSendAdd[0] != undefined) {
+
+            response.send(arr)
+        } else {
+            response.send('null')
+        }
 
     })
 
 router.post("/toDbSaveResposibleRG", urlencodedParser,
-    async function (request, response)
-    {
-        if((!('idOffer' in request.body)
-                || !request.body.idOffer)
+    async function (request, response) {
+        if ((!('idOffer' in request.body)
+            || !request.body.idOffer)
             || (!('respTabnum' in request.body)
-                || !request.body.respTabnum))
-        {
+                || !request.body.respTabnum)) {
             response.status(400);
             response.send();
         }
@@ -457,52 +447,47 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
 
 
 router.post("/toDbDeleteResponsible", urlencodedParser,
-	async function (request, response)
-	{
+    async function (request, response) {
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
 
-		if(!idOffers
-			&& !respTabnum)
-		{
-			response.status(400)
-			response.send();
-		}
+        if (!idOffers
+            && !respTabnum) {
+            response.status(400)
+            response.send();
+        }
 
-		let placeholders = [idOffers, respTabnum];
+        let placeholders = [idOffers, respTabnum];
 
-		query = `UPDATE
+        query = `UPDATE
 					offersendler.offersresponsible
 				SET deleted = 1
 				WHERE offer_id = ?
 				AND responsible_tabnum = ?`
 
-		pool.query(query, placeholders);
+        pool.query(query, placeholders);
 
-		response.status(200);
+        response.status(200);
 
-		response.send();
+        response.send();
     })
 
 router.post("/toDbSaveResponsible", urlencodedParser,
-    async function (request, response)
-	{
+    async function (request, response) {
 
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
         let position = request.body.position;
         console.log(position)
-		if(!idOffers
-			|| !respTabnum
-				|| !position)
-		{
-			response.status(400)
-			response.send();
-		}
+        if (!idOffers
+            || !respTabnum
+            || !position) {
+            response.status(400)
+            response.send();
+        }
 
-		async function restore(connection, idOffer, tabnum, position)
-		{
-            try{
+        async function restore(connection, idOffer, tabnum, position) {
+            try {
                 const query = `UPDATE
 								offersresponsible
 							SET
@@ -519,26 +504,24 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 
                 return await connection.query(query, placeholders);
 
-            }catch(e) {
+            } catch (e) {
                 console.log(e)
             }
 
-		}
+        }
 
-		async function insert(connection, idOffer, tabnum, position)
-		{
-			const query = `INSERT INTO offersendler.offersresponsible
+        async function insert(connection, idOffer, tabnum, position) {
+            const query = `INSERT INTO offersendler.offersresponsible
 								(offer_id, responsible_tabnum, open, position)
 							VALUES (?, ?, ?, ?)`
             console.log(position)
-			let placeholders = [idOffer, tabnum, moment().format('YYYY-MM-DD'), position];
+            let placeholders = [idOffer, tabnum, moment().format('YYYY-MM-DD'), position];
 
-			return await connection.query(query, placeholders);
-		}
+            return await connection.query(query, placeholders);
+        }
 
-		async function check(connection, idOffer, tabnum)
-		{
-			const query = `SELECT
+        async function check(connection, idOffer, tabnum) {
+            const query = `SELECT
 								COUNT(id) AS count
 							FROM
 								offersendler.offersresponsible
@@ -547,34 +530,74 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 							AND 
 								responsible_tabnum = ?`
 
-			let placeholders = [idOffer, tabnum];
+            let placeholders = [idOffer, tabnum];
 
-			const db_result = await connection.query(query, placeholders);
+            const db_result = await connection.query(query, placeholders);
 
-			return (db_result[0][0]) && (db_result[0][0].count > 0)
-		}
+            return (db_result[0][0]) && (db_result[0][0].count > 0)
+        }
 
 
-		if(await check(pool, idOffers, respTabnum))
-		{
-			await restore(pool, idOffers, respTabnum, position)
-		}
-		else
-		{
-			await insert(pool, idOffers, respTabnum, position)
-		}
+        if (await check(pool, idOffers, respTabnum)) {
+            await restore(pool, idOffers, respTabnum, position)
+        }
+        else {
+            await insert(pool, idOffers, respTabnum, position)
+        }
 
-		response.status(200);
-		response.send();
+        response.status(200);
+        response.send();
     })
 
 router.post("/saveRespRGAnnotationToDb", urlencodedParser,
-    async function (request, response){
+    async function (request, response) {
 
         let annotationRg = request.body.w
         let offerId = request.body.id
         let offerRespId = request.body.respID
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
+    })
+
+
+router.post("/responsibleToOffers", urlencodedParser,
+    async function (request, response) {
+        let arrOffer = [];
+        let tabNum = request.body.tabNum
+       
+        let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
+        
+        if(sqlResponsible[0].length != 0){
+            for (let i = 0; i < sqlResponsible[0].length; i++) {
+
+                let sqlOffers = await pool.query(`SELECT nameOffer,
+                                                         Id,
+                                                         date,
+                                                         status,
+                                                         tabelNum 
+                                                   FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
+    
+    
+                let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
+    
+              
+                let offersObj = sqlOffers[0][0]
+               
+                offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
+                offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
+                offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
+                  
+                arrOffer[i] = offersObj;
+                   
+                    if(i == sqlResponsible[0].length-1 ){
+                        response.send(arrOffer)
+                    }
+            }
+        } else{
+            response.send("noResponsible")
+        }
+      
+      
+       
     })
 
 

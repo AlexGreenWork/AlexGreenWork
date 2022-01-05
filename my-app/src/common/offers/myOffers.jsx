@@ -58,45 +58,7 @@ const Offer = (props) => {
             xhr.send(`selectOffers=${props.id}`);
         }
 
-        async function requestInfoAutor(xhr){
-            let req = new XMLHttpRequest();
-            req.open('POST', `${API_URL}api/files/workData`, true); 
-            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            req.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                  
-                   let offersData = JSON.parse(xhr); 
-                   let workData = JSON.parse(req.response); 
-                   
-                   /* dispatch(selectMyOffers(
-                                            offersData.Id,
-                                            offersData.nameOffer,
-                                            offersData.date,
-                                            offersData.tabelNum,
-                                            offersData.nameSendler,
-                                            offersData.surnameSendler,
-                                            offersData.middlenameSendler,
-                                            offersData.email,
-                                            offersData.status,
-                                            offersData.descriptionProblem,
-                                            offersData.category,
-                                            offersData.view,
-                                            offersData.responsibles, 
-                                            offersData.responsibles_rg,
-                                            offersData.textOffer,
-                                            offersData.phoneNumber,
-                                            offersData.dateComission,
-                                            workData[1],
-                                            workData[2])) */
-                              
-                } else{
-                    //console.log("false response")
-                }
         
-            }
-        
-            req.send(`tabNum=${props.tabelNum}`);
-        }
     }
 
     function DispatchAddSendler(){
