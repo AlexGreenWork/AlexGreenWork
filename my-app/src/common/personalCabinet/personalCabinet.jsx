@@ -1,11 +1,37 @@
-import React from "react";
+import React, {useState} from "react";
 import s from "./personalCabinet.module.css"
 import {NavLink} from "react-router-dom";
+import axios from 'axios';
+import { API_URL } from "../../config";
 import Messages from "./messages/messages";
 import Offers from "../offers/offers";
+import OffersResponsible from "./responsible/responsible";
 
 
 const PersonalCabinet = () => {
+
+    const [responsible, setResponsible] = useState(null)
+    let tabNum = localStorage.getItem('userTabelNum');
+     try{
+        axios.post(`${API_URL}api/offers/responsibleToOffers`, {  tabNum: tabNum,
+                                                
+                                                    })
+                                                    .then(res => {
+                                                        if(responsible == null){
+                                                            if(res.data != 'noResponsible' ){
+                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Предложения с вашими заключениями</NavLink></div>)
+                                                            }
+                                                           
+                                                        }
+                                                     
+                                                     
+                                                      
+                                                    })
+    } catch (e){
+        alert(e.response)
+    } 
+
+
     function IsAdminUser(props)
     {
         return (
@@ -26,6 +52,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
                     Найти сотрудника
                 </NavLink></div>
+                {responsible}
             </div>
         )
     }
@@ -57,6 +84,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}>
                     <NavLink className={s.offers} to="/personalCabinet/myOffers">Панель администратора</NavLink>
                 </div>
+                {responsible}
             </div>
         );
     }
@@ -87,11 +115,16 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/">
                     Панель Рабочей группы
                 </NavLink></div>
+                {responsible}
             </div>
+
         )
     }
 
     function AdminChange(props)
+
+    
+
     {
         const isAdmin = props.isAdmin;
         if (isAdmin == 'wg') {
@@ -106,6 +139,7 @@ const PersonalCabinet = () => {
             return <IsAdminUser/>
         }
     }
+
 
 
     return (

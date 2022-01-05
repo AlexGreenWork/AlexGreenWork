@@ -1,11 +1,11 @@
 import React, {useState}from "react";
 import {NavLink} from "react-router-dom";
-import s from "./sendOffer/offerForm/offers.module.css"
-import {API_URL} from "../../config";
+import s from "../../../common/offers/sendOffer/offerForm/offers.module.css"
+import { API_URL } from "../../../config";
 import {useContext} from "react";
-import Context from "../context/Context";
+import Context from "../../context/Context";
 import { useDispatch } from "react-redux";
-import { addSendler, selectMyOffers } from "../../reducers/offerReducer";
+import { addSendler, selectMyOffers } from "../../../reducers/offerReducer";
 
 const Offer = (props) => {
     const value = useContext(Context);
@@ -27,7 +27,6 @@ const Offer = (props) => {
                     let offersData = JSON.parse(xhr.response);           
                    
                     requestInfoAutor(xhr.response);
-                   
                                                                     
                 } 
             }     
@@ -136,7 +135,7 @@ const Offer = (props) => {
 
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
-    console.log(props.request)
+   
     return offersData.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
                                              status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum}
@@ -144,8 +143,9 @@ const OffersLink = (props) => {
 
 }
 
-const Offers = () => {
+const OffersResponsible = () => {
     const [reqAllOff, setReqAllOff] = useState(0);
+    let tabNum = localStorage.getItem('userTabelNum')
     
     if(reqAllOff === 0){
         Resp();
@@ -154,25 +154,36 @@ const Offers = () => {
    function Resp() {
 
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
+       
+        xhr.open('POST', `${API_URL}api/offers/responsibleToOffers`, true)
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                console.log(xhr.response)
+    
                 setReqAllOff(xhr.response)
                
             }
         }
-        xhr.send();
+        xhr.send(`tabNum=${tabNum}`);
         //console.log(xhr.response)
         return xhr.response;
 
     }
-    return (
-        <div className={s.offersContainer}>
-            <div className={s.titleHeader}> Предложения для обработки рабочей группой</div>
-            <OffersLink request={reqAllOff}/>
-
-        </div>
-    )
+    if(reqAllOff != 0 ){
+        return (
+            <div className={s.offersContainer}>
+                <div className={s.titleHeader}> Предложения с вашими заключениями</div>
+                <OffersLink request={reqAllOff}/>
+            </div>
+        )
+    } else{
+        return (
+            
+            <div className={s.offersContainer}>
+             <div className={s.titleHeader}> Нет предложений</div>
+             </div>
+        )
+    }
+   
 }
-export default Offers;
+export default OffersResponsible;

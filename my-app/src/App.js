@@ -24,7 +24,7 @@ import Tasks from "./common/personalCabinet/tasks/tasks";
 import FindWorkers from "./common/personalCabinet/findWorkers/findWorkers";
 import Context from "./common/context/Context";
 import MyFiles from "./common/personalCabinet/myFiles/myFiles";
-
+import OffersResponsible from "./common/personalCabinet/responsible/responsible";
 
 
 
@@ -95,6 +95,8 @@ function App(props) {
                     <Route path='/personalCabinet/messages' component={Messages}/>
                     <Route path='/personalCabinet/offers' component={Offers}/>
                     <Route path='/personalCabinet/myFiles' component={MyFiles}/>
+                    <Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>
+
 
                 </div>
 
