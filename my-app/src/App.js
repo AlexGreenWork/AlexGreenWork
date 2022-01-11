@@ -25,6 +25,9 @@ import FindWorkers from "./common/personalCabinet/findWorkers/findWorkers";
 import Context from "./common/context/Context";
 import MyFiles from "./common/personalCabinet/myFiles/myFiles";
 import OffersResponsible from "./common/personalCabinet/responsible/responsible";
+import {Budget} from "./common/topComissionPanel/TopComission";
+import TopComission from "./common/topComissionPanel/TopComission";
+
 
 
 
@@ -71,13 +74,26 @@ function App(props) {
                         </Switch>
                         :
                         <Switch>
-
                             <Route path='/sendOfferWorker' component={OffersForm}/>
                             <Route path='/sendOfferFree' component={OffersFormFree}/>
                             <Redirect to="/"/>
+                            <Route path="/registration" component={Registration}/>
+                            <Redirect to='/authorization'/>
+                        </Switch>
 
+                    }
+                    {isAuth ?
+                        <Switch>
+                            <Route path="/authorization" component={AuthorizationWorker}/>
+                            <Redirect to="/"/>
+                        </Switch>
+                        :
+                        <Switch>
+                            {/*<Route path="/registration" component={Registration}/>*/}
+                            {/*<Redirect to='/authorization'/>*/}
                         </Switch>
                     }
+
 
                     {/*<Route path="/adminPanel" component={AdminPanel}/>*/}
                     <Route exact path='/' component={ContentContainer}/>
@@ -96,7 +112,7 @@ function App(props) {
                     <Route path='/personalCabinet/offers' component={Offers}/>
                     <Route path='/personalCabinet/myFiles' component={MyFiles}/>
                     <Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>
-
+                    <Route path='/personalCabinet/adminPanelComission' component={TopComission}/>
 
                 </div>
 
