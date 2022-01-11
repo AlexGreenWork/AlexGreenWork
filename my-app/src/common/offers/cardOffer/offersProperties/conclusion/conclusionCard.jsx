@@ -91,20 +91,23 @@ const ConclusionCard = (props) => {
             )
         }
     }
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     async function saveAnnot(idOffer, tabNum){
+        console.log(props.id.responsible_tabnum)
+
 
         try{
-            const ann = document.getElementById(`'annotation'${props.id.name}`).innerText
+            const ann = document.getElementById(`${'annotation'+props.name}`).innerText
             console.log(ann)
             setAnnot(ann)
-            // await axios.post(`${API_URL}api/offers/toDbSaveAnnot`, {
-            //     idOffer,
-            //     tabNum
-            // })
+            await axios.post(`${API_URL}api/offers/toDbSaveAnnot`, {
+              idOffer,
+               tabNum,
+                ann
+            })
 
-        }catch{
-
+        }catch(e){
+            console.log(e)
         }
     }
 
@@ -227,7 +230,7 @@ const ConclusionCard = (props) => {
                         margin: "25px",
                         boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
                     }} onClick={(value) => {
-                        saveAnnot(props.id.offer_id, props.tabel, props.id.mark)
+                        saveAnnot(props.id.offer_id, props.tabel, props.id.mark, props.id.responsible_tabnum, props.name)
                     }}>Добавить Аннотацию</Button>
                 </div>
             )
@@ -249,7 +252,7 @@ const ConclusionCard = (props) => {
         function AdminChangeSaveAnnotation() {
             const MyTabnum = localStorage.getItem('userTabelNum');
             if (MyTabnum == props.id.responsible_tabnum) {
-                return <IsAdminSaveAnnot/>;
+                return <IsAdminSaveAnnot idName={props.name}/>;
             } else {
                 return <IsAdminUser/>
             }
@@ -289,18 +292,42 @@ const ConclusionCard = (props) => {
 
         const [isActive, setIsActive] = React.useState(false);
         const [resOtv, setResOtv] = React.useState(`${props.id}`);
-console.log(props)
-
+function ConfirmResponsible(){
+   console.log(props)
+    if(props.id.responsible_tabnum == localStorage.getItem('userTabelNum') && props.id.open == null){
+        return <div><Button style={{
+            border:"1px solid #a5bff9"
+        }}
+        >Принять в обработку</Button></div>
+    }if(props.id.responsible_tabnum == localStorage.getItem('userTabelNum') && props.id.open !== null){
+        return (<div>
+        В обработке...
+            <Button>Завершить работу с заключением</Button>
+        </div>)
+    } if(props.id.responsible_tabnum !== localStorage.getItem('userTabelNum') && props.id.open !== null){
+        return (<div>
+            В обработке c /{props.id.open}/
+            </div>)
+    }if(props.id.responsible_tabnum !== localStorage.getItem('userTabelNum') && props.id.open == null){
+        return (<div>
+           Еще не принято в обработку
+        </div>)
+    }
+    else {
+        return <div></div>
+    }
+}
 
         return (
             <div style={{
                 position: "relative",
                 display: "block"
             }} name={props.name}>
+
                 <AdminChangeCloseBtn {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
 
                 <div className={s.header}>
-
+                    <ConfirmResponsible {...props} isAdmin={localStorage.getItem("userTabelNum")} />
                     <div className={s.date}>
                         <div>Дата:</div>
                         <div> {newDate}{' ' + d.getFullYear()}</div>
@@ -444,7 +471,7 @@ console.log(props)
                                 </Table>
                             </TableContainer>
                             <AdminChangeSaveNotes {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
-                        </div>
+                    </div>
 
 
 

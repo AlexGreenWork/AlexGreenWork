@@ -97,7 +97,6 @@ const ConclusionOffer = () => {
                 </div>
             )
         }
-
     }
 
     const [sCount, setSCount] = React.useState(0)
@@ -123,11 +122,6 @@ const ConclusionOffer = () => {
                     marginBottom: "10px"
                 }} onClick={addResp}>+ Добавить заключение и отвественного сотрудника</Button>
 
-
-                <Button style={{
-                    border: "1px solid #a5bff9",
-                    marginBottom: "10px"
-                }} onClick={deleteResp}>- Удалить заключение</Button>
             </div>
         )
     }
@@ -233,7 +227,7 @@ const ConclusionOffer = () => {
     }
     function AdminChangeUploadFile(props) {
         const isAdmin = props.isAdmin;
-        if (isAdmin == 'wg') {
+        if (isAdmin == `${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`) {
             return <IsAdminRGUpload/>;
 
         } else {
@@ -242,7 +236,7 @@ const ConclusionOffer = () => {
     }
     function AdminChangeUploadAnnotation(props) {
         const isAdmin = props.isAdmin;
-        if (isAdmin == 'wg') {
+        if (isAdmin == `${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`) {
             return <IsAdminRGUploadAnnotation/>;
 
         } else {
@@ -276,19 +270,17 @@ const ConclusionOffer = () => {
             const respName = store.getState().search.searchUser.name
             const respTabnum = store.getState().search.searchUser.tabnum
 
-
             await server.send_post_request(`${API_URL}api/offers/toDbSaveResposibleRG`, {
                 respTabnum,
                 respName,
                 idOffer
-
             })
             let fio = store.getState().search.searchUser.name
             let tabnum = store.getState().search.searchUser.tabnum
 
             dispatch(selectToMyOffer(fio, tabnum))
             setNameRg(store.getState().search.searchUser.name)
-            setDateRg(store.getState().offers.offer.responsibles_rg?.open)
+            setDateRg(Date())
             setTabelRg(store.getState().search.searchUser.tabnum)
 
 
@@ -352,7 +344,99 @@ const ConclusionOffer = () => {
 
     var d = new Date(`${dateRG}`);
     var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
+function AdminChangeAnnotationWiev(props){
+        const isAdmin = props.isAdmin;
+        if (isAdmin == `${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`) {
+            return (
+                <div contentEditable={"true"} id="textAreaRGConc" placeholder="Напишите краткую аннотацию..." className={s.conclusionTextArea} style={{
+                    width:"100%",
+                    flexDirection:"column"
+                }} > {annotationRGMark}
+                </div>
+            )
 
+        } else {
+            return (
+                <div id="textAreaRGConc" placeholder="Напишите краткую аннотацию..." className={s.conclusionTextArea} style={{
+                    width:"100%",
+                    flexDirection:"column"
+                }} > {annotationRGMark}
+                </div>
+            )
+        }
+}
+    function saveNotes(){
+
+    }
+    function closeCunclusion(){
+
+    }
+
+    function AdminChangeSaveNotes() {
+        const MyTabnum = localStorage.getItem('userTabelNum');
+        if (MyTabnum == store.getState().offers.offer.responsibles_rg?.responsible_tabnum) {
+            return (<TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell/>
+                            <TableCell align="right">Актуальность</TableCell>
+                            <TableCell align="right">Инновативность</TableCell>
+                            <TableCell align="right">Затратность</TableCell>
+                            <TableCell align="right">Протяженность</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableCell/>
+                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
+                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
+                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
+                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
+                    </TableBody>
+                </Table>
+                    <div>
+                        <Button style={{
+                            background: "#e9e9ff",
+                            margin: "25px",
+                            boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
+                        }} onClick={(value) => {
+                            saveNotes(store.getState().offers.offer.responsibles_rg?.responsible_tabnum)
+                        }}>Записать оценки</Button>
+                        <Button style={{
+                            background: "#e9e9ff",
+                            margin: "25px",
+                            boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
+                        }} onClick={(value) => {
+                            closeCunclusion(store.getState().offers.offer.responsibles_rg?.responsible_tabnum)
+                        }}>Сдать заключение</Button>
+
+                    </div>
+            </TableContainer>
+
+            );
+        } else {
+            return (<TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell/>
+                            <TableCell align="right">Актуальность</TableCell>
+                            <TableCell align="right">Инновативность</TableCell>
+                            <TableCell align="right">Затратность</TableCell>
+                            <TableCell align="right">Протяженность</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableCell/>
+                        <TableCell  align="right"  type="number">1</TableCell>
+                        <TableCell align="right"  type="number">1</TableCell>
+                        <TableCell align="right"  type="number">1</TableCell>
+                        <TableCell align="right"  type="number">1</TableCell>
+                    </TableBody>
+                </Table>
+            </TableContainer>);
+        }
+    }
 
     return (
         <div id="OffContainer" className={s.cardOfferContainer1}>
@@ -430,27 +514,33 @@ const ConclusionOffer = () => {
                             flexDirection: "column",
                             cursor: "pointer"
                         }}>
-                            <ViewFileDoc/>
-                            <div>Заключение</div>
+
                         </div>
 
 
                     </div>
-                    <AdminChangeUploadFile isAdmin={localStorage.getItem("userAdminOptions")}/>
+                    <AdminChangeUploadFile isAdmin={localStorage.getItem("userTabelNum")}/>
                 </div>
                 <div className={s.filesConclusion11}>
                     <div style={{
                         marginBottom: "25px",
                     }}>Краткая аннотация заключения рабочей группы:</div>
-                    <div contentEditable={"true"} id="textAreaRGConc" placeholder="Напишите краткую аннотацию..." className={s.conclusionTextArea} style={{
-                        width:"100%",
-                        flexDirection:"column"
-                    }} > {annotationRGMark}
-                    </div>
-                    <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userAdminOptions")}/>
-                </div>
-            </div>
+                    <AdminChangeAnnotationWiev isAdmin={localStorage.getItem("userTabelNum")}/>
 
+                    <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userTabelNum")}/>
+
+                </div>
+
+
+                <div style={{display: "flex", width: "100%", borderBottom: "1px solid #00000033"}}>
+
+                    <div>Оценка</div>
+                </div>
+
+
+
+                <AdminChangeSaveNotes  isAdmin={localStorage.getItem("userAdminOptions")}/>
+            </div>
 
         </div>
 
