@@ -34,7 +34,7 @@ function OffersForm(props) {
     const [middleName, setMiddleName] = useState(localStorage.getItem('userMiddleName'));
     const [Email, setEmail] = useState(localStorage.getItem('userEmail'));
     const [tabelNumber, setTabelNumber] = useState(localStorage.getItem('userTabelNum'));
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState(`+${localStorage.getItem('userPhoneNumber').slice(2)}`);
     const [nameOffer, setNameOffer] = useState("");
     const [problem, setProblem] = useState("");
     const [offer, setOffer] = useState("");
@@ -261,8 +261,8 @@ function OffersForm(props) {
             setMiddleNameNew(undefined)
             setEmailNew(undefined)
             setTabelNumberNew(undefined)
-            setPhoneNumberNew(undefined)  
-            
+            setPhoneNumberNew(undefined)
+
         } else {
             console.log(".close-btn true");
         }

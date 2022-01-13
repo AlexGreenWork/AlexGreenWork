@@ -72,7 +72,7 @@ const CardOffer = () => {
                         <Tab label="Об авторе" {...a11yProps(1)} />
                         <Tab label="Заключение" {...a11yProps(2)} />
                         <Tab label="Результаты" {...a11yProps(3)} />
-                        <Tab label="История внедрения" {...a11yProps(4)} />
+                        <Tab label="История Рассмотрения" {...a11yProps(4)} />
                         <Tab label="Файлы" {...a11yProps(5)} />
                         <Tab label="Внедрение" {...a11yProps(6)} />
                         <Tab label="Комиссия" {...a11yProps(7)} />

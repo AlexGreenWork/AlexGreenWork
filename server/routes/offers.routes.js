@@ -118,6 +118,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											o.date,
 											o.status,
 											o.tabelNum,
+											o.dateComission,
 											ow.name AS nameSendler,
 											ow.surname AS surnameSendler,
 											ow.middlename AS middlenameSendler
@@ -150,7 +151,6 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
         myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
 
     }
-    /* >>>>>>> trus */
 
     return [myAllOfffers]
 }
@@ -184,6 +184,10 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
+						osr.actual,
+						osr.innov,
+						osr.cost,
+						osr.extent,
 						osr.position
 					FROM
 						?? AS osr
@@ -572,6 +576,19 @@ router.post("/toDbSaveAnnot", urlencodedParser,
         let annotation = request.body.ann;
         console.log(Date(),"Запись аннотации"," ","'",annotation,"'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible SET mark = '${annotation}', close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+    })
+router.post("/saveNotesToDbRG", urlencodedParser,
+    async function (request, response) {
+
+        let offerId = request.body.idOffer;
+        let respTabnum = request.body.tabNum;
+        let actual = request.body.actual;
+        let innovate = request.body.innovate;
+        let cost = request.body.cost;
+        let duration = request.body.duration;
+
+        console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
     })
 
 

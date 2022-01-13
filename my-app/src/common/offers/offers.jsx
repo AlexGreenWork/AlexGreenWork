@@ -44,7 +44,7 @@ const Offer = (props) => {
                   
                    let offersData = JSON.parse(xhr); 
                    let workData = JSON.parse(req.response); 
-                   
+                   console.log(offersData.dateComission)
                    dispatch(selectMyOffers(
                                             offersData.Id,
                                             offersData.nameOffer,
@@ -136,7 +136,7 @@ const Offer = (props) => {
 
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
-    console.log(props.request)
+
     return offersData.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
                                              status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum}
@@ -157,13 +157,12 @@ const Offers = () => {
         xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                console.log(xhr.response)
+                // console.log(xhr.response)
                 setReqAllOff(xhr.response)
-               
             }
         }
         xhr.send();
-        //console.log(xhr.response)
+
         return xhr.response;
 
     }
