@@ -14,22 +14,22 @@ const PersonalCabinet = () => {
     let tabNum = localStorage.getItem('userTabelNum');
      try{
         axios.post(`${API_URL}api/offers/responsibleToOffers`, {  tabNum: tabNum,
-
+                                                
                                                     })
                                                     .then(res => {
                                                         if(responsible == null){
                                                             if(res.data != 'noResponsible' ){
-                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/adminPanelTopComission">Предложения с вашими заключениями</NavLink></div>)
+                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Предложения с вашими заключениями</NavLink></div>)
                                                             }
-
+                                                           
                                                         }
-
-
-
+                                                     
+                                                     
+                                                      
                                                     })
     } catch (e){
         alert(e.response)
-    }
+    } 
 
 
     function IsAdminUser(props)
@@ -82,8 +82,9 @@ const PersonalCabinet = () => {
                     Найти сотрудника
                 </NavLink></div>
                 <div className={s.linksPC}>
-                    <NavLink className={s.offers} to="/personalCabinet/adminPanelComission">Панель администратора</NavLink>
+                    <NavLink className={s.offers} to="/personalCabinet/myOffers">Панель администратора</NavLink>
                 </div>
+                {responsible}
             </div>
         );
     }
@@ -114,42 +115,16 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/">
                     Панель Рабочей группы
                 </NavLink></div>
-                <div className={s.linksPC}>
-                    <NavLink className={s.offers} to="/personalCabinet/adminPanelTopComission">Панель Рабочей группы</NavLink>
-                </div>
+                {responsible}
             </div>
-        )
-    }
-    function IsAdminTopComission(props) {
-        return (
-            <div className={s.navPCab}>
-                <div className={s.linksPC}>
-                    <NavLink className={s.offers} to="/personalCabinet/myOffers">Мои Предложения</NavLink>
-                </div>
 
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/Offers">Предложения для
-                    обработки</NavLink></div>
-
-                <div className={s.linksPC}><NavLink className={s.offers}
-                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
-
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
-                    Мои файлы
-                </NavLink></div>
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/tasks">
-                    Задачи
-                </NavLink></div>
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
-                    Найти сотрудника
-                </NavLink></div>
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/adminPanelComission">
-                    Панель руководства
-                </NavLink></div>
-            </div>
         )
     }
 
     function AdminChange(props)
+
+    
+
     {
         const isAdmin = props.isAdmin;
         if (isAdmin == 'wg') {
@@ -160,13 +135,11 @@ const PersonalCabinet = () => {
         }
         if (isAdmin == 'admin') {
             return <IsAdminAdmin/>;
-        }if (isAdmin == 'topComission') {
-            return <IsAdminTopComission/>;
-        }
-        else{
+        }else{
             return <IsAdminUser/>
         }
     }
+
 
 
     return (

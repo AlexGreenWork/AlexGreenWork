@@ -1,3 +1,6 @@
+import React from "react";
+import {NavLink} from "react-router-dom";
+
 function closeDiv() {
 
     let closeButton = document.createElement('div');
@@ -8,6 +11,7 @@ function closeDiv() {
     msg.append(closeButton);
 
     <div className="button-confirm"></div>
+
 
 }
 
