@@ -60,7 +60,7 @@ const CreateCompMyOffers = (props)=>{
                                                             .then(res => {
                                                                 SetOffersData(res.data);
                                                                 offersDataCount = res.data;
-                                                                console.log(offersDataCount)
+
                                                             })
             } catch (e){
                 alert(e.response.message)

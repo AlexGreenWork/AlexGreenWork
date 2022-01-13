@@ -201,7 +201,7 @@ router.post("/forms", urlencodedParser, async (request, response) => {
     const password1 = Math.random().toString(36).slice(-8);
     const hashPassword = await bcrypt.hash(password1, 8);
     const password = hashPassword;
-   // console.log(hashPassword)
+    // console.log(hashPassword)
 
     const mysqlConfig = {
         host: config.database.host,
@@ -216,25 +216,28 @@ router.post("/forms", urlencodedParser, async (request, response) => {
     async function Messages() {
         let message = await CheckUniqueTabAndEmail(tabelNumber, emailInput, phoneNumber);
 
-      //  console.log("message = " + message)
+      console.log("message = ", message)
+
+
         response.send(message);
 
     }
 
     Messages();
 
-    async function CheckTabAndEmail(tabelNumber, emailInput) {
+    async function CheckTabAndEmail(tabelNumber, emailInput, phoneNumber) {
 
         const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${tabelNumber})`);
         const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${emailInput}")`);
-        const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = ("${phoneNumber}") WHERE tabelNum = (${tabelNumber}) AND email = ("${emailInput}")`);
-
+        const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = (" ${phoneNumber}") WHERE tabelNum = ("${tabelNumber}") AND email = ("${emailInput}")`);
+        console.log("Подано предложение  с табельного",tabelNumber )
         return [checkTab, checkEmail, updSendData];
 
     }
 
     async function CheckUniqueTabAndEmail(tabelNumber, emailInput, phoneNumber) {
         var codes = await CheckTabAndEmail(tabelNumber, emailInput, phoneNumber);
+
         var tb = codes[0][0]; // первый елемент данные, второй это метаданные
         var eml = codes[1][0]; //второй sql запрос
         let upd = codes[2][0] // запрос обновления строки
