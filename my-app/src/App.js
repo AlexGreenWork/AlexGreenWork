@@ -113,6 +113,7 @@ function App(props) {
                     <Route path='/personalCabinet/myFiles' component={MyFiles}/>
                     <Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>
                     <Route path='/personalCabinet/adminPanelComission' component={TopComission}/>
+                    
 
                 </div>
 

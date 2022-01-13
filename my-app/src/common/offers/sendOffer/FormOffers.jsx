@@ -3,8 +3,9 @@ import OffFunc from './offerForm/FormOffFunc.js';
 import UploadFile from './fileUpload/fileUpload'
 import s from "./offerForm/formOffers.module.css";
 import "./offersStyle.css"
-
-
+import axios from 'axios';
+import {API_URL} from  '../../../config'
+import {NavLink} from "react-router-dom";
 
 let allNewSendler = {
    
@@ -34,7 +35,7 @@ function OffersForm(props) {
     const [middleName, setMiddleName] = useState(localStorage.getItem('userMiddleName'));
     const [Email, setEmail] = useState(localStorage.getItem('userEmail'));
     const [tabelNumber, setTabelNumber] = useState(localStorage.getItem('userTabelNum'));
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState(`+${localStorage.getItem('userPhoneNumber').slice(2)}`);
     const [nameOffer, setNameOffer] = useState("");
     const [problem, setProblem] = useState("");
     const [offer, setOffer] = useState("");
@@ -50,6 +51,32 @@ function OffersForm(props) {
 
     const [newSendler, setNewSendler] = useState();
     const [count, setCount] = useState(0);
+
+    function addFioYetSebdler(tabNum){
+       
+        try{
+            axios.post(`${API_URL}api/auth/fioSendler`, {  tabNum: tabNum,
+    
+                                                        })
+                                                        .then(res => {
+                                                          
+                                                            console.log(res.data)
+                                                            let fio = res.data;
+                                                            console.log(fio[0])
+                                                            console.log( document.querySelector(`#firstName${count}`))
+                                                             document.querySelector(`#firstName${count}`).value = fio[1];
+                                                             document.querySelector(`#lastName${count}`).value = fio[0];
+                                                             document.querySelector(`#middleName${count}`).value = fio[2];
+
+                                                             setNameNew(fio[1])
+                                                             setLastNameNew(fio[0])
+                                                             setMiddleNameNew(fio[2])
+    
+                                                        })
+        } catch (e){
+            alert(e.response)
+        }
+    }
 
     let addNewSendler = {
        
@@ -174,18 +201,20 @@ function OffersForm(props) {
        
              
          let   arr = [
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} placeholder="Иван" required onChange={(e) => setNameNew(e.target.value)}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} placeholder="12345" required onChange={(e) => setTabelNumberNew(e.target.value)} onBlur={(e)=>{addFioYetSebdler(e.target.value)}}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} placeholder="Иван" required onChange={(e) => setNameNew(e.target.value)} /> ),
             React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} placeholder="Иванов" required onChange={(e) => setLastNameNew(e.target.value)}/>  ),
             React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} placeholder="Иванович" required onChange={(e) => setMiddleNameNew(e.target.value)}/>),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} placeholder="12345" required onChange={(e) => setTabelNumberNew(e.target.value)}/> ),
             React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} placeholder="e-mail-adress@gmail.com" required onChange={(e) =>setEmailNew(e.target.value) } /> ),
             React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} placeholder="+375293333333" required onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
             ]
             
+            
+
+
     return(React.createElement("div", {className:`shadowBox`, onClick:()=>{
         addFlag = false;
         setNewSendler(undefined);
-        
         setNameNew(undefined)
         setLastNameNew(undefined)
         setMiddleNameNew(undefined)
@@ -201,7 +230,19 @@ function OffersForm(props) {
             alert("It works! You clicked " + clickedId)
           } */
                                                                                                     
-    }} , React.createElement("div", {className:`offers newSendler${props} exists`, onClick: (event)=>event.stopPropagation()} ,  arr, <SaveBtn/>)))
+    }} , React.createElement("div", {className:`offers newSendler${props} exists`, onClick: (event)=>event.stopPropagation()} ,  arr, <SaveBtn/>, <div className='closeAddForm' onClick={()=>{
+     
+        addFlag = false;
+        setNewSendler(undefined);
+        setNameNew(undefined)
+        setLastNameNew(undefined)
+        setMiddleNameNew(undefined)
+        setEmailNew(undefined)
+        setTabelNumberNew(undefined)
+        setPhoneNumberNew(undefined)  
+
+   
+    }}>&#10006;</div>)))
     }  
 
     function NewSendler(){
@@ -354,7 +395,9 @@ function OffersForm(props) {
                     </div>
                     <NewSendler/>
                     {newSendler}
+                    <div className="ee">
                    
+                </div>
                     <div className={s.buttonConfirm}>
                         <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Подтвердить
                             запись
