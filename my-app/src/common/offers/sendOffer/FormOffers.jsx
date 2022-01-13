@@ -30,12 +30,20 @@ function OffersForm(props) {
         addFlag = false;
     },false);
     
-    const [name, setName] = useState(localStorage.getItem('userName'));
-    const [lastName, setLastName] = useState(localStorage.getItem('userSurName'));
-    const [middleName, setMiddleName] = useState(localStorage.getItem('userMiddleName'));
-    const [Email, setEmail] = useState(localStorage.getItem('userEmail'));
-    const [tabelNumber, setTabelNumber] = useState(localStorage.getItem('userTabelNum'));
-    const [phoneNumber, setPhoneNumber] = useState(`+${localStorage.getItem('userPhoneNumber').slice(2)}`);
+    const nameMid = localStorage.getItem('userName')  ? `${localStorage.getItem('userName')}` : ``
+    const SurNameMid = localStorage.getItem('userSurName')  ? `${localStorage.getItem('userSurName')}` : ``
+    const MiddleNameMid = localStorage.getItem('userMiddleName')  ? `${localStorage.getItem('userMiddleName')}` : ``
+    const EmailMid = localStorage.getItem('userEmail')  ? `${localStorage.getItem('userEmail')}` : ``
+    const TabelNumMid = localStorage.getItem('userTabelNum')  ? `${localStorage.getItem('userTabelNum')}` : ``
+    const PhoneNumberMid = localStorage.getItem('userPhoneNumber')  ? `+${localStorage.getItem('userPhoneNumber').slice(2)}` : ``
+
+
+    const [name, setName] = useState(`${nameMid}`);
+    const [lastName, setLastName] = useState(`${SurNameMid}`);
+    const [middleName, setMiddleName] = useState(`${MiddleNameMid}`);
+    const [Email, setEmail] = useState(`${EmailMid}`);
+    const [tabelNumber, setTabelNumber] = useState(`${TabelNumMid}`);
+    const [phoneNumber, setPhoneNumber] = useState(`${PhoneNumberMid}`);
     const [nameOffer, setNameOffer] = useState("");
     const [problem, setProblem] = useState("");
     const [offer, setOffer] = useState("");
@@ -388,16 +396,14 @@ function OffersForm(props) {
                     </div>
                     <input type="file" name="myFile" id="file"></input>
                     <div className={s.formFieldCheckbox}>
-                        <input type="checkbox" name="agreement" id="agree" className="input-data"
+                        <input type="checkbox" name="agreement" id="agree" className="input-data" required
                                value={checked} onChange={(e) => setChecked(!checked)}/>
-                        <label htmlFor="agree" className="label-checkbox">Разрешаю передачу персональных данных</label>
+                        <label htmlFor="agree"  className="label-checkbox">Разрешаю передачу персональных данных</label>
                         <div className="false-input false-agree"></div>
                     </div>
                     <NewSendler/>
                     {newSendler}
-                    <div className="ee">
-                   
-                </div>
+                  
                     <div className={s.buttonConfirm}>
                         <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Подтвердить
                             запись
