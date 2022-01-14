@@ -777,5 +777,59 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
 		response.send(result)
     })
+router.post("/responsibleToOffers", urlencodedParser,
+    async function (request, response) {
+        let arrOffer = [];
+        let tabNum = request.body.tabNum
+
+        let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
+
+        if(sqlResponsible[0].length != 0){
+            for (let i = 0; i < sqlResponsible[0].length; i++) {
+
+                let sqlOffers = await pool.query(`SELECT nameOffer,
+                                                         Id,
+                                                         date,
+                                                         status,
+                                                         tabelNum 
+                                                   FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
+
+
+                let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
+
+
+                let offersObj = sqlOffers[0][0]
+
+                offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
+                offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
+                offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
+
+                arrOffer[i] = offersObj;
+
+                if(i == sqlResponsible[0].length-1 ){
+                    response.send(arrOffer)
+                }
+            }
+        } else{
+            response.send("noResponsible")
+        }
+
+
+
+    })
+router.post("/saveNotesToDbRG", urlencodedParser,
+    async function (request, response) {
+    let actual = request.body.actual
+    let innovate = request.body.innovate
+    let cost = request.body.cost
+    let duration = request.body.duration
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+
+        console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+
+    })
+
 
 module.exports = router
