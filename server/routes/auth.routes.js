@@ -362,7 +362,7 @@ async function coAuthorRegistration(coAuthor){
     let sqlLstEntry= await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);");
    
     // первый ключ объекта всегда 0 !!!!!!!!
-
+    
     let parseSenlerAdd = JSON.parse(coAuthor);
     let keyParseSenlerAdd = Object.keys(parseSenlerAdd)
     for(let i = 1; i<keyParseSenlerAdd.length; i++){
@@ -375,6 +375,7 @@ async function coAuthorRegistration(coAuthor){
 
        if(checkTab[0].length != 0 || checkEmail[0].length != 0 ){
           //   console.log("Табельный или емейл есть");
+          await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
        } else{
 
        // console.log("Табельный или емейл отсуствует");
@@ -476,6 +477,32 @@ try{
 } catch (e){
    console.log(e)
 }
+})
+
+router.post("/fioSendler", urlencodedParser, async (req, res) => {
+ 
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+   
+    const pool = mysql.createPool(mysqlConfig);
+     
+        let tabNum = req.body.tabNum; 
+        let sqlFioSend = await pool.execute(`SELECT fiofull FROM kadry_all WHERE tabnum="${tabNum}"`);
+        
+        if(sqlFioSend[0][0] != undefined){
+            let arrayToStrings = sqlFioSend[0][0].fiofull.split(' ')
+            res.send(arrayToStrings)
+        } else{
+            res.send(["Имя", "Фамилия", "Отчество"])
+        }
+       
+      
+  
 })
 
 
