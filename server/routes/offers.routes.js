@@ -164,9 +164,9 @@ router.post("/selectMyOffers", urlencodedParser,
             response.send();
         }
 
-        let idOffers = request.body.selectOffers
+        const idOffers = request.body.selectOffers
 
-        let sqlMyOffers = await pool.query(`SELECT 
+        const sqlMyOffers = await pool.query(`SELECT 
 												o.*,
 												ow.name AS nameSendler,
 												ow.surname AS surnameSendler,
@@ -221,7 +221,7 @@ router.post("/selectMyOffers", urlencodedParser,
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {
 
-        let userTab = request.body.userTab;
+        const userTab = request.body.userTab;
 
         try {
             const sqlUserInfo = `SELECT
@@ -422,18 +422,39 @@ router.post("/sendAddInfo", urlencodedParser,
 
     })
 
-router.post("/toDbSaveResposibleRG", urlencodedParser,
-    async function (request, response) {
+router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
+    async function (request, response)
+	{
+        const idOffers = request.body.idOffer;
+        const respTabnum = request.body.respTabnum;
+		const userId = request.user.id;
 
-        if ((!('idOffer' in request.body)
-            || !request.body.idOffer)
-            || (!('respTabnum' in request.body)
-                || !request.body.respTabnum)) {
-            response.status(400);
+        if (!idOffers
+            && !respTabnum)
+		{
+            response.status(400)
             response.send();
         }
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
+
+		const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
+
+		const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+		if(check[0].length)
+		{
+			if(check[0][0].isset === 0)
+			{
+				response.status(400);
+				response.send();
+			}
+		}
+
         const sqlResponsible = `UPDATE offersresponsible_rg
 								SET deleted = 1
 								WHERE offer_id = ?
@@ -442,7 +463,7 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
 
         const sqlNewResponsible = `INSERT INTO offersresponsible_rg
 										(offer_id, responsible_tabnum, open, position)
-									VALUES (?, ?, ?,0)`
+									VALUES (?, ?, ?, 0)`
 
         await pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
         console.log(moment().format('YYYY-MM-DD'),"добавление RG к предложению",idOffers)
@@ -451,16 +472,37 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
     })
 
 
-router.post("/toDbDeleteResponsible", urlencodedParser,
+router.post("/toDbDeleteResponsible", urlencodedParser, authMiddleware,
     async function (request, response) {
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
+        const idOffers = request.body.idOffer;
+        const respTabnum = request.body.respTabnum;
+		const userId = request.user.id;
 
         if (!idOffers
-            && !respTabnum) {
+            && !respTabnum)
+		{
             response.status(400)
             response.send();
         }
+
+		const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
+
+		const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+		if(check[0].length)
+		{
+			if(check[0][0].isset === 0)
+			{
+				response.status(400);
+				response.send();
+			}
+		}
 
         let placeholders = [idOffers, respTabnum];
 
@@ -477,12 +519,13 @@ router.post("/toDbDeleteResponsible", urlencodedParser,
         response.send();
     })
 
-router.post("/toDbSaveResponsible", urlencodedParser,
+router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
-        let position = request.body.position;
+        const idOffers = request.body.idOffer;
+        const respTabnum = request.body.respTabnum;
+        const position = request.body.position;
+		const userId = request.user.id;
 
 		if(!idOffers
 			|| !respTabnum
@@ -510,13 +553,15 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 
                 return await connection.query(query, placeholders);
 
-            } catch (e) {
+            } catch (e)
+			{
                 console.log(e)
             }
 
         }
 
-        async function insert(connection, idOffer, tabnum, position) {
+        async function insert(connection, idOffer, tabnum, position)
+		{
             const query = `INSERT INTO offersendler.offersresponsible
 								(offer_id, responsible_tabnum, open, position)
 							VALUES (?, ?, ?, ?)`
@@ -526,7 +571,8 @@ router.post("/toDbSaveResponsible", urlencodedParser,
             return await connection.query(query, placeholders);
         }
 
-        async function check(connection, idOffer, tabnum) {
+        async function isset(connection, idOffer, tabnum)
+		{
             const query = `SELECT
 								COUNT(id) AS count
 							FROM
@@ -543,11 +589,31 @@ router.post("/toDbSaveResponsible", urlencodedParser,
             return (db_result[0][0]) && (db_result[0][0].count > 0)
         }
 
+		const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
 
-        if (await check(pool, idOffers, respTabnum)) {
+		const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+		if(check[0].length)
+		{
+			if(check[0][0].isset === 0)
+			{
+				response.status(400);
+				response.send();
+			}
+		}
+
+        if (await isset(pool, idOffers, respTabnum))
+		{
             await restore(pool, idOffers, respTabnum, position)
         }
-        else {
+        else
+		{
             await insert(pool, idOffers, respTabnum, position)
         }
 
@@ -555,7 +621,7 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 		response.send();
     })
 
-router.post("/saveRespRGAnnotationToDb", urlencodedParser,
+router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
     async function (request, response) {
 
         let annotationRg = request.body.w
@@ -564,53 +630,97 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser,
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
     })
 
+router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
+    async function (request, response)
+	{
+        let annotationRg = request.body.w
+        let offerId = request.body.id
+        let offerRespId = request.body.respID
+        await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
+    })
+
+router.post("/offerStates", urlencodedParser, authMiddleware, 
+	async function(request, response)
+	{
+        const idOffers =  request.body.idOffer;
+		const userId = request.user.id;
+
+		if(!idOffers)
+		{
+			response.status(400)
+			response.send();
+		}
+		
+		const query = `SELECT
+							o.open,
+							o.close,
+							dep.name
+						FROM
+							?? AS o
+						INNER JOIN offersworker AS o2
+							ON o2.id = ?
+						INNER JOIN offers AS o3
+							ON o3.Id = ?
+								AND o3.tabelNum = o2.tabelNum
+						INNER JOIN kadry_all AS ka 
+							ON ka.tabnum = o.responsible_tabnum
+								AND ka.factory = 1 
+						INNER JOIN department AS dep
+							ON dep.id = ka.department
+								AND dep.factory = ka.factory
+						WHERE 
+							o.offer_id = o3.Id`;
+
+		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", userId, idOffers]);
+		const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
+
+
+	})
+
 router.post("/respResults", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
         const idOffers =  request.body.idOffer;
 		const userId = request.user.id;
 
+		if(!idOffers)
+		{
+			response.status(400)
+			response.send();
+		}
+
 		const query = `SELECT
-							resp.*
+							o.open,
+							o.close,
+							dep.name,
+							o.responsible_tabnum,
+							o.open,
+							o.close,
+							o.actual,
+							o.innov,
+							o.cost,
+							o.extent
 						FROM
-							offersendler.offersworker AS w
-						INNER JOIN offersendler.offers AS o
-								ON o.tabelNum = w.tabelNum
-						LEFT JOIN
-							(
-								SELECT
-									dep.name,
-									ka.fiofull,
-									resp.offer_id,
-									resp.responsible_tabnum,
-									resp.open,
-									resp.close,
-									resp.actual,
-									resp.innov,
-									resp.cost,
-									resp.extent
-								FROM ?? AS resp
-								INNER JOIN offersendler.kadry_all AS ka
-									ON ka.tabnum = resp.responsible_tabnum
-								INNER JOIN offersendler.department AS dep
-									ON dep.id = ka.department
-								WHERE resp.deleted <> 1
-							) AS resp ON resp.offer_id = o.Id
-						WHERE
-							w.id = ?
-							AND o.id = ?`
+							?? AS o
+						INNER JOIN offersworker AS o2 ON
+							o2.id = ?
+						INNER JOIN offers AS o3 ON
+							o3.Id = ?
+							AND o3.tabelNum = o2.tabelNum
+						INNER JOIN kadry_all AS ka 
+								ON ka.tabnum = o.responsible_tabnum
+									AND ka.factory = 1 
+						INNER JOIN department AS dep
+							ON dep.id = ka.department
+								AND dep.factory = ka.factory
+						WHERE 
+							o.offer_id = o3.Id`
 
 		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
 		let placeholders_rg = ['offersendler.offersresponsible_rg', userId, idOffers];
 
 		const responsibles = await pool.query(query, placeholders)
 		const responsibles_rg = await pool.query(query, placeholders_rg)
-
-		if(!responsibles[0].length)
-		{
-			response.status(400)
-			response.send();
-		}
 
 		let result = {responsibles: {},
 						responsibles_rg: {}};
@@ -662,8 +772,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 			return pointer;
 		}
 
-		result.responsibles = init(responsibles[0]);
-		result.responsibles_rg = init(responsibles_rg[0]);
+		result.responsibles = (responsibles[0].lenght)? init(responsibles[0]) : {};
+		result.responsibles_rg = (responsibles_rg[0])? init(responsibles_rg[0]) : {};
 
 		response.send(result)
     })
