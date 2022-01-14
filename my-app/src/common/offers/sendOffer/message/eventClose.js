@@ -36,7 +36,8 @@ function EventClose() {
            // document.querySelector('#fileFree').value = '';
           
            removeDiv.remove();
-            //window.location.href = "http://localhost:3000/index";
+          // window.location = "http://localhost:3000/personalCabinet/myOffers";
+           window.location.href = "http://localhost:3000/";
 
         } else {
             console.log('removeDiv не существует');

@@ -28,7 +28,6 @@
     "fileupload": "^1.0.0",
     "material-ui": "^0.20.2",
     "materialize-css": "^1.0.0-rc.2",
-
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "prop-types": "^15.7.2",

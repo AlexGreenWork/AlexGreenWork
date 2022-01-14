@@ -17,7 +17,7 @@
     background: linear-gradient(182deg, #14469B, #607fff, #f3f5fb);
     background-size: 600% 600%;
     justify-content: space-between;
-
+    align-content: center;
     -webkit-animation: AnimationName 5s ease infinite;
     -moz-animation: AnimationName 5s ease infinite;
     animation: AnimationName 5s ease infinite;
@@ -33,7 +33,6 @@
 }
 .brand{
     position: absolute;
-    top: 2vh;
     right: calc(50% - 167px);
 }
 .loginBar{

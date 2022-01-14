@@ -110,7 +110,7 @@ const FileList = () => {
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
               let resp = xhr.response
-             console.log(xhr.response)
+             
               
               let dirName = JSON.parse(xhr.response);
               let tabResp1 = Object.keys(dirName);

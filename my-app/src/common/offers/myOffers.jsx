@@ -74,7 +74,7 @@ const Offer = (props) => {
                 if (this.readyState == 4 && this.status == 200) {
 
                     dispatch(addSendler(xhr.response))
-                    console.log(xhr.response)          
+                            
                 }
             }  
             xhr.send(`selectOffers=${idOffers}`);
@@ -91,7 +91,6 @@ const Offer = (props) => {
         localStorage.setItem('idOffers', props.id);
         localStorage.setItem('status', props.status);
         value.contextFunction(props.id, props.tabelNum)
-
         localStorage.setItem('dateComission', props.dateComission);
         setDateComission(localStorage.getItem('dateComission'))
     }
@@ -103,13 +102,15 @@ const Offer = (props) => {
                 <div className={s.header}>
                     <div className={s.offerPreview}>
                         <div className={s.from}>
-                            <div className={s.date}> {props.id}</div>
-                            <div className={s.date}> {props.date.slice(0, 10)}</div>
-                            <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename }</div>
                              <div className={s.offerText}>{props.coAuthor}</div>
+                            <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename }</div>
                             <div className={s.status}>  {props.status}</div>
                         </div>
-                        <div className={s.offerText}>{props.nameOffer}</div>
+                        <div className={s.offerText} style={{
+                            display: "flex",
+                            justifyContent: "space-between"
+                        }}><div className={s.date}>№{props.id}</div><div style={{marginRight: "7px", marginLeft: "7px", textAlign: "center"
+                        }}>{props.nameOffer}</div><div className={s.date}> {props.date.slice(0, 10).replace(/(\d{4})-(\d\d)-(\d\d)/, "$3/$2/$1")}</div> </div>
 
                        
                     </div>
@@ -154,7 +155,7 @@ const Offers = () => {
            
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-             
+
                setReqMyOff(xhr.response)
                
             }
