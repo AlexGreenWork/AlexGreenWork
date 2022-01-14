@@ -775,8 +775,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 			return pointer;
 		}
 
-		result.responsibles = (responsibles[0].lenght)? init(responsibles[0]) : {};
-		result.responsibles_rg = (responsibles_rg[0])? init(responsibles_rg[0]) : {};
+		result.responsibles = (responsibles[0].length)? init(responsibles[0]) : {};
+		result.responsibles_rg = (responsibles_rg[0].length)? init(responsibles_rg[0]) : {};
 
 		response.send(result)
     })
