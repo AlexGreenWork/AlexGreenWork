@@ -691,6 +691,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
 		const query = `SELECT
 							o.open,
+							ka.fiofull,
 							o.close,
 							dep.name,
 							o.responsible_tabnum,
@@ -714,6 +715,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 							ON dep.id = ka.department
 								AND dep.factory = ka.factory
 						WHERE 
+							o.deleted <> 1
+						AND
 							o.offer_id = o3.Id`
 
 		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
