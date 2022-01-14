@@ -14,6 +14,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import s from './results.module.css'
+import {store} from "../../../../../reducers";
 
 
 function createData(name, actuality, innovation, cost, duration, evulation) {
@@ -130,9 +131,15 @@ Row.propTypes = {
         protein: PropTypes.number.isRequired,
     }).isRequired,
 };
-
+let actualityRG = store.getState().offers.offer.responsibles_rg?.actual;
+let innovRG = store.getState().offers.offer.responsibles_rg?.innov;
+let costRG = store.getState().offers.offer.responsibles_rg?.cost;
+let extentRG = store.getState().offers.offer.responsibles_rg?.extent;
+let middleNoteRG = (actualityRG+innovRG+costRG+extentRG)/4
+console.log(middleNoteRG)
+console.log(actualityRG)
 const rows = [
-    createData('Рабочая группа', 8, 6, 7, 4, 6),
+    createData('Рабочая группа', `${actualityRG}`, `${innovRG}`, `${costRG}`, `${extentRG}`, 6),
     createData('УГК', 8, 6, 7, 4, 6),
     createData('ТЭО', 8, 6, 7, 4, 6),
     createData('Председатель комиссии', 8, 6, 7, 4, 6),

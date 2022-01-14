@@ -14,7 +14,7 @@ function AddSendlerOffers(){
     let objYetSendlers = JSON.parse(obj.addSendler)
    
     let key =  Object.keys(objYetSendlers)
-    console.log(objYetSendlers)
+    
         for(let i = 0; i<key.length; i++ ){
 
         let name = objYetSendlers[key[i]].nameSendler

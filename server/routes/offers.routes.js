@@ -7,6 +7,7 @@ const fileUpload = require("express-fileupload");
 const { isDate } = require("moment");
 const moment = require("moment");
 const { on } = require("events");
+const {DATETIME} = require("mysql/lib/protocol/constants/types");
 
 router.use(fileUpload({}));
 
@@ -117,6 +118,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											o.date,
 											o.status,
 											o.tabelNum,
+											o.dateComission,
 											ow.name AS nameSendler,
 											ow.surname AS surnameSendler,
 											ow.middlename AS middlenameSendler
@@ -149,7 +151,6 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
         myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
 
     }
-    /* >>>>>>> trus */
 
     return [myAllOfffers]
 }
@@ -183,6 +184,10 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
+						osr.actual,
+						osr.innov,
+						osr.cost,
+						osr.extent,
 						osr.position
 					FROM
 						?? AS osr
@@ -418,6 +423,7 @@ router.post("/sendAddInfo", urlencodedParser,
 
 router.post("/toDbSaveResposibleRG", urlencodedParser,
     async function (request, response) {
+
         if ((!('idOffer' in request.body)
             || !request.body.idOffer)
             || (!('respTabnum' in request.body)
@@ -425,10 +431,8 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
             response.status(400);
             response.send();
         }
-
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
-
         const sqlResponsible = `UPDATE offersresponsible_rg
 								SET deleted = 1
 								WHERE offer_id = ?
@@ -436,11 +440,11 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
         await pool.query(sqlResponsible, [idOffers]);
 
         const sqlNewResponsible = `INSERT INTO offersresponsible_rg
-										(offer_id, responsible_tabnum, open)
-									VALUES (?, ?, ?)`
+										(offer_id, responsible_tabnum, open, position)
+									VALUES (?, ?, ?,0)`
 
-        pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
-
+        await pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
+        console.log(moment().format('YYYY-MM-DD'),"добавление RG к предложению",idOffers)
         response.status(200);
         response.send();
     })
@@ -472,8 +476,12 @@ router.post("/toDbDeleteResponsible", urlencodedParser,
         response.send();
     })
 
+
+
 router.post("/toDbSaveResponsible", urlencodedParser,
     async function (request, response) {
+        try {
+
 
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
@@ -547,6 +555,9 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 
         response.status(200);
         response.send();
+        }catch (e){
+            console.log(e)
+        }
     })
 
 router.post("/saveRespRGAnnotationToDb", urlencodedParser,
@@ -556,6 +567,28 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser,
         let offerId = request.body.id
         let offerRespId = request.body.respID
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
+    })
+router.post("/toDbSaveAnnot", urlencodedParser,
+    async function (request, response) {
+
+        let offerId = request.body.idOffer;
+        let respTabnum = request.body.tabNum;
+        let annotation = request.body.ann;
+        console.log(Date(),"Запись аннотации"," ","'",annotation,"'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible SET mark = '${annotation}', close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+    })
+router.post("/saveNotesToDbRG", urlencodedParser,
+    async function (request, response) {
+
+        let offerId = request.body.idOffer;
+        let respTabnum = request.body.tabNum;
+        let actual = request.body.actual;
+        let innovate = request.body.innovate;
+        let cost = request.body.cost;
+        let duration = request.body.duration;
+
+        console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
     })
 
 

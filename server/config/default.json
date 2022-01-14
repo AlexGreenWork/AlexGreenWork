@@ -5,8 +5,9 @@
   "database": {
     "host": "localhost",
     "user": "root",
-    "password": "",
+    "password": "db@isi@access",
     "database": "offersendler"
 
   }
 }
+
