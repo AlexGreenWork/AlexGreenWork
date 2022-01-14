@@ -22,7 +22,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-
+import FilesRG from "./conclusionFiles"
 
 console.log(store.getState().search.searchUser)
 
@@ -228,7 +228,7 @@ const ConclusionOffer = () => {
     function AdminChangeUploadFile(props) {
         const isAdmin = props.isAdmin;
         if (isAdmin == `${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`) {
-            return <IsAdminRGUpload/>;
+            return <FilesRG/>;
 
         } else {
             return <IsAdminUser/>

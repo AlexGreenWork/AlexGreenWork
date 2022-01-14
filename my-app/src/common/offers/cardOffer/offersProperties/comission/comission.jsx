@@ -162,7 +162,7 @@ const ComissionOffer = () => {
     function ReadDir() {
         let idOffers = localStorage.getItem('idOffers');
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', `${API_URL}api/files/FilesConclusionCommission`, true); /// СИНХРОННЫЙ ЗАПРОС!!!
+        xhr.open('POST', `${API_URL}api/files/FilesConclusionCommission`, true); 
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
        
         xhr.onreadystatechange = function () {
