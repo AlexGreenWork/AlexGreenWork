@@ -19,8 +19,7 @@ const PersonalCabinet = () => {
                                                     .then(res => {
                                                         if(responsible == null){
                                                             if(res.data != 'noResponsible' ){
-                                                                console.log(res.data)
-                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/OffersResponsible">Предложения с вашими заключениями</NavLink></div>)
+                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Предложения с вашими заключениями</NavLink></div>)
                                                             }
 
                                                         }
@@ -85,7 +84,6 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}>
                     <NavLink className={s.offers} to="/personalCabinet/adminPanelComission">Панель администратора</NavLink>
                 </div>
-                {responsible}
             </div>
         );
     }
@@ -119,7 +117,6 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}>
                     <NavLink className={s.offers} to="/personalCabinet/adminPanelTopComission">Панель Рабочей группы</NavLink>
                 </div>
-                {responsible}
             </div>
         )
     }
@@ -148,7 +145,6 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/adminPanelComission">
                     Панель руководства
                 </NavLink></div>
-                {responsible}
             </div>
         )
     }
