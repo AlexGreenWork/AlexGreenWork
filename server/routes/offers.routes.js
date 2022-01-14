@@ -4,7 +4,8 @@ const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
-const { isDate } = require("moment");
+const authMiddleware = require('../middleware/auth.middleware')
+const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
 const {DATETIME} = require("mysql/lib/protocol/constants/types");
@@ -58,7 +59,7 @@ router.get("/allOffers",
 														ON ow.tabelNum = o.tabelNum`);
 
             response.setHeader('Content-Type', 'application/json');
-
+		
             response.send(JSON.stringify(selectOffers[0], null, 3));
 
             // response.send(selectOffers[0]);
@@ -129,7 +130,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											AND ow.email = "${email}")`)
 
 
-    let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений		
+    let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений
     for (let i = 0; i < sqlParty[0].length; i++) {
         let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
 
@@ -476,23 +477,20 @@ router.post("/toDbDeleteResponsible", urlencodedParser,
         response.send();
     })
 
-
-
 router.post("/toDbSaveResponsible", urlencodedParser,
-    async function (request, response) {
-        try {
-
-
+    async function (request, response)
+	{
         let idOffers = request.body.idOffer;
         let respTabnum = request.body.respTabnum;
         let position = request.body.position;
-        console.log(position)
-        if (!idOffers
-            || !respTabnum
-            || !position) {
-            response.status(400)
-            response.send();
-        }
+
+		if(!idOffers
+			|| !respTabnum
+				|| !position)
+		{
+			response.status(400)
+			response.send();
+		}
 
         async function restore(connection, idOffer, tabnum, position) {
             try {
@@ -553,11 +551,8 @@ router.post("/toDbSaveResponsible", urlencodedParser,
             await insert(pool, idOffers, respTabnum, position)
         }
 
-        response.status(200);
-        response.send();
-        }catch (e){
-            console.log(e)
-        }
+		response.status(200);
+		response.send();
     })
 
 router.post("/saveRespRGAnnotationToDb", urlencodedParser,
@@ -568,70 +563,109 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser,
         let offerRespId = request.body.respID
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
     })
-router.post("/toDbSaveAnnot", urlencodedParser,
-    async function (request, response) {
 
-        let offerId = request.body.idOffer;
-        let respTabnum = request.body.tabNum;
-        let annotation = request.body.ann;
-        console.log(Date(),"Запись аннотации"," ","'",annotation,"'","в предложение",offerId, "с табельного ", respTabnum, )
-        await pool.query(`UPDATE offersresponsible SET mark = '${annotation}', close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+router.post("/respResults", urlencodedParser, authMiddleware,
+    async function (request, response)
+	{
+        const idOffers =  request.body.idOffer;
+		const userId = request.user.id;
+
+		const query = `SELECT
+							resp.*
+						FROM
+							offersendler.offersworker AS w
+						INNER JOIN offersendler.offers AS o
+								ON o.tabelNum = w.tabelNum
+						LEFT JOIN
+							(
+								SELECT
+									dep.name,
+									ka.fiofull,
+									resp.offer_id,
+									resp.responsible_tabnum,
+									resp.open,
+									resp.close,
+									resp.actual,
+									resp.innov,
+									resp.cost,
+									resp.extent
+								FROM ?? AS resp
+								INNER JOIN offersendler.kadry_all AS ka
+									ON ka.tabnum = resp.responsible_tabnum
+								INNER JOIN offersendler.department AS dep
+									ON dep.id = ka.department
+								WHERE resp.deleted <> 1
+							) AS resp ON resp.offer_id = o.Id
+						WHERE
+							w.id = ?
+							AND o.id = ?`
+
+		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
+		let placeholders_rg = ['offersendler.offersresponsible_rg', userId, idOffers];
+
+		const responsibles = await pool.query(query, placeholders)
+		const responsibles_rg = await pool.query(query, placeholders_rg)
+
+		if(!responsibles[0].length)
+		{
+			response.status(400)
+			response.send();
+		}
+
+		let result = {responsibles: {},
+						responsibles_rg: {}};
+
+		function init(data)
+		{
+			const pointer = new Map();
+
+			for(value of data)
+			{
+				if(!pointer.hasOwnProperty(value.name))
+				{
+					pointer[value.name] = {data: [],
+											actual: 0,
+											innovation: 0,
+											cost: 0,
+											extent: 0};
+				}
+
+				const _pointer = pointer[value.name];
+
+				_pointer.data.push(
+					{
+						department: value.name,
+						fio: value.fiofull,
+						open: value.open,
+						close: value.close,
+						actuality: value.actual,
+						innovation: value.innov,
+						cost: value.cost,
+						duration: value.extent,
+						middle: (Math.round(value.actual + value.innov + value.cost + value.extent) / 4)
+					}
+				)
+				_pointer.actual += value.actual;
+				_pointer.innovation += value.innov;
+				_pointer.cost += value.cost;
+				_pointer.extent += value.extent
+			}
+
+			for(const value in pointer)
+			{
+				pointer[value].actual /= pointer[value].data.length;
+				pointer[value].innovation /= pointer[value].data.length;
+				pointer[value].cost /= pointer[value].data.length;
+				pointer[value].extent /= pointer[value].data.length;
+			}
+
+			return pointer;
+		}
+
+		result.responsibles = init(responsibles[0]);
+		result.responsibles_rg = init(responsibles_rg[0]);
+
+		response.send(result)
     })
-router.post("/saveNotesToDbRG", urlencodedParser,
-    async function (request, response) {
-
-        let offerId = request.body.idOffer;
-        let respTabnum = request.body.tabNum;
-        let actual = request.body.actual;
-        let innovate = request.body.innovate;
-        let cost = request.body.cost;
-        let duration = request.body.duration;
-
-        console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
-        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
-    })
-
-
-router.post("/responsibleToOffers", urlencodedParser,
-    async function (request, response) {
-        let arrOffer = [];
-        let tabNum = request.body.tabNum
-       
-        let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
-        
-        if(sqlResponsible[0].length != 0){
-            for (let i = 0; i < sqlResponsible[0].length; i++) {
-
-                let sqlOffers = await pool.query(`SELECT nameOffer,
-                                                         Id,
-                                                         date,
-                                                         status,
-                                                         tabelNum 
-                                                   FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
-    
-    
-                let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
-    
-              
-                let offersObj = sqlOffers[0][0]
-               
-                offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
-                offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
-                offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
-                  
-                arrOffer[i] = offersObj;
-                   
-                    if(i == sqlResponsible[0].length-1 ){
-                        response.send(arrOffer)
-                    }
-            }
-        } else{
-            response.send("noResponsible")
-        }
-      
-      
-       
-    })
-
 
 module.exports = router
