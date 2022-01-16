@@ -16,8 +16,9 @@ import TableContainer from "@mui/material/TableContainer";
 import Paper from '@mui/material/Paper';
 import axios from "axios";
 import {setPopupDisplay} from "../../../../../reducers/fileReducer";
-
+import FilesRG from "./conclusionFiles";
 import {useDispatch} from "react-redux";
+
 
 
 
@@ -186,9 +187,8 @@ const ConclusionCard = (props) => {
         var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
 
         function IsAdminRGUpload() {
-            return (<div className={s.fileUpload}>
-                    <input type="file" name="filename"/>
-                </div>
+
+            return (<FilesRG/>
 
             )
         }

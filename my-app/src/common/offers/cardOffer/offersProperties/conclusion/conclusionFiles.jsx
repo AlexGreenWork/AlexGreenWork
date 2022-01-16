@@ -50,8 +50,8 @@ function FilesRG(){
             if (this.readyState == 4 && this.status == 200) {
                
                 console.log(xhr.response)  
-                setRequestDir(xhr.response);
-                setListFileComission(<FileCommissionList req={xhr.response}/>)
+              //  setRequestDir(xhr.response);
+              ///  setListFileComission(<FileCommissionList req={xhr.response}/>)
                 
                 
             }
@@ -62,8 +62,45 @@ function FilesRG(){
 
     return (
         <div>
-             <input type="file" name="filename" className={s.buttonS}/>
-             <button onClick={()=>{}}>Загрузить файл</button>
+             <input type="file" name="myFileCard" id="myfile" className={s.buttonS}/>
+             <button onClick={()=>{
+                let idOffers = localStorage.getItem('idOffers');
+                let tabelNum = localStorage.getItem('userTabelNum');
+                let formData = new FormData();
+
+                formData.append("myFileCard", document.getElementById(`myfile`).files[0]);
+                
+                formData.append("idOffers", idOffers);
+                formData.append("tabelNum", tabelNum);
+                console.log(document.getElementById(`myfile`).files[0])
+                console.log(formData)
+
+                //let formData = new FormData();
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', `${API_URL}api/files/FilesRespRg`)
+
+               // formData.append("idOffers", idOffers);
+                //formData.append("myFileCard", document.getElementById(`${file}`).files[0]);
+
+                xhr.send(formData);
+
+                xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let result = this.responseText;
+                   // setFileList(<FileList/>)
+                   console.log(result)
+                }
+            }
+            /*     axios.post(`${API_URL}api/files/FilesRespRg`, {  formData : formData
+                    
+                  //  idOffers: idOffers,
+                    })
+                    .then(res => {
+                       
+                        console.log(res.data)
+                    }) */
+
+             }}>Загрузить файл!</button>
         </div>
        
     )
