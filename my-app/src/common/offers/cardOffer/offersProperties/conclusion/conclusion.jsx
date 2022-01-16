@@ -128,7 +128,7 @@ const ConclusionOffer = () => {
 
     function IsAdminRGUpload() {
         return (<div className={s.fileUpload} >
-            <input type="file" name="filename" className={s.buttonS}/>
+            <input type="file" name="filename" className={s.buttonS}/>wefw
         </div>
 
         )
