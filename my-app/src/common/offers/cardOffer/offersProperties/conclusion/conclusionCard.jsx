@@ -18,7 +18,7 @@ import axios from "axios";
 import {setPopupDisplay} from "../../../../../reducers/fileReducer";
 import FilesRG from "./conclusionFiles";
 import {useDispatch} from "react-redux";
-
+import FilesResponsible from "./responsibleFiles"
 
 
 
@@ -188,7 +188,7 @@ const ConclusionCard = (props) => {
 
         function IsAdminRGUpload() {
 
-            return (<FilesRG/>
+            return (<FilesResponsible/>
 
             )
         }

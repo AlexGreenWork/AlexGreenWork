@@ -229,26 +229,27 @@ router.post("/myFilesWG", urlencodedParser,
 
     router.post("/FilesRespRg", urlencodedParser,
     async function (request, response) {
-        console.log(request.body)
+       
         let idOffers = request.body.idOffers;
         let tabelNum = request.body.tabelNum;
-       // req.files.myFileCard.mv(`../server/files/offers/idOffers/id${req.body.idOffers}/SendlerFiles/` + req.files.myFileCard.name);
+      
       fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
-            console.log(folder)
+          
             if(folder.includes("ResponsibleRg") == false){
                 
                 fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/`, { recursive: true }, err => {
                     if(err) throw err; // не удалось создать папки
-                   // console.log(`Папка SendlerFiles внутри id${request.body.idOffers} создана `);
-
+                  
                     fs.readdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/`, (err, folderResp) => {
                         
                         if(folderResp.includes(`${tabelNum}`) == false){
                            
                             fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}`, { recursive: true }, err => {
                                 if(err) throw err; // не удалось создать папки
-
-                                request.files.myFileCard.mv(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}/` + request.files.myFileCard.name);
+                                if(request.files != null){
+                                    request.files.myFileCard.mv(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}/` + request.files.myFileCard.name);
+                                }
+                               
 
                                 fs.readdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}`, (err, folderRespTab) => {
                                     console.log(folderRespTab)
@@ -265,76 +266,94 @@ router.post("/myFilesWG", urlencodedParser,
             } else {
 
                 fs.readdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/`, (err, folder) => {
-                    console.log("folder", folder);
+                    
                     if(folder.includes(`${tabelNum}`) == false){
 
                         fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}`, { recursive: true }, err => {
-                            request.files.myFileCard.mv(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}/` + request.files.myFileCard.name);
+
+                            if(request.files != null){
+                                request.files.myFileCard.mv(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}/` + request.files.myFileCard.name);
+                            }
+                           
                             fs.readdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}`, (err, folderRespTab) => {
-                                console.log("Папка табельный ytn", folderRespTab )
+                                
                                 response.send(folderRespTab)
                             })
                         })
                     } else {
-                        request.files.myFileCard.mv(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}/` + request.files.myFileCard.name);
+
+                        if(request.files != null){
+                            request.files.myFileCard.mv(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}/` + request.files.myFileCard.name);
+                        }
+                       
+                       
                         fs.readdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}`, (err, folderRespTab) => {
-                            console.log("Папка табельный есть", folderRespTab )
+                          
                             response.send(folderRespTab)
                         })
                     }
                 })
-        /*             let a = 0;
-                for(let i = 0; i< folder.length; i++){
-                              
-                    if(folder[i] == `id${idOffers}`){
-                    
-                        
-                        fs.readdir(`../server/files/offers/idOffers/id${idOffers}/`, (err, folder) => {
-                        
-                            if(folder[0] == "SendlerFiles"){
-                             
-                             fs.readdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, (err, files) => {
-                                 
-                                 response.send(files)
-                             })
-                               
-                             i = folder.length
-                               
-                            } else {
-                                   
-                             fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, { recursive: true }, err => {
-                                 if(err) throw err; // не удалось создать папки
-                                 //console.log(`Папка SendlerFiles внутри id${idOffers} создана `);
-     
-                                 fs.readdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, (err, files) => {
-                                 
-                                     response.send(files)
-                                 })
-     
-                             })
-                             i = folder.length
-                            }
-                        })
-                       
-        
-                    } else {
-                         a++;
-                        if( a == folder.length){
-                           
-                            fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, { recursive: true }, err => {
-                                if(err) throw err; 
-                                fs.readdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, (err, files) => {
-                                response.send(files)
-                             })
-         
-                            });
-                        } else {
-                            
-                        }
-                    }
-                 } */
+       
             }
         })
     })
 
+    router.post("/FilesListRespRg", urlencodedParser,
+    async function (req, res) {
+
+        let idOffers = req.body.idOffers;
+        let tabelNum = req.body.tabelNum;
+
+        fs.readdir(`../server/files/offers/idOffers/id${idOffers}/ResponsibleRg/${tabelNum}`, (err, folder) => {
+           
+            res.send(folder)
+        })
+    })
+
+
+    router.post("/FilesResponsible", urlencodedParser,
+    async function (request, response) {
+       
+        let idOffers = request.body.idOffers;
+        let tabelNum = request.body.tabelNum;
+      
+      fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
+          
+            if(folder.includes(`responsible${tabelNum}`) == false){
+                
+                fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/responsible${tabelNum}`, { recursive: true }, err => {
+                    if(err) throw err; // не удалось создать папки
+                    
+                    if(request.files != null){
+                        request.files.myFileResp.mv(`../server/files/offers/idOffers/id${idOffers}/responsible${tabelNum}/` + request.files.myFileResp.name);
+                        response.send("upload File")
+                    }
+                   
+                    
+                })
+
+            } else {
+
+                if(request.files != null){
+                    request.files.myFileResp.mv(`../server/files/offers/idOffers/id${idOffers}/responsible${tabelNum}/` + request.files.myFileResp.name);
+                    response.send("upload File")
+                }
+       
+            }
+        })
+    })
+
+    router.post("/FilesListResponsible", urlencodedParser,
+    async function (req, res) {
+
+        let idOffers = req.body.idOffers;
+        let tabelNum = req.body.tabelNum;
+
+        fs.readdir(`../server/files/offers/idOffers/id${idOffers}/responsible${tabelNum}/`, (err, folder) => {
+           
+            res.send(folder)
+        })
+    })
+
+    
 module.exports = router
