@@ -12,7 +12,7 @@ import ConclusionList from "./conclusionList";
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import server from "../../../../../actions/server";
 import {element} from "prop-types";
-import {saveRespRGAnnotationToDb} from "../../../../../actions/file";
+import {saveNotesToDb, saveRespRGAnnotationToDb} from "../../../../../actions/file";
 import axios from "axios";
 import style from "./conclusionCard.module.css";
 import TableContainer from "@mui/material/TableContainer";
@@ -365,12 +365,23 @@ function AdminChangeAnnotationWiev(props){
             )
         }
 }
-    function saveNotes(){
+   function saveNotes(){
+    let tabNum = store.getState().offers.offer.responsibles_rg?.responsible_tabnum
+    let idOffer = localStorage.getItem('idOffers')
+    let actual =document.getElementById('actual').innerText
+    let innovate =document.getElementById('innovate').innerText
+    let cost =document.getElementById('cost').innerText
+    let duration =document.getElementById('duration').innerText
+        dispatch(saveNotesToDb(actual, innovate, cost, duration, tabNum, idOffer))
 
     }
     function closeCunclusion(){
 
     }
+    const [actual, setActual] = React.useState('')
+    const [innovate, setInnovate] = React.useState('')
+    const [cost, setCost] = React.useState('')
+    const [duration, setDuration] = React.useState('')
 
     function AdminChangeSaveNotes() {
         const MyTabnum = localStorage.getItem('userTabelNum');
@@ -388,10 +399,10 @@ function AdminChangeAnnotationWiev(props){
                     </TableHead>
                     <TableBody>
                         <TableCell/>
-                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
-                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
-                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
-                        <TableCell className={s.NoteCell} align="right" contenteditable="true" type="number">1</TableCell>
+                        <TableCell id="actual" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.actual}</TableCell>
+                        <TableCell id="innovate" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.innov}</TableCell>
+                        <TableCell id="cost" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.cost}</TableCell>
+                        <TableCell id="duration" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.extent}</TableCell>
                     </TableBody>
                 </Table>
                     <div>
@@ -428,10 +439,10 @@ function AdminChangeAnnotationWiev(props){
                     </TableHead>
                     <TableBody>
                         <TableCell/>
-                        <TableCell  align="right"  type="number">1</TableCell>
-                        <TableCell align="right"  type="number">1</TableCell>
-                        <TableCell align="right"  type="number">1</TableCell>
-                        <TableCell align="right"  type="number">1</TableCell>
+                        <TableCell  align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.actual}</TableCell>
+                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.innov}</TableCell>
+                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.cost}</TableCell>
+                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.extent}</TableCell>
                     </TableBody>
                 </Table>
             </TableContainer>);

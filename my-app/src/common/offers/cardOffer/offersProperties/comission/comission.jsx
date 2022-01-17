@@ -76,7 +76,7 @@ function FileCommissionList(props) {
         let offersFile = JSON.parse(props.req);
         let arr = new Array();
         arr = offersFile
-        console.log(offersFile)
+
         for (let i = 0; i < offersFile.length; i++) {
             for (let j = 0; j < offersFile[i].length; j++) {
     
@@ -113,13 +113,13 @@ function downloadFile(obj) {
 const ComissionOffer = () => {
 
     const [requestDir, setRequestDir] = React.useState(0);
-    const [dateComission, setDateComission] = React.useState('');
+    const [dateComission, setDateComission] = React.useState(`${localStorage.getItem('dateComission')}`);
     const [listFileComission, setListFileComission] = React.useState(<FileCommissionList req="null"/>);
     
 
     if(requestDir === 0){
         ReadDir();
-        console.log('условие рендеринга requestDir === 0');
+        // console.log('условие рендеринга requestDir === 0');
     }
    // ReadDir();
 
@@ -168,7 +168,7 @@ const ComissionOffer = () => {
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                
-                console.log(xhr.response)  
+
                 setRequestDir(xhr.response);
                 setListFileComission(<FileCommissionList req={xhr.response}/>)
                 
@@ -250,7 +250,7 @@ const ComissionOffer = () => {
 
         return (<div>
                 <MultiSelectChangeCom viewChangeCom={viewChangeCom}/>
-                {listFileComission}
+
                 <form onSubmit={handleSubmit}>
                 <input type="file" name="filename" id='file'/>
                 <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Загрузить файл </button>
@@ -297,12 +297,31 @@ const ComissionOffer = () => {
     // };
 
 
- let dateCom = localStorage.getItem('dateComission')
+ let dateCom = dateComission
+    var month = [
+        'Января',
+        'Февраля',
+        'Марта',
+        'Апреля',
+        'Мая',
+        'Июня',
+        'Июля',
+        'Августа',
+        'Сентября',
+        'Октября',
+        'Ноября',
+        'Декабря'
+    ];
+
+    var d = new Date(`${dateCom}`);
+    var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
+
+    var time = " в "+ ' '+d.getHours()+':'+ d.getMinutes();
     return (
 
 
         <div className={s.nameOffer}>
-            <div>Дата заседания комиссии: {dateCom}</div>
+            <div>Дата заседания комиссии: {newDate}{time}</div>
 
 
             <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
@@ -315,17 +334,23 @@ const ComissionOffer = () => {
                 alignItems: 'center'
             }}>
                 <div>
-                    Файл протокола:
+                    Файл протокола заседания:
                 </div>
                 <div className={s.filesContainer}>
-                   {/*  <CardOfferUpload/> */}
+                    {listFileComission}
                 </div>
                 {/* <DndOffer/> */}
             </div>
            
             
-            <div>краткая аннотация решения</div>
-            <div>Файл выписки</div>
+            <div>краткая аннотация решения:</div>
+            <div contentEditable={"true"} id="textAreaCommision" placeholder="Напишите краткую аннотацию..." className={s.comissionTextArea} style={{
+                width:"100%",
+                flexDirection:"column"
+            }} >
+            </div>
+            <div>Файл выписки:</div>
+            <div></div>
             <div>Величина вознаграждения</div>
 
         </div>

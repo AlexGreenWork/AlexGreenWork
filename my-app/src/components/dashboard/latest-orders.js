@@ -20,79 +20,79 @@ import { SeverityPill } from '../severity-pill';
 const orders = [
   {
     id: uuid(),
-    ref: 'CDD1049',
+    ref: '231',
     amount: 30.5,
     customer: {
-      name: 'Ekaterina Tankova'
+      name: 'Екатерина Танькова'
     },
     createdAt: 1555016400000,
-    status: 'pending'
+    status: 'в обработке'
   },
   {
     id: uuid(),
-    ref: 'CDD1048',
+    ref: '250',
     amount: 25.1,
     customer: {
-      name: 'Cao Yu'
+      name: 'Вася Пупкин'
     },
     createdAt: 1555016400000,
-    status: 'delivered'
+    status: 'обработано'
   },
   {
     id: uuid(),
-    ref: 'CDD1047',
+    ref: '667',
     amount: 10.99,
     customer: {
-      name: 'Alexa Richardson'
+      name: 'Александр Мордвинкин'
     },
     createdAt: 1554930000000,
-    status: 'refunded'
+    status: 'отклонено'
   },
   {
     id: uuid(),
-    ref: 'CDD1046',
+    ref: '320',
     amount: 96.43,
     customer: {
-      name: 'Anje Keizer'
+      name: 'Анна Кац'
     },
     createdAt: 1554757200000,
-    status: 'pending'
+    status: 'в обработке'
   },
   {
     id: uuid(),
-    ref: 'CDD1045',
+    ref: '290',
     amount: 32.54,
     customer: {
-      name: 'Clarke Gillebert'
+      name: 'Кларк Кент'
     },
     createdAt: 1554670800000,
-    status: 'delivered'
+    status: 'обработано'
   },
   {
     id: uuid(),
-    ref: 'CDD1044',
+    ref: '240',
     amount: 16.76,
     customer: {
-      name: 'Adam Denisov'
+      name: 'Адам Денисов'
     },
     createdAt: 1554670800000,
-    status: 'delivered'
+    status: 'обработано'
   }
 ];
 
 export const LatestOrders = (props) => (
   <Card {...props}>
-    <CardHeader title="Latest Orders" />
+    <CardHeader title="Последние предложения" />
     <PerfectScrollbar>
       <Box sx={{ minWidth: 800 }}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>
-                Order Ref
+                Предложение
               </TableCell>
               <TableCell>
-                Customer
+                Автор
               </TableCell>
               <TableCell sortDirection="desc">
                 <Tooltip
@@ -103,12 +103,12 @@ export const LatestOrders = (props) => (
                     active
                     direction="desc"
                   >
-                    Date
+                   Дата
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>
               <TableCell>
-                Status
+                Статус
               </TableCell>
             </TableRow>
           </TableHead>
@@ -129,8 +129,8 @@ export const LatestOrders = (props) => (
                 </TableCell>
                 <TableCell>
                   <SeverityPill
-                    color={(order.status === 'delivered' && 'success')
-                    || (order.status === 'refunded' && 'error')
+                    color={(order.status === 'обработано' && 'success')
+                    || (order.status === 'отклонено' && 'error')
                     || 'warning'}
                   >
                     {order.status}
@@ -155,7 +155,7 @@ export const LatestOrders = (props) => (
         size="small"
         variant="text"
       >
-        View all
+        Посмотреть все
       </Button>
     </Box>
   </Card>

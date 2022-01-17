@@ -100,7 +100,7 @@ function OffersForm() {
 
                             closeDiv();
                             EventClose();
-
+                            window.location.href = '/personalCabinet/myOffers';
                         }
                     }
                 }
