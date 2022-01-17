@@ -669,12 +669,27 @@ router.post("/offerStates", urlencodedParser, authMiddleware,
 							ON dep.id = ka.department
 								AND dep.factory = ka.factory
 						WHERE 
-							o.offer_id = o3.Id`;
+							o.deleted <> 1
+							AND o.offer_id = o3.Id`;
 
 		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", userId, idOffers]);
-		const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
+		const sqlOfferResponsible_rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
 
+		let result = {responsibles: [],
+								responsibles_rg: []};
+console.log(sqlOfferResponsible[0]);
 
+		if(sqlOfferResponsible[0].length)
+		{
+			result.responsibles = sqlOfferResponsible[0]
+		}
+
+		if(sqlOfferResponsible_rg[0].length)
+		{
+			result.responsibles_rg = sqlOfferResponsible_rg[0]
+		}
+
+		response.send(result);
 	})
 
 router.post("/respResults", urlencodedParser, authMiddleware,
@@ -821,7 +836,7 @@ router.post("/responsibleToOffers", urlencodedParser,
 
     })
 router.post("/saveNotesToDbRG", urlencodedParser,
-    async function (request, response) {
+    async function (request, response) {cardOffer
     let actual = request.body.actual
     let innovate = request.body.innovate
     let cost = request.body.cost
