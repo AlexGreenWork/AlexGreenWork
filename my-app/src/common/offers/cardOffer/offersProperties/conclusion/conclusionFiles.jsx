@@ -108,7 +108,7 @@ function FilesRG(){
                     
                             })
                             .then(res => {
-                            
+                                console.log(res.data)
                                 setFilesListComponent(<FilesList filesData={res.data}/>)
                             
                             })

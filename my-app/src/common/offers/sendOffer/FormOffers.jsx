@@ -75,11 +75,46 @@ function OffersForm(props) {
                                                              document.querySelector(`#firstName${count}`).value = fio[1];
                                                              document.querySelector(`#lastName${count}`).value = fio[0];
                                                              document.querySelector(`#middleName${count}`).value = fio[2];
-
+                                                             document.querySelector(`#emailInput${count}`).value = fio[3];
+                                                             document.querySelector(`#phoneNumber${count}`).value = fio[5];
+                                                             
                                                              setNameNew(fio[1])
                                                              setLastNameNew(fio[0])
                                                              setMiddleNameNew(fio[2])
+                                                             setEmailNew(fio[3])
+                                                             setPhoneNumberNew(fio[5])
+                                                        })
+        } catch (e){
+            alert(e.response)
+        }
+    }
+
+
+    function addFioSendler(tabNum){
+       /*  const [name, setName] = useState(`${nameMid}`);
+    const [lastName, setLastName] = useState(`${SurNameMid}`);
+    const [middleName, setMiddleName] = useState(`${MiddleNameMid}`); 
+    setTabelNumber] = useState(`${TabelNumMid}`);
+    const [phoneNumber, setPhoneNumber*/
+        try{
+            axios.post(`${API_URL}api/auth/fioSendler`, {  tabNum: tabNum,
     
+                                                        })
+                                                        .then(res => {
+                                                          
+                                                            console.log(res.data)
+                                                            let fio = res.data;
+                                                            console.log(fio[0])
+                                                          /*   console.log( document.querySelector(`#firstName${count}`))
+                                                             document.querySelector(`#firstName`).value = fio[1];
+                                                             document.querySelector(`#lastName`).value = fio[0];
+                                                             document.querySelector(`#middleName`).value = fio[2];
+ */
+                                                             setName(fio[1])
+                                                             setLastName(fio[0])
+                                                             setMiddleName(fio[2])
+                                                             setEmail(fio[3])
+                                                             setPhoneNumber(fio[4])
                                                         })
         } catch (e){
             alert(e.response)
@@ -349,7 +384,7 @@ function OffersForm(props) {
                     <div className={s.formFilds}>
                         <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
                                name="tabelNumber" required autoComplete="on"
-                               value={tabelNumber} onChange={(e) => setTabelNumber(e.target.value)}/>
+                               value={tabelNumber} onChange={(e) => {setTabelNumber(e.target.value);}} onBlur={(e)=>{addFioSendler(e.target.value)}}/>
                         <label htmlFor="tabelNumber">Табельный номер</label>
                         <div className="false-input false-tabelNumber"></div>
                     </div>

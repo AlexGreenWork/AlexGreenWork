@@ -490,13 +490,37 @@ router.post("/fioSendler", urlencodedParser, async (req, res) => {
      
         let tabNum = req.body.tabNum; 
         let sqlFioSend = await pool.execute(`SELECT fiofull FROM kadry_all WHERE tabnum="${tabNum}"`);
-        
-        if(sqlFioSend[0][0] != undefined){
-            let arrayToStrings = sqlFioSend[0][0].fiofull.split(' ')
+        let sqlEmailSend = await pool.execute(`SELECT email FROM users_emails WHERE tabnum="${tabNum}"`);
+        let sqlFioSendIsi = await pool.execute(`SELECT name, surname, middlename, email, tabelNum, phoneNumber FROM offersworker WHERE tabelNum="${tabNum}"`);
+       
+        if(sqlFioSendIsi[0][0] != undefined){
+            let arrayToStrings =[];
+            arrayToStrings[0] = sqlFioSendIsi[0][0].name;
+            arrayToStrings[1] = sqlFioSendIsi[0][0].surname;
+            arrayToStrings[2] = sqlFioSendIsi[0][0].middlename;
+            arrayToStrings[3] = sqlFioSendIsi[0][0].email;
+            arrayToStrings[4] = sqlFioSendIsi[0][0].tabelNum;
+            arrayToStrings[5] = sqlFioSendIsi[0][0].phoneNumber;
+          
             res.send(arrayToStrings)
         } else{
-            res.send(["Имя", "Фамилия", "Отчество"])
+            if(sqlFioSend[0][0] != undefined){
+               
+                if(sqlEmailSend[0][0] != undefined){
+                    let arrayToStrings = sqlFioSend[0][0].fiofull.split(' ')
+                    arrayToStrings.push(sqlEmailSend[0][0].email)
+                    res.send(arrayToStrings)
+                } else {
+                    let arrayToStrings = sqlFioSend[0][0].fiofull.split(' ')
+                   
+                    res.send(arrayToStrings)
+                }
+               
+            } else{
+                res.send(["Имя", "Фамилия", "Отчество"])
+            }
         }
+        
        
       
   
