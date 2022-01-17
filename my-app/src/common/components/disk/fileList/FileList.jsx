@@ -104,7 +104,7 @@ const FileList = () => {
     function ReadDir() {
         let idOffers = localStorage.getItem('idOffers');
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', `${API_URL}api/files/allFiles`, true); /// АСИНХРОННЫЙ ЗАПРОС!!!
+        xhr.open('POST', `${API_URL}api/files/allFiles`, true); 
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
        
         xhr.onreadystatechange = function () {

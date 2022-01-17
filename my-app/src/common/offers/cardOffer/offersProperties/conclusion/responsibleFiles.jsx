@@ -11,7 +11,7 @@ function FilesList(props){
       
     if(filesList === null){
         
-        axios.post(`${API_URL}api/files/FilesListRespRg`, {  tabelNum: tabelNum,
+        axios.post(`${API_URL}api/files/FilesListResponsible`, {  tabelNum: tabelNum,
             idOffers: idOffers
 
            })
@@ -65,7 +65,7 @@ function FilesBlock(props){
    
     let idOffers = localStorage.getItem('idOffers');
     let tabelNum = localStorage.getItem('userTabelNum');
-    let downloadFolder = `ResponsibleRg/${tabelNum}`;
+    let downloadFolder = `responsible${tabelNum}`;
 
     return(
         <div>
@@ -76,14 +76,14 @@ function FilesBlock(props){
     )
 }
 
-function FilesRG(){
+function FilesResponsible(){
 
     const [filesListComponent, setFilesListComponent] = useState(<FilesList/>);
 
     return (
         <div>
             {filesListComponent}
-             <input type="file" name="myFileCard" id="myfile" className={s.buttonS}/>
+             <input type="file" name="myFileResp" id="myfile" className={s.buttonS}/>
              <button onClick={()=>{
                 let idOffers = localStorage.getItem('idOffers');
                 let tabelNum = localStorage.getItem('userTabelNum');
@@ -91,10 +91,10 @@ function FilesRG(){
                 
                 formData.append("idOffers", idOffers);
                 formData.append("tabelNum", tabelNum);
-                formData.append("myFileCard", document.getElementById(`myfile`).files[0]);
+                formData.append("myFileResp", document.getElementById(`myfile`).files[0]);
                
                 let xhr = new XMLHttpRequest();
-                xhr.open('POST', `${API_URL}api/files/FilesRespRg`)
+                xhr.open('POST', `${API_URL}api/files/FilesResponsible`)
               
                 console.log(document.getElementById(`myfile`).files[0])
                 xhr.send(formData);
@@ -103,8 +103,8 @@ function FilesRG(){
                 if (this.readyState == 4 && this.status == 200) {
                     let result = this.responseText;
 
-                            axios.post(`${API_URL}api/files/FilesListRespRg`, {  tabelNum: tabelNum,
-                                                                                 idOffers: idOffers
+                            axios.post(`${API_URL}api/files/FilesListResponsible`, {  tabelNum: tabelNum,
+                                                                                      idOffers: idOffers
                     
                             })
                             .then(res => {
@@ -125,4 +125,4 @@ function FilesRG(){
     )
 }
 
-export default FilesRG
+export default FilesResponsible
