@@ -677,7 +677,6 @@ router.post("/offerStates", urlencodedParser, authMiddleware,
 
 		let result = {responsibles: [],
 								responsibles_rg: []};
-console.log(sqlOfferResponsible[0]);
 
 		if(sqlOfferResponsible[0].length)
 		{
