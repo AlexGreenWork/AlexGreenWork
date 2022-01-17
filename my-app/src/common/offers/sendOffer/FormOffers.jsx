@@ -67,11 +67,9 @@ function OffersForm(props) {
     
                                                         })
                                                         .then(res => {
-                                                          
-                                                            console.log(res.data)
+                                                                                                                    
                                                             let fio = res.data;
-                                                            console.log(fio[0])
-                                                            console.log( document.querySelector(`#firstName${count}`))
+                                                           
                                                              document.querySelector(`#firstName${count}`).value = fio[1];
                                                              document.querySelector(`#lastName${count}`).value = fio[0];
                                                              document.querySelector(`#middleName${count}`).value = fio[2];
@@ -91,25 +89,18 @@ function OffersForm(props) {
 
 
     function addFioSendler(tabNum){
-       /*  const [name, setName] = useState(`${nameMid}`);
-    const [lastName, setLastName] = useState(`${SurNameMid}`);
-    const [middleName, setMiddleName] = useState(`${MiddleNameMid}`); 
-    setTabelNumber] = useState(`${TabelNumMid}`);
-    const [phoneNumber, setPhoneNumber*/
+     
         try{
             axios.post(`${API_URL}api/auth/fioSendler`, {  tabNum: tabNum,
     
                                                         })
                                                         .then(res => {
                                                           
-                                                            console.log(res.data)
+                                                            
                                                             let fio = res.data;
-                                                            console.log(fio[0])
-                                                          /*   console.log( document.querySelector(`#firstName${count}`))
-                                                             document.querySelector(`#firstName`).value = fio[1];
-                                                             document.querySelector(`#lastName`).value = fio[0];
-                                                             document.querySelector(`#middleName`).value = fio[2];
- */
+                                                            
+                                                         
+
                                                              setName(fio[1])
                                                              setLastName(fio[0])
                                                              setMiddleName(fio[2])
