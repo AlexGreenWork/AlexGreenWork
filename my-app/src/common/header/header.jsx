@@ -22,16 +22,23 @@ const Header = () => {
             <GoBack/>
         </div>
 
-        <div className={s.brand} >
+        <div className={s.brand} style={{
+            padding: "2px",
+            backgroundColor: "rgba(255, 255, 255, .3)",
+            borderRadius: "3px"
+        }} >
 
             <img className={s.logotype} src={logo} alt="logo"></img>
         </div>
        <div style={{
            position: "absolute",
-           top: "9%",
-           left: "25%",
-           color: "white"
-       }}> Для помощи подачи предложения  можете обратиться по тел.</div>
+           top: "0",
+           color: "white",
+           marginLeft:0,
+           width:"100%",
+           fontSize:".8em",
+           textAlign:"center"
+       }}> Для помощи подачи предложения  можете обратиться по тел: 94-19</div>
         <div className={s.loginBar}>
             {!isAuth && <div className="navbar__login"><NavLink to="/authorization">Войти</NavLink></div>}
             {!isAuth &&

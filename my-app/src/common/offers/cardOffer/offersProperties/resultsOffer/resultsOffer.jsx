@@ -14,160 +14,237 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import s from './results.module.css'
+import server from "../../../../../actions/server";
+import { API_URL } from "../../../../../config";
+import { connect } from "react-redux";
+import moment from "moment";
 
+class Row extends React.Component
+{
+	constructor(props)
+	{
+		super(props);
+		this.state = {open: false};
+	}
 
-function createData(name, actuality, innovation, cost, duration, evulation) {
-    return {
-        name,
-        actuality,
-        innovation,
-        cost,
-        duration,
-        evulation,
-        history: [
-            {
-                dateStart: '2021-01-09',
-                inspector: 'Филипчик Владимир Петрович',
-                dateFinish: '2021-08-09',
-            },
-            {
-                dateStart: '2021-08-09',
-                inspector: 'Смольская Ольга Петровна',
-                dateFinish: '2021-10-09',
-            },
-            {
-                dateStart: '2021-07-09',
-                inspector: 'Реут Виктор Сидорович ',
-                dateFinish: '2021-12-09',
-            },
+	colored_by_rating(rating)
+	{
+		if(rating < 5 && rating > 0)
+			return "Red"
+		else if(rating >= 5 && rating < 7)
+			return "Orange"
+		else if(rating >= 7)
+			return "Green"
+	}
 
-        ],
+	create_rating_ceil(rating)
+	{
+		return <TableCell style = {{color: this.colored_by_rating(rating),
+									fontSize: "16px",
+									fontWeight: "bold"
+								}}>
+			{rating}
+		</TableCell>;
+	}
 
-    };
+	render()
+	{
+		return (
+			<React.Fragment>
+				<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}
+							onClick={() => this.setState({open: !this.state.open})}
+				>
+					<TableCell>
+						<IconButton
+							aria-label="expand row"
+							size="small"
+						>
+							{this.state.open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+						</IconButton>
+					</TableCell>
+					<TableCell component="th" scope="row">
+						{this.props.name}
+					</TableCell>
+					{this.create_rating_ceil(this.props.actuality)}
+					{this.create_rating_ceil(this.props.innovation)}
+					{this.create_rating_ceil(this.props.cost)}
+					{this.create_rating_ceil(this.props.duration)}
+					{this.create_rating_ceil(this.props.middle)}
+				</TableRow>
+				<TableRow>
+					<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+						<Collapse in={this.state.open} timeout="auto" unmountOnExit>
+							<Box sx={{ margin: 1 }}>
+								<Typography variant="h6" gutterBottom component="div">
+									Оценка предложения
+								</Typography>
+								<Table size="small" aria-label="purchases">
+									<TableHead>
+										<TableRow>
+											<TableCell style={{width: "250px"}}>Проверил</TableCell>
+											<TableCell>Актуальность</TableCell>
+											<TableCell>Инновативность</TableCell>
+											<TableCell>Затратность</TableCell>
+											<TableCell>Протяженность</TableCell>
+											<TableCell>Общая оценка</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{this.props.history.map((historyRow) => (<>
+											<TableRow key={historyRow.inspector}>
+												<TableCell rowSpan = "2">
+													{historyRow.inspector}
+												</TableCell>
+												{this.create_rating_ceil(historyRow.actuality)}
+												{this.create_rating_ceil(historyRow.innovation)}
+												{this.create_rating_ceil(historyRow.cost)}
+												{this.create_rating_ceil(historyRow.duration)}
+												<TableCell rowSpan = "2"
+															align = "center"
+															style = {{color: this.colored_by_rating(historyRow.middle)}}>
+													{historyRow.middle}
+												</TableCell>
+											</TableRow>
+											<TableRow key={historyRow.inspector}>
+												<TableCell style={{width: "200px"}}>Дата начала проверки</TableCell>
+												<TableCell>{historyRow.dateStart}</TableCell>
+												<TableCell style={{width: "250px"}}>Дата окончания проверки</TableCell>
+												<TableCell>{historyRow.dateFinish}</TableCell>
+											</TableRow>
+										</>))}
+									</TableBody>
+								</Table>
+							</Box>
+						</Collapse>
+					</TableCell>
+				</TableRow>
+			</React.Fragment>
+		);
+	}
 }
 
-function Row(props) {
-    const { row } = props;
-    const [open, setOpen] = React.useState(false);
+class ResultTable extends React.Component
+{
+	constructor(props)
+	{
+		super(props);
+		this.state = {rows: []}
+		this.load = this.load.bind(this);
+		this.init = this.init.bind(this);
+		this.componentDidMount = this.componentDidMount.bind(this);
+	}
 
-    return (
-        <React.Fragment>
-            <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}
-                    >
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                    {row.name}
-                </TableCell>
-                <TableCell align="right">{row.actuality}</TableCell>
-                <TableCell align="right">{row.innovation}</TableCell>
-                <TableCell align="right">{row.cost}</TableCell>
-                <TableCell align="right">{row.duration}</TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Оценка предложения
-                            </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Проверил</TableCell>
-                                        <TableCell>Дата начала проверки</TableCell>
+	componentDidMount()
+	{
+		this.load(this.props.offerId)
+	}
 
-                                        <TableCell align="right">Дата окончания проверки</TableCell>
-                                        <TableCell align="right">Общая оценка</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {row.history.map((historyRow) => (
-                                        <TableRow key={historyRow.inspector}>
-                                            <TableCell component="th" scope="row">
-                                                {historyRow.inspector}
-                                            </TableCell>
-                                            <TableCell>{historyRow.dateStart}</TableCell>
-                                            <TableCell align="right">{historyRow.dateFinish}</TableCell>
-                                            <TableCell align="right">
-                                                {Math.round(row.actuality +
-                                                    row.innovation +
-                                                    row.cost +
-                                                    row.duration ) / 4}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </React.Fragment>
-    );
+	create_row(header, data)
+	{
+		const row = {
+			name: header,
+			actuality: data.actual,
+			innovation: data.innovation,
+			cost: data.cost,
+			duration : data.extent,
+			history: [],
+
+		};
+
+		for(const value of data.data)
+		{
+			row.history.push(
+				{
+					dateStart: value.open? moment(value.open).format("DD-MM-YYYY"): "N/A",
+					inspector: value.fio,
+					middle: value.middle,
+					dateFinish: value.close? moment(value.close).format("DD-MM-YYYY") : "N/A",
+					actuality: value.actuality,
+					innovation: value.innovation,
+					cost: value.cost,
+					duration : value.duration,
+				});
+		}
+
+		return row;
+	}
+
+	create_rows(data)
+	{
+		const rows = []
+		for(const header in data.responsibles)
+		{
+			rows.push(this.create_row(header, data.responsibles[header]));
+		}
+
+		for(const header in data.responsibles_rg)
+		{
+			rows.push(this.create_row(`Рабочая группа: ${header}`, data.responsibles_rg[header]));
+		}
+
+		this.setState({rows: rows})
+	}
+
+	init(res)
+	{
+		this.create_rows(res.data)
+	}
+
+	/**
+		* @param {Number} offer_id
+	**/
+	load(offer_id)
+	{
+		server.send_post_request(`${API_URL}api/offers/respResults`,{idOffer: offer_id}).then(this.init);
+	}
+
+	render()
+	{
+		return (
+				<Table aria-label="collapsible table">
+					<TableHead>
+						<TableRow>
+							<TableCell />
+							<TableCell>Проверяющий</TableCell>
+							<TableCell>Актуальность</TableCell>
+							<TableCell>Инновативность</TableCell>
+							<TableCell>Затратность</TableCell>
+							<TableCell>Протяженность</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{this.state.rows.map((row) => (
+							<Row key={row.name} {...row} />
+						))}
+					</TableBody>
+				</Table>
+		)
+	}
 }
 
-Row.propTypes = {
-    row: PropTypes.shape({
-        calories: PropTypes.number.isRequired,
-        carbs: PropTypes.number.isRequired,
-        fat: PropTypes.number.isRequired,
-        history: PropTypes.arrayOf(
-            PropTypes.shape({
-                amount: PropTypes.number.isRequired,
-                customerId: PropTypes.string.isRequired,
-                date: PropTypes.string.isRequired,
-            }),
-        ).isRequired,
-        name: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired,
-        protein: PropTypes.number.isRequired,
-    }).isRequired,
-};
 
-const rows = [
-    createData('Рабочая группа', 8, 6, 7, 4, 6),
-    createData('УГК', 8, 6, 7, 4, 6),
-    createData('ТЭО', 8, 6, 7, 4, 6),
-    createData('Председатель комиссии', 8, 6, 7, 4, 6),
+class ResultsOffer extends React.Component
+{
+	constructor(props)
+	{
+		super(props);
+	}
 
-
-];
-
-
-const ResultsOffer = () => {
-
-    return (
-        <div className={s.containerOff} >
-
-            <TableContainer component={Paper}>
-                <Table aria-label="collapsible table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell />
-                            <TableCell>Проверяющий</TableCell>
-                            <TableCell align="right">Актуальность</TableCell>
-                            <TableCell align="right">Инновативность</TableCell>
-                            <TableCell align="right">Затратность</TableCell>
-                            <TableCell align="right">Протяженность</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <Row key={row.name} row={row} />
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-        </div>
-
-    )
+	render()
+	{
+		return (
+			<div className={s.containerOff} >
+				<TableContainer component={Paper}>
+					<ResultTable offerId = {this.props.offerId}/>
+				</TableContainer>
+			</div>
+		)
+	}
 }
-export default ResultsOffer;
+
+const mapReduxStateToClassProps = (state) =>
+{
+	return {offerId: state.offers.offer.Id}
+}
+
+export default connect(mapReduxStateToClassProps)(ResultsOffer);

@@ -4,7 +4,8 @@ const mysql = require("mysql2/promise");
 const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
-const { isDate } = require("moment");
+const authMiddleware = require('../middleware/auth.middleware')
+const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
 const {DATETIME} = require("mysql/lib/protocol/constants/types");
@@ -58,7 +59,7 @@ router.get("/allOffers",
 														ON ow.tabelNum = o.tabelNum`);
 
             response.setHeader('Content-Type', 'application/json');
-
+		
             response.send(JSON.stringify(selectOffers[0], null, 3));
 
             // response.send(selectOffers[0]);
@@ -118,6 +119,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											o.date,
 											o.status,
 											o.tabelNum,
+											o.dateComission,
 											ow.name AS nameSendler,
 											ow.surname AS surnameSendler,
 											ow.middlename AS middlenameSendler
@@ -128,7 +130,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											AND ow.email = "${email}")`)
 
 
-    let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений		
+    let myAllOfffers = sqlMyOff[0];	// переменная в которой мы будем хранить масиив обьекстов предложений
     for (let i = 0; i < sqlParty[0].length; i++) {
         let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
 
@@ -150,7 +152,6 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
         myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
 
     }
-    /* >>>>>>> trus */
 
     return [myAllOfffers]
 }
@@ -163,9 +164,9 @@ router.post("/selectMyOffers", urlencodedParser,
             response.send();
         }
 
-        let idOffers = request.body.selectOffers
+        const idOffers = request.body.selectOffers
 
-        let sqlMyOffers = await pool.query(`SELECT 
+        const sqlMyOffers = await pool.query(`SELECT 
 												o.*,
 												ow.name AS nameSendler,
 												ow.surname AS surnameSendler,
@@ -184,6 +185,10 @@ router.post("/selectMyOffers", urlencodedParser,
 						osr.mark,
 						osr.open,
 						osr.close,
+						osr.actual,
+						osr.innov,
+						osr.cost,
+						osr.extent,
 						osr.position
 					FROM
 						?? AS osr
@@ -216,7 +221,7 @@ router.post("/selectMyOffers", urlencodedParser,
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {
 
-        let userTab = request.body.userTab;
+        const userTab = request.body.userTab;
 
         try {
             const sqlUserInfo = `SELECT
@@ -417,18 +422,39 @@ router.post("/sendAddInfo", urlencodedParser,
 
     })
 
-router.post("/toDbSaveResposibleRG", urlencodedParser,
-    async function (request, response) {
+router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
+    async function (request, response)
+	{
+        const idOffers = request.body.idOffer;
+        const respTabnum = request.body.respTabnum;
+		const userId = request.user.id;
 
-        if ((!('idOffer' in request.body)
-            || !request.body.idOffer)
-            || (!('respTabnum' in request.body)
-                || !request.body.respTabnum)) {
-            response.status(400);
+        if (!idOffers
+            && !respTabnum)
+		{
+            response.status(400)
             response.send();
         }
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
+
+		const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
+
+		const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+		if(check[0].length)
+		{
+			if(check[0][0].isset === 0)
+			{
+				response.status(400);
+				response.send();
+			}
+		}
+
         const sqlResponsible = `UPDATE offersresponsible_rg
 								SET deleted = 1
 								WHERE offer_id = ?
@@ -437,7 +463,7 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
 
         const sqlNewResponsible = `INSERT INTO offersresponsible_rg
 										(offer_id, responsible_tabnum, open, position)
-									VALUES (?, ?, ?,0)`
+									VALUES (?, ?, ?, 0)`
 
         await pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
         console.log(moment().format('YYYY-MM-DD'),"добавление RG к предложению",idOffers)
@@ -446,16 +472,37 @@ router.post("/toDbSaveResposibleRG", urlencodedParser,
     })
 
 
-router.post("/toDbDeleteResponsible", urlencodedParser,
+router.post("/toDbDeleteResponsible", urlencodedParser, authMiddleware,
     async function (request, response) {
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
+        const idOffers = request.body.idOffer;
+        const respTabnum = request.body.respTabnum;
+		const userId = request.user.id;
 
         if (!idOffers
-            && !respTabnum) {
+            && !respTabnum)
+		{
             response.status(400)
             response.send();
         }
+
+		const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
+
+		const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+		if(check[0].length)
+		{
+			if(check[0][0].isset === 0)
+			{
+				response.status(400);
+				response.send();
+			}
+		}
 
         let placeholders = [idOffers, respTabnum];
 
@@ -472,23 +519,21 @@ router.post("/toDbDeleteResponsible", urlencodedParser,
         response.send();
     })
 
+router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
+    async function (request, response)
+	{
+        const idOffers = request.body.idOffer;
+        const respTabnum = request.body.respTabnum;
+        const position = request.body.position;
+		const userId = request.user.id;
 
-
-router.post("/toDbSaveResponsible", urlencodedParser,
-    async function (request, response) {
-        try {
-
-
-        let idOffers = request.body.idOffer;
-        let respTabnum = request.body.respTabnum;
-        let position = request.body.position;
-        console.log(position)
-        if (!idOffers
-            || !respTabnum
-            || !position) {
-            response.status(400)
-            response.send();
-        }
+		if(!idOffers
+			|| !respTabnum
+				|| !position)
+		{
+			response.status(400)
+			response.send();
+		}
 
         async function restore(connection, idOffer, tabnum, position) {
             try {
@@ -508,13 +553,15 @@ router.post("/toDbSaveResponsible", urlencodedParser,
 
                 return await connection.query(query, placeholders);
 
-            } catch (e) {
+            } catch (e)
+			{
                 console.log(e)
             }
 
         }
 
-        async function insert(connection, idOffer, tabnum, position) {
+        async function insert(connection, idOffer, tabnum, position)
+		{
             const query = `INSERT INTO offersendler.offersresponsible
 								(offer_id, responsible_tabnum, open, position)
 							VALUES (?, ?, ?, ?)`
@@ -524,7 +571,8 @@ router.post("/toDbSaveResponsible", urlencodedParser,
             return await connection.query(query, placeholders);
         }
 
-        async function check(connection, idOffer, tabnum) {
+        async function isset(connection, idOffer, tabnum)
+		{
             const query = `SELECT
 								COUNT(id) AS count
 							FROM
@@ -541,22 +589,39 @@ router.post("/toDbSaveResponsible", urlencodedParser,
             return (db_result[0][0]) && (db_result[0][0].count > 0)
         }
 
+		const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
 
-        if (await check(pool, idOffers, respTabnum)) {
+		const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+		if(check[0].length)
+		{
+			if(check[0][0].isset === 0)
+			{
+				response.status(400);
+				response.send();
+			}
+		}
+
+        if (await isset(pool, idOffers, respTabnum))
+		{
             await restore(pool, idOffers, respTabnum, position)
         }
-        else {
+        else
+		{
             await insert(pool, idOffers, respTabnum, position)
         }
 
-        response.status(200);
-        response.send();
-        }catch (e){
-            console.log(e)
-        }
+		response.status(200);
+		response.send();
     })
 
-router.post("/saveRespRGAnnotationToDb", urlencodedParser,
+router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
     async function (request, response) {
 
         let annotationRg = request.body.w
@@ -564,24 +629,178 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser,
         let offerRespId = request.body.respID
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
     })
-router.post("/toDbSaveAnnot", urlencodedParser,
-    async function (request, response) {
 
-        let offerId = request.body.idOffer;
-        let respTabnum = request.body.tabNum;
-        let annotation = request.body.ann;
-        console.log(Date(),"Запись аннотации"," ","'",annotation,"'","в предложение",offerId, "с табельного ", respTabnum, )
-        await pool.query(`UPDATE offersresponsible SET mark = '${annotation}', close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
+    async function (request, response)
+	{
+        let annotationRg = request.body.w
+        let offerId = request.body.id
+        let offerRespId = request.body.respID
+        await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
     })
 
+router.post("/offerStates", urlencodedParser, authMiddleware, 
+	async function(request, response)
+	{
+        const idOffers =  request.body.idOffer;
+		const userId = request.user.id;
 
+		if(!idOffers)
+		{
+			response.status(400)
+			response.send();
+		}
+		
+		const query = `SELECT
+							o.open,
+							o.close,
+							dep.name
+						FROM
+							?? AS o
+						INNER JOIN offersworker AS o2
+							ON o2.id = ?
+						INNER JOIN offers AS o3
+							ON o3.Id = ?
+								AND o3.tabelNum = o2.tabelNum
+						INNER JOIN kadry_all AS ka 
+							ON ka.tabnum = o.responsible_tabnum
+								AND ka.factory = 1 
+						INNER JOIN department AS dep
+							ON dep.id = ka.department
+								AND dep.factory = ka.factory
+						WHERE 
+							o.deleted <> 1
+							AND o.offer_id = o3.Id`;
+
+		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", userId, idOffers]);
+		const sqlOfferResponsible_rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
+
+		let result = {responsibles: [],
+								responsibles_rg: []};
+
+		if(sqlOfferResponsible[0].length)
+		{
+			result.responsibles = sqlOfferResponsible[0]
+		}
+
+		if(sqlOfferResponsible_rg[0].length)
+		{
+			result.responsibles_rg = sqlOfferResponsible_rg[0]
+		}
+
+		response.send(result);
+	})
+
+router.post("/respResults", urlencodedParser, authMiddleware,
+    async function (request, response)
+	{
+        const idOffers =  request.body.idOffer;
+		const userId = request.user.id;
+
+		if(!idOffers)
+		{
+			response.status(400)
+			response.send();
+		}
+
+		const query = `SELECT
+							o.open,
+							ka.fiofull,
+							o.close,
+							dep.name,
+							o.responsible_tabnum,
+							o.open,
+							o.close,
+							o.actual,
+							o.innov,
+							o.cost,
+							o.extent
+						FROM
+							?? AS o
+						INNER JOIN offersworker AS o2 ON
+							o2.id = ?
+						INNER JOIN offers AS o3 ON
+							o3.Id = ?
+							AND o3.tabelNum = o2.tabelNum
+						INNER JOIN kadry_all AS ka 
+								ON ka.tabnum = o.responsible_tabnum
+									AND ka.factory = 1 
+						INNER JOIN department AS dep
+							ON dep.id = ka.department
+								AND dep.factory = ka.factory
+						WHERE 
+							o.deleted <> 1
+						AND
+							o.offer_id = o3.Id`
+
+		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
+		let placeholders_rg = ['offersendler.offersresponsible_rg', userId, idOffers];
+
+		const responsibles = await pool.query(query, placeholders)
+		const responsibles_rg = await pool.query(query, placeholders_rg)
+
+		let result = {responsibles: {},
+						responsibles_rg: {}};
+
+		function init(data)
+		{
+			const pointer = new Map();
+
+			for(value of data)
+			{
+				if(!pointer.hasOwnProperty(value.name))
+				{
+					pointer[value.name] = {data: [],
+											actual: 0,
+											innovation: 0,
+											cost: 0,
+											extent: 0};
+				}
+
+				const _pointer = pointer[value.name];
+
+				_pointer.data.push(
+					{
+						department: value.name,
+						fio: value.fiofull,
+						open: value.open,
+						close: value.close,
+						actuality: value.actual,
+						innovation: value.innov,
+						cost: value.cost,
+						duration: value.extent,
+						middle: (Math.round(value.actual + value.innov + value.cost + value.extent) / 4)
+					}
+				)
+				_pointer.actual += value.actual;
+				_pointer.innovation += value.innov;
+				_pointer.cost += value.cost;
+				_pointer.extent += value.extent
+			}
+
+			for(const value in pointer)
+			{
+				pointer[value].actual /= pointer[value].data.length;
+				pointer[value].innovation /= pointer[value].data.length;
+				pointer[value].cost /= pointer[value].data.length;
+				pointer[value].extent /= pointer[value].data.length;
+			}
+
+			return pointer;
+		}
+
+		result.responsibles = (responsibles[0].length)? init(responsibles[0]) : {};
+		result.responsibles_rg = (responsibles_rg[0].length)? init(responsibles_rg[0]) : {};
+
+		response.send(result)
+    })
 router.post("/responsibleToOffers", urlencodedParser,
     async function (request, response) {
         let arrOffer = [];
         let tabNum = request.body.tabNum
-       
+
         let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
-        
+
         if(sqlResponsible[0].length != 0){
             for (let i = 0; i < sqlResponsible[0].length; i++) {
 
@@ -591,29 +810,42 @@ router.post("/responsibleToOffers", urlencodedParser,
                                                          status,
                                                          tabelNum 
                                                    FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
-    
-    
+
+
                 let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
-    
-              
+
+
                 let offersObj = sqlOffers[0][0]
-               
+
                 offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
                 offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
                 offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
-                  
+
                 arrOffer[i] = offersObj;
-                   
-                    if(i == sqlResponsible[0].length-1 ){
-                        response.send(arrOffer)
-                    }
+
+                if(i == sqlResponsible[0].length-1 ){
+                    response.send(arrOffer)
+                }
             }
         } else{
             response.send("noResponsible")
         }
-      
-      
-       
+
+
+
+    })
+router.post("/saveNotesToDbRG", urlencodedParser,
+    async function (request, response) {cardOffer
+    let actual = request.body.actual
+    let innovate = request.body.innovate
+    let cost = request.body.cost
+    let duration = request.body.duration
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+
+        console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+
     })
 
 

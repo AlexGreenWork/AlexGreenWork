@@ -132,3 +132,12 @@ export function saveRespRGAnnotationToDb(w) {
         }
     }
 }
+export function saveNotesToDb(actual, innovate, cost, duration,  tabNum, idOffer){
+    return async ()=>{
+        try{
+            await axios.post(`${API_URL}api/offers/saveNotesToDbRG`, {actual, innovate, cost, duration, tabNum, idOffer})
+        }catch(e){
+            console.log(e)
+        }
+    }
+}
