@@ -12,6 +12,7 @@
     background-color: rgba(255,255,255,0.6);
     color: var(--main-text-color);
     font-family: sans-serif;
+    justify-content: center;
 }
 
 .events
@@ -52,9 +53,8 @@
 	width: 600px;
 	height: 400px;
 	border-radius: 5px;
-	position: fixed;
-	top: calc((400px / 2) + 10%);
-	left: calc((600px / 2));
+	position: absolute;
+    top: calc(100%/3);
 	z-index: 10;
     background-color: #14469B;
 
