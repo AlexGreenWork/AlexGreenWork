@@ -514,7 +514,7 @@ function AdminChangeAnnotationWiev(props){
                             flexDirection: "column",
                             cursor: "pointer"
                         }}>
-
+                            <FilesRG tabNum={tabelRG}/>
                         </div>
 
 
@@ -526,7 +526,7 @@ function AdminChangeAnnotationWiev(props){
                         marginBottom: "25px",
                     }}>Краткая аннотация заключения рабочей группы:</div>
                     <AdminChangeAnnotationWiev isAdmin={localStorage.getItem("userTabelNum")}/>
-
+                    
                     <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userTabelNum")}/>
 
                 </div>
