@@ -233,11 +233,11 @@ select::after {
     height: 12vh;
 
 }
-.conclusionFilesAreaFile:hover{
+/* .conclusionFilesAreaFile:hover{
     transform: translateY(-2px);
 color:#7100f3;
 
-}
+} */
 .conclusionFilesArea {
     display: flex;
     width:100%;
