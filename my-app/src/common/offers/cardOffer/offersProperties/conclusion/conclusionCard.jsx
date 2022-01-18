@@ -143,10 +143,11 @@ const ConclusionCard = (props) => {
     }
 
     const CardDivisionConclusion = () => {
-
+        console.log(props)
         function IsAdminRG() {
             return (<div>
                     <SelectChangeConclusionResponsible {...props}/>
+                    
                 </div>
             )
         }
@@ -188,7 +189,9 @@ const ConclusionCard = (props) => {
 
         function IsAdminRGUpload() {
 
-            return (<FilesResponsible/>
+            return (<div>
+
+            </div>
 
             )
         }
@@ -432,7 +435,8 @@ function ConfirmResponsible(){
                                 flexDirection: "column",
                                 cursor: "pointer"
                             }}>
-                                <ViewFileDoc/>
+                                <FilesResponsible tabNum={props.tabel}/>
+                               {/*  <ViewFileDoc/> */}
                                 <div>Заключение</div>
                             </div>
 

@@ -7,7 +7,7 @@ function FilesList(props){
     const [filesList, setFilesList] = useState(null);
 
     let idOffers = localStorage.getItem('idOffers');
-    let tabelNum = localStorage.getItem('userTabelNum');
+    let tabelNum = props.tabNum;
       
     if(filesList === null){
         
@@ -32,14 +32,14 @@ function FilesList(props){
            
             return(
                 <div>
-                   <CreateFilelist fileList = {filesList} />
+                   <CreateFilelist fileList = {filesList}  tabNum={tabelNum}/>
                 </div>
                 )
       
             } else{
                 return(
                     <div>
-                       <CreateFilelist fileList = {props.filesData} />
+                       <CreateFilelist fileList = {props.filesData} tabNum={tabelNum} />
                     </div>
                     )
         }
@@ -56,7 +56,7 @@ function CreateFilelist(props){
     } else {
         return props.fileList.map((count, key)=>{
        
-        return <FilesBlock key={'respFilesList'+key} fileName={count}/>})
+        return <FilesBlock key={'respFilesList'+key} fileName={count} tabNum={props.tabNum}/>})
     }
    
 }
@@ -64,7 +64,7 @@ function CreateFilelist(props){
 function FilesBlock(props){
    
     let idOffers = localStorage.getItem('idOffers');
-    let tabelNum = localStorage.getItem('userTabelNum');
+    let tabelNum = props.tabNum;
     let downloadFolder = `responsible${tabelNum}`;
 
     return(
@@ -76,53 +76,75 @@ function FilesBlock(props){
     )
 }
 
-function FilesResponsible(){
+function FilesResponsible(props){
 
     const [filesListComponent, setFilesListComponent] = useState(<FilesList/>);
 
-    return (
-        <div>
-            {filesListComponent}
-             <input type="file" name="myFileResp" id="myfile" className={s.buttonS}/>
-             <button onClick={()=>{
-                let idOffers = localStorage.getItem('idOffers');
-                let tabelNum = localStorage.getItem('userTabelNum');
-                let formData = new FormData();               
+    let idOffers = localStorage.getItem('idOffers');
+    let tabelNum = props.tabNum;
+
+    if(localStorage.getItem('userAdminOptions') === "wg"){
+        return (
+            <div>
+                {filesListComponent}
+                 <input type="file" name="myFileResp" id={"myfileResp"+props.tabNum} className={s.buttonS}/>
+                 <button onClick={()=>{
+                    /* let idOffers = localStorage.getItem('idOffers');
+                    let tabelNum = localStorage.getItem('userTabelNum'); */
+                    let formData = new FormData();               
+                    
+                    formData.append("idOffers", idOffers);
+                    formData.append("tabelNum", tabelNum);
+                    formData.append("myFileResp", document.getElementById(`myfileResp`+props.tabNum).files[0]);
+                   
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('POST', `${API_URL}api/files/FilesResponsible`)
+                  
+                    console.log(document.getElementById(`myfileResp`+props.tabNum).files[0])
+                    xhr.send(formData);
+                    xhr.onreadystatechange = function () {
+    
+                    if (this.readyState == 4 && this.status == 200) {
+                        let result = this.responseText;
+    
+                                axios.post(`${API_URL}api/files/FilesListResponsible`, {  tabelNum: tabelNum,
+                                                                                          idOffers: idOffers
+                        
+                                })
+                                .then(res => {
+                                
+                                    setFilesListComponent(<FilesList filesData={res.data} tabNum={tabelNum}/>)
+                                
+                                })
                 
-                formData.append("idOffers", idOffers);
-                formData.append("tabelNum", tabelNum);
-                formData.append("myFileResp", document.getElementById(`myfile`).files[0]);
-               
-                let xhr = new XMLHttpRequest();
-                xhr.open('POST', `${API_URL}api/files/FilesResponsible`)
-              
-                console.log(document.getElementById(`myfile`).files[0])
-                xhr.send(formData);
-                xhr.onreadystatechange = function () {
-
-                if (this.readyState == 4 && this.status == 200) {
-                    let result = this.responseText;
-
-                            axios.post(`${API_URL}api/files/FilesListResponsible`, {  tabelNum: tabelNum,
-                                                                                      idOffers: idOffers
-                    
-                            })
-                            .then(res => {
-                            
-                                setFilesListComponent(<FilesList filesData={res.data}/>)
-                            
-                            })
-            
-                    
-                   console.log(result)
+                        
+                       console.log(result)
+                    }
                 }
-            }
+               
+    
+                 }}>Загрузить файл</button>
+            </div>
            
+        )
+    } else{
+        axios.post(`${API_URL}api/files/FilesListResponsible`, {  tabelNum: tabelNum,
+            idOffers: idOffers
 
-             }}>Загрузить файл</button>
-        </div>
-       
-    )
+        })
+        .then(res => {
+        console.log(res.data)
+        setFilesListComponent(<FilesList filesData={res.data} tabNum={tabelNum}/>)
+
+        })
+        return (
+            <div>
+                {filesListComponent}
+            </div>
+            )
+    }
+
+   
 }
 
 export default FilesResponsible
