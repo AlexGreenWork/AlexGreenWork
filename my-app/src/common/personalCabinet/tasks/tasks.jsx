@@ -7,6 +7,23 @@ import server from "../../../actions/server"
 
 const moment = require('moment')
 
+class Details extends React.Component
+{
+	constructor(props)
+	{
+		super(props);
+	}
+
+	render()
+	{
+		return <div className = {s.taskList}>
+					<div className = {s.innerTaskList} >
+						{this.props.task}
+					</div>
+				</div>;
+	}
+}
+
 class Tasks extends React.Component
 {
 	constructor(props)
@@ -17,7 +34,8 @@ class Tasks extends React.Component
 			tasks: [],
 			year_task_count: [],
 			moment: null,
-			mode: "month"
+			mode: "month",
+			details: null
 		}
 
 		const ANTD_CALENDAR_CELLS = 42;
@@ -184,6 +202,9 @@ class Tasks extends React.Component
 		{
 			this.setState({moment: moment});
 		}
+
+		const tasks = this.dateCellRender(moment);
+		this.setState({details: tasks});
 	}
 
 	/**
@@ -193,15 +214,22 @@ class Tasks extends React.Component
     dateCellRender(value)
 	{
         const listData = this.get_tasks_list(value);
-        return (
-            <ul className={s.events}>
-                {listData.map(item => (
-					<li key={item.content}>
-						<Badge status={item.type} text={item.content} />
-					</li>
-                ))}
-            </ul>
-        );
+		if(listData.length > 0)
+		{
+			return (
+				<ul className={s.events}>
+					{listData.map(item => (
+						<li key={item.content}>
+							<Badge status={item.type} text={item.content} />
+						</li>
+					))}
+				</ul>
+			);
+		}
+		else
+		{
+			return null;
+		}
     }
 
 	/**
@@ -237,6 +265,7 @@ class Tasks extends React.Component
 	{
 		return (
 			<div className={s.sendOfferContainer}>
+				{this.state.details ? <Details task = {this.state.details}/> : null}
 				<Calendar mode = {this.state.mode}
 						onChange = {this.on_change}
 						onSelect = {this.on_select}
