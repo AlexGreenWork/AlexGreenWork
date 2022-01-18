@@ -227,7 +227,7 @@ router.post("/forms", urlencodedParser, async (request, response) => {
 
         const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${tabelNumber})`);
         const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${emailInput}")`);
-        const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = ("${phoneNumber}") WHERE tabelNum = (${tabelNumber}) AND email = ("${emailInput}")`);
+        const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = ("${phoneNumber}") WHERE tabelNum = ("${tabelNumber}") AND email = ("${emailInput}")`);
 
         return [checkTab, checkEmail, updSendData];
 
