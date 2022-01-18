@@ -93,8 +93,9 @@ const FileList = () => {
     window.addEventListener("popstate",function(e){
    
     },false);
-
-    if(filesObj == 0){
+  
+    if(filesObj === 0){
+       
         ReadDir();
         
     } else {

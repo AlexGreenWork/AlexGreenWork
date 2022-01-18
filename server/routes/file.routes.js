@@ -65,17 +65,33 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                             let division = sqlDivision[0][0].name;
                             
                             arrAllFiles[docFiles]= {files, fioResp, department, division }
-                             
+                           
                         }else if(dirRoot[i] == "SendlerFiles" ) {
                             arrAllFiles[dirRoot[i]]= {files}
                            
                         }
-                     
-                        if(dirRoot.length == 1){
+                        
+                       console.log(arrAllFiles)
+                        
+                       /*  console.log(i)
+                        console.log(dirRoot) */
+                        if(dirRoot.length == 1 && dirRoot[i] == "SendlerFiles"){ //если есть только SendlerFiles
+                            res.send(arrAllFiles)
+                        }
+
+                        if(dirRoot.length == 2  && dirRoot[i] == "SendlerFiles"){ // если есть  SendlerFiles и ResponsibleRG
+                           
                             res.send(arrAllFiles)
                         } else{
-                            if(Object.keys(arrAllFiles).length  == dirRoot.length-1){
-                              
+                            console.log(Object.keys(arrAllFiles).length)
+                            console.log("Object.keys(arrAllFiles).length")
+                            console.log(dirRoot.length, "dirRoot.length" )
+                            console.log(Object.keys(arrAllFiles).length == dirRoot.length-2, "Object.keys(arrAllFiles).length == dirRoot.length-2" )
+                            if(/* Object.keys(arrAllFiles).length  == dirRoot.length-2 && */ Object.keys(arrAllFiles).length == dirRoot.length-1 && Object.keys(arrAllFiles).length > 0 || Object.keys(arrAllFiles).length == dirRoot.length-2 && Object.keys(arrAllFiles).length > 0){ // -1 для и -2 для игнорирования conclusionCommission и responsible12345
+                               
+                                console.log("Ответ" , arrAllFiles)
+                                console.log(Object.keys(arrAllFiles).length)
+                               console.log(dirRoot.length-1)
                               //  setTimeout(()=>{res.send(arrAllFiles);} , 200)
                               res.send(arrAllFiles)
                             } else {

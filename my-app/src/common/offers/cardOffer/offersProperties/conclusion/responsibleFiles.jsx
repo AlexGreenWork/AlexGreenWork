@@ -5,7 +5,7 @@ import axios from "axios";
 
 function FilesList(props){
     const [filesList, setFilesList] = useState(null);
-
+    
     let idOffers = localStorage.getItem('idOffers');
     let tabelNum = props.tabNum;
       
@@ -49,7 +49,7 @@ function FilesList(props){
 }
 
 function CreateFilelist(props){
-    console.log(props)
+    
     if(props.fileList === null || props.fileList  ==''){
         
         return <div>Нет файлов</div>
@@ -75,11 +75,12 @@ function FilesBlock(props){
         </div>
     )
 }
+let countRender = 0
 
 function FilesResponsible(props){
 
-    const [filesListComponent, setFilesListComponent] = useState(<FilesList/>);
-
+    const [filesListComponent, setFilesListComponent] = useState(<FilesList tabNum={props.tabNum}/>);
+    
     let idOffers = localStorage.getItem('idOffers');
     let tabelNum = props.tabNum;
 
@@ -100,7 +101,7 @@ function FilesResponsible(props){
                     let xhr = new XMLHttpRequest();
                     xhr.open('POST', `${API_URL}api/files/FilesResponsible`)
                   
-                    console.log(document.getElementById(`myfileResp`+props.tabNum).files[0])
+                   
                     xhr.send(formData);
                     xhr.onreadystatechange = function () {
     
@@ -115,10 +116,8 @@ function FilesResponsible(props){
                                 
                                     setFilesListComponent(<FilesList filesData={res.data} tabNum={tabelNum}/>)
                                 
-                                })
-                
-                        
-                       console.log(result)
+                                })  
+                     
                     }
                 }
                
@@ -128,20 +127,31 @@ function FilesResponsible(props){
            
         )
     } else{
-        axios.post(`${API_URL}api/files/FilesListResponsible`, {  tabelNum: tabelNum,
-            idOffers: idOffers
+        if(countRender === 0){
+            countRender++;
 
-        })
-        .then(res => {
-        console.log(res.data)
-        setFilesListComponent(<FilesList filesData={res.data} tabNum={tabelNum}/>)
-
-        })
-        return (
-            <div>
-                {filesListComponent}
-            </div>
-            )
+            axios.post(`${API_URL}api/files/FilesListResponsible`, {  tabelNum: tabelNum,
+                idOffers: idOffers
+    
+            })
+            .then(res => {
+            
+            setFilesListComponent(<FilesList filesData={res.data} tabNum={tabelNum}/>)
+    
+            })
+            return (
+                <div>
+                    {filesListComponent}
+                </div>
+                )
+        } else {
+            return (
+                <div>
+                    {filesListComponent}
+                </div>
+                )
+        }
+    
     }
 
    
