@@ -7,13 +7,17 @@ import { CompassOutlined } from '@ant-design/icons';
 
 
 function Files(props){
+   
     let idOffers = localStorage.getItem('idOffers');
     let elemFilesArr = []; //елементы  файлами
     let allfilesObj = JSON.parse(props.allFiles)
     let downloadFolder;
         if(props.dirName == "SendlerFiles"){
             downloadFolder = "SendlerFiles"
-        } else {
+        } else if( props.dirName.slice(-1) == "R"){
+            downloadFolder = 'ResponsibleRg/' +props.dirName.slice(0, 5);
+           
+        } else{
             downloadFolder = 'responsible' +props.dirName;
         }
    
@@ -44,7 +48,7 @@ function Folders(props){
    
 
     let dirName = Object.keys(allfilesObj);
-   
+    console.log(dirName)
     
     for(let i = 0; i < dirName.length; i++ ){
        let fileName = allfilesObj[dirName[i]];   
