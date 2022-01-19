@@ -46,12 +46,12 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
             fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/`, function(err, dirRoot){
                 let countResponsible = 0;
                 for(let i = 0; i <dirRoot.length; i++){
-                    if(dirRoot[i].slice(0, 11) == "responsible"){
+                    if(dirRoot[i].slice(0, 11) == "responsible" || dirRoot[i] == "SendlerFiles" || dirRoot[i] == "ResponsibleRg"){
                        
                         countResponsible++
                     }
                 }
-                console.log('countResponsible', countResponsible)
+                
                  if(err){
                  res.send( "no such file or directory");
                } else {
@@ -75,35 +75,48 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                             arrAllFiles[docFiles]= {files, fioResp, department, division }
                            
                         }else if(dirRoot[i] == "SendlerFiles" ) {
-                            countResponsible++
+                           // countResponsible++
                             arrAllFiles[dirRoot[i]]= {files}
                            
                         } else  if(dirRoot[i] == "ResponsibleRg"){
-                            countResponsible++;
-                           // console.log("ResponsibleRg");
-                            fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}`, async function(err, dirRg){
-                           //     console.log("dirRg", dirRg);
-
-                                fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}/${dirRg[0]}`, async function(err, dirRgTab){
-                             //       console.log('dirRgTab', dirRgTab);
-                                    let docFiles = dirRg[0]
                             
-                                    let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${docFiles} `);
-                                    let fioResp = sqlMembCommision[0][0].fiofull;
-                                    let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
+                         
+                            fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}`, async function(err, dirRg){
+                             
+                                if(dirRg.length != 0){
+                                  //  countResponsible++;
+                                   
+                                    fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}/${dirRg[0]}`, async function(err, dirRgTab){
+                                        //       console.log('dirRgTab', dirRgTab);
+                                               let docFiles = dirRg[0]
+                                       
+                                               let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${docFiles} `);
+                                               let fioResp = sqlMembCommision[0][0].fiofull;
+                                               let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
+                                             
+                                               let department = sqlDepartment[0][0].fullname
+                                             
+                                               let sqlDivision = await pool.query(`SELECT * FROM division WHERE department=${sqlMembCommision[0][0].department} AND id=${sqlMembCommision[0][0].division}`);
+                                               let files = dirRgTab;
+                                            
+                                               let division = null/* sqlDivision[0][0].name */;
+                                               
+                                               arrAllFiles[docFiles+"R"]= {files, fioResp, department, division }
+           
+                                               if(countResponsible == Object.keys(arrAllFiles).length){
+                                                 
+                                                   res.send(arrAllFiles)
+                                               }
+                                           })
+                                } else{
+                                    countResponsible--
                                   
-                                    let department = sqlDepartment[0][0].fullname
-                                    let sqlDivision = await pool.query(`SELECT * FROM division WHERE department=${sqlMembCommision[0][0].department} AND id=${sqlMembCommision[0][0].division}`);
-                                    let files = dirRgTab;
-                                    let division = sqlDivision[0][0].name;
-                                    
-                                    arrAllFiles[docFiles]= {files, fioResp, department, division }
-
-                                    if(countResponsible == Object.keys(arrAllFiles).length){
-                                        console.log(arrAllFiles)
+                                    if(countResponsible  == Object.keys(arrAllFiles).length){
+                                      
                                         res.send(arrAllFiles)
                                     }
-                                })
+                                }
+                               
                                 
                             })
                         }
@@ -137,9 +150,9 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                                 
                             }
                         } */
-                        console.log("перед ответом", arrAllFiles, countResponsible )
-                        if(countResponsible == Object.keys(arrAllFiles).length){
-                            console.log(arrAllFiles)
+                      
+                        if(countResponsible == Object.keys(arrAllFiles).length && Object.keys(arrAllFiles).length != 0){
+                         
                             res.send(arrAllFiles)
                         }
                       
