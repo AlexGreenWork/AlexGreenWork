@@ -20,10 +20,25 @@ objClear()
 
 let addFlag = false;
 
+class ComponentDestruction extends React.Component { // нужен для очистки глобального обьекта после размонтирования компонента
+   
+    componentWillUnmount() {
+        console.log(1234)
+       objClear();
+    }
 
+    render() {
+      return (
+        <div>
+          
+        </div>
+      );
+    }
+  }
 
 function OffersForm(props) {
-
+    let winLocation =  window.location.href;
+    console.log(winLocation)
     window.addEventListener("popstate",function(e){
         objClear();
       
@@ -69,18 +84,38 @@ function OffersForm(props) {
                                                         .then(res => {
                                                                                                                     
                                                             let fio = res.data;
-                                                           
-                                                             document.querySelector(`#firstName${count}`).value = fio[1];
-                                                             document.querySelector(`#lastName${count}`).value = fio[0];
-                                                             document.querySelector(`#middleName${count}`).value = fio[2];
-                                                             document.querySelector(`#emailInput${count}`).value = fio[3];
-                                                             document.querySelector(`#phoneNumber${count}`).value = fio[5];
-                                                             
-                                                             setNameNew(fio[1])
-                                                             setLastNameNew(fio[0])
-                                                             setMiddleNameNew(fio[2])
-                                                             setEmailNew(fio[3])
-                                                             setPhoneNumberNew(fio[5])
+                                                            console.log(fio)
+                                                            if( document.querySelector(`#firstName${count}`),
+                                                                document.querySelector(`#lastName${count}`),
+                                                                document.querySelector(`#middleName${count}`),
+                                                                document.querySelector(`#emailInput${count}`),
+                                                                document.querySelector(`#phoneNumber${count}`)){
+                                                                
+                                                                    document.querySelector(`#firstName${count}`).value = fio[1];
+                                                                    document.querySelector(`#lastName${count}`).value = fio[0];
+                                                                    document.querySelector(`#middleName${count}`).value = fio[2];
+                                                                    document.querySelector(`#emailInput${count}`).value = fio[3];
+                                                                    if(fio[3] !== undefined){
+                                                                        document.querySelector(`#emailInput${count}`).value = fio[3];
+                                                                    } else {
+                                                                        document.querySelector(`#emailInput${count}`).value = "";
+                                                                    }
+                                                                    if(fio[5] !== undefined){
+                                                                        document.querySelector(`#phoneNumber${count}`).value = "+"+ fio[5].slice(1);
+                                                                    } else {
+                                                                        document.querySelector(`#phoneNumber${count}`).value = "";
+                                                                    }
+                                                                    
+                                                                    console.log(fio)
+                                                                    setNameNew(fio[1])
+                                                                    setLastNameNew(fio[0])
+                                                                    setMiddleNameNew(fio[2])
+                                                                    setEmailNew(fio[3])
+                                                                    setPhoneNumberNew(fio[5])
+
+
+                                                            }
+                                                            
                                                         })
         } catch (e){
             alert(e.response)
@@ -98,14 +133,14 @@ function OffersForm(props) {
                                                           
                                                             
                                                             let fio = res.data;
-                                                            
+                                                            console.log(fio)
                                                          
 
                                                              setName(fio[1])
                                                              setLastName(fio[0])
                                                              setMiddleName(fio[2])
                                                              setEmail(fio[3])
-                                                             setPhoneNumber(fio[4])
+                                                             setPhoneNumber(fio[5])
                                                         })
         } catch (e){
             alert(e.response)
@@ -136,15 +171,19 @@ function OffersForm(props) {
         let arrEl = [];          
         let key =  Object.keys(allNewSendler)
         console.log(key);
+        
         let objLengtch = Object.keys(allNewSendler).length
         for(let i = 1; i<objLengtch; i++){
          
             let surname = allNewSendler[key[i]].surname;
+            console.log(allNewSendler[key[i]])
+            console.log(surname)
             if( surname!=undefined ){
                
                 arrEl[i] = React.createElement("div", {className:"formYetSendler" , id:`yetSendler${i} `, key:`keyList${i}`} , 
                 <label >{surname}</label>, 
                 <div  className="btnYetClose" id ={`keyBtn${i}`} onClick={()=>{
+                   
                    setNameNew(undefined)
                    setLastNameNew(undefined)
                    setMiddleNameNew(undefined)
@@ -156,7 +195,7 @@ function OffersForm(props) {
                    addFlag = true;
                    delete allNewSendler[numElem];                    
                    setYetSendler(<YetSendler/>)                             
-}}>X</div>)
+}}></div>)
             } else {
                 delete  allNewSendler[key[i]]
             }
@@ -193,7 +232,7 @@ function OffersForm(props) {
    
     function SaveBtn(){ 
         return(
-            React.createElement("div", {className:"btnYetSend"} , <button value="submit" onClick={()=>{
+            React.createElement("div", {className:"btnYetSend"} , <button value="submit" className='saveYetSendler' onClick={()=>{
                 
                 
                  let firstInput = document.querySelector(`#firstName${count}`).value;
@@ -206,7 +245,7 @@ function OffersForm(props) {
                  if(firstInput.length != 0  && twoInput.length != 0 && thirdInput.length != 0 && fourthInput.length != 0
                      && fifthInput.length != 0 && sixthInput.length != 0 ){
                        
-                        setNewSendler(newSendler == null); 
+                        setNewSendler(newSendler === null); 
                         setYetSendler(<YetSendler/>)
                         addFlag = false
                       
@@ -235,12 +274,18 @@ function OffersForm(props) {
        
              
          let   arr = [
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>, <input  type="number" name={"tabelNumber"+props} id={"tabelNumber"+props} placeholder="12345" required onChange={(e) => setTabelNumberNew(e.target.value)} onBlur={(e)=>{addFioYetSebdler(e.target.value)}}/> ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} placeholder="Иван" required onChange={(e) => setNameNew(e.target.value)} /> ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} placeholder="Иванов" required onChange={(e) => setLastNameNew(e.target.value)}/>  ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} placeholder="Иванович" required onChange={(e) => setMiddleNameNew(e.target.value)}/>),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} placeholder="e-mail-adress@gmail.com" required onChange={(e) =>setEmailNew(e.target.value) } /> ),
-            React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} placeholder="+375293333333" required onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"tabelNumber"+props}>Табельный номер</label>,
+            <input  type="text" name={"tabelNumber"+props} id={"tabelNumber"+props} className='input-yetSendler' placeholder="12345"
+             required onChange={(e) => {setTabelNumberNew(e.target.value); 
+                if(e.target.value.length === 5){
+                console.log(e.target.value)
+                addFioYetSebdler(e.target.value)
+           } } } onBlur={(e)=>{addFioYetSebdler(e.target.value)}}/> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"firstName"+props}>Имя</label>, <input  type="text" name={"firstName"+props} id={"firstName"+props} className='input-yetSendler' placeholder="Иван" required onChange={(e) => setNameNew(e.target.value)} /> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"lastName"+props}>Фамилия</label>,  <input  type="text" name={"lastName"+props} id={"lastName"+props} className='input-yetSendler' placeholder="Иванов" required onChange={(e) => setLastNameNew(e.target.value)}/>  ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"middleName"+props}>Отчество</label>, <input  type="text" name={"middleName"+props} id={"middleName"+props} className='input-yetSendler' placeholder="Иванович" required onChange={(e) => setMiddleNameNew(e.target.value)}/>),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"emailInput"+props}>E-mail</label>, <input  type="email" name={"email"+props} id={"emailInput"+props} className='input-yetSendler' placeholder="e-mail-adress@gmail.com" required onChange={(e) =>setEmailNew(e.target.value) } /> ),
+            React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} className='input-yetSendler' placeholder="+375293333333" required onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
             ]
             
             
@@ -276,7 +321,7 @@ function OffersForm(props) {
         setPhoneNumberNew(undefined)  
 
    
-    }}>&#10006;</div>)))
+    }}></div>)))
     }  
 
     function NewSendler(){
@@ -326,6 +371,7 @@ function OffersForm(props) {
             console.log(allNewSendler)
            let allYetSendler= JSON.stringify(allNewSendler)
            console.log(allYetSendler)
+           console.log(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer)
             OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer,  allYetSendler  );
             objClear();
             allNewSendler={}
@@ -373,9 +419,13 @@ function OffersForm(props) {
                     </div>
 
                     <div className={s.formFilds}>
-                        <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
+                        <input type="text" placeholder="табельный номер" className="input-data" id="tabelNumber"
                                name="tabelNumber" required autoComplete="on"
-                               value={tabelNumber} onChange={(e) => {setTabelNumber(e.target.value);}} onBlur={(e)=>{addFioSendler(e.target.value)}}/>
+                               value={tabelNumber} onChange={(e) => {setTabelNumber(e.target.value)
+                               if(e.target.value.length === 5){
+                                    console.log(tabelNumber.length)
+                                    addFioSendler(e.target.value)
+                               }}} onBlur={(e)=>{addFioSendler(e.target.value) }}/>
                         <label htmlFor="tabelNumber">Табельный номер</label>
                         <div className="false-input false-tabelNumber"></div>
                     </div>
@@ -429,6 +479,7 @@ function OffersForm(props) {
                     </div>
                     <NewSendler/>
                     {newSendler}
+                    <ComponentDestruction/>
                   
                     <div className={s.buttonConfirm}>
                         <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Подтвердить

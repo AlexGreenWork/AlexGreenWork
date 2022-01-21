@@ -6,20 +6,35 @@
     left:0;
     width: 100%;
     height: 100%;
-    z-index: 0;
+    z-index: 1000;
+    
+    
     }
 
 .exists{
     position: fixed;
+
     top:30%;
     left:40%;
-    border: 1px black solid ;
+    border: 0px black solid ;
     border-radius: 8px;
     padding: 15px;
-    width: 360px;
-    height: 365px;
-    background-color:  #607fff;
+    width: 380px;
+    height: 440px;
+    font-family: "Century Gothic",  sans-serif;
+    font-size: 1.1em;
+    background-color:  #5974e0;
+    color: white;
+    text-shadow: 1px 1px 2px  black;
     z-index: 5;
+    box-shadow: 0px 0px 7px 0px rgb(0, 1, 3);
+    animation-name: shadow, creation;
+    animation-duration: 0.1s;
+    animation-timing-function: linear;
+    /* animation-iteration-count:infinite; */
+    animation-name: creation;
+    animation-duration: 0.1s;
+    animation-timing-function: 1 ;
 }
 
 .btnYetSend{
@@ -30,54 +45,181 @@
 }
 
 .formYetSendler{
-    background: linear-gradient(180deg, rgba(140,154,255,1) 1%, rgba(255,255,255,1) 13%, rgba(255,255,255,1) 82%, rgba(127,131,255,1) 100%);
-    box-shadow: 0px 0px 2px 1px rgb(5, 13, 85);
-    border: 0px black solid ;
+    /* background: linear-gradient(180deg, rgba(140,154,255,1) 1%, rgba(255,255,255,1) 13%, rgba(255,255,255,1) 82%, rgba(127,131,255,1) 100%); */
+    /* box-shadow: 0px 0px 2px 1px rgb(5, 13, 85); */
+    border-bottom: 1px black solid ;
+    /* border-right: 1px black solid ; */
+    border: 1px solid;
     padding: 5px;
     position: relative;
     margin: 5px;
     margin-bottom: 10px;
-    border-radius: 3px;
+    border-bottom-right-radius: 2px;
     width: 120px;
+    font-family: "Century Gothic",  sans-serif;
+    /* font-weight: normal; */
     
 }
 
 .btnYetClose{
-    background-color: rgb(201, 201, 201);
-    box-shadow: 0px 0px 2px 1px rgb(11, 5, 95);
+    /* background-color: rgb(255, 255, 255); */
+    /* box-shadow: 0px 0px 2px 1px rgb(11, 5, 95); */
+    background:  url(D:\work\AlexGreenWork\my-app\src\assets\img\deleted.png) ;
+    background-repeat: no-repeat;
+    background-size: 20px 25px;
+    background-position: 1px 5px;
+   
+/* background: linear-gradient(180deg, rgba(255,255,255,1) 8%, rgba(247,195,208,1) 68%, rgba(252,48,93,1) 100%); */
     border: 0px black solid ;
-    border-radius: 5px;
+    /* border-radius: 5px; */
+    border-bottom: 1px black solid;
+    border-left: 1px black solid;
+    border-bottom-left-radius: 2px;
     position: absolute;
     width: 23px;
-    height: 23px;
-    left: 95%;
-    top: -10px;
-    border-radius: 20px ;
+    height: 100%;
+    left: 100%;
+    top: 1px;
+    /* border-radius: 0px ; */
     padding-left: 7px;
     padding-top: 0px;
+    z-index: 10;
+    transition: background;
+    transition-duration: 0.5s;
+    opacity: 1;
+}
+.btnYetClose::after{
+    content: "";
+    background:  url(D:\work\AlexGreenWork\my-app\src\assets\img\deleted-active.png), linear-gradient(180deg, rgba(255,255,255,1) 8%, rgba(247,195,208,1) 68%, rgba(252,48,93,1) 100%);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-repeat: no-repeat;
+    background-size: 20px 30px;
+    background-position: 1px 0px;
+    width: 23px;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    transition-duration: 0.0s;
+}
+.btnYetClose:hover::after{
+    /* transition: transform;
+    transition-duration: 10.5s; */
+    opacity: 1;
+    /* background: rotate(90deg); */
+    
+   
+
+
 }
 
 
 .closeAddForm{
-    background-color: rgba(201, 201, 201, 0.705);
-    box-shadow: 0px 0px 2px 2px rgb(255, 255, 255);
+    background:  url(D:\work\AlexGreenWork\my-app\src\assets\img\2056517-200.png);
+    background-size: cover;
+    /* background-color: rgba(201, 201, 201, 0.705); */
+    box-shadow: 0px 0px 0px 2px rgb(255, 255, 255);
     width: 30px;
     height: 30px;
     border: 0px solid;
     border-radius: 50px;
     text-align:  center;
     position: relative;
-    top: -360px;
-    left: 320px;
+    top: -403px;
+    left: 330px;
     padding: 4px;
 }
 
 .closeAddForm:hover{
     
     transition: background-color,  box-shadow, transform;
-    background-color: rgb(201, 201, 201);
-    box-shadow: 0px 0px 2px 2px rgba(35, 105, 255, 0.993);
-    
+    /* background-color: rgb(201, 201, 201); */
+    /* box-shadow: 0px 0px 2px 2px rgba(35, 105, 255, 0.993); */
+   
+    /* background-image: url(https://w7.pngwing.com/pngs/71/314/png-transparent-multiplication-sign-x-mark-computer-icons-information-check-mark-cross-sign-text-material-check-mark.png); */
     transition-duration: 0.5s;
     transform: translateY(2px);
+    transform: rotate(90deg);
 }
+
+.input-yetSendler{
+    border-radius: 4px;
+    border: 0px solid;
+    box-shadow: 1px 2px 0px 2px rgba(54, 66, 155, 0.993);
+    color: black;
+    font-family: "Century Gothic",  sans-serif;
+    font-weight: normal;
+    padding: 3px;
+    margin-bottom: 5px;
+    animation-name: creation;
+    animation-duration: 0.1s;
+    animation-timing-function: 1 ;
+    background-color: rgb(255, 255, 255);
+    
+}
+
+.formFilds {
+    position: relative;
+    left: 5%;
+    width: 90%;
+}
+
+.saveYetSendler{
+    color: black;
+    position: relative;
+    left: -0.2em;
+    margin-top: 0.6em;
+    border: 0px solid;
+    border-radius: 4px;
+    height: 30px;
+    box-shadow: 1px 2px 0px 2px rgba(54, 66, 155, 0.993);
+}
+
+/* .exists::before{
+    content: "";
+    position: absolute;
+    
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    animation-name: creation ;
+    animation-duration: 2s;
+    animation-timing-function: 1 ;
+} */
+
+
+@keyframes shadow {
+    from {
+         box-shadow: 0px 0px 4px 1px rgb(0, 0, 0);
+         /* transform: translateY(2px); */
+        }
+    50% {
+        transition:transform;
+         box-shadow: 0px 0px 4px 1px rgb(255, 255, 255);
+         /* transform: translateY(-10px); */
+        }
+    to {
+         box-shadow: 0px 0px 4px 1px rgb(0, 0, 0);
+         /* transform: translateY(2px); */
+    }
+    }
+   
+    @keyframes creation {
+        from {
+             /* box-shadow: 0px 0px 4px 1px rgb(255, 255, 255); */
+             transform: translateY(-20px);
+             background-color: rgba(0, 0, 0, 0);
+             color: rgba(0, 0, 0, 0);
+            }
+       
+        to {
+             /* box-shadow: 0px 0px 4px 1px rgb(255, 255, 255); */
+             /* transform: translateY(2px); */
+             /* transform: translateY(20px); */
+        }
+        }
+
+        
