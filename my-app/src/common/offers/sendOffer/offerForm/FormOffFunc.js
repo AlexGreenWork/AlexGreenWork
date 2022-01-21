@@ -30,6 +30,10 @@ function OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, na
                         msgNewTab.className = "tab-true";
                         msgNewTab.innerHTML = `<label id="tabtru" for="tabNum">${result}</label>`;
                         document.body.append(msgNewTab);
+                        let shadowBox = document.createElement('div');
+                        
+                        shadowBox.className = "shadowBox";
+                        document.body.append(shadowBox);
                         // checkRecData(result);
                         closeDiv();
                         EventClose();
