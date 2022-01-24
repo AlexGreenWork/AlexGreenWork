@@ -222,4 +222,11 @@
         }
         }
 
-        
+        #problem:focus {
+            background-color: red;
+            position: absolute;
+            top: 12%;
+            left: 1%;
+            width: 98%;
+            height: 20%;
+          }

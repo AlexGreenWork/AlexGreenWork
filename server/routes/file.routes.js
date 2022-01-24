@@ -427,5 +427,53 @@ router.post("/myFilesWG", urlencodedParser,
         })
     })
 
+
+    router.post("/StatementFileDownload", urlencodedParser,
+    async function (req, res) {
+
+        let idOffers = req.body.idOffers;
+      
+
+        fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
+            if(folder.includes(`StatementFile`) == false){
+                console.log("нет StatementFile")
+
+                fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/StatementFile`, { recursive: true }, err => {
+                    console.log("создана StatementFile")
+
+                    if(req.files != null){
+                        req.files.StatementFile.mv(`../server/files/offers/idOffers/id${idOffers}/StatementFile/` + req.files.StatementFile.name);
+                        res.send("upload File")
+                    }
+                })
+            } else {
+                if(req.files != null){
+                    req.files.StatementFile.mv(`../server/files/offers/idOffers/id${idOffers}/StatementFile/` + req.files.StatementFile.name);
+                    res.send("upload File")
+                }
+            }
+          
+        })
+    })
+
+    router.post("/StatementFileList", urlencodedParser,
+    async function (req, res) {
+        let idOffers = req.body.idOffers;
+
+        fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
+            if(folder.includes(`StatementFile`) == false){
+                res.send("null")
+            } else{
+                fs.readdir(`../server/files/offers/idOffers/id${idOffers}/StatementFile/`, (err, folder) => {
+                    console.log(err) ;
+                   console.log(folder)
+                    res.send(folder) 
+                }
+                )
+            }
+
+    })
+})
+
     
 module.exports = router

@@ -124,7 +124,7 @@ export function saveRespRGAnnotationToDb(w) {
             if(respID == undefined){
                 alert("Не возможно добавить аннотацию пока не выберите ответственного рабочей группы")
             }else {
-                await axios.post(`${API_URL}api/offers/saveRespRGAnnotationToDb`, {w, id, respID})
+                await server.send_post_request(`${API_URL}api/offers/saveRespRGAnnotationToDb`, {w, id, respID})
                 // dispatch(setFiles(response.data))
             }
         } catch (e) {
@@ -132,3 +132,34 @@ export function saveRespRGAnnotationToDb(w) {
         }
     }
 }
+
+export function saveComissionAnnotationToDb(w) {
+    return  () => {
+        
+            let comissionTabNum = localStorage.getItem("userTabelNum")
+            let id = localStorage.getItem("idOffers")
+            console.log(id,comissionTabNum,w)
+            server.send_post_request(`${API_URL}api/offers/saveComissionAnnotationToDb`, {w, id, comissionTabNum})
+    }
+}
+
+
+export function saveNotesToDb(actual, innovate, cost, duration,  tabNum, idOffer){
+    return async ()=>{
+        try{
+            await axios.post(`${API_URL}api/offers/saveNotesToDbRG`, {actual, innovate, cost, duration, tabNum, idOffer})
+        }catch(e){
+            console.log(e)
+        }
+    }
+}
+export function closeConclusionRG(tabNum, idOffer){
+    return async ()=>{
+        try{
+            await axios.post(`${API_URL}api/offers/closeConclusionRG`, {tabNum, idOffer})
+        }catch(e){
+            console.log(e)
+        }
+    }
+}
+
