@@ -24,8 +24,6 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import FilesRG from "./conclusionFiles"
-
-import FilesRG from "./conclusionFiles"
 import {saveNotesToDb} from "../../../../../actions/file"
 import { red } from "@mui/material/colors";
 console.log(store.getState().search.searchUser)
