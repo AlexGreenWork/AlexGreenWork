@@ -1,7 +1,7 @@
 {
   "serverPort" : 5000,
   "secretKey": "mern-secret-key",
-  "baseUrl": "http://localhost:5000",
+  "baseUrl": "http://isi.belaz.minsk.by:5000",
   "database": {
     "host": "localhost",
     "user": "root",
@@ -10,4 +10,3 @@
 
   }
 }
-

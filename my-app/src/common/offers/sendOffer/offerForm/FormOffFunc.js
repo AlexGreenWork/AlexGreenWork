@@ -10,7 +10,7 @@ function OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, na
 
         if (name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer) {
 
-
+            console.log(tabelNumber)
             let xhr = new XMLHttpRequest();
             xhr.open('POST', `${API_URL}api/auth/forms`)
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

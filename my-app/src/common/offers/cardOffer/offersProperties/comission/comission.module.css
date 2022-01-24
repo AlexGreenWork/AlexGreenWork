@@ -57,7 +57,8 @@
     display: flex;
     width: fit-content;
     height: fit-content;
-    border-radius: 10px;
+    border:2px solid black; 
+    border-radius: 5px;
     padding: 20px;
     flex-wrap: wrap;
     background-color: #c2e8fb38;
@@ -68,11 +69,21 @@
     box-shadow: 0px 1px 11px 6px rgba(34, 60, 80, 0.2);
 }
 .comissionTextArea:focus{
-    transform: translateY(2px);
+    
+    top:20vh;
+    left:0;
+    background-color: white;
+    min-height: 40vh;
     color: blue;
     -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2) inset;
     -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2) inset;
     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2) inset;
+    z-index: 9;
+}
+
+.containerAnnotation1:focus{
+    position: absolute;
+    top:0;
 }
 .FormControl{
 
