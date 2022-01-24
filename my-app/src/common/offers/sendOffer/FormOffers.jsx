@@ -36,6 +36,31 @@ class ComponentDestruction extends React.Component { // нужен для очи
     }
   }
 
+function Resize(idEl){
+  
+  let height =  document.querySelector(`#${idEl}`).style.height
+     console.log(document.querySelector(`#${idEl}`).style.height[0])
+     console.log(height)
+    // let height = document.querySelector(`#${idEl}`).style.height 
+    if(height.length === 0){
+        console.log(height.length)
+        document.querySelector(`#${idEl}`).style.height = "10%"
+        console.log(height )
+        // height[0] = '3'
+    } else {
+        console.log(document.querySelector(`#${idEl}`).style.height[0])
+        console.log(typeof height )
+        let a = Number(height[0])
+        a = a + 1;
+        let b = String (a)
+        document.querySelector(`#${idEl}`).style.height = b+"0%"
+      //document.querySelector(`#${idEl}`).style.height[0]= 1+"%"
+       // document.querySelector(`#${idEl}`).style.height[0] = 6
+    }
+    //document.querySelector(`#${idEl}`).style.height  = document.querySelector(`#${idEl}`).style.height[0] + 10
+    // height = height + "10%"
+}
+
 function OffersForm(props) {
     let winLocation =  window.location.href;
     console.log(winLocation)
@@ -447,19 +472,35 @@ function OffersForm(props) {
                     </div>
 
                     <div className={s.formFilds}>
+                        
                         <input type="text" placeholder="Название" id="nameOffer" className="input-data" name="nameOffer"
                                required autoComplete="on"
                                value={nameOffer} onChange={(e) => setNameOffer(e.target.value)}/>
                         <label htmlFor="nameOffer">Название предложения</label>
                         <div className="false-input false-nameOffer"></div>
+                        
                     </div>
+                    <div className="problem">
                     <div className={s.formFilds}>
+                    
               <textarea id="problem" className="input-data" name="problem" required autoComplete="off" cols="50"
-                        value={problem} onChange={(e) => setProblem(e.target.value)}></textarea>
+                        value={problem} onChange={(e) =>{ setProblem(e.target.value); if(e.nativeEvent.inputType === "insertLineBreak")  Resize("problem"); /* console.log(e) */ ;   const textarea = document.querySelector(`#problem`)
+                        textarea.onscroll = logScroll;
+                       
+                        function logScroll(e) {
+                            console.log(5)
+                            if(e.target.scrollTop >  0){
+
+                            }
+                           console.log(`Scroll position: ${e.target.scrollTop}`);
+
+                          }}}></textarea>
                         <footer>
                             <label htmlFor="problem">Описание проблемы</label>
                         </footer>
+                        
                         <div className="false-input false-problem"></div>
+                    </div>
                     </div>
                     <div className={s.formFilds}>
               <textarea id="offer" className="input-data" name="offer" required autoComplete="off" cols="50"
