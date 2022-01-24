@@ -16,8 +16,9 @@ import TableContainer from "@mui/material/TableContainer";
 import Paper from '@mui/material/Paper';
 import axios from "axios";
 import {setPopupDisplay} from "../../../../../reducers/fileReducer";
-
+import FilesRG from "./conclusionFiles";
 import {useDispatch} from "react-redux";
+import FilesResponsible from "./responsibleFiles"
 
 
 
@@ -142,10 +143,11 @@ const ConclusionCard = (props) => {
     }
 
     const CardDivisionConclusion = () => {
-
+        console.log(props)
         function IsAdminRG() {
             return (<div>
                     <SelectChangeConclusionResponsible {...props}/>
+                    
                 </div>
             )
         }
@@ -186,9 +188,10 @@ const ConclusionCard = (props) => {
         var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
 
         function IsAdminRGUpload() {
-            return (<div className={s.fileUpload}>
-                    <input type="file" name="filename"/>
-                </div>
+
+            return (<div>
+
+            </div>
 
             )
         }
@@ -432,8 +435,9 @@ function ConfirmResponsible(){
                                 flexDirection: "column",
                                 cursor: "pointer"
                             }}>
-                                <ViewFileDoc/>
-                                <div>Заключение</div>
+                                <FilesResponsible tabNum={props.tabel}/>
+                               {/*  <ViewFileDoc/> */}
+                                
                             </div>
 
 

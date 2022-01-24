@@ -19,7 +19,7 @@ const PersonalCabinet = () => {
                                                     .then(res => {
                                                         if(responsible == null){
                                                             if(res.data != 'noResponsible' ){
-                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Предложения с вашими заключениями</NavLink></div>)
+                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Ваши заключения</NavLink></div>)
                                                             }
 
                                                         }
@@ -52,7 +52,9 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
                     Найти сотрудника
                 </NavLink></div>
-                {responsible}
+
+                    {responsible}
+
             </div>
         )
     }
@@ -84,6 +86,10 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}>
                     <NavLink className={s.offers} to="/personalCabinet/adminPanelComission">Панель администратора</NavLink>
                 </div>
+
+                {responsible}
+
+
             </div>
         );
     }
@@ -117,6 +123,9 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}>
                     <NavLink className={s.offers} to="/personalCabinet/adminPanelTopComission">Панель Рабочей группы</NavLink>
                 </div>
+
+                    {responsible}
+
             </div>
         )
     }
@@ -145,6 +154,9 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/adminPanelComission">
                     Панель руководства
                 </NavLink></div>
+                <div className={s.linksPC}>
+                    {responsible}
+                </div>
             </div>
         )
     }

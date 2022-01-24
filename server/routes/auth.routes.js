@@ -201,7 +201,7 @@ router.post("/forms", urlencodedParser, async (request, response) => {
     const password1 = Math.random().toString(36).slice(-8);
     const hashPassword = await bcrypt.hash(password1, 8);
     const password = hashPassword;
-    // console.log(hashPassword)
+   // console.log(hashPassword)
 
     const mysqlConfig = {
         host: config.database.host,
@@ -216,28 +216,25 @@ router.post("/forms", urlencodedParser, async (request, response) => {
     async function Messages() {
         let message = await CheckUniqueTabAndEmail(tabelNumber, emailInput, phoneNumber);
 
-      console.log("message = ", message)
-
-
+      //  console.log("message = " + message)
         response.send(message);
 
     }
 
     Messages();
 
-    async function CheckTabAndEmail(tabelNumber, emailInput, phoneNumber) {
+    async function CheckTabAndEmail(tabelNumber, emailInput) {
 
         const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${tabelNumber})`);
         const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${emailInput}")`);
-        const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = (" ${phoneNumber}") WHERE tabelNum = ("${tabelNumber}") AND email = ("${emailInput}")`);
-        console.log("Подано предложение  с табельного",tabelNumber )
+        const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = ("${phoneNumber}") WHERE tabelNum = ("${tabelNumber}") AND email = ("${emailInput}")`);
+
         return [checkTab, checkEmail, updSendData];
 
     }
 
     async function CheckUniqueTabAndEmail(tabelNumber, emailInput, phoneNumber) {
         var codes = await CheckTabAndEmail(tabelNumber, emailInput, phoneNumber);
-
         var tb = codes[0][0]; // первый елемент данные, второй это метаданные
         var eml = codes[1][0]; //второй sql запрос
         let upd = codes[2][0] // запрос обновления строки
@@ -493,13 +490,37 @@ router.post("/fioSendler", urlencodedParser, async (req, res) => {
      
         let tabNum = req.body.tabNum; 
         let sqlFioSend = await pool.execute(`SELECT fiofull FROM kadry_all WHERE tabnum="${tabNum}"`);
-        
-        if(sqlFioSend[0][0] != undefined){
-            let arrayToStrings = sqlFioSend[0][0].fiofull.split(' ')
+        let sqlEmailSend = await pool.execute(`SELECT email FROM users_emails WHERE tabnum="${tabNum}"`);
+        let sqlFioSendIsi = await pool.execute(`SELECT name, surname, middlename, email, tabelNum, phoneNumber FROM offersworker WHERE tabelNum="${tabNum}"`);
+       
+        if(sqlFioSendIsi[0][0] != undefined){
+            let arrayToStrings =[];
+            arrayToStrings[1] = sqlFioSendIsi[0][0].name;
+            arrayToStrings[0] = sqlFioSendIsi[0][0].surname;
+            arrayToStrings[2] = sqlFioSendIsi[0][0].middlename;
+            arrayToStrings[3] = sqlFioSendIsi[0][0].email;
+            arrayToStrings[4] = sqlFioSendIsi[0][0].tabelNum;
+            arrayToStrings[5] = sqlFioSendIsi[0][0].phoneNumber;
+           
             res.send(arrayToStrings)
         } else{
-            res.send(["Имя", "Фамилия", "Отчество"])
+            if(sqlFioSend[0][0] != undefined){
+               
+                if(sqlEmailSend[0][0] != undefined){
+                    let arrayToStrings = sqlFioSend[0][0].fiofull.split(' ')
+                    arrayToStrings.push(sqlEmailSend[0][0].email)
+                    res.send(arrayToStrings)
+                } else {
+                    let arrayToStrings = sqlFioSend[0][0].fiofull.split(' ')
+                   
+                    res.send(arrayToStrings)
+                }
+               
+            } else{
+                res.send(["Имя", "Фамилия", "Отчество"])
+            }
         }
+        
        
       
   

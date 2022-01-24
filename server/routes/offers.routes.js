@@ -51,6 +51,7 @@ router.get("/allOffers",
 														o.date,
 														o.status,
 														o.tabelNum,
+                                                        o.dateComission,
 														ow.name AS nameSendler,
 														ow.surname AS surnameSendler,
 														ow.middlename AS middlenameSendler
@@ -348,6 +349,7 @@ router.post("/toStatus", urlencodedParser,
         let status = request.body.status
         try {
             await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
+            response.status(200).send() 
         } catch (e) { console.log(e) }
     })
 
@@ -355,7 +357,14 @@ router.post("/toDbDateComission", urlencodedParser,
     async function (request, response) {
         let id = request.body.offerId
         let dateComission = JSON.stringify(request.body.dateComission)
+        
+        try{
         await pool.query(`UPDATE offers SET dateComission = ${dateComission} WHERE  Id = (${id}) `);
+        console.log("Запись даты комисии в предложение",id)
+        response.status(200).send() 
+        }catch(e){
+            console.log(e)
+        }
     })
 // router.post("/saveToDb", urlencodedParser,
 //     async function (request, response) {
@@ -436,24 +445,25 @@ router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
             response.send();
         }
 
-		const sqlCheck = `SELECT
-							COUNT(o.Id) AS isset
-						FROM
-							offers AS o
-						INNER JOIN offersworker AS o2 ON o2.id = ?
-						WHERE o.tabelNum = o2.tabelNum 
-							AND o.Id = ?`;
+		// const sqlCheck = `SELECT
+		// 					COUNT(o.Id) AS isset
+		// 				FROM
+		// 					offers AS o
+		// 				INNER JOIN offersworker AS o2 ON o2.id = ?
+		// 				WHERE o.tabelNum = o2.tabelNum 
+		// 					AND o.Id = ?`;
 
-		const check = await pool.query(sqlCheck, [userId, idOffers]);
-
-		if(check[0].length)
-		{
-			if(check[0][0].isset === 0)
-			{
-				response.status(400);
-				response.send();
-			}
-		}
+		// const check = await pool.query(sqlCheck, [userId, idOffers]);
+// 
+		// if(check[0].length)
+		// {
+		// 	if(check[0][0].isset === 0)
+		// 	{
+        //         console.log("qwe",check[0][0])
+		// 		response.status(400);
+		// 		response.send();
+		// 	}
+		// }
 
         const sqlResponsible = `UPDATE offersresponsible_rg
 								SET deleted = 1
@@ -628,23 +638,16 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
         let offerId = request.body.id
         let offerRespId = request.body.respID
         await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
+        response.status(200).send()
     })
 
-router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
-    async function (request, response)
-	{
-        let annotationRg = request.body.w
-        let offerId = request.body.id
-        let offerRespId = request.body.respID
-        await pool.query(`UPDATE offersresponsible_rg SET mark = '${annotationRg}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${offerRespId}`);
-    })
 
-router.post("/offerStates", urlencodedParser, authMiddleware, 
+    router.post("/offerStates", urlencodedParser, authMiddleware, 
 	async function(request, response)
 	{
         const idOffers =  request.body.idOffer;
 		const userId = request.user.id;
-
+console.log(idOffers, userId);
 		if(!idOffers)
 		{
 			response.status(400)
@@ -669,13 +672,28 @@ router.post("/offerStates", urlencodedParser, authMiddleware,
 							ON dep.id = ka.department
 								AND dep.factory = ka.factory
 						WHERE 
-							o.offer_id = o3.Id`;
+							o.deleted <> 1
+							AND o.offer_id = o3.Id`;
 
 		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", userId, idOffers]);
-		const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
+		const sqlOfferResponsible_rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
 
+		let result = {responsibles: [],
+								responsibles_rg: []};
 
+		if(sqlOfferResponsible[0].length)
+		{
+			result.responsibles = sqlOfferResponsible[0]
+		}
+
+		if(sqlOfferResponsible_rg[0].length)
+		{
+			result.responsibles_rg = sqlOfferResponsible_rg[0]
+		}
+
+		response.send(result);
 	})
+
 
 router.post("/respResults", urlencodedParser, authMiddleware,
     async function (request, response)
@@ -831,8 +849,36 @@ router.post("/saveNotesToDbRG", urlencodedParser,
 
         console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
-
+        response.status(200).send() 
     })
+    router.post("/closeConclusionRG", urlencodedParser,
+    async function (request, response) {
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+
+        console.log(Date(),"Заключение RG закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        response.status(200).send() 
+    })
+
+    router.post("/saveComissionAnnotationToDb", urlencodedParser,
+    async function (request, response) {
+     console.log(" функция")
+    let textComission = request.body.w
+    let offerId = request.body.id
+    let comissionTabnum = request.body.comissionTabNum
+    
+    const sqlR = await pool.query(`SELECT * FROM comission WHERE offerID = '${offerId}'`)
+     console.log(textComission)
+    if(sqlR == undefined){
+        return console.log("Сработал андефайнд")
+     }
+      
+    console.log(Date(),"Запись Аннотации Комиссии", "в предложение",offerId, "с табельного ", comissionTabnum)
+      await pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+        response.status(200).send() 
+    })
+
 
 
 module.exports = router

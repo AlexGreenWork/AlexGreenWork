@@ -10,7 +10,7 @@ server/build/
 server/coverage/
 server/.pnp/
 server/files/
-server/config/*
+server/config/
 
 offersendler.sql
 linkDbDiagram.drawio
