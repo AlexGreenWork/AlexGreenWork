@@ -61,13 +61,13 @@ function OffersForm(props) {
     const [count, setCount] = useState(0);
 
     function addFioYetSebdler(tabNum){
-
+       
         try{
             axios.post(`${API_URL}api/auth/fioSendler`, {  tabNum: tabNum,
-
+    
                                                         })
                                                         .then(res => {
-
+                                                                                                                    
                                                             let fio = res.data;
                                                            
                                                              document.querySelector(`#firstName${count}`).value = fio[1];
@@ -79,9 +79,37 @@ function OffersForm(props) {
                                                              setNameNew(fio[1])
                                                              setLastNameNew(fio[0])
                                                              setMiddleNameNew(fio[2])
-
                                                              setEmailNew(fio[3])
                                                              setPhoneNumberNew(fio[5])
+                                                        })
+        } catch (e){
+            alert(e.response)
+        }
+    }
+
+
+    function addFioSendler(tabNum){
+     
+        try{
+            axios.post(`${API_URL}api/auth/fioSendler`, {  tabNum: tabNum,
+    
+                                                        })
+                                                        .then(res => {
+                                                          
+                                                            
+                                                            let fio = res.data;
+                                                            console.log(fio)
+                                            
+                                                             setName(fio[1])
+                                                             setLastName(fio[0])
+                                                             setMiddleName(fio[2])
+                                                             setEmail(fio[3])
+                                                             if(fio[5] == undefined){
+                                                                setPhoneNumber("")
+                                                             }else{
+                                                                setPhoneNumber("+"+fio[5].slice(1))
+                                                             }
+                                                             
                                                         })
         } catch (e){
             alert(e.response)
@@ -245,6 +273,9 @@ function OffersForm(props) {
             React.createElement("div", {className:"formFilds"} , <label htmlFor={"phoneNumber"+props}> Номер телефона</label>, <input  type="tel" name={"phoneNumber"+props} id={"phoneNumber"+props} placeholder="+375293333333" required onChange={(e) => setPhoneNumberNew(e.target.value)}/> ),
             ]
             
+            
+
+
     return(React.createElement("div", {className:`shadowBox`, onClick:()=>{
         addFlag = false;
         setNewSendler(undefined);
@@ -264,7 +295,7 @@ function OffersForm(props) {
           } */
                                                                                                     
     }} , React.createElement("div", {className:`offers newSendler${props} exists`, onClick: (event)=>event.stopPropagation()} ,  arr, <SaveBtn/>, <div className='closeAddForm' onClick={()=>{
-
+     
         addFlag = false;
         setNewSendler(undefined);
         setNameNew(undefined)
@@ -272,9 +303,9 @@ function OffersForm(props) {
         setMiddleNameNew(undefined)
         setEmailNew(undefined)
         setTabelNumberNew(undefined)
-        setPhoneNumberNew(undefined)
+        setPhoneNumberNew(undefined)  
 
-
+   
     }}>&#10006;</div>)))
     }  
 
@@ -348,13 +379,22 @@ function OffersForm(props) {
             {yetSendler}
             <form className="offers" onSubmit={handleSubmit}>
                 <div className="form-fields">
-                       <div className={s.formFilds}>
+                    
+                    <div className={s.formFilds}>
+                        <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
+                               name="tabelNumber" required autoComplete="on"
+                               value={tabelNumber} onChange={(e) => {setTabelNumber(e.target.value);}} onBlur={(e)=>{addFioSendler(e.target.value)}}/>
+                        <label htmlFor="tabelNumber">Табельный номер</label>
+                        <div className="false-input false-tabelNumber"></div>
+                    </div>    
+                    <div className={s.formFilds}>
                         <input type="text" placeholder="Иванов" id="lastName" className="input-data" name="lastName"
                                required autoComplete="off"
                                value={lastName} onChange={(e) => setLastName(e.target.value)}/>
                         <label htmlFor="lastName">Фамилия</label>
                         <div className="false-input false-lastName"></div>
-                    </div>
+                    </div>                
+                    
                     <div className={s.formFilds}>
                         <input type="text" placeholder="Иван" id="firstName" className="input-data" name="firstName"
                                value={name}
@@ -363,7 +403,7 @@ function OffersForm(props) {
                         <div className="false-input false-name"></div>
                     </div>
 
-
+                    
                     <div className={s.formFilds}>
                         <input type="text" placeholder="Иванович" id="middleName" className="input-data"
                                name="middleName" required autoComplete="off"
@@ -372,13 +412,7 @@ function OffersForm(props) {
                         <div className="false-input false-middleName"></div>
                     </div>
 
-                    <div className={s.formFilds}>
-                        <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
-                               name="tabelNumber" required autoComplete="on"
-                               value={tabelNumber} onChange={(e) => {setTabelNumber(e.target.value);}} onBlur={(e)=>{addFioSendler(e.target.value)}}/>
-                        <label htmlFor="tabelNumber">Табельный номер</label>
-                        <div className="false-input false-tabelNumber"></div>
-                    </div>
+                    
 
                     <div className={s.formFilds}>
                         <input type="email" placeholder="e-mail-adress@gmail.com" className="input-data" id="emailInput"
@@ -429,7 +463,7 @@ function OffersForm(props) {
                     </div>
                     <NewSendler/>
                     {newSendler}
-
+                  
                     <div className={s.buttonConfirm}>
                         <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Подтвердить
                             запись
