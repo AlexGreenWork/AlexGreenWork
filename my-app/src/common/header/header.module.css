@@ -121,6 +121,11 @@ height: 5vh;
 
 
 @media (max-width: 553px) {
+    .brand{
+        width:100%;
+        display:flex;
+        justify-content: center;
+    }
     .logotype {
         width: 150px;
         position: absolute;

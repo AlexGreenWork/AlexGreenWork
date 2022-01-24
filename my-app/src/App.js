@@ -27,6 +27,7 @@ import MyFiles from "./common/personalCabinet/myFiles/myFiles";
 import OffersResponsible from "./common/personalCabinet/responsible/responsible";
 import {Budget} from "./common/topComissionPanel/TopComission";
 import TopComission from "./common/topComissionPanel/TopComission";
+import Administration from "./common/administration/administration";
 
 
 
@@ -93,20 +94,12 @@ function App(props) {
                             {/*<Redirect to='/authorization'/>*/}
                         </Switch>
                     }
-                    {/*{!isAuth ?*/}
-                    {/*    <Switch>*/}
 
-                    {/*    </Switch>*/}
-                    {/*    :*/}
-                    {/*    <Switch>*/}
-                    {/*        <Route path="/registration" component={Registration}/>*/}
-                    {/*        <Redirect to='/authorization'/>*/}
-                    {/*    </Switch>*/}
-                    {/*}*/}
 
                     {/*<Route path="/adminPanel" component={AdminPanel}/>*/}
                     <Route exact path='/' component={ContentContainer}/>
                     <Route path='/workerVariable' component={WorkerVariable}/>
+                    <Route path='/administration' component={Administration}/>
                     <Route path='/personalCabinet/myOffers' component={MyOffers} />
                     <Route path='/personalCabinet/findWorkers' component={FindWorkers}/>
                     <Route path='/personalCabinet/tasks' component={Tasks}/>
@@ -122,6 +115,7 @@ function App(props) {
                     <Route path='/personalCabinet/myFiles' component={MyFiles}/>
                     <Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>
                     <Route path='/personalCabinet/adminPanelComission' component={TopComission}/>
+                    
 
                 </div>
 
