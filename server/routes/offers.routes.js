@@ -5,6 +5,7 @@ const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
 const authMiddleware = require('../middleware/auth.middleware')
+const userMiddleware = require('../middleware/user.middleware')
 const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
@@ -159,6 +160,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 }
 
 router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
+router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, offers_controller.last_offers);
 
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {

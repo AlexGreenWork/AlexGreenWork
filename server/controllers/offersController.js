@@ -15,7 +15,7 @@ class Offers
 		return mysql.createPool(connection_property);
 	}
 
-	static async error(msg)
+	static async error(res, msg)
 	{
 		res.status(400);
 		res.send(msg);
@@ -44,7 +44,7 @@ class Offers
         if (!('selectOffers' in req.body)
             || !req.body.selectOffers)
 		{
-			Offers.error('');
+			Offers.error(res, '');
 			return;
         }
 
@@ -90,6 +90,57 @@ class Offers
                 sqlOfferResponsible_Rg[0][0]
 
         });
+	}
+
+	async last_offers(req, res)
+	{
+		const current_user_group = req.current_user_info.adminOptions;
+		if(current_user_group !== 'admin'
+			&& current_user_group !== 'wg')
+		{
+			Offers.error(res, 'Нет прав на данную операцию');
+			return;
+		}
+
+        if (!('begin' in req.body)
+            || !req.body.begin)
+		{
+			Offers.error(res, 'Неверно указаны параметры');
+			return;
+        }
+
+		const begin = new Date(req.body.begin);
+
+		const connection = await Offers.connection_to_database();
+
+		const db_result = await connection.query(`SELECT
+													o.id,
+													o.date,
+													o.status,
+													ka.fiofull
+												FROM
+													offers AS o
+												INNER JOIN kadry_all AS ka ON ka.tabnum = o.tabelNum
+												WHERE
+													YEAR(o.date) = ? AND MONTH(o.date) >= ?`,
+										[begin.getFullYear(), begin.getMonth() + 1]);
+
+		const result = [];
+
+		if(db_result[0].length)
+		{
+			for(const v of db_result[0])
+			{
+				result.push(
+					{
+						offer_id: v.id,
+						offer_date: v.date,
+						offer_status: v.status,
+						offer_sendler: v.fiofull
+					});
+			}
+		}
+		res.send(result);
 	}
 }
 

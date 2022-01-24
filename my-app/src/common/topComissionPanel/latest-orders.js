@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
@@ -134,37 +133,55 @@ class OrdersList extends React.Component
 
 	componentDidMount()
 	{
-		console.log(moment().format("DD-MM-YYYY"));
-		//server.send_post_request(`${API_URL}api`);
+		server.send_post_request(`${API_URL}api/offers/lastOffersByDate`, {begin: moment().format("YYYY-MM-DD")})
+			.then((res) => {
+					this.setState({list: res.data})
+			});
+	}
+
+	convert_state(status)
+	{
+		switch(status)
+		{
+			case 3:
+			case 6:
+			case 11:
+				return 'отклонено'
+			case 13:
+				return 'обработано'
+			default:
+				return 'в обработке'
+		}
 	}
 
 	render()
 	{
+		console.log(this.state.list)
 		return (
 			<Table>
 				<OrdersHeader/>
 				<TableBody>
-					{orders.map((order) => (
+					{this.state.list.map((order, id) => (
 						<TableRow
 							hover
-							key={order.id}
+							key={id}
 						>
 							<TableCell>
-								{order.ref}
+								{order.offer_id}
 							</TableCell>
 							<TableCell>
-								{order.customer.name}
+								{order.offer_sendler}
 							</TableCell>
 							<TableCell>
-								{format(order.createdAt, 'dd/MM/yyyy')}
+								{moment(order.offer_date).format("DD-MM-YYYY")}
 							</TableCell>
 							<TableCell>
 								<SeverityPill
-									color={(order.status === 'обработано' && 'success')
-										|| (order.status === 'отклонено' && 'error')
+									color={(this.convert_state(order.offer_status) === 'обработано' && 'success')
+										|| (this.convert_state(order.offer_status) === 'отклонено' && 'error')
 											|| 'warning'}
 								>
-									{order.status}
+									{this.convert_state(order.offer_status)}
 								</SeverityPill>
 							</TableCell>
 						</TableRow>
