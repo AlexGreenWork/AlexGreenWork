@@ -12,7 +12,8 @@ import ConclusionList from "./conclusionList";
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import server from "../../../../../actions/server";
 import {element} from "prop-types";
-import {saveNotesToDb, saveRespRGAnnotationToDb} from "../../../../../actions/file";
+import {saveRespRGAnnotationToDb} from "../../../../../actions/file";
+import {closeConclusionRG} from "../../../../../actions/file";
 import axios from "axios";
 import style from "./conclusionCard.module.css";
 import TableContainer from "@mui/material/TableContainer";
@@ -24,6 +25,9 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import FilesRG from "./conclusionFiles"
 
+import FilesRG from "./conclusionFiles"
+import {saveNotesToDb} from "../../../../../actions/file"
+import { red } from "@mui/material/colors";
 console.log(store.getState().search.searchUser)
 
 
@@ -145,6 +149,7 @@ const ConclusionOffer = () => {
 
     async function saveRespRGAnnotation(){
         const w = document.getElementById("textAreaRGConc").innerText
+        alert("Аннотация добавлена")
       dispatch(saveRespRGAnnotationToDb(w))
 
     }
@@ -229,6 +234,8 @@ const ConclusionOffer = () => {
         const isAdmin = props.isAdmin;
         if (isAdmin == `${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`) {
             return <FilesRG/>;
+            return (
+                <div></div>);
 
         } else {
             return <IsAdminUser/>
@@ -300,9 +307,10 @@ const ConclusionOffer = () => {
 
     }
 
-    const [nameRG, setNameRg] = React.useState(`${store.getState().offers.offer.responsibles_rg?.fiofull}`)
-    const [dateRG, setDateRg] = React.useState(`${store.getState().offers.offer.responsibles_rg?.open}`)
-    const [tabelRG, setTabelRg] = React.useState(`${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`)
+    const [nameRG, setNameRg] = useState(`${store.getState().offers.offer.responsibles_rg?.fiofull}`)
+    const [dateRG, setDateRg] = useState(`${store.getState().offers.offer.responsibles_rg?.open}`)
+    const [dateCloseRG, setDateCloseRg] = useState(`${store.getState().offers.offer.responsibles_rg?.close}`)
+    const [tabelRG, setTabelRg] = useState(`${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`)
 
 
     /** console.log(dateRG)
@@ -342,8 +350,12 @@ const ConclusionOffer = () => {
         'Декабря'
     ];
 
-    var d = new Date(`${dateRG}`);
-    var newDate = d.getDate().toString().padStart(2, '0') + ' ' + month[d.getMonth()];
+    var open = new Date(`${dateRG}`);
+    var newDate = open.getDate().toString().padStart(2, '0') + ' ' + month[open.getMonth()];
+
+    var close = new Date(`${dateCloseRG}`);
+    var newCloseDate = close.getDate().toString().padStart(2, '0') + ' ' + month[close.getMonth()];
+    
 function AdminChangeAnnotationWiev(props){
         const isAdmin = props.isAdmin;
         if (isAdmin == `${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`) {
@@ -365,27 +377,32 @@ function AdminChangeAnnotationWiev(props){
             )
         }
 }
-   function saveNotes(){
-    let tabNum = store.getState().offers.offer.responsibles_rg?.responsible_tabnum
-    let idOffer = localStorage.getItem('idOffers')
-    let actual =document.getElementById('actual').innerText
-    let innovate =document.getElementById('innovate').innerText
-    let cost =document.getElementById('cost').innerText
-    let duration =document.getElementById('duration').innerText
-        dispatch(saveNotesToDb(actual, innovate, cost, duration, tabNum, idOffer))
-
+    function saveNotes(){
+        const actual = document.getElementById("actual").innerText
+        const innovate = document.getElementById("innovate").innerText
+        const cost = document.getElementById("cost").innerText
+        const duration = document.getElementById("duration").innerText
+        const idOffer = localStorage.getItem('idOffers')
+        const tabNum = localStorage.getItem('userTabelNum')
+        alert("Оценки записаны")
+        dispatch(saveNotesToDb(actual, innovate, cost, duration,tabNum, idOffer ))
     }
     function closeCunclusion(){
-
+        const idOffer = localStorage.getItem('idOffers')
+        const tabNum = localStorage.getItem('userTabelNum')
+        alert("Заключение закрыто")
+        setDateCloseRg(Date())
+        dispatch(closeConclusionRG(tabNum, idOffer ))
     }
     const [actual, setActual] = React.useState('')
     const [innovate, setInnovate] = React.useState('')
     const [cost, setCost] = React.useState('')
     const [duration, setDuration] = React.useState('')
-
+    
     function AdminChangeSaveNotes() {
         const MyTabnum = localStorage.getItem('userTabelNum');
         if (MyTabnum == store.getState().offers.offer.responsibles_rg?.responsible_tabnum) {
+            
             return (<TableContainer component={Paper}>
                 <Table aria-label="collapsible table">
                     <TableHead>
@@ -398,8 +415,22 @@ function AdminChangeAnnotationWiev(props){
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableCell/>
-                        <TableCell id="actual" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.actual}</TableCell>
+                    <TableCell/>
+                        <TableCell id="actual" className={s.NoteCell} align="right" contenteditable="true" type="number">
+                        <select>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                        </select>  
+                        {store.getState().offers.offer.responsibles_rg?.actual}
+                            </TableCell>
                         <TableCell id="innovate" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.innov}</TableCell>
                         <TableCell id="cost" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.cost}</TableCell>
                         <TableCell id="duration" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.extent}</TableCell>
@@ -439,13 +470,25 @@ function AdminChangeAnnotationWiev(props){
                     </TableHead>
                     <TableBody>
                         <TableCell/>
-                        <TableCell  align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.actual}</TableCell>
-                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.innov}</TableCell>
-                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.cost}</TableCell>
-                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.extent}</TableCell>
+                        <TableCell  align="right"  type="number">1</TableCell>
+                        <TableCell align="right"  type="number">1</TableCell>
+                        <TableCell align="right"  type="number">1</TableCell>
+                        <TableCell align="right"  type="number">1</TableCell>
                     </TableBody>
                 </Table>
             </TableContainer>);
+        }
+    }
+    function CloseChange(isClose){
+        console.log(isClose.isClose)
+        if(isClose.isClose == "null"){
+            console.log("Отработало")
+            return <div></div>
+        }if(isClose.isClose == "undefined"){
+            return <div></div>
+        }else{
+            return <div style={{width:"100%", backgroundColor:"#ea8888", display: "flex", justifyContent: "center"}}> Заключение закрыто: {newCloseDate}{' ' + close.getFullYear() } года.</div>
+            
         }
     }
 
@@ -465,9 +508,10 @@ function AdminChangeAnnotationWiev(props){
                 borderTop: "10px solid grey",
                 borderBottom: "10px solid grey"
             }}>
+                <CloseChange isClose={dateCloseRG}/>
                 <div className={s.date}>
                     <div>Дата начала обработки:</div>
-                    <div>{newDate}{' ' + d.getFullYear()}</div>
+                    <div>{newDate}{' ' + open.getFullYear()}</div>
                 </div>
                 <div className={s.nameWorkGroup}>
                     <div>Подразделение:</div>
@@ -525,7 +569,7 @@ function AdminChangeAnnotationWiev(props){
                             flexDirection: "column",
                             cursor: "pointer"
                         }}>
-
+                            <FilesRG tabNum={tabelRG}/>
                         </div>
 
 
@@ -537,7 +581,7 @@ function AdminChangeAnnotationWiev(props){
                         marginBottom: "25px",
                     }}>Краткая аннотация заключения рабочей группы:</div>
                     <AdminChangeAnnotationWiev isAdmin={localStorage.getItem("userTabelNum")}/>
-
+                    
                     <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userTabelNum")}/>
 
                 </div>
