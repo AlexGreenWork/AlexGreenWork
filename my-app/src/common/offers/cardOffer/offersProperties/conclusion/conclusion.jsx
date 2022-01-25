@@ -26,7 +26,7 @@ import TableBody from "@mui/material/TableBody";
 import FilesRG from "./conclusionFiles"
 import {saveNotesToDb} from "../../../../../actions/file"
 import { red } from "@mui/material/colors";
-console.log(store.getState().search.searchUser)
+
 
 
 
@@ -414,7 +414,7 @@ function AdminChangeAnnotationWiev(props){
                     <TableBody>
                     <TableCell/>
                         <TableCell id="actual" className={s.NoteCell} align="right" contenteditable="true" type="number">
-                        <select>
+                        {/* <select>
                                 <option>1</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -425,7 +425,7 @@ function AdminChangeAnnotationWiev(props){
                                 <option>8</option>
                                 <option>9</option>
                                 <option>10</option>
-                        </select>  
+                        </select>   */}
                         {store.getState().offers.offer.responsibles_rg?.actual}
                             </TableCell>
                         <TableCell id="innovate" className={s.NoteCell} align="right" contenteditable="true" type="number">{store.getState().offers.offer.responsibles_rg?.innov}</TableCell>
@@ -586,7 +586,7 @@ function AdminChangeAnnotationWiev(props){
 
                 <div style={{display: "flex", width: "100%", borderBottom: "1px solid #00000033"}}>
 
-                    <div>Оценка</div>
+                    <div>Оценка (максимальная оценка - 5 баллов)</div>
                 </div>
 
 

@@ -51,7 +51,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                         countResponsible++
                     }
                 }
-                console.log('countResponsible', countResponsible)
+                
                  if(err){
                  res.send( "no such file or directory");
                } else {
@@ -80,12 +80,12 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                            
                         } else  if(dirRoot[i] == "ResponsibleRg"){
                             
-                            console.log("ResponsibleRg");
+                         
                             fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}`, async function(err, dirRg){
-                                console.log("dirRg", dirRg);
+                             
                                 if(dirRg.length != 0){
                                   //  countResponsible++;
-                                    console.log("dirRg.length != 0", dirRg);
+                                   
                                     fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}/${dirRg[0]}`, async function(err, dirRgTab){
                                         //       console.log('dirRgTab', dirRgTab);
                                                let docFiles = dirRg[0]
@@ -95,26 +95,24 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                                                let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
                                              
                                                let department = sqlDepartment[0][0].fullname
-                                               console.log('department', department)
+                                             
                                                let sqlDivision = await pool.query(`SELECT * FROM division WHERE department=${sqlMembCommision[0][0].department} AND id=${sqlMembCommision[0][0].division}`);
                                                let files = dirRgTab;
-                                               console.log(sqlDivision[0][0])
+                                            
                                                let division = null/* sqlDivision[0][0].name */;
                                                
                                                arrAllFiles[docFiles+"R"]= {files, fioResp, department, division }
            
                                                if(countResponsible == Object.keys(arrAllFiles).length){
-                                                   console.log(arrAllFiles)
+                                                 
                                                    res.send(arrAllFiles)
                                                }
                                            })
                                 } else{
                                     countResponsible--
-                                    console.log("dirRg.length != 0 else", dirRg);
-                                    console.log("countResponsible", countResponsible);
-                                    console.log("Object.keys(arrAllFiles).length", Object.keys(arrAllFiles).length);
+                                  
                                     if(countResponsible  == Object.keys(arrAllFiles).length){
-                                        console.log(arrAllFiles)
+                                      
                                         res.send(arrAllFiles)
                                     }
                                 }
@@ -152,9 +150,9 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                                 
                             }
                         } */
-                        console.log("перед ответом", arrAllFiles, countResponsible,  Object.keys(arrAllFiles).length )
+                      
                         if(countResponsible == Object.keys(arrAllFiles).length && Object.keys(arrAllFiles).length != 0){
-                            console.log("внутри if", arrAllFiles)
+                         
                             res.send(arrAllFiles)
                         }
                       
@@ -428,6 +426,52 @@ router.post("/myFilesWG", urlencodedParser,
             res.send(folder)
         })
     })
+
+
+    router.post("/StatementFileUpload", urlencodedParser,
+    async function (req, res) {
+
+        let idOffers = req.body.idOffers;
+      
+
+        fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
+            if(folder.includes(`StatementFile`) == false){
+              
+
+                fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/StatementFile`, { recursive: true }, err => {
+                   
+
+                    if(req.files != null){
+                        req.files.StatementFile.mv(`../server/files/offers/idOffers/id${idOffers}/StatementFile/` + req.files.StatementFile.name);
+                        res.send("upload File")
+                    }
+                })
+            } else {
+                if(req.files != null){
+                    req.files.StatementFile.mv(`../server/files/offers/idOffers/id${idOffers}/StatementFile/` + req.files.StatementFile.name);
+                    res.send("upload File")
+                }
+            }
+          
+        })
+    })
+
+    router.post("/StatementFileList", urlencodedParser,
+    async function (req, res) {
+        let idOffers = req.body.idOffers;
+
+        fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
+            if(folder.includes(`StatementFile`) == false){
+                res.send("null files")
+            } else{
+                fs.readdir(`../server/files/offers/idOffers/id${idOffers}/StatementFile/`, (err, folder) => {
+                        res.send(folder) 
+                }
+                )
+            }
+
+    })
+})
 
     
 module.exports = router

@@ -52,7 +52,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
                     Найти сотрудника
                 </NavLink></div>
-                
+
                     {responsible}
 
             </div>
@@ -117,12 +117,10 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
                     Найти сотрудника
                 </NavLink></div>
-                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/">
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/adminPanelComission">
                     Панель Рабочей группы
                 </NavLink></div>
-                <div className={s.linksPC}>
-                    <NavLink className={s.offers} to="/personalCabinet/adminPanelTopComission">Панель Рабочей группы</NavLink>
-                </div>
+                
 
                     {responsible}
 

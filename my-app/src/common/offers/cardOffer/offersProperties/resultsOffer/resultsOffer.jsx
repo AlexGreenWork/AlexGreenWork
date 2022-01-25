@@ -76,7 +76,7 @@ class Row extends React.Component
 						<Collapse in={this.state.open} timeout="auto" unmountOnExit>
 							<Box sx={{ margin: 1 }}>
 								<Typography variant="h6" gutterBottom component="div">
-									Оценка предложения
+									Оценка предложения (максимальная оценка - 5 баллов)
 								</Typography>
 								<Table size="small" aria-label="purchases">
 									<TableHead>
@@ -234,6 +234,14 @@ class ResultsOffer extends React.Component
 	{
 		return (
 			<div className={s.containerOff} >
+				<div className={s.idOffer} style={{
+					display:"flex",
+					justifyContent: "space-between"
+				}}>
+              	  <div>№:{this.props.offerId}</div>
+             	   <div className={s.nameOfferHead}> {this.props.offerName}</div>
+					<div></div>
+         	   </div>
 				<TableContainer component={Paper}>
 					<ResultTable offerId = {this.props.offerId}/>
 				</TableContainer>
@@ -244,7 +252,7 @@ class ResultsOffer extends React.Component
 
 const mapReduxStateToClassProps = (state) =>
 {
-	return {offerId: state.offers.offer.Id}
+	return {offerId: state.offers.offer.Id, offerName: state.offers.offer.nameOffer}
 }
 
 export default connect(mapReduxStateToClassProps)(ResultsOffer);
