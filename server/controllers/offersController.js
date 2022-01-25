@@ -28,14 +28,15 @@ class Offers
 							ow.name AS nameSendler,
 							ow.surname AS surnameSendler,
 							ow.middlename AS middlenameSendler,
-							ow.email AS email
+							ow.email AS email,
+							ow.phoneNumber As phone
 						FROM offers AS o
 						INNER JOIN offersworker AS ow
 							ON ow.tabelNum = o.tabelNum
 						WHERE o.Id = ?`;
 
 		const result = await connection.query(query, [offer_id]);
-
+console.log(result[0])
 		return result[0][0];
 	}
 	

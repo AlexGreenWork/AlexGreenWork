@@ -159,8 +159,10 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
     return [myAllOfffers]
 }
 
+
 router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
 router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, offers_controller.offers_state);
+
 
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {
@@ -387,6 +389,26 @@ router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
             response.status(400)
             response.send();
         }
+
+		// const sqlCheck = `SELECT
+		// 					COUNT(o.Id) AS isset
+		// 				FROM
+		// 					offers AS o
+		// 				INNER JOIN offersworker AS o2 ON o2.id = ?
+		// 				WHERE o.tabelNum = o2.tabelNum 
+		// 					AND o.Id = ?`;
+
+		// const check = await pool.query(sqlCheck, [userId, idOffers]);
+// 
+		// if(check[0].length)
+		// {
+		// 	if(check[0][0].isset === 0)
+		// 	{
+        //         console.log("qwe",check[0][0])
+		// 		response.status(400);
+		// 		response.send();
+		// 	}
+		// }
 
         const sqlResponsible = `UPDATE offersresponsible_rg
 								SET deleted = 1
