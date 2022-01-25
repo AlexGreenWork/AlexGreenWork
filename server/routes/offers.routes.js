@@ -839,7 +839,7 @@ router.post("/responsibleToOffers", urlencodedParser,
 
     })
 router.post("/saveNotesToDbRG", urlencodedParser,
-    async function (request, response) {
+    async function (request, response) {cardOffer
     let actual = request.body.actual
     let innovate = request.body.innovate
     let cost = request.body.cost
@@ -868,16 +868,41 @@ router.post("/saveNotesToDbRG", urlencodedParser,
     let offerId = request.body.id
     let comissionTabnum = request.body.comissionTabNum
     
-    const sqlR = await pool.query(`SELECT * FROM comission WHERE offerID = '${offerId}'`)
+    const sqlR = await pool.query(`SELECT * FROM comission WHERE offerID = '${offerId}' AND tabelNum = ${comissionTabnum}`)
      console.log(textComission)
+     console.log(sqlR[0])
+    if(sqlR[0][0] == null){
+        console.log(Date(),"Запись Аннотации Комиссии", "в предложение",offerId, "с табельного ", comissionTabnum)
+        await pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+          response.status(200).send()
+     }else{
+        await pool.query(`UPDATE comission SET annotation = '${textComission}' WHERE offerID = ${offerId} AND tabelNum = ${comissionTabnum}`);
+        response.status(200).send() 
+     }
+      
+     
+    })
+
+    router.post("/toDbSaveAnnot", urlencodedParser,
+    async function (request, response) {
+     console.log(" toDbSaveAnnot - отработало")
+    let textAnnotation = request.body.ann
+    let offerId = request.body.idOffer
+    let tabnum = request.body.tabNum
+    console.log(textAnnotation, offerId,tabnum )
+    try{
+    const sqlR = await pool.query(`SELECT * FROM offersresponsible WHERE offer_id = '${offerId}' AND responsible_tabnum = '${tabnum}'`)
+     
     if(sqlR == undefined){
         return console.log("Сработал андефайнд")
      }
       
-    console.log(Date(),"Запись Аннотации Комиссии", "в предложение",offerId, "с табельного ", comissionTabnum)
-      await pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+    console.log(Date(),"Запись Аннотации Ответственного", "в предложение",offerId, "с табельного ", tabnum)
+      await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
         response.status(200).send() 
+    }catch(e){console.log(e)}
     })
+
 
 
 

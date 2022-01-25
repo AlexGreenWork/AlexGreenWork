@@ -15,6 +15,7 @@
 
 
 .nameOffer{
+    background-color: #fafafa;
     margin-top: 5vh;
     display: flex;
     padding: 20px;
@@ -69,7 +70,7 @@
     box-shadow: 0px 1px 11px 6px rgba(34, 60, 80, 0.2);
 }
 .comissionTextArea:focus{
-    
+
     top:20vh;
     left:0;
     background-color: white;
