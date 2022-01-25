@@ -116,6 +116,32 @@ function OffersForm(props) {
         }
     }
 
+
+    function addFioSendler(tabNum){
+     
+        try{
+            axios.post(`${API_URL}api/auth/fioSendler`, {  tabNum: tabNum,
+    
+
+                                                        })
+                                                        .then(res => {
+                                                          
+                                                            
+                                                            let fio = res.data;
+                                                            
+                                                         
+
+                                                             setName(fio[1])
+                                                             setLastName(fio[0])
+                                                             setMiddleName(fio[2])
+                                                             setEmail(fio[3])
+                                                             setPhoneNumber(fio[4])
+                                                        })
+        } catch (e){
+            alert(e.response)
+        }
+    }
+
     let addNewSendler = {
        
         name: nameNew,

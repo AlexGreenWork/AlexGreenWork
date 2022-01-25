@@ -231,6 +231,7 @@ const ConclusionOffer = () => {
     function AdminChangeUploadFile(props) {
         const isAdmin = props.isAdmin;
         if (isAdmin == `${store.getState().offers.offer.responsibles_rg?.responsible_tabnum}`) {
+            return <FilesRG/>;
             return (
                 <div></div>);
 
