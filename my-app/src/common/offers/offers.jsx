@@ -27,7 +27,7 @@ const Offer = (props) => {
                     let offersData = JSON.parse(xhr.response);           
                    
                     requestInfoAutor(xhr.response);
-                   
+                   console.log(xhr.response)
                                                                     
                 } 
             }     
@@ -44,7 +44,7 @@ const Offer = (props) => {
                   
                    let offersData = JSON.parse(xhr); 
                    let workData = JSON.parse(req.response); 
-                   
+                   console.log(offersData)
                    dispatch(selectMyOffers(
                                             offersData.Id,
                                             offersData.nameOffer,

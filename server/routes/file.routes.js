@@ -428,7 +428,7 @@ router.post("/myFilesWG", urlencodedParser,
     })
 
 
-    router.post("/StatementFileDownload", urlencodedParser,
+    router.post("/StatementFileUpload", urlencodedParser,
     async function (req, res) {
 
         let idOffers = req.body.idOffers;
@@ -436,10 +436,10 @@ router.post("/myFilesWG", urlencodedParser,
 
         fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
             if(folder.includes(`StatementFile`) == false){
-                console.log("нет StatementFile")
+              
 
                 fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/StatementFile`, { recursive: true }, err => {
-                    console.log("создана StatementFile")
+                   
 
                     if(req.files != null){
                         req.files.StatementFile.mv(`../server/files/offers/idOffers/id${idOffers}/StatementFile/` + req.files.StatementFile.name);
@@ -462,12 +462,10 @@ router.post("/myFilesWG", urlencodedParser,
 
         fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
             if(folder.includes(`StatementFile`) == false){
-                res.send("null")
+                res.send("null files")
             } else{
                 fs.readdir(`../server/files/offers/idOffers/id${idOffers}/StatementFile/`, (err, folder) => {
-                    console.log(err) ;
-                   console.log(folder)
-                    res.send(folder) 
+                        res.send(folder) 
                 }
                 )
             }

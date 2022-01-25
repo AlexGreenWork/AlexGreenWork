@@ -64,7 +64,7 @@ function downloadFile(obj) {
 function FilesObject(props){
 
     for (let i = 0; i < props.fileName.length; i++) {
-        if (props.fileName[i] == '.') {
+        if (props.fileName[i] === '.') {
                     let format = props.fileName.slice(i);
                    
                     return(
@@ -80,19 +80,24 @@ function FilesObject(props){
                         </div>
                     )
                 }
-
-      
+     
     }
-    
-
-   
+  
 }
 
 
 function Creationfies(props){
-    
-    return props.arr.map((name)=>{  return <FilesObject fileName = {name}/>})
-
+  
+    if(props.arr === "null files"){
+      
+        return (
+            <div>
+                Нет файлов
+            </div>
+        )
+    } else {
+        return props.arr.map((name, key)=>{  return <FilesObject key={'StatementFile'+key} fileName = {name}/>})
+    }
 }
 
 
@@ -100,23 +105,55 @@ function Creationfies(props){
 function StatementFileList(props) {
    
     const [fileList, setFileList] = useState(null)
-    console.log("props", props)
-    console.log("fileList", fileList)
-    let idOffers = localStorage.getItem('idOffers');
-    if(props.list === null && fileList !== null){
-
-    }
     
+    let idOffers = localStorage.getItem('idOffers');
+ 
+    
+    const handleSubmitStatement = (event) => {
+
+        event.preventDefault();
+        
+        UploadStatementFile("StatementFile");
+     
+    }
+
+
+    function  UploadStatementFile(file){
+     
+       
+        if (file === undefined) {
+            return console.log('предложение без вложения файла');
+
+        } else {
+
+            let idOffers = localStorage.getItem('idOffers');
+            let formData = new FormData();
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', `${API_URL}api/files/StatementFileUpload`, true)
+
+            formData.append("idOffers", idOffers);
+            formData.append("StatementFile", document.getElementById(`${file}`).files[0]);
+            // console.log(document.getElementById(`${file}`).files[0])
+            
+            xhr.send(formData);
+            
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    setFileList(null)
+                
+                }
+            }
+        }
+    }
+
     if(fileList === null){
         axios.post(`${API_URL}api/files/StatementFileList`, {  idOffers : idOffers,
     
         })
         .then(res => {
-        
-            console.log(res.data)
+               
             setFileList(res.data)
            
-            // Creationfies(res.data)
         })
         return(
             <div>
@@ -124,13 +161,38 @@ function StatementFileList(props) {
             </div>
         )
     } else{
-        return <Creationfies arr = {fileList}/>
+      
+        if(localStorage.getItem('userAdminOptions') === "wg" || localStorage.getItem('userAdminOptions') === "admin"){
+             
+            return (
+                <div>
+               
+                <Creationfies arr = {fileList}/>
+                <form onSubmit={handleSubmitStatement} >
+                <input type="file" name="StatementFile" id='StatementFile' />
+                <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Загрузить файл1 </button>
+                </form>
+
+                </div>
+            
+            )
+        } else {
+            return (
+                <div>
+                    <Creationfies arr = {fileList}/>
+                </div>
+            
+            )
+        }
+        
     }
 
-   
-
-   
 }
+
+function StatementFiles(){
+
+}
+
 
 
     export default StatementFileList;

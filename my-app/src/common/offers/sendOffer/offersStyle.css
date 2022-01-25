@@ -222,11 +222,52 @@
         }
         }
 
+        #problem{
+            position: relative;
+            width: 340px;
+            height: 50px;
+            top: 30%;
+            transition: width 0.5s, top 0.5s;
+            overflow: hidden;
+            /* transition-duration: 0.5s; */
+        }
+
         #problem:focus {
-            background-color: red;
+          
+            overflow: auto;
+            box-shadow: 0px 0px 2px 1px rgb(5, 13, 85);
+            background-color: rgb(255, 255, 255);
+            position: absolute;
+            top: 12%;
+            left: 10%;
+            width: 80%;
+            height: 10%;
+            border: 0px solid;
+          
+
+          }
+        
+       
+
+        .close-textArea{
             position: absolute;
             top: 12%;
             left: 1%;
-            width: 98%;
-            height: 20%;
-          }
+            z-index: 2150;
+            background-color: coral;
+            width: 100px;
+            height: 10%;
+        }
+         /*  #problem:not(:focus) {
+           
+            box-shadow: 0px 0px 2px 1px rgb(5, 13, 85);
+            background-color: rgb(255, 0, 0);
+            position: relative;
+            width: 340px;
+            height: 50px;
+            top: 30%;
+            transition: width 0.5s, top 0.5s;
+
+          
+
+          } */
