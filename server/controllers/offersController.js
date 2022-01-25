@@ -48,55 +48,72 @@ class Offers
 			return;
         }
 
-		const connection = await Offers.connection_to_database();
+		let connection = null;
 
-        const idOffers = req.body.selectOffers
+		try
+		{
+			connection = await Offers.connection_to_database();
 
-        const query = `SELECT
-						osr.offer_id,
-						ka.fiofull,
-						dep.fullname,
-						osr.responsible_tabnum,
-						osr.mark,
-						osr.open,
-						osr.close,
-						osr.actual,
-						osr.innov,
-						osr.cost,
-						osr.extent,
-						osr.position
-					FROM
-						?? AS osr
-					INNER JOIN kadry_all AS ka 
-						ON ka.tabnum = osr.responsible_tabnum
-							AND ka.factory = 1 
-					INNER JOIN department AS dep
-						ON dep.id = ka.department
-							AND dep.factory = ka.factory
-					WHERE
-						osr.offer_id = ?
-					AND osr.deleted <> 1
-					ORDER BY osr.position ASC`
+			const idOffers = req.body.selectOffers
 
-        const sqlOfferResponsible = await connection.query(query, ["offersresponsible", idOffers])
-        const sqlOfferResponsible_Rg = await connection.query(query, ["offersresponsible_rg", idOffers])
+			const query = `SELECT
+							osr.offer_id,
+							ka.fiofull,
+							dep.fullname,
+							osr.responsible_tabnum,
+							osr.mark,
+							osr.open,
+							osr.close,
+							osr.actual,
+							osr.innov,
+							osr.cost,
+							osr.extent,
+							osr.position
+						FROM
+							?? AS osr
+						INNER JOIN kadry_all AS ka 
+							ON ka.tabnum = osr.responsible_tabnum
+								AND ka.factory = 1 
+						INNER JOIN department AS dep
+							ON dep.id = ka.department
+								AND dep.factory = ka.factory
+						WHERE
+							osr.offer_id = ?
+						AND osr.deleted <> 1
+						ORDER BY osr.position ASC`
 
-        res.send({
-				... await Offers.offer_info_by_id(connection, idOffers),
-            responsibles: [
-                ...sqlOfferResponsible[0]
-            ],
-            responsibles_rg:
-                sqlOfferResponsible_Rg[0][0]
+			const sqlOfferResponsible = await connection.query(query, ["offersresponsible", idOffers])
+			const sqlOfferResponsible_Rg = await connection.query(query, ["offersresponsible_rg", idOffers])
 
-        });
+			res.send({
+					... await Offers.offer_info_by_id(connection, idOffers),
+				responsibles: [
+					...sqlOfferResponsible[0]
+				],
+				responsibles_rg:
+					sqlOfferResponsible_Rg[0][0]
+
+			});
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
 	}
 
-	async last_offers(req, res)
+	static request_user_is_admin(user)
 	{
-		const current_user_group = req.current_user_info.adminOptions;
-		if(current_user_group !== 'admin'
-			&& current_user_group !== 'wg')
+		const current_user_group = user.adminOptions;
+		return (current_user_group === 'admin' || current_user_group === 'wg')
+	}
+
+	async offers_state(req, res)
+	{
+		if(!Offers.request_user_is_admin(req.current_user_info))
 		{
 			Offers.error(res, 'Нет прав на данную операцию');
 			return;
@@ -111,34 +128,83 @@ class Offers
 
 		const begin = new Date(req.body.begin);
 
-		const connection = await Offers.connection_to_database();
+		const result = {state: {},
+					info: [],
+					last_offers: []};
 
-		const db_result = await connection.query(`SELECT
-													o.id,
-													o.date,
-													o.status,
-													ka.fiofull
+		let connection = null;
+
+		try
+		{
+			connection = await Offers.connection_to_database();
+
+			const states = await connection.query(`SELECT
+														count(id) AS c,
+														s.info
+													FROM
+														offers AS o
+													INNER JOIN state AS s ON s.status = o.status
+													GROUP BY s.info`);
+
+			if(states[0].length)
+			{
+				for(const s of states[0])
+				{
+					result.state[s.info] = s.c;
+				}
+			}
+
+			const info = await connection.query(`SELECT
+													count(*) AS c,
+													YEAR(o.date) AS y,
+													MONTH(o.date) AS m
 												FROM
 													offers AS o
-												INNER JOIN kadry_all AS ka ON ka.tabnum = o.tabelNum
-												WHERE
-													YEAR(o.date) = ? AND MONTH(o.date) >= ?`,
-										[begin.getFullYear(), begin.getMonth() + 1]);
+												GROUP BY YEAR(o.date), MONTH(o.date)`);
 
-		const result = [];
-
-		if(db_result[0].length)
-		{
-			for(const v of db_result[0])
+			if(info[0].length)
 			{
-				result.push(
-					{
-						offer_id: v.id,
-						offer_date: v.date,
-						offer_status: v.status,
-						offer_sendler: v.fiofull
-					});
+				for(const i of info[0])
+				{
+					result.info.push(i);
+				}
 			}
+
+			const last_offers = await connection.query(`SELECT
+															o.id,
+															o.date,
+															s.info,
+															ka.fiofull
+														FROM
+															offers AS o
+														INNER JOIN kadry_all AS ka ON ka.tabnum = o.tabelNum
+														INNER JOIN state AS s ON s.status = o.status
+														WHERE
+															YEAR(o.date) = ? AND MONTH(o.date) >= ?`,
+											[begin.getFullYear(), begin.getMonth() + 1]);
+
+			if(last_offers[0].length)
+			{
+				for(const lf of last_offers[0])
+				{
+					result.last_offers.push(
+						{
+							offer_id: lf.id,
+							offer_date: lf.date,
+							offer_status: lf.info,
+							offer_sendler: lf.fiofull
+						});
+				}
+			}
+
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
 		}
 		res.send(result);
 	}
