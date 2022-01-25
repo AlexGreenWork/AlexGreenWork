@@ -118,7 +118,7 @@ const ComissionOffer = () => {
     const [requestDir, setRequestDir] = React.useState(0);
     const [dateComission, setDateComission] = React.useState(`${localStorage.getItem('dateComission')}`);
     const [listFileComission, setListFileComission] = React.useState(<FileCommissionList req="null" />);
-    const [listFileStatement, setlistFileStatement] = useState(<StatementFileList idOffers = {offerId} list = {null}/>)
+  
 
 
     if (requestDir === 0) {
@@ -133,49 +133,9 @@ const ComissionOffer = () => {
         UploadFileComission('file');
         //setRequestDir(0);
     }
-    const handleSubmitStatement = (event) => {
+   
 
-        event.preventDefault();
-        UploadStatementFile("StatementFile");
-        
-        //setRequestDir(0);
-    }
-
-    function  UploadStatementFile(file){
-        console.log(file)
-       
-        if (file === undefined) {
-            return console.log('предложение без вложения файла');
-
-        } else {
-
-            let idOffers = localStorage.getItem('idOffers');
-            let formData = new FormData();
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', `${API_URL}api/files/StatementFileDownload`, true)
-
-            formData.append("idOffers", idOffers);
-            formData.append("StatementFile", document.getElementById(`${file}`).files[0]);
-            console.log(document.getElementById(`${file}`).files[0])
-            
-            xhr.send(formData);
-            setTimeout(  console.log("ответ") , 3000 )
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                 //   console.log("ответ")
-                  //  setlistFileStatement("dcsdc")
-                  setTimeout("setlistFileStatement(<StatementFileList idOffers = {offerId}/>)", 3000);
-                  setTimeout( ' console.log("ответ")' , 3000 )
-                 // setTimeout( setlistFileStatement(<StatementFileList idOffers = {offerId}/>) , 1000 )
-                   
-                 setlistFileStatement(<StatementFileList idOffers = {offerId}  list = {null}/>)
-                  //  ReadDir();
-                    // setListFileComission(<FileList1 req={requestDir}/>)
-
-                }
-            }
-        }
-    }
+  
 
     function UploadFileComission(file) {
 
@@ -431,14 +391,12 @@ const ComissionOffer = () => {
 
 
             <div>Файл выписки:</div>
-            {listFileStatement}
-            {/* <StatementFileList idOffers = {offerId}/> */}
-            <div><input type="file" /></div>
-            <form onSubmit={handleSubmitStatement}>
-                <input type="file" name="StatementFile" id='StatementFile' />
-                <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Загрузить файл </button>
-
-            </form>
+           
+           
+           <div>
+               <StatementFileList/>
+           </div>
+           
                 <div>
                      <div>Величина вознаграждения</div>
                       <div>

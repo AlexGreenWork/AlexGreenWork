@@ -7,6 +7,8 @@ import axios from 'axios';
 import {API_URL} from  '../../../config'
 import {NavLink} from "react-router-dom";
 
+let size = null;
+
 let allNewSendler = {
    
 
@@ -19,6 +21,30 @@ function objClear(){
 objClear()
 
 let addFlag = false;
+
+function logScroll(e) {
+    let height = Number(document.querySelector(`#problem`).style.height[0] + document.querySelector(`#problem`).style.height[0])
+    
+    if(document.querySelector(`#problem`).style.height.length === 0){
+        height = 10
+        if(e.target.scrollTop >  0 && height <= 50 ){
+            console.log(document.querySelector(`#problem`).style.height )
+            Resize("problem")
+            console.log(`Scroll position: ${e.target.scrollTop}`);
+            console.log(`Scroll Target: `, e.target);
+            console.log(e.target);
+        }
+    }
+    if(e.target.scrollTop >  0 && height < 50 ){
+        console.log(document.querySelector(`#problem`).style.height )
+        Resize("problem")
+        console.log(`Scroll position: ${e.target.scrollTop}`);
+        console.log(`Scroll Target: `, e.target);
+        console.log(e.target);
+    }
+  
+
+  }
 
 class ComponentDestruction extends React.Component { // нужен для очистки глобального обьекта после размонтирования компонента
    
@@ -37,23 +63,60 @@ class ComponentDestruction extends React.Component { // нужен для очи
   }
 
 function Resize(idEl){
-  
+    console.log(document.querySelector(`#${idEl}`).style.height )
+    console.log(document.querySelector(`#${idEl}`).clientHeight )
+   
   let height =  document.querySelector(`#${idEl}`).style.height
      console.log(document.querySelector(`#${idEl}`).style.height[0])
      console.log(height)
+     
     // let height = document.querySelector(`#${idEl}`).style.height 
     if(height.length === 0){
         console.log(height.length)
         document.querySelector(`#${idEl}`).style.height = "10%"
-        console.log(height )
+        console.log(document.querySelector(`#${idEl}`).style.height )
+
         // height[0] = '3'
     } else {
-        console.log(document.querySelector(`#${idEl}`).style.height[0])
+        
+        console.log(document.querySelector(`#${idEl}`).style.height)
         console.log(typeof height )
-        let a = Number(height[0])
-        a = a + 1;
-        let b = String (a)
-        document.querySelector(`#${idEl}`).style.height = b+"0%"
+        let a = Number(height[0]+height[1]) // счетчик процентов высоты десятки
+        console.log(a)
+       // a = a + 1;
+      //  let b = String (a) 
+        
+        if(a < 50){ //максимальное количество процентов на экране
+            console.log("условие")
+            let count = 0 // счетчик от 0 до 9
+            let el_close = document.querySelector(`.close-textArea`)
+          //  b[1] = `${count}`
+            // console.log(b[1])
+            // console.log(b)
+           let overSize = setInterval(() => {
+                if(count < 5){  // на сколько процетов увеличить елемент
+                                       
+                    document.querySelector(`#${idEl}`).style.height = `${a+count}`+"%";
+                    el_close.style.height = `${a+count}%`
+                    count++
+                   
+                } else {
+                    console.log("else")
+                    console.log(count)
+                     clearInterval(overSize);
+                }
+                
+                
+
+            }, 15);
+            // let el_close = document.querySelector(`.close-textArea`)
+            console.log(document.querySelector(".close-textArea").style)
+           //  el_close.style.position = "relative"
+            el_close.style.height = `${size}px`
+            // document.querySelector(`#${idEl}`).style.height = b+"0%"
+
+        }
+       
       //document.querySelector(`#${idEl}`).style.height[0]= 1+"%"
        // document.querySelector(`#${idEl}`).style.height[0] = 6
     }
@@ -484,17 +547,37 @@ function OffersForm(props) {
                     <div className={s.formFilds}>
                     
               <textarea id="problem" className="input-data" name="problem" required autoComplete="off" cols="50"
-                        value={problem} onChange={(e) =>{ setProblem(e.target.value); if(e.nativeEvent.inputType === "insertLineBreak")  Resize("problem"); /* console.log(e) */ ;   const textarea = document.querySelector(`#problem`)
+                        value={problem} onChange={(e) =>{ setProblem(e.target.value);   
+                        const textarea = document.querySelector(`#problem`)
+                        size = textarea.clientHeight
+                        console.log(document.querySelector(`#problem`).clientHeight )
+                        console.log( e)
                         textarea.onscroll = logScroll;
-                       
-                        function logScroll(e) {
-                            console.log(5)
-                            if(e.target.scrollTop >  0){
-
-                            }
-                           console.log(`Scroll position: ${e.target.scrollTop}`);
-
-                          }}}></textarea>
+                        let el_close = document.querySelector(`.close-textArea`)
+                        el_close.style.height = `${size}px`
+                        
+                        // logScroll(e)
+                        
+                     }} onBlur={(e)=>{console.log(document.querySelector(`#problem`).clientHeight);
+                     let el = document.querySelector(`#problem`)
+                     let el_close = document.querySelector(`.close-textArea`)
+                     console.log(document.querySelector(".close-textArea").style)
+                    //  el_close.style.position = "relative"
+                     el_close.style.height = `${size}px`
+                     el.style.height = `${size}px`
+                     if( document.querySelector(".close-textArea")){
+                         document.querySelector(".close-textArea").remove()
+                        console.log(true)
+                     }
+                     /* document.querySelector(`#problem`).style.height = document.querySelector(`#problem`).clientWidth */}}
+                     
+                     onFocus={()=>{
+                        console.log("cdsc") 
+                        let close = document.createElement('div');
+                                        close.className = "close-textArea"
+                                        close.innerHTML = "&#10060";
+                                        document.querySelector(".problem").appendChild(close)
+                                    }}></textarea>
                         <footer>
                             <label htmlFor="problem">Описание проблемы</label>
                         </footer>
