@@ -1,22 +1,22 @@
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-  Box,
-  Button,
-  Card,
-  CardHeader,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  Tooltip
+	Box,
+	Card,
+	CardHeader,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableRow,
+	TableSortLabel,
+	TablePagination,
+	Tooltip,
+	Paper,
+	TableContainer
 } from '@mui/material';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import { styled } from '@mui/material/styles';
 import { SeverityPill } from './severity-pill';
 import React from 'react';
-import server from '../../actions/server';
-import { API_URL } from '../../config';
 import moment from 'moment';
 
 class OrdersHeader extends React.Component
@@ -26,103 +26,126 @@ class OrdersHeader extends React.Component
 		super(props);
 	}
 
+	sort(id)
+	{
+	}
+
 	render()
 	{
 		return (
 			<TableHead>
 				<TableRow>
-				  <TableCell>
-					Предложение
-				  </TableCell>
-				  <TableCell>
-					Автор
-				  </TableCell>
-				  <TableCell sortDirection="desc">
-					<Tooltip
-					  enterDelay={300}
-					  title="Sort"
-					>
-					  <TableSortLabel
-						active
-						direction="desc"
-					  >
-					   Дата
-					  </TableSortLabel>
-					</Tooltip>
-				  </TableCell>
-				  <TableCell>
-					Статус
-				  </TableCell>
+					<TableCell>
+						Предложение
+					</TableCell>
+					<TableCell>
+						Автор
+					</TableCell>
+					<TableCell >
+						Дата
+					</TableCell>
+					<TableCell>
+						Статус
+					</TableCell>
 				</TableRow>
-			  </TableHead>
+			</TableHead>
 		);
 	}
 }
+
+const CustomTableRow = styled(TableRow)(({ theme }) => (
+	{
+		'&:nth-of-type(odd)':
+		{
+			backgroundColor: "lightgrey",
+		},
+		'&:last-child td, &:last-child th':
+		{
+			border: 0,
+		},
+	}
+));
 
 class OrdersList extends React.Component
 {
 	constructor(props)
 	{
 		super(props);
-		this.state = {list: []}
+		this.state = {page: 0, rowsPerPage: 10};
+		this.handleChangePage = this.handleChangePage.bind(this);
+		this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 	}
 
-	componentDidMount()
+	handleChangePage(event, newPage)
 	{
-		server.send_post_request(`${API_URL}api/offers/lastOffersByDate`, {begin: moment().format("YYYY-MM-DD")})
-			.then((res) => {
-					this.setState({list: res.data})
-			});
-	}
+		this.setState({page: newPage});
+	};
 
-	convert_state(status)
+	handleChangeRowsPerPage(event)
 	{
-		switch(status)
-		{
-			case '3':
-			case '6':
-			case '11':
-				return 'отклонено'
-			case '13':
-				return 'обработано'
-			default:
-				return 'в обработке'
-		}
-	}
+		this.setState({page: 0, rowsPerPage: parseInt(event.target.value, 10)});
+	};
 
 	render()
 	{
-		return (
-			<Table>
-				<OrdersHeader/>
-				<TableBody>
-					{this.state.list.map((order, id) => (
-						<TableRow
-							hover
-							key={id}
-						>
-							<TableCell>
-								{order.offer_id}
-							</TableCell>
-							<TableCell>
-								{order.offer_sendler}
-							</TableCell>
-							<TableCell>
-								{moment(order.offer_date).format("DD-MM-YYYY")}
-							</TableCell>
-							<TableCell>
-								<SeverityPill
-									color={(this.convert_state(order.offer_status) === 'обработано' && 'success')
-										|| (this.convert_state(order.offer_status) === 'отклонено' && 'error')
-											|| 'warning'}
-								>
-									{this.convert_state(order.offer_status)}
-								</SeverityPill>
-							</TableCell>
-						</TableRow>
-					))}
-			  </TableBody>
-			</Table>
+		return (<Paper>
+					<TablePagination
+						rowsPerPageOptions={[5, 10, 25, 50]}
+						component="div"
+						count={this.props.last_offers.length}
+						rowsPerPage={this.state.rowsPerPage}
+						page={this.state.page}
+						labelRowsPerPage = "Отобразить на странице"
+						onPageChange={this.handleChangePage}
+						onRowsPerPageChange={this.handleChangeRowsPerPage}
+						showFirstButton
+						showLastButton
+					/>
+					<TableContainer>
+						<Table>
+							<OrdersHeader/>
+							<TableBody>
+								{this.props.last_offers
+									.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+									.map((order, id) =>
+									(
+										<CustomTableRow key={id} >
+											<TableCell>
+												{order.offer_id}
+											</TableCell>
+											<TableCell>
+												{order.offer_sendler}
+											</TableCell>
+											<TableCell>
+												{moment(order.offer_date).format("DD-MM-YYYY")}
+											</TableCell>
+											<TableCell>
+												<SeverityPill
+													color={(order.offer_status === 'обработано' && 'success')
+														|| (order.offer_status === 'отклонено' && 'error')
+															|| 'warning'}
+												>
+													{order.offer_status}
+												</SeverityPill>
+											</TableCell>
+										</CustomTableRow>
+								))}
+						  </TableBody>
+						</Table>
+					</TableContainer>
+					<TablePagination
+						rowsPerPageOptions={[5, 10, 25, 50]}
+						component="div"
+						count={this.props.last_offers.length}
+						rowsPerPage={this.state.rowsPerPage}
+						page={this.state.page}
+						labelRowsPerPage = "Отобразить на странице"
+						onPageChange={this.handleChangePage}
+						onRowsPerPageChange={this.handleChangeRowsPerPage}
+						showFirstButton
+						showLastButton
+					/>
+			</Paper>
 		);
 	}
 }
@@ -141,25 +164,9 @@ class LatestOrders extends React.Component
 			<CardHeader title="Последние предложения" />
 			<PerfectScrollbar>
 			  <Box sx={{ minWidth: 800 }}>
-				<OrdersList/>
+				<OrdersList last_offers = {this.props.last_offers}/>
 			  </Box>
 			</PerfectScrollbar>
-			<Box
-			  sx={{
-				display: 'flex',
-				justifyContent: 'flex-end',
-				p: 2
-			  }}
-			>
-			  <Button
-				color="primary"
-				endIcon={<ArrowRightIcon fontSize="small" />}
-				size="small"
-				variant="text"
-			  >
-				Посмотреть все
-			  </Button>
-			</Box>
 		  </Card>
 		);
 	}
