@@ -125,10 +125,17 @@ const Offer = (props) => {
 
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
-   
+    let offersDataReverse = offersData.reverse();
+    console.log(offersData )
+    for (let i = 0; i < Object.keys(offersDataReverse).length; i++) {
        
-    return offersData.map((number) =>
-        <Offer key = {"offer"+number.Id} id={number.Id} date={number.date} name={number.nameSendler}
+        if (offersDataReverse[i].coAuthor == "Соавтор") {
+             offersDataReverse.push(offersDataReverse[i]);
+             offersDataReverse.splice(offersDataReverse[i], 1); 
+        }
+    }
+    return offersDataReverse.map((number) =>
+        <Offer key = {"myOffer"+number.Id} id={number.Id} date={number.date} name={number.nameSendler}
                surname={number.surnameSendler} midlename={number.middlenameSendler}
                status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} coAuthor={number.coAuthor} />)
 
@@ -158,7 +165,7 @@ const Offers = () => {
             if (this.readyState == 4 && this.status == 200) {
              
                setReqMyOff(xhr.response)
-               
+             
             }
     
         }
