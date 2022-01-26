@@ -126,7 +126,7 @@ const Offer = (props) => {
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
     let offersDataReverse = offersData.reverse();
-    console.log(offersData )
+   
     for (let i = 0; i < Object.keys(offersDataReverse).length; i++) {
        
         if (offersDataReverse[i].coAuthor == "Соавтор") {
