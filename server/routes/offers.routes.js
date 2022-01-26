@@ -11,6 +11,7 @@ const moment = require("moment");
 const { on } = require("events");
 const {DATETIME} = require("mysql/lib/protocol/constants/types");
 const offers_controller = require("../controllers/offersController")
+const admin_controller = require("../controllers/adminController")
 
 router.use(fileUpload({}));
 
@@ -161,7 +162,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 
 
 router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
-router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, offers_controller.offers_state);
+router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
 
 
 router.post("/userInfo", urlencodedParser,

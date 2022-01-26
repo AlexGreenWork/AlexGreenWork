@@ -1,4 +1,3 @@
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
 	Box,
 	Card,
