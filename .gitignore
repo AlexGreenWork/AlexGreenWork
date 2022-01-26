@@ -4,6 +4,7 @@ my-app/coverage/
 my-app/.pnp/
 my-app/src/videos/*.mp4
 my-app/jsconfig.json
+my-app/src/config.js
 
 server/node_modules/
 server/build/
