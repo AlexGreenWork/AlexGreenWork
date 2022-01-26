@@ -51,7 +51,7 @@ export const login = (email, password) => {
             localStorage.setItem('userFired', response.data.user.fired)
             localStorage.setItem('userAdminOptions', response.data.user.adminOptions)
 
-
+            
             dispatch(setUser(response.data.user))
         }
 		catch (e)
@@ -85,6 +85,7 @@ export const auth = () => {
 					adminOptions: localStorage.getItem('userAdminOptions'),
 					avatar: localStorage.getItem('userAvatar'),
 				}
+               
 				dispatch(setUserLocal(user))
 			}
 			else
@@ -94,6 +95,7 @@ export const auth = () => {
 					const response = await server.send_get_request(`${API_URL}api/auth/auth`)
 
 					localStorage.setItem('token', response.data.token)
+                   
 					dispatch(setUser(response.data.user))
 				}
 				catch (e)
@@ -117,6 +119,7 @@ export const uploadAvatar = (file) => {
             const response = await server.send_post_request(`${API_URL}api/files/avatar`, formData)
 
             localStorage.setItem('userAvatar', response.data.avatar)
+           
             dispatch(setUser(response.data))
 
         }
@@ -133,6 +136,7 @@ export const deleteAvatar = () => {
             const response = await server.send_delete_request(`${API_URL}api/files/avatar`)
 
             localStorage.setItem('userAvatar','')
+          
             dispatch(setUser(response.data))
         } catch (e) {
             console.log(e)

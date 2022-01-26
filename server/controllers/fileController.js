@@ -190,6 +190,7 @@ class FileController {
 
     async deleteAvatar(req, res) {
         try {
+            console.log(req.user)
             const uid = req.user.id
             const userD = await connection.query(`SELECT * FROM offersworker WHERE id = ${uid}`);
             const user = userD[0][0]
