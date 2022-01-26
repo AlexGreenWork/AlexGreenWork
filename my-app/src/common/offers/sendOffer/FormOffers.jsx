@@ -97,7 +97,7 @@ function Resize(idEl){
                 if(count < 5){  // на сколько процетов увеличить елемент
                                        
                     document.querySelector(`#${idEl}`).style.height = `${a+count}`+"%";
-                    el_close.style.height = `${a+count}%`
+                    el_close.style.top = `${a+count+12}%`
                     count++
                    
                 } else {
@@ -112,7 +112,7 @@ function Resize(idEl){
             // let el_close = document.querySelector(`.close-textArea`)
             console.log(document.querySelector(".close-textArea").style)
            //  el_close.style.position = "relative"
-            el_close.style.height = `${size}px`
+           el_close.style.top = `${a+count+12}%`
             // document.querySelector(`#${idEl}`).style.height = b+"0%"
 
         }
@@ -564,7 +564,8 @@ function OffersForm(props) {
                         console.log( e)
                         textarea.onscroll = logScroll;
                         let el_close = document.querySelector(`.close-textArea`)
-                        el_close.style.height = `${size}px`
+                        // el_close.style.position = "relative"
+                       /*  el_close.style.top = `${size+116}px` */
                         
                         // logScroll(e)
                         
@@ -573,20 +574,29 @@ function OffersForm(props) {
                      let el_close = document.querySelector(`.close-textArea`)
                      console.log(document.querySelector(".close-textArea").style)
                     //  el_close.style.position = "relative"
-                     el_close.style.height = `${size}px`
+                     el_close.style.top = `${size}px`
                      el.style.height = `${size}px`
-                     if( document.querySelector(".close-textArea")){
-                         document.querySelector(".close-textArea").remove()
+                     if( document.querySelector(".blockShow")){
+                         document.querySelector(".blockShow").remove()
                         console.log(true)
                      }
                      /* document.querySelector(`#problem`).style.height = document.querySelector(`#problem`).clientWidth */}}
                      
                      onFocus={()=>{
-                        console.log("cdsc") 
-                        let close = document.createElement('div');
+                        
+                       let close = document.createElement('div');
                                         close.className = "close-textArea"
-                                        close.innerHTML = "&#10060";
-                                        document.querySelector(".problem").appendChild(close)
+                                        close.innerHTML = "Подтвердить";
+                       let shadow = document.createElement('div');
+                       shadow.className = "shadow-close"
+                       let blockShow = document.createElement('div');
+                       blockShow.className = "blockShow"
+                       document.querySelector(".problem").appendChild(blockShow)
+                       document.querySelector(".blockShow").appendChild(close)
+                       document.querySelector(".blockShow").appendChild(shadow)
+                       
+
+                       /*  console.log(document.querySelector(".close-textArea")) */
                                     }}></textarea>
                         <footer>
                             <label htmlFor="problem">Описание проблемы</label>

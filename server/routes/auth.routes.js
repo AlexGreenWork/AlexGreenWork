@@ -44,8 +44,9 @@ router.post('/registration',
             }
 
             const connection = mysql.createPool(mysqlConfig);
-
+           
             const errors = validationResult(req)
+            
             if (!errors.isEmpty())
 			{
                 return res.status(400).json({message: "Не корректный запрос", errors})

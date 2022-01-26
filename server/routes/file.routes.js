@@ -38,7 +38,7 @@ router.delete('/avatar', authMiddleware, fileController.deleteAvatar)
 router.post("/allFiles", urlencodedParser, async function(req, res){
   
         let arrAllFiles= {};  
-       
+        let countResponse = 0;
         let idOffers = req.body.idOffers;
        // let membCommision = req.body.tabREsponsoble;
         try{
@@ -49,16 +49,19 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                     if(dirRoot[i].slice(0, 11) == "responsible" || dirRoot[i] == "SendlerFiles" || dirRoot[i] == "ResponsibleRg"){
                        
                         countResponsible++
+                       
                     }
                 }
                 
                  if(err){
+                 
                  res.send( "no such file or directory");
                } else {
+              
                 for(let i = 0; i <dirRoot.length; i++){
-                                      
+                   
                     fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}`, async function(err, files){
-                      
+                        
                         if(dirRoot[i].slice(0, 11) == "responsible"){
                            
                             let docFiles = dirRoot[i].slice(11)
@@ -104,7 +107,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                                                arrAllFiles[docFiles+"R"]= {files, fioResp, department, division }
            
                                                if(countResponsible == Object.keys(arrAllFiles).length){
-                                                 
+                                               
                                                    res.send(arrAllFiles)
                                                }
                                            })
@@ -112,7 +115,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                                     countResponsible--
                                   
                                     if(countResponsible  == Object.keys(arrAllFiles).length){
-                                      
+                                       
                                         res.send(arrAllFiles)
                                     }
                                 }
@@ -151,9 +154,9 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                             }
                         } */
                       
-                        if(countResponsible == Object.keys(arrAllFiles).length && Object.keys(arrAllFiles).length != 0){
-                         
-                            res.send(arrAllFiles)
+                        if(countResponsible == Object.keys(arrAllFiles).length && Object.keys(arrAllFiles).length != 0 && countResponse == 0){
+                            countResponse++
+                           return res.send(arrAllFiles)
                         }
                       
                     })
