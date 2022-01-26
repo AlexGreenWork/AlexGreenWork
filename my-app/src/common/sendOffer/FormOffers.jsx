@@ -79,7 +79,7 @@ function OffersForm() {
 
 
                 let xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:5000/api/auth/forms')
+                xhr.open('POST', '${API_URL}api/auth/forms')
                 xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
                 xhr.send(`firstName=${name}&lastName=${lastName}&middleName=${middleName}&emailInput=${Email}&tabelNumber=${tabelNumber}` +
@@ -100,7 +100,7 @@ function OffersForm() {
 
                             closeDiv();
                             EventClose();
-
+                            window.location.href = '/personalCabinet/myOffers';
                         }
                     }
                 }

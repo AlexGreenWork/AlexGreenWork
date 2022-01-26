@@ -147,12 +147,14 @@ function StatementFileList(props) {
     }
 
     if(fileList === null){
+        
         axios.post(`${API_URL}api/files/StatementFileList`, {  idOffers : idOffers,
     
         })
         .then(res => {
                
             setFileList(res.data)
+          
            
         })
         return(
@@ -161,16 +163,17 @@ function StatementFileList(props) {
             </div>
         )
     } else{
-      
-        if(localStorage.getItem('userAdminOptions') === "wg" || localStorage.getItem('userAdminOptions') === "admin"){
+        
+        if(localStorage.getItem('userAdminOptions') === "wg" || localStorage.getItem('userAdminOptions') === "admin" || localStorage.getItem('userAdminOptions') === "topComission"){
              
             return (
                 <div>
-               
+                <div style={{display:"flex"}}>
                 <Creationfies arr = {fileList}/>
+                </div>
                 <form onSubmit={handleSubmitStatement} >
                 <input type="file" name="StatementFile" id='StatementFile' />
-                <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Загрузить файл1 </button>
+                <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Загрузить файл </button>
                 </form>
 
                 </div>
@@ -178,7 +181,7 @@ function StatementFileList(props) {
             )
         } else {
             return (
-                <div>
+                <div style={{display:"flex"}}>
                     <Creationfies arr = {fileList}/>
                 </div>
             
@@ -189,9 +192,6 @@ function StatementFileList(props) {
 
 }
 
-function StatementFiles(){
-
-}
 
 
 

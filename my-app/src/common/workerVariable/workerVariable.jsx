@@ -13,7 +13,8 @@ const WorkerVariable = () => {
                     <NavLink to="/sendOfferWorker">Да, сотрудник </NavLink>
                 </div>
                 <div className={s.no}>
-                    <NavLink to="/sendOfferFree">Нет, не сотрудник</NavLink>
+                    <NavLink to="/sendOfferWorker">Нет, не сотрудник</NavLink>
+                    {/*<NavLink to="/sendOfferFree">Нет, не сотрудник</NavLink>*/}
                 </div>
             </div>
         </div>

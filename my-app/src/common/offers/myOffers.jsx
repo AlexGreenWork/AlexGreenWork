@@ -74,7 +74,7 @@ const Offer = (props) => {
                 if (this.readyState == 4 && this.status == 200) {
 
                     dispatch(addSendler(xhr.response))
-                    console.log(xhr.response)          
+
                 }
             }  
             xhr.send(`selectOffers=${idOffers}`);
@@ -91,7 +91,6 @@ const Offer = (props) => {
         localStorage.setItem('idOffers', props.id);
         localStorage.setItem('status', props.status);
         value.contextFunction(props.id, props.tabelNum)
-
         localStorage.setItem('dateComission', props.dateComission);
         setDateComission(localStorage.getItem('dateComission'))
     }
@@ -163,7 +162,7 @@ const Offers = () => {
            
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-             
+
                setReqMyOff(xhr.response)
              
             }

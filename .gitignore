@@ -9,7 +9,9 @@ server/node_modules/
 server/build/
 server/coverage/
 server/.pnp/
+server/config/*
 server/files/
+server/config/*
 
 offersendler.sql
 linkDbDiagram.drawio

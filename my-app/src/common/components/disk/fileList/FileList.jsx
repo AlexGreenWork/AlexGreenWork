@@ -7,19 +7,19 @@ import { CompassOutlined } from '@ant-design/icons';
 
 
 function Files(props){
-   
+    console.log(props)
     let idOffers = localStorage.getItem('idOffers');
     let elemFilesArr = []; //елементы  файлами
     let allfilesObj = JSON.parse(props.allFiles)
     let downloadFolder;
-        if(props.dirName == "SendlerFiles"){
-            downloadFolder = "SendlerFiles"
-        } else if( props.dirName.slice(-1) == "R"){
-            downloadFolder = 'ResponsibleRg/' +props.dirName.slice(0, 5);
-           
-        } else{
-            downloadFolder = 'responsible' +props.dirName;
-        }
+    if(props.dirName == "SendlerFiles"){
+        downloadFolder = "SendlerFiles"
+    } else if( props.dirName.slice(-1) == "R"){
+        downloadFolder = 'ResponsibleRg/' +props.dirName.slice(0, 5);
+       
+    } else{
+        downloadFolder = 'responsible' +props.dirName;
+    }
    
     let numberOfFiles = allfilesObj[props.dirName].files.length;
    
@@ -58,7 +58,7 @@ function Folders(props){
                 let elem = React.createElement("div", {className:"responsible-block", key:`keyDirContainer`+i} ,
                     <div className='departament'>Подразделение: {allfilesObj[dirName[i]].department}</div> ,
                     <div  key={`keyDir`+i} className='responsible'> Член комиссии: {allfilesObj[dirName[i]].fioResp}</div>,
-                    <div className='tabnum'>Табельный номер: {dirName[i]}</div> ,
+                    <div className='tabnum'>Табельный номер: {dirName[i].slice(0, 5)}</div> ,
                 // <div className='division'>Участок/Отдел: {allfilesObj[dirName[i]].division}</div>,
                 <Files allFiles = {props.allFiles} dirName = {dirName[i]} /> );
                  arrElem.push(elem) 
@@ -115,7 +115,7 @@ const FileList = () => {
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
               let resp = xhr.response
-             console.log(xhr.response)
+                
               
               let dirName = JSON.parse(xhr.response);
               let tabResp1 = Object.keys(dirName);
@@ -148,6 +148,7 @@ const FileList = () => {
     if(filesObj !== 0){
         return(
             <div>
+              
             <Folders allFiles = {filesObj} tabResp = {tabResp}/>
             </div> 
        )

@@ -78,13 +78,13 @@ function FilesBlock(props){
 let countRender = 0
 
 function FilesResponsible(props){
-
+    console.log("Пропсы", props.tabNum)
     const [filesListComponent, setFilesListComponent] = useState(<FilesList tabNum={props.tabNum}/>);
     
     let idOffers = localStorage.getItem('idOffers');
     let tabelNum = props.tabNum;
 
-    if(localStorage.getItem('userAdminOptions') === "wg"){
+    if(localStorage.getItem('userTabelNum') === props.tabNum){
         return (
             <div>
                 {filesListComponent}

@@ -44,7 +44,7 @@ const Offer = (props) => {
                   
                    let offersData = JSON.parse(xhr); 
                    let workData = JSON.parse(req.response); 
-                   console.log(offersData)
+                  
                    dispatch(selectMyOffers(
                                             offersData.Id,
                                             offersData.nameOffer,
@@ -99,7 +99,7 @@ const Offer = (props) => {
     
     }
     function clickOnOfferLink(){
-
+        console.log(props)
         localStorage.setItem('idOffers', props.id);
         localStorage.setItem('status', props.status);
         value.contextFunction(props.id, props.tabelNum)
@@ -124,8 +124,16 @@ const Offer = (props) => {
                             <div className={s.date}> {props.date.slice(0, 9)}</div>
                             <div className={s.status}>  {props.status}</div>
                         </div>
-                        <div className={s.offerText}>{props.nameOffer}</div>
-                    </div>
+                        <div className={s.offerText} style={{
+                            display: "flex",
+                            justifyContent: "space-between"
+                        }}><div className={s.date}>№{props.id}</div>
+                            <div style={{
+                                marginRight: "7px", marginLeft: "7px", textAlign: "center"
+                            }}>{props.nameOffer}</div>
+                            <div className={s.date}> {props.date.slice(0, 10).replace(/(\d{4})-(\d\d)-(\d\d)/, "$3/$2/$1")}</div>
+                        </div>
+                         </div>
                 </div>
             </NavLink>
         </div>
@@ -139,7 +147,7 @@ const OffersLink = (props) => {
     console.log(props.request)
     return offersData.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
-                                             status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum}
+                                             status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission}
                                              email={number.email}/>)
 
 }
@@ -157,13 +165,12 @@ const Offers = () => {
         xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                console.log(xhr.response)
+                // console.log(xhr.response)
                 setReqAllOff(xhr.response)
-               
             }
         }
         xhr.send();
-        //console.log(xhr.response)
+
         return xhr.response;
 
     }

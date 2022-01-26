@@ -46,15 +46,10 @@ export default function offerReducer(state = defaultState, action) {
     return state
 }
 
-export const selectToMyOffer = (
-	fio,tabnum
-
-)=>({type:SELECT_TO_MYOFFER, payload:{
+export const selectToMyOffer = (fio,tabnum)=>({type:SELECT_TO_MYOFFER, payload:{
 
 		fiofull:fio,
 		responsible_tabnum:tabnum
-
-
 
 	}})
 

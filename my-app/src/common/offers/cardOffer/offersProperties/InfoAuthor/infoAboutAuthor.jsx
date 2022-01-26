@@ -60,7 +60,7 @@ const CreateCompMyOffers = (props)=>{
                                                             .then(res => {
                                                                 SetOffersData(res.data);
                                                                 offersDataCount = res.data;
-                                                                console.log(offersDataCount)
+
                                                             })
             } catch (e){
                 alert(e.response.message)
@@ -268,8 +268,9 @@ const InfoAboutAuthor = () => {
                     <div>E-mail:</div>
                     <div> {userInfo.email}</div>
                 </div>
-                <div>
-                    {phoneNumber}
+                <div className={s.nameOffer}>
+                    <div>Телефон:</div>
+                    <div> +{phoneNumber}</div>
                 </div>
                 <div className={s.insideOffers}>
                     <div>Поступившие предложения:</div>

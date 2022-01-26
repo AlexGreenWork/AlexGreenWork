@@ -502,14 +502,13 @@ router.post("/fioSendler", urlencodedParser, async (req, res) => {
        
         if(sqlFioSendIsi[0][0] != undefined){
             let arrayToStrings =[];
-            
-            arrayToStrings[0] = sqlFioSendIsi[0][0].surname;
             arrayToStrings[1] = sqlFioSendIsi[0][0].name;
+            arrayToStrings[0] = sqlFioSendIsi[0][0].surname;
             arrayToStrings[2] = sqlFioSendIsi[0][0].middlename;
             arrayToStrings[3] = sqlFioSendIsi[0][0].email;
             arrayToStrings[4] = sqlFioSendIsi[0][0].tabelNum;
             arrayToStrings[5] = sqlFioSendIsi[0][0].phoneNumber;
-          
+           
             res.send(arrayToStrings)
         } else{
             if(sqlFioSend[0][0] != undefined){

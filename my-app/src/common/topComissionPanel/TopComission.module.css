@@ -1,0 +1,50 @@
+.state_container
+{
+	display: grid;
+	grid-template-columns: auto auto auto;
+	grid-gap: 20px;
+	background-color: White;
+}
+
+.state span
+{
+	color: Black;
+	font-size: 16px;
+}
+
+.state h4
+{
+	color: White;
+}
+
+.info_container
+{
+	display: grid;
+	grid-template-rows: auto auto;
+	grid-template-columns: auto auto;
+	grid-auto-flow: row;
+}
+
+.info_all_count
+{
+	height: auto;
+	grid-column: 1;
+	grid-area: 1/1/3;
+}
+
+.info_all_count h1
+{
+	color: Blue;
+}
+
+.info_all_count h5, .info_details_count span
+{
+	font-weight: bold;
+	color: Black;
+}
+
+.info_details_count
+{
+	height: auto;
+	grid-column: 2;
+}
