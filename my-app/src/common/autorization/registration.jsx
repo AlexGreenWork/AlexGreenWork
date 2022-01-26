@@ -60,9 +60,9 @@ const Registration = () => {
                                                             let fio = res.data;
                                                             
                                                          
-
-                                                             setName(fio[1])
-                                                             setSurName(fio[0])
+                                                            console.log(fio)
+                                                             setName(fio[0])
+                                                             setSurName(fio[1])
                                                              setMiddleName(fio[2])
                                                              setEmail(fio[3])
                                                              setPhoneNumber(fio[4])
@@ -80,7 +80,7 @@ const Registration = () => {
             borderRadius: "5px",
             height: "4vh",
             padding: "5px"
-        }}  className={s.inp} onChange={inpTab} type="number" placeholder="Введите табельный..." onBlur={(e)=>{addFioSendler(e.target.value)}}/>
+        }}  className={s.inp} onChange={inpTab} type="number" placeholder="Введите табельный..." onBlur={(e)=>{addFioSendler(e.target.value)}} autoFocus/>
 
     } else {
 

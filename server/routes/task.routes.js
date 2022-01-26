@@ -1,6 +1,7 @@
 const Router = require("express");
 const task_controller = require("../controllers/taskController")
 const authMiddleware = require('../middleware/auth.middleware')
+const userMiddleware = require('../middleware/user.middleware')
 const router = new Router();
 
 router.use((req, res, next) => {
@@ -9,7 +10,7 @@ router.use((req, res, next) => {
     return next();
 })
 
-router.post('/range', authMiddleware, task_controller.range);
-router.post('/year', authMiddleware, task_controller.year);
+router.post('/range', authMiddleware, userMiddleware, task_controller.range);
+router.post('/year', authMiddleware, userMiddleware, task_controller.year);
 
 module.exports = router;

@@ -11,13 +11,12 @@ import TextField from '@mui/material/TextField';
 import s from "../comission/comission.module.css";
 import CardOfferUpload from "../../../../components/card/card";
 import DndOffer from "../../../../components/dnd/dnd";
-import {saveComissionAnnotationToDb} from "../../../../../actions/file";
+import { saveComissionAnnotationToDb } from "../../../../../actions/file";
 import Button from "@material-ui/core/Button";
 import { API_URL } from '../../../../../config';
 import { toDbDateComission } from "../../../../../actions/offers";
 import { useDispatch } from 'react-redux';
-import StatementFileList from './comissionFiles';
-import  {useState} from 'react';
+import StatementFileList from './comissionFiles'
 
 function IMG(props) {
     return (
@@ -118,7 +117,6 @@ const ComissionOffer = () => {
     const [requestDir, setRequestDir] = React.useState(0);
     const [dateComission, setDateComission] = React.useState(`${localStorage.getItem('dateComission')}`);
     const [listFileComission, setListFileComission] = React.useState(<FileCommissionList req="null" />);
-  
 
 
     if (requestDir === 0) {
@@ -169,7 +167,7 @@ const ComissionOffer = () => {
     function ReadDir() {
         let idOffers = localStorage.getItem('idOffers');
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', `${API_URL}api/files/FilesConclusionCommission`, true); 
+        xhr.open('POST', `${API_URL}api/files/FilesConclusionCommission`, true);
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
         xhr.onreadystatechange = function () {
@@ -256,7 +254,7 @@ const ComissionOffer = () => {
 
 
         return (<div>
-            <MultiSelectChangeCom viewChangeCom={viewChangeCom} />
+            
 
             <form onSubmit={handleSubmit}>
                 <input type="file" name="filename" id='file' />
@@ -271,6 +269,18 @@ const ComissionOffer = () => {
         return (
             <div></div>
         )
+    }
+    
+    
+
+    function DateTimeChange(){
+       
+        if (localStorage.getItem('userAdminOptions')== 'wg' || localStorage.getItem('userAdminOptions')== 'topComission' || localStorage.getItem('userAdminOptions')== 'admin') {
+            return <MultiSelectChangeCom viewChangeCom={viewChangeCom} />;
+
+        } else {
+            return <div></div>
+        }
     }
 
     function AdminChange(props) {
@@ -327,32 +337,38 @@ const ComissionOffer = () => {
     var time = " в " + ' ' + d.getHours() + ':' + d.getMinutes();
 
     const dispatch = useDispatch()
-        function saveToDbAnnotationComission(){
-                const w = document.getElementById("textAreaCommision").innerText
-       console.log(w)
-              dispatch(saveComissionAnnotationToDb(w))       
-}
+    function saveToDbAnnotationComission() {
+        const w = document.getElementById("textAreaCommision").innerText
+        console.log(w)
+        dispatch(saveComissionAnnotationToDb(w))
+    }
+
 
     function AdminChangeComissionAnnotation() {
         const isAdminComission = localStorage.getItem('userAdminOptions');
-        if (isAdminComission == "topComission") {
+        if (isAdminComission == "wg") {
             return (
                 <div className={s.containerAnnotation}>
                     <div>краткая аннотация решения:</div>
                     <div contentEditable={"true"} id="textAreaCommision" placeholder="Напишите краткую аннотацию..." className={s.comissionTextArea} style={{
                         width: "100%",
-                        flexDirection: "column"
+                        flexDirection: "column",
+                        padding:"15px",
+                        borderRadius:"15px",
+                        border:"0",
+                        boxShadow:"4px 4px 10px rgba(0,0,0,0.06)",
+                        height:"150px"
                     }} >
                     </div>
-                    <Button style={{border:"1px solid blue", margin:"5px" }} onClick={saveToDbAnnotationComission}>Сохранить</Button>
+                    <Button style={{ border: "1px solid blue", margin: "5px" }} onClick={saveToDbAnnotationComission}>Сохранить</Button>
                 </div>
 
             )
         } else {
-            return(
-            <div className={s.containerAnnotation}>
+            return (
+                <div className={s.containerAnnotation}>
                     <div>краткая аннотация решения:</div>
-                    <div  id="textAreaCommision" placeholder="Напишите краткую аннотацию..." className={s.comissionTextArea} style={{
+                    <div id="textAreaCommision" placeholder="Напишите краткую аннотацию..." className={s.comissionTextArea} style={{
                         width: "100%",
                         flexDirection: "column"
                     }} >
@@ -367,15 +383,18 @@ const ComissionOffer = () => {
         <div className={s.nameOffer}>
             <div>Дата заседания комиссии: {newDate}{time}</div>
 
+            <DateTimeChange isAmin={localStorage.getItem("userAdminOptions")}/>
+            
 
-            <AdminChange isAdmin={localStorage.getItem("userAdminOptions")} />
 
-
-            <div className={s.uploadContainer} sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center'
+            <div style={{
+                backgroundColor: "aliceblue",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "10px",
+                boxShadow: "4px 4px 8px 0px rgb(34 60 80 / 20%) inset",
+                marginTop:"5px"
             }}>
                 <div>
                     Файл протокола заседания:
@@ -384,30 +403,44 @@ const ComissionOffer = () => {
                     {listFileComission}
                 </div>
                 {/* <DndOffer/> */}
+                <AdminChange isAdmin={localStorage.getItem("userAdminOptions")} />
             </div>
-
-
-            <AdminChangeComissionAnnotation isAdmin={localStorage.getItem("userAdminOptions")} />
-
-
-            <div>Файл выписки:</div>
-           
-           
-           <div>
-               <StatementFileList/>
-           </div>
-           
+            <div style={{
+                backgroundColor: "aliceblue",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "10px",
+                boxShadow: "4px 4px 8px 0px rgb(34 60 80 / 20%) inset",
+                marginTop:"5px"
+            }}>
+                <div>Файл выписки:</div>
                 <div>
-                     <div>Величина вознаграждения</div>
-                      <div>
-                      <div> Автору  </div>
-                      <div> 1500</div>
-                      </div>
-                      <div>
-                      <div> Соавтору  </div>
-                      <div> 1500</div>
-                      </div>
+                    <StatementFileList />
                 </div>
+            </div>
+            <AdminChangeComissionAnnotation isAdmin={localStorage.getItem("userAdminOptions")} />
+            <div style={{
+                backgroundColor: "aliceblue",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "10px",
+                boxShadow: "4px 4px 8px 0px rgb(34 60 80 / 20%) inset",
+                marginTop:"5px"
+            }}>
+                <div>Величина вознаграждения</div>
+                <div style = {{display:"flex"}}>
+                <div>
+                    <div> Автору  </div>
+                    <div> 1500</div>
+                </div>
+                <div>
+                    <div> Соавтору  </div>
+                    <div> 1500</div>
+                </div>
+                </div>
+            </div>
         </div>
     )
 }

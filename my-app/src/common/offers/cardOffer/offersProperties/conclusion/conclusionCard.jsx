@@ -15,9 +15,7 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from '@mui/material/Paper';
 import axios from "axios";
-import {setPopupDisplay} from "../../../../../reducers/fileReducer";
-import FilesRG from "./conclusionFiles";
-import {useDispatch} from "react-redux";
+
 import FilesResponsible from "./responsibleFiles"
 
 
@@ -25,12 +23,13 @@ import FilesResponsible from "./responsibleFiles"
 
 const ConclusionCard = (props) => {
     const [viewChange, setViewChange] = React.useState(false);
+    const [annot, setAnnot] = React.useState(`${props.id.mark}`)
     if(props.id.mark == null && props.id.responsible_tabnum == localStorage.getItem('userTabelNum')){
         props.id.mark = ''
     }else{
-        props.id.mark = 'Аннотации пока нет'
+        props.id.mark = {annot}
     }
-    const [annot, setAnnot] = React.useState(`${props.id.mark}`)
+    
     function changeViewSelect() {
         setViewChange(true)
     }
@@ -94,12 +93,12 @@ const ConclusionCard = (props) => {
     }
     // const dispatch = useDispatch()
     async function saveAnnot(idOffer, tabNum){
-        console.log(props.id.responsible_tabnum)
-
-
+        console.log(idOffer, tabNum)
         try{
             const ann = document.getElementById(`${'annotation'+props.name}`).innerText
-            console.log(ann)
+
+            console.log(props.id.responsible_tabnum, props.name,  idOffer, tabNum, ann)
+            
             setAnnot(ann)
             await axios.post(`${API_URL}api/offers/toDbSaveAnnot`, {
               idOffer,
@@ -283,6 +282,18 @@ const ConclusionCard = (props) => {
                 </div>
             )
         }
+        function ChangeAnnotViewContentEditable(){
+            const isMy = localStorage.getItem('userTabelNum')
+            if (isMy == props.id.responsible_tabnum) {
+                return  <div style={{width: "100%"}} placeholder="Напишите краткую аннотацию..."
+                id={'annotation'+props.name} contentEditable={"true"} className={s.conclusionTextArea}>{annot}
+            </div>;
+            } else {
+                return  <div style={{width: "100%"}} placeholder="Напишите краткую аннотацию..."
+                id={'annotation'+props.name} contentEditable={"false"} className={s.conclusionTextArea}>{annot}
+            </div>
+            }
+        }
 
         function AdminChangeSaveNotes() {
             const MyTabnum = localStorage.getItem('userTabelNum');
@@ -418,9 +429,8 @@ function ConfirmResponsible(){
                             marginBottom: "25px"
                         }}>Краткая аннотация заключения подразделения({props.id.fullname}):
                         </div>
-                        <div style={{width: "100%"}} placeholder="Напишите краткую аннотацию..."
-                            id={'annotation'+props.name} contentEditable={"true"} className={s.conclusionTextArea}>{annot}
-                        </div>
+                        <ChangeAnnotViewContentEditable isMy={localStorage.getItem('userTabelNum')}/>
+                       
                         <AdminChangeSaveAnnotation {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
                     </div>
                     <div className={s.filesConclusion}>
@@ -437,7 +447,7 @@ function ConfirmResponsible(){
                             }}>
                                 <FilesResponsible tabNum={props.tabel}/>
                                {/*  <ViewFileDoc/> */}
-                                <div>Заключение</div>
+                                
                             </div>
 
 
@@ -450,7 +460,7 @@ function ConfirmResponsible(){
                             <div style={{display: "flex", width: "45%", alignItems: "center"}}>
 
                             </div>
-                            <div>Оценка</div>
+                            <div>Оценка (максимальная оценка - 5 баллов)</div>
                         </div>
 
 

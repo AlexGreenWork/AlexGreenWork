@@ -84,7 +84,7 @@ function FilesRG(props){
     let idOffers = localStorage.getItem('idOffers');
     let tabelNum = props.tabNum;
     
-    if(localStorage.getItem('userAdminOptions') === "wg"){
+    if(localStorage.getItem('userTabelNum') === props.tabNum){
         return (
             <div>
                 {filesListComponent}
