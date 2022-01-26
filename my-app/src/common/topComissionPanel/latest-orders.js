@@ -162,11 +162,9 @@ class LatestOrders extends React.Component
 		return (
 		  <Card {...this.props}>
 			<CardHeader title="Последние предложения" />
-			<PerfectScrollbar>
 			  <Box sx={{ minWidth: 800 }}>
 				<OrdersList last_offers = {this.props.last_offers}/>
 			  </Box>
-			</PerfectScrollbar>
 		  </Card>
 		);
 	}
