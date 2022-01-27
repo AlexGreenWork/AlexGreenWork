@@ -5,10 +5,13 @@ const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
 const authMiddleware = require('../middleware/auth.middleware')
+const userMiddleware = require('../middleware/user.middleware')
 const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
 const {DATETIME} = require("mysql/lib/protocol/constants/types");
+const offers_controller = require("../controllers/offersController")
+const admin_controller = require("../controllers/adminController")
 
 router.use(fileUpload({}));
 
@@ -157,68 +160,8 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
     return [myAllOfffers]
 }
 
-router.post("/selectMyOffers", urlencodedParser,
-    async function (request, response) {
-        if (!('selectOffers' in request.body)
-            || !request.body.selectOffers) {
-            response.status(400);
-            response.send();
-        }
-
-        const idOffers = request.body.selectOffers
-
-        const sqlMyOffers = await pool.query(`SELECT 
-												o.*,
-												ow.name AS nameSendler,
-												ow.surname AS surnameSendler,
-												ow.middlename AS middlenameSendler,
-												ow.email AS email,
-                                                ow.phoneNumber AS phoneNumber
-											FROM offers AS o
-											INNER JOIN offersworker AS ow
-												ON ow.tabelNum = o.tabelNum
-											WHERE o.Id = ?`, [idOffers])
-
-        const query = `SELECT
-						osr.offer_id,
-						ka.fiofull,
-						dep.fullname,
-						osr.responsible_tabnum,
-						osr.mark,
-						osr.open,
-						osr.close,
-						osr.actual,
-						osr.innov,
-						osr.cost,
-						osr.extent,
-						osr.position
-					FROM
-						?? AS osr
-					INNER JOIN kadry_all AS ka 
-						ON ka.tabnum = osr.responsible_tabnum
-							AND ka.factory = 1 
-					INNER JOIN department AS dep
-						ON dep.id = ka.department
-							AND dep.factory = ka.factory
-					WHERE
-						osr.offer_id = ?
-					AND osr.deleted <> 1
-					ORDER BY osr.position ASC`
-
-        const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
-        const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
-
-        response.send({
-            ...sqlMyOffers[0][0],
-            responsibles: [
-                ...sqlOfferResponsible[0]
-            ],
-            responsibles_rg:
-                sqlOfferResponsible_Rg[0][0]
-
-        });
-
-    })
+router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
+router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
 
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {

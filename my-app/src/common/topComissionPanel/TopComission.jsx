@@ -22,7 +22,7 @@ class TopComission extends React.Component
 
 	componentDidMount()
 	{
-		server.send_post_request(`${API_URL}api/offers/lastOffersByDate`, {begin: this.state.pointer.format("YYYY-MM-DD")})
+		server.send_post_request(`${API_URL}api/offers/lastOffersByDate`, {begin: this.state.pointer.format("YYYY-MM")})
 			.then((res) => {
 					this.setState({list: {last_offers: res.data.last_offers},
 									state: res.data.state,
@@ -115,7 +115,6 @@ class TopComission extends React.Component
 								display: "flex",
 								flexDirection:"column",
 								height: "fit-content",
-								overflowY:"scroll"
 				}}>
 						<div className = {s.info_container}
 						>
