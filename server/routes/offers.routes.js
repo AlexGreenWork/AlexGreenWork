@@ -5,12 +5,10 @@ const router = new Router();
 const fs = require('fs');
 const fileUpload = require("express-fileupload");
 const authMiddleware = require('../middleware/auth.middleware')
-const userMiddleware = require('../middleware/user.middleware')
 const {isDate} = require("moment");
 const moment = require("moment");
 const { on } = require("events");
 const {DATETIME} = require("mysql/lib/protocol/constants/types");
-const offers_controller = require("../controllers/offersController")
 
 router.use(fileUpload({}));
 
@@ -159,10 +157,68 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
     return [myAllOfffers]
 }
 
+router.post("/selectMyOffers", urlencodedParser,
+    async function (request, response) {
+        if (!('selectOffers' in request.body)
+            || !request.body.selectOffers) {
+            response.status(400);
+            response.send();
+        }
 
-router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
-router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, offers_controller.offers_state);
+        const idOffers = request.body.selectOffers
 
+        const sqlMyOffers = await pool.query(`SELECT 
+												o.*,
+												ow.name AS nameSendler,
+												ow.surname AS surnameSendler,
+												ow.middlename AS middlenameSendler,
+												ow.email AS email,
+                                                ow.phoneNumber AS phoneNumber
+											FROM offers AS o
+											INNER JOIN offersworker AS ow
+												ON ow.tabelNum = o.tabelNum
+											WHERE o.Id = ?`, [idOffers])
+
+        const query = `SELECT
+						osr.offer_id,
+						ka.fiofull,
+						dep.fullname,
+						osr.responsible_tabnum,
+						osr.mark,
+						osr.open,
+						osr.close,
+						osr.actual,
+						osr.innov,
+						osr.cost,
+						osr.extent,
+						osr.position
+					FROM
+						?? AS osr
+					INNER JOIN kadry_all AS ka 
+						ON ka.tabnum = osr.responsible_tabnum
+							AND ka.factory = 1 
+					INNER JOIN department AS dep
+						ON dep.id = ka.department
+							AND dep.factory = ka.factory
+					WHERE
+						osr.offer_id = ?
+					AND osr.deleted <> 1
+					ORDER BY osr.position ASC`
+
+        const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers])
+        const sqlOfferResponsible_Rg = await pool.query(query, ["offersresponsible_rg", idOffers])
+
+        response.send({
+            ...sqlMyOffers[0][0],
+            responsibles: [
+                ...sqlOfferResponsible[0]
+            ],
+            responsibles_rg:
+                sqlOfferResponsible_Rg[0][0]
+
+        });
+
+    })
 
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {
@@ -848,7 +904,45 @@ router.post("/saveNotesToDbRG", urlencodedParser,
     }catch(e){console.log(e)}
     })
 
+    router.post("/toDbSaveNotesResponsible", urlencodedParser,
+    async function (request, response) {
+     console.log(" SaveNotesResponsible - отработало")
+    
+    let offerId = request.body.idOffer
+    let tabnum = request.body.tabNum
+    let actual = request.body.actual
+    let innovate = request.body.innovate
+    let cost = request.body.cost
+    let duration = request.body.duration
+    console.log( offerId,tabnum )
+    try{
+    const sqlR = await pool.query(`SELECT * FROM offersresponsible WHERE offer_id = '${offerId}' AND responsible_tabnum = '${tabnum}'`)
+     
+    if(sqlR == undefined){
+        return console.log("Сработал андефайнд")
+     }
+      
+    console.log(Date(),"Запись оценок Ответственного", "в предложение",offerId, "с табельного ", tabnum)
+      await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}', cost = '${cost}', extent = '${duration}'  WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
+        response.status(200).send() 
+    }catch(e){console.log(e)}
+    })
 
-
+    router.post("/comission", urlencodedParser,
+    async function (request, response) {
+     console.log("comission - отработало")
+    
+    let offerId = request.body.idOffer
+    
+    try{
+    const sqlR = await pool.query(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
+        let resp = sqlR[0][0].annotation
+    if(sqlR[0] == undefined){
+        return console.log("нет такой записи в таблице комиссия")
+     }
+     return response.send(resp)
+    }catch(e){console.log(e)}
+    })
+    
 
 module.exports = router

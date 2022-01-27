@@ -236,10 +236,11 @@ class ResultsOffer extends React.Component
 			<div className={s.containerOff} >
 				<div className={s.idOffer} style={{
 					display:"flex",
-					justifyContent: "space-between"
+					justifyContent: "space-between",
+					paddingLeft: "10px",
 				}}>
-              	  <div>№:{this.props.offerId}</div>
-             	   <div className={s.nameOfferHead}> {this.props.offerName}</div>
+              	  <div style={{fontWeight: "bold"}}>№:{this.props.offerId}</div>
+             	   <div className={s.nameOfferHead} style={{fontWeight: "bold"}}> {this.props.offerName}</div>
 					<div></div>
          	   </div>
 				<TableContainer component={Paper}>
