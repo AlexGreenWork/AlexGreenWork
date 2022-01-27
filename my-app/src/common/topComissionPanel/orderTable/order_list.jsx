@@ -27,7 +27,7 @@ class OrdersList extends React.Component
 	{
 		if(this.props !== props)
 		{
-			this.setState({list: this.props.last_offers});
+			this.setState({list: this.props.last_offers, page: 0});
 		}
 	}
 
