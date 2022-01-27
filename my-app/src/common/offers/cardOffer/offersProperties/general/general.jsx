@@ -515,7 +515,7 @@ let nameStatus;
             return stepStatus
         }
         if (ev == 12 || ev == 13) {
-            stepStatus = 4;
+            stepStatus = 5;
             return stepStatus
         }
 
