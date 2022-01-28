@@ -1,4 +1,5 @@
-import * as React from 'react';
+// import * as React from 'react';
+import React, {useState} from "react";
 // import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 // import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -114,7 +115,13 @@ function downloadFile(obj) {
 
 
 const ComissionOffer = () => {
-    server.send_post_request(`${API_URL}api/offers/comission`,{idOffer: localStorage.getItem('idOffers')});
+    const [annotateComission, setAnnotateComission] = useState('')
+    const response1 = server.send_post_request(`${API_URL}api/offers/comission`,{idOffer: localStorage.getItem('idOffers')}).then(function (data) {
+        setAnnotateComission(data.data);
+        console.log(data.data)
+      });;
+      console.log("state", annotateComission)
+    
     const [requestDir, setRequestDir] = React.useState(0);
     const [dateComission, setDateComission] = React.useState(`${localStorage.getItem('dateComission')}`);
     const [listFileComission, setListFileComission] = React.useState(<FileCommissionList req="null" />);
@@ -352,6 +359,7 @@ const ComissionOffer = () => {
         const w = document.getElementById("textAreaCommision").innerText
         console.log(w)
         dispatch(saveComissionAnnotationToDb(w))
+        setAnnotateComission(w)
     }
 
 
@@ -367,10 +375,10 @@ const ComissionOffer = () => {
                         flexDirection: "column",
                         padding: "15px",
                         borderRadius: "15px",
-                        border: "0",
                         boxShadow: "4px 4px 10px rgba(0,0,0,0.06)",
-                        height: "150px"
-                    }} >
+                        minHeight: "150px",
+                        heght:"fit-content"
+                    }} >{annotateComission}
                     </div>
                     <Button sx={{
                     border: '1px solid lightblue',
@@ -388,7 +396,7 @@ const ComissionOffer = () => {
                     <div id="textAreaCommision" placeholder="Напишите краткую аннотацию..." className={s.comissionTextArea} style={{
                         width: "100%",
                         flexDirection: "column"
-                    }} >
+                    }} >{annotateComission}
                     </div>
                 </div>
             )
@@ -469,7 +477,7 @@ const ComissionOffer = () => {
                             </div> */}
                         </div>
 
-                        <div contentEditable={"true"} id="author"> 1500</div>
+                        <div contentEditable={"true"} id="author" style={{backgroundColor:"white"}}> 1500</div>
                     </div>
                     <div>
                         <div> Соавтору  </div>

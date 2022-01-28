@@ -243,13 +243,13 @@ router.post("/forms", urlencodedParser, async (request, response) => {
           //  console.log("Такой табельный или емейл уже зарегистрирован в системе");
 
             if (upd.changedRows != 0) { // запрос.количество затронутых строк
-                messageSend = messageSend + "Такой пользователь уже зарегистрирован " + `${await InsertTabOffers(nameOffer, offer)}`;
+                messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`;
             } else {
 
               //  console.log("данные пользователя не записаны");
                 if (upd.affectedRows != 0) {
 
-                    messageSend = messageSend + "Такой пользователь уже зарегистрирован " + `${await InsertTabOffers(nameOffer, offer)}`
+                    messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`
 
                 } else {
 
