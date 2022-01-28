@@ -30,27 +30,22 @@ function logScroll(e, id) {
     let el_close = document.querySelector(`.close-textArea`)
     height = document.querySelector(`#${id}`).clientHeight
     if(id === "problem"){
-        console.log( el_close.style.top)
+       
         el_close.style.top = `${height + 126}px`
-        console.log( el_close.style.top)
+       
     height = height + 126
 
     } else{
-        console.log( el_close.style.top)
+       
         el_close.style.top = `${heightOffer + 126}px`
-        console.log( el_close.style.top)
+       
     }
 
     let height_longscroll = Number(document.querySelector(`#${id}`).style.height[0] /* + document.querySelector(`#problem`).style.height[1] */)
-    console.log("e.target.scrollTop ", e.target.scrollTop, 'height', height )
-    console.log("e.target.scrollTop ", e.target.scrollTop, 'heightOffer', heightOffer )
-    console.log("style.height.length", document.querySelector(`#${id}`).style.height.length)
+
     if (document.querySelector(`#${id}`).style.height.length === 0) {
         height_longscroll = 10
-        // if (e.target.scrollTop > 0 && height <= 5000 /* || e.target.scrollTop > 0 && heightOffer <= 50 */) {
-        //     Resize(id)
-            
-        // }
+       
     }
     if (e.target.scrollTop > 0) {
          Resize(id)
@@ -59,40 +54,36 @@ function logScroll(e, id) {
 }
 
 function textAreaOnChange(e, id) {
-
     const textarea = document.querySelector(`#${id}`)
-    // size = textarea.clientHeight
     textarea.onscroll = logScroll(e, id);
-   
-   
 }
 
 function textAreaOnBlur(id) {
     
     let textarea = document.querySelector(`#${id}`)
     let el_close = document.querySelector(`.close-textArea`)
-    console.log("height blur", height)
-    console.log("height blur",  textarea.style.height)
-    
-   
-    // console.log("height blur", Number(textarea.style.height.slice(0, 3))  )
+
+
     if(id === "problem"){
+        textarea.style.zIndex = "0" 
         if(textarea.style.height.length !== 0){
             height = Number(textarea.style.height.slice(0, 3))
         }
-        console.log("el_close.style.top blur problem ", el_close.style.top)
+  
         el_close.style.top = `${closeTop}px`
         textarea.style.height = `${height}px`
-        console.log("height blur problem ", height)
+   
       
     } else {
+        textarea.style.zIndex = "0" 
+
         if(textarea.style.height.length !== 0){
             heightOffer = Number(textarea.style.height.slice(0, 3))
         }
+
         el_close.style.top = `${sizeOffer}px`
         textarea.style.height = `${heightOffer}px`
-        console.log("height blur offer ", heightOffer)
-       
+    
     }
     
     if (document.querySelector(".blockShow")) {
@@ -110,7 +101,6 @@ function textAreaOnFocus(id){
      close.style.top = `${height+80}px`
         let shadow = document.createElement('div');
     if(id === "problem"){
-        console.log("фокус problem", height) 
         textarea.style.zIndex = "1200" 
         shadow.className = "shadow-close"
        document.querySelector(`#offer`).style.zIndex = '1';
@@ -131,40 +121,25 @@ function textAreaOnFocus(id){
     let textArea = document.querySelector(`#${id}`)
     
     if(id === "problem"){
-        console.log("фокус problem", height)  
+     
         if (height === 0) {
-            textarea.style.height = "110px"
-            console.log( el_close.style.top)
-          
+            textarea.style.height = "110px"          
             el_close.style.top = `${closeTop+236}px`
-            console.log("нет длинны высоты")
-            // el_close.style.top = `${height + 115}px`
         } else {
           
-            console.log( el_close.style.top)
-            // console.log(height.slice(0, 3))
             if(closeTop === 0){
                 el_close.style.top = `${closeTop+236}px`
             } else {
                 el_close.style.top = `${closeTop}px`
             }
-            
-            console.log( el_close.style.top)
-            console.log("есть длинна высоты")
+           
         }
       
-      //  height =  textArea.clientHeight
-        console.log("есть длинна высоты", height)
     } else {
 
-        console.log("фокус offer", heightOffer)  
         if ( heightOffer === 0) {
-            console.log("фокус offer", heightOffer) 
             el_close.style.top = `${heightOffer + 228}px`
-            // el_close.style.top = `${heightOffer + 115}px`
-    
-        } else {
-            console.log("фокус offer", heightOffer) 
+            } else { 
             el_close.style.top = `${heightOffer + 126}px`
         }
         heightOffer =  textArea.clientHeight
@@ -179,18 +154,14 @@ function Resize(idEl) {
     let heightTextArea = document.querySelector(`#${idEl}`).style.height
     let el_close = document.querySelector(`.close-textArea`)
   
-    console.log(heightTextArea)
     if (heightTextArea.length === 0) {
-        console.log(heightTextArea.length)
         document.querySelector(`#${idEl}`).style.height = "100px"
         el_close.style.top = `${226}px`
         
     } else {
       
         let a = Number(heightTextArea[0] + heightTextArea[1] + heightTextArea[2]) // счетчик процентов высоты десятки
-      console.log(heightTextArea[0])
-      console.log(heightTextArea[1])
-        console.log(a)
+   
         if (a > 0  && a < 450 /*|| a === 95 */) { //максимальное количество процентов на экране
            
             let count = 0 // счетчик от 0 до 9
@@ -205,15 +176,11 @@ function Resize(idEl) {
 
                 } else {
                         clearInterval(overSize);
-                        console.log('heightTextArea.clientHeight', ` ${idEl} ` , document.querySelector(`#${idEl}`).clientHeight)
                         if(idEl === 'problem'){
                             height = document.querySelector(`#${idEl}`).clientHeight
                             closeTop = Number(el_close.style.top.slice(0, 3)) 
-                            console.log(closeTop)
                         } else {
-                           
-                            heightOffer = document.querySelector(`#${idEl}`).clientHeight
-                            console.log(heightOffer)
+                           heightOffer = document.querySelector(`#${idEl}`).clientHeight
                         }
                          
                 }
@@ -236,7 +203,7 @@ function Resize(idEl) {
 class ComponentDestruction extends React.Component { // нужен для очистки глобального обьекта после размонтирования компонента
 
     componentWillUnmount() {
-        console.log(1234)
+       
         objClear();
         size = 0;
         height = 0
@@ -306,7 +273,7 @@ function OffersForm(props) {
                 .then(res => {
 
                     let fio = res.data;
-                    console.log(fio)
+                 
                     if (document.querySelector(`#firstName${count}`),
                         document.querySelector(`#lastName${count}`),
                         document.querySelector(`#middleName${count}`),
@@ -328,7 +295,7 @@ function OffersForm(props) {
                             document.querySelector(`#phoneNumber${count}`).value = "";
                         }
 
-                        console.log(fio)
+                       
                         setNameNew(fio[1])
                         setLastNameNew(fio[0])
                         setMiddleNameNew(fio[2])

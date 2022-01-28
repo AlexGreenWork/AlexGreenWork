@@ -45,11 +45,12 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
             
             fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/`, function(err, dirRoot){
                 let countResponsible = 0;
+                
                 for(let i = 0; i <dirRoot.length; i++){
                     if(dirRoot[i].slice(0, 11) == "responsible" || dirRoot[i] == "SendlerFiles" || dirRoot[i] == "ResponsibleRg"){
                        
                         countResponsible++
-                       
+
                     }
                 }
                 
