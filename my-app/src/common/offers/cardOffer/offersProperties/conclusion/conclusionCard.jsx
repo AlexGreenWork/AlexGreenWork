@@ -105,6 +105,7 @@ const ConclusionCard = (props) => {
                tabNum,
                 ann
             })
+            alert("аннотация добавлена")
 
         }catch(e){
             console.log(e)
@@ -259,6 +260,30 @@ const ConclusionCard = (props) => {
                 return <IsAdminUser/>
             }
         }
+        async function saveNotesResponsible(){
+            try{
+            const idOffer = props.id.offer_id
+            const tabNum = props.tabel
+            const actual = document.getElementById("actual"+props.name).innerText 
+            const innovate = document.getElementById("innovate"+props.name).innerText
+            const cost = document.getElementById("cost"+props.name).innerText
+            const duration = document.getElementById("duration"+props.name).innerText
+            console.log(actual, innovate, cost, duration)
+            console.log("offer",props.id.offer_id, "tabel",props.tabel, "mark",props.id.mark, "tabnum", props.id.responsible_tabnum, "propsName",props.name)
+            // setAnnot(ann)
+            await axios.post(`${API_URL}api/offers/toDbSaveNotesResponsible`, {
+              idOffer,
+               tabNum,
+               actual,
+               innovate,
+               cost,
+               duration
+            })
+            alert("Оценки записаны")
+            }catch(e){
+                console.log(e)
+            }
+        }
 
         function IsAdminSaveNotes() {
             return (
@@ -269,14 +294,14 @@ const ConclusionCard = (props) => {
                         margin: "25px",
                         boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
                     }} onClick={(value) => {
-                        deleteResponsible(props.id.offer_id, props.tabel)
+                       saveNotesResponsible(props.id.offer_id, props.tabel, props.id.mark, props.id.responsible_tabnum, props.name)
                     }}>Записать оценки</Button>
                     <Button style={{
                         background: "#e9e9ff",
                         margin: "25px",
                         boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
                     }} onClick={(value) => {
-                        deleteResponsible(props.id.offer_id, props.tabel)
+                        saveNotesResponsible(props.id.offer_id, props.tabel)
                     }}>Сдать заключение</Button>
 
                 </div>
@@ -476,13 +501,13 @@ function ConfirmResponsible(){
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        <TableCell/>
-                                        <TableCell align="right" contenteditable="true" type="number">1</TableCell>
-                                        <TableCell align="right" contenteditable="true" type="number">1</TableCell>
-                                        <TableCell align="right" contenteditable="true" type="number">1</TableCell>
-                                        <TableCell align="right" contenteditable="true" type="number">1</TableCell>
+                                    
+                                         <TableCell id={'actual'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.actual}</TableCell>
+                                         <TableCell id={'innovate'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.innov}</TableCell>
+                                          <TableCell id={'cost'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.cost}</TableCell>
+                                          <TableCell id={'duration'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.extent}</TableCell>
                                     </TableBody>
-                                </Table>
+                                    </Table>
                             </TableContainer>
                             <AdminChangeSaveNotes {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
                     </div>
