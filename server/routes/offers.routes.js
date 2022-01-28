@@ -160,8 +160,10 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
     return [myAllOfffers]
 }
 
+
 router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
 router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
+
 
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {
@@ -847,43 +849,21 @@ router.post("/saveNotesToDbRG", urlencodedParser,
     }catch(e){console.log(e)}
     })
 
-    router.post("/toDbSaveNotesResponsible", urlencodedParser,
-    async function (request, response) {
-     console.log(" SaveNotesResponsible - отработало")
-    
-    let offerId = request.body.idOffer
-    let tabnum = request.body.tabNum
-    let actual = request.body.actual
-    let innovate = request.body.innovate
-    let cost = request.body.cost
-    let duration = request.body.duration
-    console.log( offerId,tabnum )
-    try{
-    const sqlR = await pool.query(`SELECT * FROM offersresponsible WHERE offer_id = '${offerId}' AND responsible_tabnum = '${tabnum}'`)
-     
-    if(sqlR == undefined){
-        return console.log("Сработал андефайнд")
-     }
-      
-    console.log(Date(),"Запись оценок Ответственного", "в предложение",offerId, "с табельного ", tabnum)
-      await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}', cost = '${cost}', extent = '${duration}'  WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
-        response.status(200).send() 
-    }catch(e){console.log(e)}
-    })
+
 
     router.post("/comission", urlencodedParser,
     async function (request, response) {
      console.log("comission - отработало")
-    
     let offerId = request.body.idOffer
-    
     try{
     const sqlR = await pool.query(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
         let resp = sqlR[0][0].annotation
+        
     if(sqlR[0] == undefined){
         return console.log("нет такой записи в таблице комиссия")
-     }
-     return response.send(resp)
+    }
+     console.log(resp)
+     response.json(resp)
     }catch(e){console.log(e)}
     })
     
