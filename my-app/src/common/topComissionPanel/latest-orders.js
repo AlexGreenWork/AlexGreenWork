@@ -1,21 +1,4 @@
-
-import {
-	Box,
-	Card,
-	CardHeader,
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableRow,
-	TableSortLabel,
-	TablePagination,
-	Tooltip,
-	Paper,
-	TableContainer
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { SeverityPill } from './severity-pill';
+import { Box, FormControlLabel, Card, CardHeader, Checkbox } from '@mui/material';
 import React from 'react';
 import OrdersList from './orderTable/order_list';
 

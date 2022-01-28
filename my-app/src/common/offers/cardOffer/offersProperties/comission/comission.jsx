@@ -308,7 +308,7 @@ const ComissionOffer = () => {
         }
     }
 
-   // let offerId = localStorage.getItem("idOffers")
+   let offerId = localStorage.getItem("idOffers")
 
     function saveDateComission() {
         let T = /[T]/;
