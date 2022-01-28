@@ -17,6 +17,8 @@ import { API_URL } from '../../../../../config';
 import { toDbDateComission } from "../../../../../actions/offers";
 import { useDispatch } from 'react-redux';
 import StatementFileList from './comissionFiles'
+import { store } from "../../../../../reducers";
+import server from "../../../../../actions/server";
 
 function IMG(props) {
     return (
@@ -113,7 +115,7 @@ function downloadFile(obj) {
 
 
 const ComissionOffer = () => {
-    let offerId = localStorage.getItem('idOffers');
+    server.send_post_request(`${API_URL}api/offers/comission`,{idOffer: localStorage.getItem('idOffers')});
     const [requestDir, setRequestDir] = React.useState(0);
     const [dateComission, setDateComission] = React.useState(`${localStorage.getItem('dateComission')}`);
     const [listFileComission, setListFileComission] = React.useState(<FileCommissionList req="null" />);
@@ -254,7 +256,7 @@ const ComissionOffer = () => {
 
 
         return (<div>
-            
+
 
             <form onSubmit={handleSubmit}>
                 <input type="file" name="filename" id='file' />
@@ -270,12 +272,25 @@ const ComissionOffer = () => {
             <div></div>
         )
     }
-    
-    
+    function ProfitChange(){
+        if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
+            return <div>
+                <Button sx={{
+                    border: '1px solid lightblue',
+                    boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
+                    margin: '10px'
+                }}>Сохранить суммы</Button>
+            </div>;
 
-    function DateTimeChange(){
-       
-        if (localStorage.getItem('userAdminOptions')== 'wg' || localStorage.getItem('userAdminOptions')== 'topComission' || localStorage.getItem('userAdminOptions')== 'admin') {
+        } else {
+            return <div></div>
+        }
+    }
+
+
+    function DateTimeChange() {
+
+        if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
             return <MultiSelectChangeCom viewChangeCom={viewChangeCom} />;
 
         } else {
@@ -346,6 +361,7 @@ const ComissionOffer = () => {
 
     function AdminChangeComissionAnnotation() {
         const isAdminComission = localStorage.getItem('userAdminOptions');
+
         if (isAdminComission == "wg") {
             return (
                 <div className={s.containerAnnotation}>
@@ -353,14 +369,19 @@ const ComissionOffer = () => {
                     <div contentEditable={"true"} id="textAreaCommision" placeholder="Напишите краткую аннотацию..." className={s.comissionTextArea} style={{
                         width: "100%",
                         flexDirection: "column",
-                        padding:"15px",
-                        borderRadius:"15px",
-                        border:"0",
-                        boxShadow:"4px 4px 10px rgba(0,0,0,0.06)",
-                        height:"150px"
+                        padding: "15px",
+                        borderRadius: "15px",
+                        border: "0",
+                        boxShadow: "4px 4px 10px rgba(0,0,0,0.06)",
+                        height: "150px"
                     }} >
                     </div>
-                    <Button style={{ border: "1px solid blue", margin: "5px" }} onClick={saveToDbAnnotationComission}>Сохранить</Button>
+                    <Button sx={{
+                    border: '1px solid lightblue',
+                    boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
+                    margin: '10px'
+                }}
+                   onClick={saveToDbAnnotationComission}>Сохранить</Button>
                 </div>
 
             )
@@ -377,14 +398,22 @@ const ComissionOffer = () => {
             )
         }
     }
+    function DateRender() {
+        if (newDate == "NaN undefined") {
+            return "Дата не назначена"
+        } else {
+            return <div>{newDate}{time}</div>
+        }
+    }
+
     return (
 
 
         <div className={s.nameOffer}>
-            <div>Дата заседания комиссии: {newDate}{time}</div>
+            <div style={{ display: "flex" }}>Дата заседания комиссии: <DateRender /></div>
 
-            <DateTimeChange isAmin={localStorage.getItem("userAdminOptions")}/>
-            
+            <DateTimeChange isAmin={localStorage.getItem("userAdminOptions")} />
+
 
 
             <div style={{
@@ -394,7 +423,7 @@ const ComissionOffer = () => {
                 alignItems: "center",
                 borderRadius: "10px",
                 boxShadow: "4px 4px 8px 0px rgb(34 60 80 / 20%) inset",
-                marginTop:"5px"
+                marginTop: "5px"
             }}>
                 <div>
                     Файл протокола заседания:
@@ -412,7 +441,7 @@ const ComissionOffer = () => {
                 alignItems: "center",
                 borderRadius: "10px",
                 boxShadow: "4px 4px 8px 0px rgb(34 60 80 / 20%) inset",
-                marginTop:"5px"
+                marginTop: "5px"
             }}>
                 <div>Файл выписки:</div>
                 <div>
@@ -427,19 +456,32 @@ const ComissionOffer = () => {
                 alignItems: "center",
                 borderRadius: "10px",
                 boxShadow: "4px 4px 8px 0px rgb(34 60 80 / 20%) inset",
-                marginTop:"5px"
+                marginTop: "5px"
             }}>
                 <div>Величина вознаграждения</div>
-                <div style = {{display:"flex"}}>
-                <div>
-                    <div> Автору  </div>
-                    <div> 1500</div>
+                <div style={{ display: "flex" }}>
+                    <div>
+                        <div> Автору:
+                            {/* <div style={{
+                                backgroundImage: `url(${API_URL + 'files/photos/' + store.getState().offers.offer.tabelNum + ".jpg"})`,
+                                width: "40px",
+                                height: "40px",
+                                backgroundSize: "cover",
+                                borderRadius: "50%",
+                                backgroundPosition: "center"
+                            }}>
+                            </div> */}
+                        </div>
+
+                        <div contentEditable={"true"} id="author"> 1500</div>
+                    </div>
+                    <div>
+                        <div> Соавтору  </div>
+                        <div contentEditable={"true"} id="soAuthor"> 1500</div>
+                    </div>
+                   
                 </div>
-                <div>
-                    <div> Соавтору  </div>
-                    <div> 1500</div>
-                </div>
-                </div>
+                <ProfitChange isAmin={localStorage.getItem("userAdminOptions")}/>
             </div>
         </div>
     )

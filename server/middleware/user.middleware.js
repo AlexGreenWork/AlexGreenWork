@@ -14,11 +14,22 @@ module.exports = async (req, res, next) => {
 		database: config.database.database
 	}
 
-	const connection = mysql.createPool(connection_property);
+	let connection = null;
 
-	const result = await connection.query("SELECT * FROM offersworker WHERE Id = ?", req.user.id);
+	try
+	{
+		connection = mysql.createPool(connection_property);
+		const result = await connection.query("SELECT * FROM offersworker WHERE Id = ?", req.user.id);
+		req.current_user_info = result[0][0];
+		next();
+	}
+	catch(e)
+	{
+		console.log(e);
+	}
+	finally
+	{
+		if(connection) connection.end();
+	}
 
-	req.current_user_info = result[0][0];
-
-	next();
 }
