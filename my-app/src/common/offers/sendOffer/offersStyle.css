@@ -60,7 +60,7 @@
 
 .btnYetClose {
    
-    background: url(D:\work\AlexGreenWork\my-app\src\assets\img\deleted.png);
+    /* background: url(http://isi.belaz.minsk.by/AlexGreenWork/my-app/src/assets/img/deleted.png); */
     background-repeat: no-repeat;
     background-size: 20px 25px;
     background-position: 1px 5px;
@@ -83,7 +83,8 @@
 
 .btnYetClose::after {
     content: "";
-    background: url(D:\work\AlexGreenWork\my-app\src\assets\img\deleted-active.png), linear-gradient(180deg, rgba(255, 255, 255, 1) 8%, rgba(247, 195, 208, 1) 68%, rgba(252, 48, 93, 1) 100%);
+    /* background: url(D:\work\AlexGreenWork\my-app\src\assets\img\deleted-active.png), 
+    linear-gradient(180deg, rgba(255, 255, 255, 1) 8%, rgba(247, 195, 208, 1) 68%, rgba(252, 48, 93, 1) 100%); */
     position: absolute;
     left: 0px;
     top: 0px;
@@ -103,7 +104,7 @@
 
 
 .closeAddForm {
-    background: url(D:\work\AlexGreenWork\my-app\src\assets\img\2056517-200.png);
+    /* background: url(D:\work\AlexGreenWork\my-app\src\assets\img\2056517-200.png); */
     background-size: cover;
     box-shadow: 0px 0px 0px 2px rgb(255, 255, 255);
     width: 30px;
