@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import s from "./conclusion.module.css"
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
@@ -96,14 +96,15 @@ const ConclusionCard = (props) => {
         console.log(idOffer, tabNum)
         try{
             const ann = document.getElementById(`${'annotation'+props.name}`).innerText
-
+            const position = props.name
             console.log(props.id.responsible_tabnum, props.name,  idOffer, tabNum, ann)
             
             setAnnot(ann)
             await axios.post(`${API_URL}api/offers/toDbSaveAnnot`, {
               idOffer,
                tabNum,
-                ann
+                ann,
+                position                
             })
             alert("аннотация добавлена")
 
@@ -268,6 +269,7 @@ const ConclusionCard = (props) => {
             const innovate = document.getElementById("innovate"+props.name).innerText
             const cost = document.getElementById("cost"+props.name).innerText
             const duration = document.getElementById("duration"+props.name).innerText
+            const position = props.name
             console.log(actual, innovate, cost, duration)
             console.log("offer",props.id.offer_id, "tabel",props.tabel, "mark",props.id.mark, "tabnum", props.id.responsible_tabnum, "propsName",props.name)
             // setAnnot(ann)
@@ -277,8 +279,13 @@ const ConclusionCard = (props) => {
                actual,
                innovate,
                cost,
-               duration
+               duration,
+               position
             })
+            setActual(actual)
+            setInnov(innovate)
+            setCost(cost)
+            setDuration(duration)
             alert("Оценки записаны")
             }catch(e){
                 console.log(e)
@@ -356,6 +363,11 @@ function ConfirmResponsible(){
         return <div></div>
     }
 }
+
+const [actual, setActual] = useState(`${props.id.actual}`)
+const [innov, setInnov] = useState(`${props.id.innov}`)
+const [cost, setCost] = useState(`${props.id.cost}`)
+const [duration, setDuration] = useState(`${props.id.extent}`)
 
         return (
             <div style={{
@@ -501,11 +513,11 @@ function ConfirmResponsible(){
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                    
-                                         <TableCell id={'actual'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.actual}</TableCell>
-                                         <TableCell id={'innovate'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.innov}</TableCell>
-                                          <TableCell id={'cost'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.cost}</TableCell>
-                                          <TableCell id={'duration'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{props.id.extent}</TableCell>
+                                    <TableCell/>
+                                         <TableCell id={'actual'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{actual}</TableCell>
+                                         <TableCell id={'innovate'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{innov}</TableCell>
+                                          <TableCell id={'cost'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{cost}</TableCell>
+                                          <TableCell id={'duration'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{duration}</TableCell>
                                     </TableBody>
                                     </Table>
                             </TableContainer>

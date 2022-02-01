@@ -787,11 +787,9 @@ router.post("/responsibleToOffers", urlencodedParser,
         } else{
             response.send("noResponsible")
         }
-
-
-
     })
-router.post("/saveNotesToDbRG", urlencodedParser,
+    
+    router.post("/saveNotesToDbRG", urlencodedParser,
     async function (request, response) {cardOffer
     let actual = request.body.actual
     let innovate = request.body.innovate
@@ -804,6 +802,22 @@ router.post("/saveNotesToDbRG", urlencodedParser,
         await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
+    /////////////////////////////////////////////////////////////
+    router.post("/toDbSaveNotesResponsible", urlencodedParser,
+    async function (request, response) {
+    let actual = request.body.actual
+    let innovate = request.body.innovate
+    let cost = request.body.cost
+    let duration = request.body.duration
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+    let position = request.body.position
+
+        console.log(Date(),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        response.status(200).send() 
+    })
+
     router.post("/closeConclusionRG", urlencodedParser,
     async function (request, response) {
     let offerId = request.body.idOffer
@@ -835,13 +849,14 @@ router.post("/saveNotesToDbRG", urlencodedParser,
       
      
     })
-
+//////////////////////////////////////////////////////////////
     router.post("/toDbSaveAnnot", urlencodedParser,
     async function (request, response) {
      console.log(" toDbSaveAnnot - отработало")
     let textAnnotation = request.body.ann
     let offerId = request.body.idOffer
     let tabnum = request.body.tabNum
+    let position = request.body.position
     console.log(textAnnotation, offerId,tabnum )
     try{
     const sqlR = await pool.query(`SELECT * FROM offersresponsible WHERE offer_id = '${offerId}' AND responsible_tabnum = '${tabnum}'`)
@@ -851,7 +866,7 @@ router.post("/saveNotesToDbRG", urlencodedParser,
      }
       
     console.log(Date(),"Запись Аннотации Ответственного", "в предложение",offerId, "с табельного ", tabnum)
-      await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
+      await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
         response.status(200).send() 
     }catch(e){console.log(e)}
     })
