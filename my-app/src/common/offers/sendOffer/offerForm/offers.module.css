@@ -67,6 +67,7 @@ from div{
     padding-left: 5px;
     padding-right: 5px;
     font-weight: bold;
+   
 }
 @media (max-width: 553px) {
     .offersContainer{
@@ -109,4 +110,32 @@ from div{
        
        
         }
+    }
+
+    .searchOffer{
+       width: 40%;
+       vertical-align: bottom;
+       /* position: relative;
+       left: 40px;
+       top: -35px; */
+    }
+
+    select{
+        grid-column:2/3;
+        grid-row: 1/2;
+        width: 40%;
+        /* position: relative;
+        left: 40px;
+        top: -35px; */
+    }
+
+    .searchContainer{
+
+        display: grid;
+        grid-template-columns: 1fr 1fr ;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 6em auto ;
+        grid-template-rows: 30px 30px;
+        grid-row-gap: 3px;
+        margin-bottom: 10px;
     }

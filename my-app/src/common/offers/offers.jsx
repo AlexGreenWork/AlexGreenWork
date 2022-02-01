@@ -147,54 +147,121 @@ function SortOffers(props){
     let offersData = JSON.parse(props.request);
     let sort = props.sort
     let arr = []
-    console.log(props)
+    if(props.typeSort === null){
+        return ( <div>{/* нет сортировки */}</div>);
+    }
     switch(props.typeSort){
         case "numberOffer":
-    console.log("Bananas are $0.48 a pound.");
-    break;
-    }
-    if(props.sort !== null){
-        offersData.map((number, count) => { if(`${number.Id}`.includes(sort) === true){
-            arr.push(number)
-            if(count === offersData.length-1){
-                console.log(arr)
-                  return(<div>wedw
-{/* <OffersLink request = {String(arr)}/> */}
-
-                  </div> )
-            } else{
-                console.log('wedw')
-                return (<div>efwe</div>)
+                offersData.map((number, count) => { if(`${number.Id}`.includes(sort) === true){
+                arr.push(number)
+                   
+                }
+            else{
+                return (<div>
+                     sort null
+                </div>)
             }
+        }) 
            
-    
+         if(arr.length !== 0 && sort.length !== 0){
+           
+            return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+         } else {
+            return ( <div>{/* нет сортировки */}</div>);
+         }
+    break;
+
+    case "nameOffer":
+        offersData.map((number, count) => { if(`${number.nameOffer}`.toLowerCase().includes(sort.toLowerCase()) === true){
+            arr.push(number)
+               
+            }
+        else{
+            return (<div>
+                 sort null
+            </div>)
         }
-    else{
+    }) 
+
+    if(arr.length !== 0 && sort.length !== 0){
+           
+        return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+     } else {
+        return ( <div>{/* нет сортировки */}</div>);
+     }
+        break;
+
+    case "fullname":
         
-        return (<div>
-             sort null
-        </div>)
-    }})
-    } else{
-        console.log('wedw')
-        return (
-            <div>
-                5456
-            </div>
-        )
+        if(sort == null){
+            sort = " "
+        }
+        let fullname = sort.toLowerCase().split(" ")
+        console.log(fullname)
+            if(fullname.length === 1){
+               
+                offersData.map((number, count) => { if(`${number.surnameSendler.toLowerCase()}`.includes(fullname) === true){
+                    arr.push(number)
+                  
+                    }
+                else{
+                    return (<div>
+                         sort null
+                    </div>)
+                }
+            }) 
+        
+            if(arr.length !== 0 && sort.length !== 0){
+                   
+                return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+             } else {
+                return ( <div>{/* нет сортировки */}</div>);
+             }
+            } else if(fullname.length === 2){
+                offersData.map((number, count) => { if(`${number.surnameSendler.toLowerCase()}`.includes(fullname[0]) === true && `${number.nameSendler.toLowerCase()}`.includes(fullname[1]) === true){
+                    arr.push(number)
+                     
+                    }
+                else{
+                    return (<div>
+                         sort null
+                    </div>)
+                }
+            }) 
+        
+            if(arr.length !== 0 && sort.length !== 0){
+                   
+                return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+             } else {
+                return ( <div>{/* нет сортировки */}</div>);
+             }
+            } else if(fullname.length === 3){
+                offersData.map((number, count) => { if(`${number.surnameSendler.toLowerCase()}`.includes(fullname[0]) === true && `${number.nameSendler.toLowerCase()}`.includes(fullname[1]) === true && `${number.middlenameSendler.toLowerCase()}`.includes(fullname[2])){
+                    arr.push(number)
+                  
+                    }
+                else{
+                    return (<div>
+                         sort null
+                    </div>)
+                }
+            }) 
+        
+            if(arr.length !== 0 && sort.length !== 0){
+                   
+                return ( <div style={{marginBottom:'10px'}}> Результат поиска <OffersLink request = {arr} /></div>);
+             } else {
+                return ( <div>{/* нет сортировки */}</div>);
+            }
+            break;
+         
+
     }
-    // if(sort !== 341) console.log(sort, sort !== '341' );
- if(arr.length !== 0){
-   
-    return ( <div> Результат сортировки <OffersLink request = {arr} />.............</div>)
- } else {
-    return ( <div>нет сортировки</div>)
- }
-   
+}
 }
 
 const OffersLink = (props) => {
-    // console.log(typeof props.request)
+    console.log(typeof props.request)
     // console.log( props.request)
     
   
@@ -217,10 +284,12 @@ const OffersLink = (props) => {
     
 }
 
+// function sortNumberOffer
+
 const Offers = () => {
     const [reqAllOff, setReqAllOff] = useState(0);
-    const [sort, setSort] = useState(null);
-    const [typeSort, setTypeSort] = useState(null);
+    const [sort, setSort] = useState("null");
+    const [typeSort, setTypeSort] = useState("numberOffer");
   
     if(reqAllOff === 0){
         Resp();
@@ -241,20 +310,58 @@ const Offers = () => {
         return xhr.response;
 
     }
+   
+   console.log(sort.length)
+   if(sort === "null" || sort.length === 0 ){
     return (
         <div className={s.offersContainer}>
-            <select value={typeSort} onChange={(e)=>{setTypeSort(e.target.value)}}>
-            <option selected value="numberOffer" >Номер предложения</option>
-            <option value="nameOffer">Название предложения</option>
-            <option selected value="fullname">ФИО автора</option>
-            <option value="dateOffer">Дата подачи</option>
-            </select>
             <div className={s.titleHeader}> Предложения для обработки рабочей группой</div>
-            <input type="text" name="sort" onChange={(e)=>{setSort(e.target.value)}}/>
+            <div className={s.searchContainer} >
+              <div style={ {fontSize: "15px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingTop: "5px" }}>Искать по </div>  
+                <select value={typeSort} onChange={(e)=>{setTypeSort(e.target.value)}}>
+                <option selected value="numberOffer" >Номеру предложения</option>
+                <option value="nameOffer">Названию предложения</option>
+                <option selected value="fullname">ФИО автора</option>
+                </select>
+                <div style={ {fontSize: "25px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingBottom: "30px" }}> &#128269;</div>
+            <input type="text" name="sort" className={s.searchOffer} onChange={(e)=>{setSort(e.target.value)}}/>
+            </div>
+            
             <SortOffers request = {reqAllOff} sort={sort} typeSort = {typeSort}/>
             <OffersLink request={reqAllOff} />
            
         </div>
     )
+    } else{
+        return (
+            <div className={s.offersContainer}>  
+                <div className={s.titleHeader}> Предложения для обработки рабочей группой</div>
+                <div className={s.searchContainer} >
+              <div style={ {fontSize: "15px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingTop: "5px" }}>Искать по </div>  
+                <select value={typeSort} onChange={(e)=>{setTypeSort(e.target.value)}}>
+                <option selected value="numberOffer" >Номеру предложения</option>
+                <option value="nameOffer">Названию предложения</option>
+                <option selected value="fullname">ФИО автора</option>
+                </select>
+                <div style={ {fontSize: "25px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingBottom: "30px" }}> &#128269;</div>
+            <input type="text" name="sort" className={s.searchOffer} onChange={(e)=>{setSort(e.target.value)}}/>
+            </div>
+                <SortOffers request = {reqAllOff} sort={sort} typeSort = {typeSort}/>
+            </div>
+        )
+    }
+    
 }
 export default Offers;
