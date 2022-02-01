@@ -7,6 +7,7 @@ import Context from "../context/Context";
 import { useDispatch } from "react-redux";
 import { addSendler, selectMyOffers } from "../../reducers/offerReducer";
 
+
 const Offer = (props) => {
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState('');
@@ -140,21 +141,87 @@ const Offer = (props) => {
     )
 }
 
+function SortOffers(props){
+    const [sortArr, setSortArr] = useState(null);
+    console.log(props.typeSort)   
+    let offersData = JSON.parse(props.request);
+    let sort = props.sort
+    let arr = []
+    console.log(props)
+    switch(props.typeSort){
+        case "numberOffer":
+    console.log("Bananas are $0.48 a pound.");
+    break;
+    }
+    if(props.sort !== null){
+        offersData.map((number, count) => { if(`${number.Id}`.includes(sort) === true){
+            arr.push(number)
+            if(count === offersData.length-1){
+                console.log(arr)
+                  return(<div>wedw
+{/* <OffersLink request = {String(arr)}/> */}
 
+                  </div> )
+            } else{
+                console.log('wedw')
+                return (<div>efwe</div>)
+            }
+           
+    
+        }
+    else{
+        
+        return (<div>
+             sort null
+        </div>)
+    }})
+    } else{
+        console.log('wedw')
+        return (
+            <div>
+                5456
+            </div>
+        )
+    }
+    // if(sort !== 341) console.log(sort, sort !== '341' );
+ if(arr.length !== 0){
+   
+    return ( <div> Результат сортировки <OffersLink request = {arr} />.............</div>)
+ } else {
+    return ( <div>нет сортировки</div>)
+ }
+   
+}
 
 const OffersLink = (props) => {
-    let offersData = JSON.parse(props.request);
-    console.log(props.request)
-    return offersData.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
+    // console.log(typeof props.request)
+    // console.log( props.request)
+    
+  
+    if(typeof props.request === "object"){
+        return props.request.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
+                                             surname={number.surnameSendler} midlename={number.middlenameSendler}
+                                             status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission}
+                                             email={number.email}/>)
+    } else{
+        let offersData = JSON.parse(props.request);
+        // console.log(offersData)
+        let offersDataReverse = offersData.reverse();
+   
+    return offersDataReverse.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
                                              status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission}
                                              email={number.email}/>)
 
+    }
+    
 }
 
 const Offers = () => {
     const [reqAllOff, setReqAllOff] = useState(0);
-    
+    const [sort, setSort] = useState(null);
+    const [typeSort, setTypeSort] = useState(null);
+  
     if(reqAllOff === 0){
         Resp();
     }
@@ -176,9 +243,17 @@ const Offers = () => {
     }
     return (
         <div className={s.offersContainer}>
+            <select value={typeSort} onChange={(e)=>{setTypeSort(e.target.value)}}>
+            <option selected value="numberOffer" >Номер предложения</option>
+            <option value="nameOffer">Название предложения</option>
+            <option selected value="fullname">ФИО автора</option>
+            <option value="dateOffer">Дата подачи</option>
+            </select>
             <div className={s.titleHeader}> Предложения для обработки рабочей группой</div>
-            <OffersLink request={reqAllOff}/>
-
+            <input type="text" name="sort" onChange={(e)=>{setSort(e.target.value)}}/>
+            <SortOffers request = {reqAllOff} sort={sort} typeSort = {typeSort}/>
+            <OffersLink request={reqAllOff} />
+           
         </div>
     )
 }
