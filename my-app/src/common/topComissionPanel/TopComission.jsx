@@ -50,7 +50,7 @@ class TopComission extends React.Component
 		const current_month = this.state.pointer.month() + 1;
 		const current_year = this.state.pointer.year();
 
-		const last_pointer = this.state.pointer.clone().year(this.state.pointer.year() - 1).month(this.state.pointer.month() - 1);
+		const last_pointer = this.state.pointer.clone().year(this.state.pointer.year() - 1).month(this.state.pointer.month());
 
 		const last_month = last_pointer.month();
 		const last_year =  last_pointer.year();
@@ -77,22 +77,22 @@ class TopComission extends React.Component
 
 			if(s.y === last_year)
 			{
-				diff_y += s.y;
-			}
-
-			if(s.m === last_month)
-			{
-				diff_m += s.m;
+				diff_y += s.c;
 			}
 
 			if(s.y === current_year)
 			{
 				result.last_year_state += s.c;
-			}
 
-			if(s.m === current_month)
-			{
-				result.last_month_state += s.c;
+				if(s.m === last_month)
+				{
+					diff_m += s.c;
+				}
+
+				if(s.m === current_month)
+				{
+					result.last_month_state += s.c;
+				}
 			}
 		}
 
@@ -143,7 +143,7 @@ class TopComission extends React.Component
 										style = {{borderRadius: "0px"}}
 										name={`Предложений за ${this.month_table[this.state.pointer.month()]} месяц`}
 										amount={offers_info.last_month_state}
-										diff={offers_info.diff_year}/>
+										diff={offers_info.diff_month}/>
 						</div>
 						 <div className = {s.state_container}> 
 							 <Budget style={{backgroundColor:"#ed6c02"}} className={s.state}
