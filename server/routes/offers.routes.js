@@ -17,14 +17,14 @@ router.use(fileUpload({}));
 
 const urlencodedParser = Router.urlencoded({ extended: false });
 
-const mysqlConfig = {
-    host: config.database.host,
-    user: config.database.user,
-    password: config.database.password,
-    database: config.database.database,
-}
+// const mysqlConfig = {
+//     host: config.database.host,
+//     user: config.database.user,
+//     password: config.database.password,
+//     database: config.database.database,
+// }
 
-const pool = mysql.createPool(mysqlConfig);
+// const pool = mysql.createPool(mysqlConfig);
 
 router.use((req, res, next) => {
 
@@ -42,7 +42,7 @@ router.get("/allOffers",
             password: config.database.password,
             database: config.database.database,
         }
-
+       
         const pool = mysql.createPool(mysqlConfig);
 
 
@@ -65,29 +65,41 @@ router.get("/allOffers",
             response.setHeader('Content-Type', 'application/json');
 		
             response.send(JSON.stringify(selectOffers[0], null, 3));
-
-            // response.send(selectOffers[0]);
-            // return selectOffers;
+            if(selectOffers[0].length !== null){
+                pool.end();
+            }
+          
         }
 
         sqlSelectOffers();
+      
     });
 
 
 router.post("/myOffers", urlencodedParser,
     async function (request, response) {
 
+        
 
         let tabelNumber = request.body.tabelNumber;
         let email = request.body.email;
         let idOffers = request.body.idOffers;
         let sqlResult = await sqlMyOffers(tabelNumber, email, idOffers)
-
+       
         response.send(sqlResult[0])
 
     })
 
 async function sqlMyOffers(tabelNumber, email, idOffers, place) {
+
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+    }
+    
+    const pool = mysql.createPool(mysqlConfig);
 
     if (idOffers != undefined) {  //условие для корректной работы Предложений для обработки
         let sqlOffersTabel = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${idOffers}`);
@@ -111,6 +123,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 											AND ow.email = "${sqlemailOffers[0][0].email}")`);
 
         //console.log(sqlMyOff[0])
+        pool.end()
         return [sqlMyOff]
 
     }
@@ -156,7 +169,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
         myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
 
     }
-
+    pool.end()
     return [myAllOfffers]
 }
 
@@ -167,6 +180,15 @@ router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddlewar
 
 router.post("/userInfo", urlencodedParser,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
 
         const userTab = request.body.userTab;
 
@@ -210,6 +232,7 @@ router.post("/userInfo", urlencodedParser,
         catch (e) {
             console.log(e)
         }
+        pool.end()
     })
 
 
@@ -289,6 +312,16 @@ router.post("/FilesMyOffers", urlencodedParser,
 
 router.post("/toStatus", urlencodedParser,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         let id = request.body.offerId
         let view = request.body.view
         let category = request.body.category
@@ -297,10 +330,21 @@ router.post("/toStatus", urlencodedParser,
             await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
             response.status(200).send() 
         } catch (e) { console.log(e) }
+        pool.end()
     })
 
 router.post("/toDbDateComission", urlencodedParser,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         let id = request.body.offerId
         let dateComission = JSON.stringify(request.body.dateComission)
         
@@ -311,6 +355,8 @@ router.post("/toDbDateComission", urlencodedParser,
         }catch(e){
             console.log(e)
         }
+
+        pool.end()
     })
 // router.post("/saveToDb", urlencodedParser,
 //     async function (request, response) {
@@ -348,6 +394,16 @@ router.get("/downloadMyFile", urlencodedParser, async function (request, respons
 
 router.post("/sendAddInfo", urlencodedParser,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         let arr = [];
         let idOffers = request.body.selectOffers;
 
@@ -368,19 +424,28 @@ router.post("/sendAddInfo", urlencodedParser,
             arr[i] = newObject;
 
         }
-
-        if (sqlSendAdd[0] != undefined) {
+        console.log(sqlSendAdd[0])
+        if (sqlSendAdd[0] !== undefined/*  && sqlSendAdd[0].length !== 0 */) { //добавил условие после &&
 
             response.send(arr)
         } else {
             response.send('null')
         }
-
+        pool.end()
     })
 
 router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         const idOffers = request.body.idOffer;
         const respTabnum = request.body.respTabnum;
 		const userId = request.user.id;
@@ -426,11 +491,22 @@ router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
         console.log(moment().format('YYYY-MM-DD'),"добавление RG к предложению",idOffers)
         response.status(200);
         response.send();
+        pool.end()
     })
 
 
 router.post("/toDbDeleteResponsible", urlencodedParser, authMiddleware,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         const idOffers = request.body.idOffer;
         const respTabnum = request.body.respTabnum;
 		const userId = request.user.id;
@@ -472,13 +548,22 @@ router.post("/toDbDeleteResponsible", urlencodedParser, authMiddleware,
         pool.query(query, placeholders);
 
         response.status(200);
-
+        pool.end()
         response.send();
     })
 
 router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         const idOffers = request.body.idOffer;
         const respTabnum = request.body.respTabnum;
         const position = request.body.position;
@@ -514,7 +599,7 @@ router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
 			{
                 console.log(e)
             }
-
+           
         }
 
         async function insert(connection, idOffer, tabnum, position)
@@ -581,6 +666,15 @@ router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
 router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
     async function (request, response) {
 
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+        
         let annotationRg = request.body.w
         let offerId = request.body.id
         let offerRespId = request.body.respID
@@ -592,6 +686,16 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
     router.post("/offerStates", urlencodedParser, authMiddleware, 
 	async function(request, response)
 	{
+        
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         const idOffers =  request.body.idOffer;
 		const userId = request.user.id;
 console.log(idOffers, userId);
@@ -645,6 +749,16 @@ console.log(idOffers, userId);
 router.post("/respResults", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
+
         const idOffers =  request.body.idOffer;
 		const userId = request.user.id;
 
@@ -746,10 +860,21 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 		response.send(result)
     })
 router.post("/responsibleToOffers", urlencodedParser,
+
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
         let arrOffer = [];
         let tabNum = request.body.tabNum
-     
+        
         let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
         
         if(sqlResponsible[0].length != 0){
@@ -787,10 +912,22 @@ router.post("/responsibleToOffers", urlencodedParser,
         } else{
             response.send("noResponsible")
         }
+
+        pool.end();
     })
     
     router.post("/saveNotesToDbRG", urlencodedParser,
-    async function (request, response) {cardOffer
+    async function (request, response) {
+      
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
     let actual = request.body.actual
     let innovate = request.body.innovate
     let cost = request.body.cost
@@ -801,10 +938,21 @@ router.post("/responsibleToOffers", urlencodedParser,
         console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
+        pool.end();
     })
     /////////////////////////////////////////////////////////////
     router.post("/toDbSaveNotesResponsible", urlencodedParser,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
     let actual = request.body.actual
     let innovate = request.body.innovate
     let cost = request.body.cost
@@ -816,20 +964,42 @@ router.post("/responsibleToOffers", urlencodedParser,
         console.log(Date(),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
+        pool.end();
     })
 
     router.post("/closeConclusionRG", urlencodedParser,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
     let offerId = request.body.idOffer
     let respTabnum = request.body.tabNum
 
         console.log(Date(),"Заключение RG закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
+        pool.end()
     })
 
     router.post("/saveComissionAnnotationToDb", urlencodedParser,
     async function (request, response) {
+        
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
      console.log(" функция")
     let textComission = request.body.w
     let offerId = request.body.id
@@ -846,12 +1016,23 @@ router.post("/responsibleToOffers", urlencodedParser,
         await pool.query(`UPDATE comission SET annotation = '${textComission}' WHERE offerID = ${offerId} AND tabelNum = ${comissionTabnum}`);
         response.status(200).send() 
      }
-      
+     
+     pool.end();
      
     })
 //////////////////////////////////////////////////////////////
     router.post("/toDbSaveAnnot", urlencodedParser,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
+
      console.log(" toDbSaveAnnot - отработало")
     let textAnnotation = request.body.ann
     let offerId = request.body.idOffer
@@ -869,12 +1050,22 @@ router.post("/responsibleToOffers", urlencodedParser,
       await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
         response.status(200).send() 
     }catch(e){console.log(e)}
+
+    pool.end()
     })
 
 
 
     router.post("/comission", urlencodedParser,
     async function (request, response) {
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+        
+        const pool = mysql.createPool(mysqlConfig);
      console.log("comission - отработало")
     let offerId = request.body.idOffer
     try{
@@ -887,6 +1078,9 @@ router.post("/responsibleToOffers", urlencodedParser,
      console.log(resp)
      response.json(resp)
     }catch(e){console.log(e)}
+
+    pool.end()
+
     })
     
 

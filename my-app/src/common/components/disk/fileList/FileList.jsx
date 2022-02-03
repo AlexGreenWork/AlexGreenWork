@@ -1,7 +1,7 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import './fileList.css'
 import {API_URL} from "../../../../config";
-import { CompassOutlined } from '@ant-design/icons';
+
 
 
 
@@ -145,7 +145,7 @@ const FileList = () => {
    
 
 
-    if(filesObj !== 0){
+    if(filesObj !== 0 && filesObj !== "неверные входящие данные"){
         return(
             <div>
               
