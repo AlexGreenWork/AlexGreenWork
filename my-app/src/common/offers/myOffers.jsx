@@ -128,11 +128,12 @@ const OffersLink = (props) => {
    
     for (let i = 0; i < Object.keys(offersDataReverse).length; i++) {
        
-        if (offersDataReverse[i].coAuthor == "Соавтор") {
+        if (offersDataReverse[i].coAuthor === "Соавтор") {
              offersDataReverse.push(offersDataReverse[i]);
-             offersDataReverse.splice(offersDataReverse[i], 1); 
+             offersDataReverse.splice(i, 1); 
         }
     }
+
     return offersDataReverse.map((number) =>
         <Offer key = {"myOffer"+number.Id} id={number.Id} date={number.date} name={number.nameSendler}
                surname={number.surnameSendler} midlename={number.middlenameSendler}
@@ -156,7 +157,7 @@ const Offers = () => {
         let userEmail = localStorage.getItem('userEmail');
         
     
-        xhr.open('POST', `${API_URL}api/offers/myOffers`, true); /// AСИНХРОННЫЙ ЗАПРОС!!!
+        xhr.open('POST', `${API_URL}api/offers/myOffers`, true);
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         
            

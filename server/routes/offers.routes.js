@@ -357,6 +357,7 @@ router.post("/sendAddInfo", urlencodedParser,
 
             let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
             let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
+            console.log(sqlCoAuthorData[0][0])
             let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
             newObject["nameSendler"] = sqlCoAuthorData[0][0].name;
             newObject['surnameSendler'] = sqlCoAuthorData[0][0].surname;
@@ -645,7 +646,6 @@ router.post("/respResults", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
         const idOffers =  request.body.idOffer;
-		const userId = request.user.id;
 
 		if(!idOffers)
 		{
@@ -667,11 +667,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 							o.extent
 						FROM
 							?? AS o
-						INNER JOIN offersworker AS o2 ON
-							o2.id = ?
 						INNER JOIN offers AS o3 ON
 							o3.Id = ?
-							AND o3.tabelNum = o2.tabelNum
 						INNER JOIN kadry_all AS ka 
 								ON ka.tabnum = o.responsible_tabnum
 									AND ka.factory = 1 
@@ -683,8 +680,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 						AND
 							o.offer_id = o3.Id`
 
-		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
-		let placeholders_rg = ['offersendler.offersresponsible_rg', userId, idOffers];
+		let placeholders = ['offersendler.offersresponsible', idOffers];
+		let placeholders_rg = ['offersendler.offersresponsible_rg', idOffers];
 
 		const responsibles = await pool.query(query, placeholders)
 		const responsibles_rg = await pool.query(query, placeholders_rg)
@@ -748,11 +745,9 @@ router.post("/responsibleToOffers", urlencodedParser,
     async function (request, response) {
         let arrOffer = [];
         let tabNum = request.body.tabNum
-        console.log("tabNum", tabNum)
-
+     
         let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
-        console.log( sqlResponsible[0])
-try{
+        
         if(sqlResponsible[0].length != 0){
             for (let i = 0; i < sqlResponsible[0].length; i++) {
 
@@ -762,39 +757,34 @@ try{
                                                          status,
                                                          tabelNum 
                                                    FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
-            console.log(`SELECT nameOffer,
-            Id,
-            date,
-            status,
-            tabelNum 
-      FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
-                                                   console.log( sqlOffers[0][0])
+
                                                    
-                                                   
-                let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
-                console.log(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `)
+                if(sqlOffers[0].length != 0){
+                    let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
+                    let offersObj = sqlOffers[0][0]
 
-                let offersObj = sqlOffers[0][0]
+                    offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
+                    offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
+                    offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
+    
+                    arrOffer[i] = offersObj;
+    
+                    if(i == sqlResponsible[0].length-1 ){
+                        response.send(arrOffer)
+                    }
+                    } else {
+                        response.send("noResponsible")
+                    }
+              
 
-                offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
-                offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
-                offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
 
-                arrOffer[i] = offersObj;
-
-                if(i == sqlResponsible[0].length-1 ){
-                    response.send(arrOffer)
-                }
+               
             }
         } else{
             response.send("noResponsible")
         }
-
-    }catch(e){
-        console.log(e)
-    }
-
     })
+    
     router.post("/saveNotesToDbRG", urlencodedParser,
     async function (request, response) {
     let actual = request.body.actual
