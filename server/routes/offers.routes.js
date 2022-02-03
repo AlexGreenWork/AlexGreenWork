@@ -796,7 +796,7 @@ try{
 
     })
     router.post("/saveNotesToDbRG", urlencodedParser,
-    async function (request, response) {cardOffer
+    async function (request, response) {
     let actual = request.body.actual
     let innovate = request.body.innovate
     let cost = request.body.cost
@@ -833,6 +833,20 @@ try{
         await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
+
+    router.post("/closeConclusionResponsible", urlencodedParser,
+    async function (request, response) {
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+        try{
+        console.log(Date(),"Заключение Responsible закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        response.status(200).send()
+        }catch(e){
+            console.log(e)
+        } 
+    })
+
 
     router.post("/saveComissionAnnotationToDb", urlencodedParser,
     async function (request, response) {
