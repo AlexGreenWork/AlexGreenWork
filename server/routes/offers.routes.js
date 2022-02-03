@@ -646,7 +646,6 @@ router.post("/respResults", urlencodedParser, authMiddleware,
     async function (request, response)
 	{
         const idOffers =  request.body.idOffer;
-		const userId = request.user.id;
 
 		if(!idOffers)
 		{
@@ -668,11 +667,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 							o.extent
 						FROM
 							?? AS o
-						INNER JOIN offersworker AS o2 ON
-							o2.id = ?
 						INNER JOIN offers AS o3 ON
 							o3.Id = ?
-							AND o3.tabelNum = o2.tabelNum
 						INNER JOIN kadry_all AS ka 
 								ON ka.tabnum = o.responsible_tabnum
 									AND ka.factory = 1 
@@ -684,8 +680,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 						AND
 							o.offer_id = o3.Id`
 
-		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
-		let placeholders_rg = ['offersendler.offersresponsible_rg', userId, idOffers];
+		let placeholders = ['offersendler.offersresponsible', idOffers];
+		let placeholders_rg = ['offersendler.offersresponsible_rg', idOffers];
 
 		const responsibles = await pool.query(query, placeholders)
 		const responsibles_rg = await pool.query(query, placeholders_rg)
