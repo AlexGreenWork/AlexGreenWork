@@ -135,11 +135,11 @@ const OffersLink = (props) => {
        
         if (offersData[i].coAuthor !== undefined && offersData[i].coAuthor === "Соавтор") {
             offersDataReverse.push(offersData[i])
-            console.log(i)
+          
          }
     }
-    return offersDataReverse.map((number) =>
-    <Offer key = {"myOffer"+number.Id} id={number.Id} date={number.date} name={number.nameSendler}
+    return offersDataReverse.map((number, key) =>
+    <Offer key = {"myOffer"+number.Id+key} id={number.Id} date={number.date} name={number.nameSendler}
            surname={number.surnameSendler} midlename={number.middlenameSendler}
            status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} coAuthor={number.coAuthor} />)
 }
