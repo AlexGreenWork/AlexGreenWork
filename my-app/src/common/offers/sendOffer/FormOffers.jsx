@@ -582,10 +582,16 @@ function OffersForm(props) {
             <form className="offers" onSubmit={handleSubmit}>
                 <div className="form-fields">
 
-                    <div className={s.formFilds}>
-                        <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
+                <div className={s.formFilds}>
+                        <input type="text" placeholder="табельный номер" className="input-data" id="tabelNumber"
                             name="tabelNumber" required autoComplete="on"
-                            value={tabelNumber} onChange={(e) => { setTabelNumber(e.target.value); }} onBlur={(e) => { addFioSendler(e.target.value) }} />
+                            value={tabelNumber} onChange={(e) => {
+                                setTabelNumber(e.target.value)
+                                if (e.target.value.length === 5) {
+                                    console.log(tabelNumber.length)
+                                    addFioSendler(e.target.value)
+                                }
+                            }} onBlur={(e) => { addFioSendler(e.target.value) }} />
                         <label htmlFor="tabelNumber">Табельный номер</label>
                         <div className="false-input false-tabelNumber"></div>
                     </div>
@@ -614,19 +620,7 @@ function OffersForm(props) {
                         <div className="false-input false-middleName"></div>
                     </div>
 
-                    <div className={s.formFilds}>
-                        <input type="text" placeholder="табельный номер" className="input-data" id="tabelNumber"
-                            name="tabelNumber" required autoComplete="on"
-                            value={tabelNumber} onChange={(e) => {
-                                setTabelNumber(e.target.value)
-                                if (e.target.value.length === 5) {
-                                    console.log(tabelNumber.length)
-                                    addFioSendler(e.target.value)
-                                }
-                            }} onBlur={(e) => { addFioSendler(e.target.value) }} />
-                        <label htmlFor="tabelNumber">Табельный номер</label>
-                        <div className="false-input false-tabelNumber"></div>
-                    </div>
+                 
 
                     <div className={s.formFilds}>
                         <input type="email" placeholder="e-mail-adress@gmail.com" className="input-data" id="emailInput"
