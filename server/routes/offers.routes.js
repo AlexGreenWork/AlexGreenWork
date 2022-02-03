@@ -593,12 +593,13 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
 	async function(request, response)
 	{
         const idOffers =  request.body.idOffer;
-		const userId = request.user.id;
-console.log(idOffers, userId);
+
 		if(!idOffers)
 		{
 			response.status(400)
 			response.send();
+
+			return;
 		}
 		
 		const query = `SELECT
@@ -607,11 +608,8 @@ console.log(idOffers, userId);
 							dep.name
 						FROM
 							?? AS o
-						INNER JOIN offersworker AS o2
-							ON o2.id = ?
 						INNER JOIN offers AS o3
 							ON o3.Id = ?
-								AND o3.tabelNum = o2.tabelNum
 						INNER JOIN kadry_all AS ka 
 							ON ka.tabnum = o.responsible_tabnum
 								AND ka.factory = 1 
@@ -651,6 +649,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 		{
 			response.status(400)
 			response.send();
+
+			return;
 		}
 
 		const query = `SELECT
