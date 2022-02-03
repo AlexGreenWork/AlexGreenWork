@@ -620,8 +620,8 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
 							o.deleted <> 1
 							AND o.offer_id = o3.Id`;
 
-		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", userId, idOffers]);
-		const sqlOfferResponsible_rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
+		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers]);
+		const sqlOfferResponsible_rg = await pool.query(query, ["offersresponsible_rg", idOffers]);
 
 		let result = {responsibles: [],
 								responsibles_rg: []};
