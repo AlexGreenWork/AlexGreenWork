@@ -26,10 +26,7 @@ const Offer = (props) => {
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     let offersData = JSON.parse(xhr.response);           
-                   
-                    requestInfoAutor(xhr.response);
-                   console.log(xhr.response)
-                                                                    
+                    requestInfoAutor(xhr.response);                                               
                 } 
             }     
 
@@ -100,7 +97,7 @@ const Offer = (props) => {
     
     }
     function clickOnOfferLink(){
-        console.log(props)
+
         localStorage.setItem('idOffers', props.id);
         localStorage.setItem('status', props.status);
         value.contextFunction(props.id, props.tabelNum)
@@ -143,7 +140,7 @@ const Offer = (props) => {
 
 function SortOffers(props){
     const [sortArr, setSortArr] = useState(null);
-    console.log(props.typeSort)   
+
     let offersData = JSON.parse(props.request);
     let sort = props.sort
     let arr = []
@@ -197,7 +194,7 @@ function SortOffers(props){
             sort = " "
         }
         let fullname = sort.toLowerCase().split(" ")
-        console.log(fullname)
+       
             if(fullname.length === 1){
                
                 offersData.map((number, count) => { if(`${number.surnameSendler.toLowerCase()}`.includes(fullname) === true){
@@ -261,9 +258,7 @@ function SortOffers(props){
 }
 
 const OffersLink = (props) => {
-    console.log(typeof props.request)
-    // console.log( props.request)
-    
+ 
   
     if(typeof props.request === "object"){
         return props.request.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
@@ -272,7 +267,6 @@ const OffersLink = (props) => {
                                              email={number.email}/>)
     } else{
         let offersData = JSON.parse(props.request);
-        // console.log(offersData)
         let offersDataReverse = offersData.reverse();
    
     return offersDataReverse.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
@@ -301,7 +295,6 @@ const Offers = () => {
         xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                // console.log(xhr.response)
                 setReqAllOff(xhr.response)
             }
         }
@@ -311,7 +304,6 @@ const Offers = () => {
 
     }
    
-   console.log(sort.length)
    if(sort === "null" || sort.length === 0 ){
     return (
         <div className={s.offersContainer}>
@@ -322,9 +314,9 @@ const Offers = () => {
                             paddingRight: "10px",
                             paddingTop: "5px" }}>Искать по </div>  
                 <select value={typeSort} onChange={(e)=>{setTypeSort(e.target.value)}}>
-                <option selected value="numberOffer" >Номеру предложения</option>
+                <option select="true" value="numberOffer" >Номеру предложения</option>
                 <option value="nameOffer">Названию предложения</option>
-                <option selected value="fullname">ФИО автора</option>
+                <option value="fullname">ФИО автора</option>
                 </select>
                 <div style={ {fontSize: "25px",
                             textAlign: "right",
