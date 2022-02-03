@@ -15,8 +15,9 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from '@mui/material/Paper';
 import axios from "axios";
-
+import {closeConclusionResponsible} from "../../../../../actions/file";
 import FilesResponsible from "./responsibleFiles"
+import {useDispatch} from "react-redux";
 
 
 
@@ -24,10 +25,20 @@ import FilesResponsible from "./responsibleFiles"
 const ConclusionCard = (props) => {
     const [viewChange, setViewChange] = React.useState(false);
     const [annot, setAnnot] = React.useState(`${props.id.mark}`)
-    if(props.id.mark == null && props.id.responsible_tabnum == localStorage.getItem('userTabelNum')){
+    console.log(props.id.mark)
+    if(props.id.mark == "null" ||props.id.mark == null && props.id.responsible_tabnum != localStorage.getItem("userTabelNum")){
         props.id.mark = ''
+        console.log("worked if1" +props.id.mark)
+        console.log("worked if1" +props.id.responsible_tabnum)
+        setAnnot("")
+    }if(props.id.mark == "null" ||props.id.mark == null && props.id.responsible_tabnum == localStorage.getItem("userTabelNum")){
+        props.id.mark = ''
+        console.log("worked if2" +props.id.responsible_tabnum)
+        setAnnot("")
+    }if(props.id.mark == ""  ){
+        console.log("worked if3" +props.id.responsible_tabnum)
     }else{
-        props.id.mark = {annot}
+        props.id.mark = annot;
     }
     
     function changeViewSelect() {
@@ -314,6 +325,26 @@ const ConclusionCard = (props) => {
                 </div>
             )
         }
+
+        function IsAdminSaveNotes2() {
+            return (
+
+                <div>
+                    <Button style={{
+                        background: "#e9e9ff",
+                        margin: "25px",
+                        boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
+                    }} onClick={(value) => {
+                       saveNotesResponsible(props.id.offer_id, props.tabel, props.id.mark, props.id.responsible_tabnum, props.name)
+                    }}>Записать оценки</Button>
+                    
+
+                </div>
+            )
+        }
+
+
+
         function ChangeAnnotViewContentEditable(){
             const isMy = localStorage.getItem('userTabelNum')
             if (isMy == props.id.responsible_tabnum) {
@@ -329,11 +360,69 @@ const ConclusionCard = (props) => {
 
         function AdminChangeSaveNotes() {
             const MyTabnum = localStorage.getItem('userTabelNum');
-            if (MyTabnum == props.id.responsible_tabnum) {
+            if (MyTabnum == props.id.responsible_tabnum && props.id.close == null) {
                 return <IsAdminSaveNotes/>;
+            }if (MyTabnum == props.id.responsible_tabnum && props.id.close !== null) {
+                return <IsAdminSaveNotes2/>;
+
             } else {
                 return <IsAdminUser/>
             }
+        }
+
+        function ViewNotesResposible() {
+            const MyTabnum = localStorage.getItem('userTabelNum');
+            if (MyTabnum == props.id.responsible_tabnum) {
+                return <TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell/>
+                            <TableCell align="right">Актуальность</TableCell>
+                            <TableCell align="right">Инновативность</TableCell>
+                            <TableCell align="right">Затратность</TableCell>
+                            <TableCell align="right">Протяженность</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    <TableCell/>
+                         <TableCell id={'actual'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{actual}</TableCell>
+                         <TableCell id={'innovate'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{innov}</TableCell>
+                          <TableCell id={'cost'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{cost}</TableCell>
+                          <TableCell id={'duration'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{duration}</TableCell>
+                    </TableBody>
+                    </Table>
+            </TableContainer>;
+            } else {
+                return <TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell/>
+                            <TableCell align="right">Актуальность</TableCell>
+                            <TableCell align="right">Инновативность</TableCell>
+                            <TableCell align="right">Затратность</TableCell>
+                            <TableCell align="right">Протяженность</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    <TableCell/>
+                         <TableCell id={'actual'+props.name} className={s.NoteCell} align="right"  type="number">{actual}</TableCell>
+                         <TableCell id={'innovate'+props.name} className={s.NoteCell} align="right"  type="number">{innov}</TableCell>
+                          <TableCell id={'cost'+props.name} className={s.NoteCell} align="right"  type="number">{cost}</TableCell>
+                          <TableCell id={'duration'+props.name} className={s.NoteCell} align="right"  type="number">{duration}</TableCell>
+                    </TableBody>
+                    </Table>
+            </TableContainer>
+            }
+        }
+        const dispatch = useDispatch()
+        function closeCunclusion(){
+            const idOffer = localStorage.getItem('idOffers')
+            const tabNum = localStorage.getItem('userTabelNum')
+            alert("Заключение закрыто")
+            setDateClose(Date())
+            dispatch(closeConclusionResponsible(tabNum, idOffer ))
         }
 
         const [isActive, setIsActive] = React.useState(false);
@@ -345,14 +434,19 @@ function ConfirmResponsible(){
             border:"1px solid #a5bff9"
         }}
         >Принять в обработку</Button></div>
-    }if(props.id.responsible_tabnum == localStorage.getItem('userTabelNum') && props.id.open !== null){
+    }if(props.id.responsible_tabnum == localStorage.getItem('userTabelNum') && props.id.open !== null && props.id.close == null ){
         return (<div>
-        В обработке...
-            <Button>Завершить работу с заключением</Button>
+        В обработке с {newDate}{' ' + d.getFullYear()}...
+            <Button onClick={(value) => {
+                            closeCunclusion(props.id.tabNum)}}>Завершить работу с заключением</Button>
         </div>)
+    }if(props.id.responsible_tabnum == localStorage.getItem('userTabelNum') && props.id.open !== null && props.id.close !== null ){
+        return (<div>
+        В обработке с {newDate}{' ' + d.getFullYear()}...
+        </div>)   
     } if(props.id.responsible_tabnum !== localStorage.getItem('userTabelNum') && props.id.open !== null){
         return (<div>
-            В обработке c /{props.id.open}/
+            В обработке c  {newDate}{' ' + d.getFullYear()}
             </div>)
     }if(props.id.responsible_tabnum !== localStorage.getItem('userTabelNum') && props.id.open == null){
         return (<div>
@@ -361,6 +455,21 @@ function ConfirmResponsible(){
     }
     else {
         return <div></div>
+    }
+}
+const [dateClose, setDateClose] = useState(`${props.id.close}`)
+var close = new Date(`${dateClose}`);
+var newCloseDate = close.getDate().toString().padStart(2, '0') + ' ' + month[close.getMonth()];
+function CloseChange(isClose){
+        
+    if(isClose.isClose == "null"){
+       
+        return <div></div>
+    }if(isClose.isClose == "undefined"){
+        return <div></div>
+    }else{
+        return <div style={{width:"100%", backgroundColor:"#ea8888", display: "flex", justifyContent: "center"}}> Заключение закрыто: {newCloseDate}{' ' + close.getFullYear() } года.</div>
+        
     }
 }
 
@@ -374,14 +483,13 @@ const [duration, setDuration] = useState(`${props.id.extent}`)
                 position: "relative",
                 display: "block"
             }} name={props.name}>
-
+                <CloseChange isClose={dateClose}/>
                 <AdminChangeCloseBtn {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
 
                 <div className={s.header}>
                     <ConfirmResponsible {...props} isAdmin={localStorage.getItem("userTabelNum")} />
                     <div className={s.date}>
-                        <div>Дата:</div>
-                        <div> {newDate}{' ' + d.getFullYear()}</div>
+                        
                     </div>
                     <div className={s.nameWorkGroup}>
                         <div>Подразделение:</div>
@@ -434,25 +542,27 @@ const [duration, setDuration] = useState(`${props.id.extent}`)
     width:"100%"
 }} onClick={() => setIsActive(!isActive)}>
                     {isActive ?
-                        <button onClick={() => setIsActive(!isActive)}
+                        <button style={{border: "0",
+                            backgroundColor: "white"}} onClick={() => setIsActive(!isActive)}
                                 className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
                                 tabIndex="0" type="button" aria-label="expand row">
                             <svg
                                 className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
                                 focusable="false" viewBox="0 0 24 24" aria-hidden="true"
-                                data-testid="KeyboardArrowUpIcon">
+                                data-testid="KeyboardArrowUpIcon"  style={{height: "24px"}}>
                                 <path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path>
                             </svg>
                             <span className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span>
                         </button>
                         :
-                        <button onClick={() => setIsActive(!isActive)}
+                        <button style={{border: "0",
+                        backgroundColor: "white"}} onClick={() => setIsActive(!isActive)}
                                 className="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
                                 tabIndex="0" type="button" aria-label="expand row">
                             <svg
                                 className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
                                 focusable="false" viewBox="0 0 24 24" aria-hidden="true"
-                                data-testid="KeyboardArrowDownIcon">
+                                data-testid="KeyboardArrowDownIcon" style={{height: "24px"}}>
                                 <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
                             </svg>
                             <span className="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"></span>
@@ -466,9 +576,9 @@ const [duration, setDuration] = useState(`${props.id.extent}`)
                             marginBottom: "25px"
                         }}>Краткая аннотация заключения подразделения({props.id.fullname}):
                         </div>
-                        <ChangeAnnotViewContentEditable isMy={localStorage.getItem('userTabelNum')}/>
-                       
                         <AdminChangeSaveAnnotation {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
+                        <ChangeAnnotViewContentEditable isMy={localStorage.getItem('userTabelNum')}/>
+                        
                     </div>
                     <div className={s.filesConclusion}>
                         <div style={{
@@ -500,27 +610,9 @@ const [duration, setDuration] = useState(`${props.id.extent}`)
                             <div>Оценка (максимальная оценка - 5 баллов)</div>
                         </div>
 
+                            <ViewNotesResposible {...props} isResponsible = {localStorage.getItem("userTabelNum")}/>    
+                            
 
-                            <TableContainer component={Paper}>
-                                <Table aria-label="collapsible table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell/>
-                                            <TableCell align="right">Актуальность</TableCell>
-                                            <TableCell align="right">Инновативность</TableCell>
-                                            <TableCell align="right">Затратность</TableCell>
-                                            <TableCell align="right">Протяженность</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                    <TableCell/>
-                                         <TableCell id={'actual'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{actual}</TableCell>
-                                         <TableCell id={'innovate'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{innov}</TableCell>
-                                          <TableCell id={'cost'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{cost}</TableCell>
-                                          <TableCell id={'duration'+props.name} className={s.NoteCell} align="right" contenteditable="true" type="number">{duration}</TableCell>
-                                    </TableBody>
-                                    </Table>
-                            </TableContainer>
                             <AdminChangeSaveNotes {...props} isAdmin={localStorage.getItem("userAdminOptions")}/>
                     </div>
 

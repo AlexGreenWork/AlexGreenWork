@@ -478,9 +478,9 @@ function AdminChangeAnnotationWiev(props){
         }
     }
     function CloseChange(isClose){
-        console.log(isClose.isClose)
+        
         if(isClose.isClose == "null"){
-            console.log("Отработало")
+           
             return <div></div>
         }if(isClose.isClose == "undefined"){
             return <div></div>
