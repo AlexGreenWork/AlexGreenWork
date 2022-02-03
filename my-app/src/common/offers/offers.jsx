@@ -7,6 +7,7 @@ import Context from "../context/Context";
 import { useDispatch } from "react-redux";
 import { addSendler, selectMyOffers } from "../../reducers/offerReducer";
 
+
 const Offer = (props) => {
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState('');
@@ -121,7 +122,7 @@ const Offer = (props) => {
                         <div className={s.from}>
                         
                             <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
-                            <div className={s.date}> {props.date.slice(0, 9)}</div>
+                            {/* <div className={s.date}> {props.date.slice(0, 9)}</div> */}
                             <div className={s.status}>  {props.status}</div>
                         </div>
                         <div className={s.offerText} style={{
@@ -140,21 +141,156 @@ const Offer = (props) => {
     )
 }
 
+function SortOffers(props){
+    const [sortArr, setSortArr] = useState(null);
+    console.log(props.typeSort)   
+    let offersData = JSON.parse(props.request);
+    let sort = props.sort
+    let arr = []
+    if(props.typeSort === null){
+        return ( <div>{/* нет сортировки */}</div>);
+    }
+    switch(props.typeSort){
+        case "numberOffer":
+                offersData.map((number, count) => { if(`${number.Id}`.includes(sort) === true){
+                arr.push(number)
+                   
+                }
+            else{
+                return (<div>
+                     sort null
+                </div>)
+            }
+        }) 
+           
+         if(arr.length !== 0 && sort.length !== 0){
+           
+            return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+         } else {
+            return ( <div>{/* нет сортировки */}</div>);
+         }
+    break;
 
+    case "nameOffer":
+        offersData.map((number, count) => { if(`${number.nameOffer}`.toLowerCase().includes(sort.toLowerCase()) === true){
+            arr.push(number)
+               
+            }
+        else{
+            return (<div>
+                 sort null
+            </div>)
+        }
+    }) 
+
+    if(arr.length !== 0 && sort.length !== 0){
+           
+        return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+     } else {
+        return ( <div>{/* нет сортировки */}</div>);
+     }
+        break;
+
+    case "fullname":
+        
+        if(sort == null){
+            sort = " "
+        }
+        let fullname = sort.toLowerCase().split(" ")
+        console.log(fullname)
+            if(fullname.length === 1){
+               
+                offersData.map((number, count) => { if(`${number.surnameSendler.toLowerCase()}`.includes(fullname) === true){
+                    arr.push(number)
+                  
+                    }
+                else{
+                    return (<div>
+                         sort null
+                    </div>)
+                }
+            }) 
+        
+            if(arr.length !== 0 && sort.length !== 0){
+                   
+                return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+             } else {
+                return ( <div>{/* нет сортировки */}</div>);
+             }
+            } else if(fullname.length === 2){
+                offersData.map((number, count) => { if(`${number.surnameSendler.toLowerCase()}`.includes(fullname[0]) === true && `${number.nameSendler.toLowerCase()}`.includes(fullname[1]) === true){
+                    arr.push(number)
+                     
+                    }
+                else{
+                    return (<div>
+                         sort null
+                    </div>)
+                }
+            }) 
+        
+            if(arr.length !== 0 && sort.length !== 0){
+                   
+                return ( <div> Результат поиска <OffersLink request = {arr} /> </div>);
+             } else {
+                return ( <div>{/* нет сортировки */}</div>);
+             }
+            } else if(fullname.length === 3){
+                offersData.map((number, count) => { if(`${number.surnameSendler.toLowerCase()}`.includes(fullname[0]) === true && `${number.nameSendler.toLowerCase()}`.includes(fullname[1]) === true && `${number.middlenameSendler.toLowerCase()}`.includes(fullname[2])){
+                    arr.push(number)
+                  
+                    }
+                else{
+                    return (<div>
+                         sort null
+                    </div>)
+                }
+            }) 
+        
+            if(arr.length !== 0 && sort.length !== 0){
+                   
+                return ( <div style={{marginBottom:'10px'}}> Результат поиска <OffersLink request = {arr} /></div>);
+             } else {
+                return ( <div>{/* нет сортировки */}</div>);
+            }
+            break;
+         
+
+    }
+}
+}
 
 const OffersLink = (props) => {
-    let offersData = JSON.parse(props.request);
-    console.log(props.request)
-    return offersData.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
+    console.log(typeof props.request)
+    // console.log( props.request)
+    
+  
+    if(typeof props.request === "object"){
+        return props.request.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
+                                             surname={number.surnameSendler} midlename={number.middlenameSendler}
+                                             status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission}
+                                             email={number.email}/>)
+    } else{
+        let offersData = JSON.parse(props.request);
+        // console.log(offersData)
+        let offersDataReverse = offersData.reverse();
+   
+    return offersDataReverse.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
                                              status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission}
                                              email={number.email}/>)
 
+    }
+    
 }
+
+// function sortNumberOffer
 
 const Offers = () => {
     const [reqAllOff, setReqAllOff] = useState(0);
-    
+    const [sort, setSort] = useState("null");
+    const [typeSort, setTypeSort] = useState("numberOffer");
+  
     if(reqAllOff === 0){
         Resp();
     }
@@ -174,12 +310,58 @@ const Offers = () => {
         return xhr.response;
 
     }
+   
+   console.log(sort.length)
+   if(sort === "null" || sort.length === 0 ){
     return (
         <div className={s.offersContainer}>
             <div className={s.titleHeader}> Предложения для обработки рабочей группой</div>
-            <OffersLink request={reqAllOff}/>
-
+            <div className={s.searchContainer} >
+              <div style={ {fontSize: "15px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingTop: "5px" }}>Искать по </div>  
+                <select value={typeSort} onChange={(e)=>{setTypeSort(e.target.value)}}>
+                <option selected value="numberOffer" >Номеру предложения</option>
+                <option value="nameOffer">Названию предложения</option>
+                <option selected value="fullname">ФИО автора</option>
+                </select>
+                <div style={ {fontSize: "25px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingBottom: "30px" }}> &#128269;</div>
+            <input type="text" name="sort" className={s.searchOffer} onChange={(e)=>{setSort(e.target.value)}}/>
+            </div>
+            
+            <SortOffers request = {reqAllOff} sort={sort} typeSort = {typeSort}/>
+            <OffersLink request={reqAllOff} />
+           
         </div>
     )
+    } else{
+        return (
+            <div className={s.offersContainer}>  
+                <div className={s.titleHeader}> Предложения для обработки рабочей группой</div>
+                <div className={s.searchContainer} >
+              <div style={ {fontSize: "15px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingTop: "5px" }}>Искать по </div>  
+                <select value={typeSort} onChange={(e)=>{setTypeSort(e.target.value)}}>
+                <option selected value="numberOffer" >Номеру предложения</option>
+                <option value="nameOffer">Названию предложения</option>
+                <option selected value="fullname">ФИО автора</option>
+                </select>
+                <div style={ {fontSize: "25px",
+                            textAlign: "right",
+                            paddingRight: "10px",
+                            paddingBottom: "30px" }}> &#128269;</div>
+            <input type="text" name="sort" className={s.searchOffer} onChange={(e)=>{setSort(e.target.value)}}/>
+            </div>
+                <SortOffers request = {reqAllOff} sort={sort} typeSort = {typeSort}/>
+            </div>
+        )
+    }
+    
 }
 export default Offers;
