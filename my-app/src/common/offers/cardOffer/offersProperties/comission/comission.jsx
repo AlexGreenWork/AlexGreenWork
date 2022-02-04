@@ -116,13 +116,18 @@ function downloadFile(obj) {
 
 
 const ComissionOffer = () => {
+    
+    
     const [annotateComission, setAnnotateComission] = useState('')
     const response1 = server.send_post_request(`${API_URL}api/offers/comission`,{idOffer: localStorage.getItem('idOffers')}).then(function (data) {
-        setAnnotateComission(data.data);
+        setAnnotateComission(data.data)
         console.log(data.data)
-      });;
-      console.log("state", annotateComission)
-    
+        
+       
+      });
+      
+    //   console.log("state", annotateComission)
+      
     const [requestDir, setRequestDir] = React.useState(0);
     const [dateComission, setDateComission] = React.useState(`${localStorage.getItem('dateComission')}`);
     const [listFileComission, setListFileComission] = React.useState(<FileCommissionList req="null" />);
@@ -279,6 +284,15 @@ const ComissionOffer = () => {
             <div></div>
         )
     }
+
+    function profitToDB(){
+        const authorProfit = document.getElementById('author')
+        const soAuthorProfit = document.getElementById('soAuthor')
+        const offerId = localStorage.getItem('idOffers')
+        
+        dispatch(profitToDB(authorProfit, soAuthorProfit, offerId))
+    }
+
     function ProfitChange(){
         if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
             return <div>
@@ -286,7 +300,7 @@ const ComissionOffer = () => {
                     border: '1px solid lightblue',
                     boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
                     margin: '10px'
-                }}>Сохранить суммы</Button>
+                }} onClick={profitToDB}>Сохранить суммы</Button>
             </div>;
 
         } else {

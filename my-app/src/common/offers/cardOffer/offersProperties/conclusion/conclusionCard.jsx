@@ -319,7 +319,7 @@ const ConclusionCard = (props) => {
                         margin: "25px",
                         boxShadow: "1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
                     }} onClick={(value) => {
-                        saveNotesResponsible(props.id.offer_id, props.tabel)
+                        closeCunclusion()
                     }}>Сдать заключение</Button>
 
                 </div>
