@@ -553,6 +553,43 @@ router.post("/fioSendler", urlencodedParser, async (req, res) => {
 
 })
 
+router.post("/CostOffers", urlencodedParser, async (req, res) => {
+  
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+    const pool = mysql.createPool(mysqlConfig);
+    let arrFio = []
+    let idOffers = req.body.idOffers
+    if(idOffers != undefined){
+        let sqlSendler = await pool.execute( `SELECT ow.name, ow.surname, ow.middlename FROM offersworker as ow inner join offers as o on o.Id = '${idOffers}' where ow.tabelnum = o.tabelNum; `);
+       
+        let sqlCoAuthorTab = await pool.execute(`SELECT co_author_tabNum FROM senleradditional WHERE IdOffers=${idOffers}`)
+       
+        if(sqlSendler[0].length != 0){
+            arrFio.push(sqlSendler[0][0])
+        }
+      
+        for(let i = 0; i<sqlCoAuthorTab.length; i++){
+
+            if(sqlCoAuthorTab[0].length != 0){
+                let sqlCoAuthor = await pool.execute(`SELECT name, surname, middlename  FROM offersworker WHERE tabelnum=${sqlCoAuthorTab[0][i].co_author_tabNum}`)
+                arrFio.push(sqlCoAuthor[0][0])
+              
+            }
+           
+        }
+        res.send(arrFio)
+    } else{
+        res.send("noData")
+    }
+
+})
+
 
 
 module.exports = router

@@ -20,6 +20,7 @@ import { useDispatch } from 'react-redux';
 import StatementFileList from './comissionFiles'
 import { store } from "../../../../../reducers";
 import server from "../../../../../actions/server";
+import CostOffers from "./costOffers";
 
 function IMG(props) {
     return (
@@ -279,20 +280,20 @@ const ComissionOffer = () => {
             <div></div>
         )
     }
-    function ProfitChange(){
-        if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
-            return <div>
-                <Button sx={{
-                    border: '1px solid lightblue',
-                    boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
-                    margin: '10px'
-                }}>Сохранить суммы</Button>
-            </div>;
+    // function ProfitChange(){
+    //     if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
+    //         return <div>
+    //             <Button sx={{
+    //                 border: '1px solid lightblue',
+    //                 boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
+    //                 margin: '10px'
+    //             }}>Сохранить суммы</Button>
+    //         </div>;
 
-        } else {
-            return <div></div>
-        }
-    }
+    //     } else {
+    //         return <div></div>
+    //     }
+    // }
 
 
     function DateTimeChange() {
@@ -467,29 +468,9 @@ const ComissionOffer = () => {
                 marginTop: "5px"
             }}>
                 <div>Величина вознаграждения</div>
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <div> Автору:
-                            {/* <div style={{
-                                backgroundImage: `url(${API_URL + 'files/photos/' + store.getState().offers.offer.tabelNum + ".jpg"})`,
-                                width: "40px",
-                                height: "40px",
-                                backgroundSize: "cover",
-                                borderRadius: "50%",
-                                backgroundPosition: "center"
-                            }}>
-                            </div> */}
-                        </div>
-
-                        <div contentEditable={"true"} id="author" style={{backgroundColor:"white"}}> 1500</div>
-                    </div>
-                    <div>
-                        <div> Соавтору  </div>
-                        <div contentEditable={"true"} id="soAuthor"> 1500</div>
-                    </div>
-                   
-                </div>
-                <ProfitChange isAmin={localStorage.getItem("userAdminOptions")}/>
+                <CostOffers/>
+    
+                {/* <ProfitChange isAmin={localStorage.getItem("userAdminOptions")}/> */}
             </div>
         </div>
     )
