@@ -43,7 +43,7 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
         database: dataBaseConfig.database.database,
         password: dataBaseConfig.database.password,
     });
-
+    
         let arrAllFiles= {};  
         let countResponse = 0;
         let idOffers = req.body.idOffers;
@@ -158,9 +158,10 @@ router.post("/FilesConclusionCommission", urlencodedParser,
     async function (request, response) {
         
         let idOffers = request.body.idOffers
-       
+        console.log(request.body)
       fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
-     
+        console.log(err)
+        console.log(folder)
             if(folder.includes("conclusionCommission") == false){
                 
                 fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, { recursive: true }, err => {
