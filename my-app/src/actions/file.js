@@ -156,7 +156,7 @@ export function saveNotesToDb(actual, innovate, cost, duration,  tabNum, idOffer
 export function closeConclusionRG(tabNum, idOffer){
     return async ()=>{
         try{
-            await axios.post(`${API_URL}api/offers/closeConclusionResposible`, {tabNum, idOffer})
+            await axios.post(`${API_URL}api/offers/closeConclusionRG`, {tabNum, idOffer})
         }catch(e){
             console.log(e)
         }
