@@ -29,7 +29,7 @@ const Offer = (props) => {
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
            
             xhr.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
+                if (this.readyState == 4 && this.status == 200) {
                     let offersData = JSON.parse(xhr.response);           
                    dispatch(selectMyOffers(
                     offersData.Id,
@@ -71,7 +71,7 @@ const Offer = (props) => {
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             
             xhr.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
+                if (this.readyState == 4 && this.status == 200) {
                     
                     dispatch(addSendler(xhr.response))
 
@@ -135,7 +135,7 @@ const OffersLink = (props) => {
        
         if (offersData[i].coAuthor !== undefined && offersData[i].coAuthor === "Соавтор") {
             offersDataReverse.push(offersData[i])
-       
+          
          }
     }
     return offersDataReverse.map((number, key) =>
@@ -165,7 +165,7 @@ const Offers = () => {
         
            
         xhr.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
+            if (this.readyState == 4 && this.status == 200) {
 
                setReqMyOff(xhr.response)
                 
@@ -183,7 +183,7 @@ const Offers = () => {
     Resp()
 
     function ChangeOff(){
-        if(reqMyOff !== 0){
+        if(reqMyOff != 0){
             return <OffersLink request={reqMyOff}/>
 
         }else{
