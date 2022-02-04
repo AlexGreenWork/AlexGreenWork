@@ -10,15 +10,15 @@ import TextField from '@mui/material/TextField';
 // import {useDispatch, useSelector} from "react-redux";
 
 import s from "../comission/comission.module.css";
-// import CardOfferUpload from "../../../../components/card/card";
-// import DndOffer from "../../../../components/dnd/dnd";
+import CardOfferUpload from "../../../../components/card/card";
+import DndOffer from "../../../../components/dnd/dnd";
 import { saveComissionAnnotationToDb } from "../../../../../actions/file";
 import Button from "@material-ui/core/Button";
 import { API_URL } from '../../../../../config';
 import { toDbDateComission } from "../../../../../actions/offers";
 import { useDispatch } from 'react-redux';
 import StatementFileList from './comissionFiles'
-//import { store } from "../../../../../reducers";
+import { store } from "../../../../../reducers";
 import server from "../../../../../actions/server";
 
 function IMG(props) {
@@ -79,14 +79,13 @@ function FileCommissionList(props) {
     if (props.req !== "null") {
 
         let offersFile = JSON.parse(props.req);
-        // let arr = new Array();
-        let arr = [];
+        let arr = new Array();
         arr = offersFile
 
         for (let i = 0; i < offersFile.length; i++) {
             for (let j = 0; j < offersFile[i].length; j++) {
 
-                if (offersFile[i][j] === '.') {
+                if (offersFile[i][j] == '.') {
 
 
                     let format = offersFile[i].slice(j)
@@ -165,7 +164,7 @@ const ComissionOffer = () => {
             xhr.send(formData);
 
             xhr.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
+                if (this.readyState == 4 && this.status == 200) {
 
                     ReadDir();
                     // setListFileComission(<FileList1 req={requestDir}/>)
@@ -181,7 +180,7 @@ const ComissionOffer = () => {
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
         xhr.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
+            if (this.readyState == 4 && this.status == 200) {
 
 
                 setRequestDir(xhr.response);
@@ -206,11 +205,11 @@ const ComissionOffer = () => {
 
     function changeViewMultiSelect() {
 
-        if (viewChangeCom === true) {
+        if (viewChangeCom == true) {
             setViewChangeCom(false)
 
         }
-        if (viewChangeCom === false) {
+        if (viewChangeCom == false) {
             setViewChangeCom(true)
         }
 
@@ -218,7 +217,7 @@ const ComissionOffer = () => {
 
     function MultiSelectChangeCom(props) {
         const viewChangeCom = props.viewChangeCom
-        if (viewChangeCom === false) {
+        if (viewChangeCom == false) {
             return <div>
                 <Button sx={{
                     border: '1px solid lightblue',
@@ -230,7 +229,7 @@ const ComissionOffer = () => {
             </div>;
 
         }
-        if (viewChangeCom === true) {
+        if (viewChangeCom == true) {
             return (
                 <div>
                     <div className={s.navMultiSel}>
@@ -281,7 +280,7 @@ const ComissionOffer = () => {
         )
     }
     function ProfitChange(){
-        if (localStorage.getItem('userAdminOptions') === 'wg' || localStorage.getItem('userAdminOptions') === 'topComission' || localStorage.getItem('userAdminOptions') === 'admin') {
+        if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
             return <div>
                 <Button sx={{
                     border: '1px solid lightblue',
@@ -298,7 +297,7 @@ const ComissionOffer = () => {
 
     function DateTimeChange() {
 
-        if (localStorage.getItem('userAdminOptions') === 'wg' || localStorage.getItem('userAdminOptions') === 'topComission' || localStorage.getItem('userAdminOptions') === 'admin') {
+        if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
             return <MultiSelectChangeCom viewChangeCom={viewChangeCom} />;
 
         } else {
@@ -308,7 +307,7 @@ const ComissionOffer = () => {
 
     function AdminChange(props) {
         const isAdmin = props.isAdmin;
-        if (isAdmin === 'wg') {
+        if (isAdmin == 'wg') {
             return <IsAdminRG />;
 
         } else {
@@ -371,7 +370,7 @@ const ComissionOffer = () => {
     function AdminChangeComissionAnnotation() {
         const isAdminComission = localStorage.getItem('userAdminOptions');
 
-        if (isAdminComission === "wg") {
+        if (isAdminComission == "wg") {
             return (
                 <div className={s.containerAnnotation}>
                     <div>краткая аннотация решения:</div>
@@ -408,7 +407,7 @@ const ComissionOffer = () => {
         }
     }
     function DateRender() {
-        if (newDate === "NaN undefined") {
+        if (newDate == "NaN undefined") {
             return "Дата не назначена"
         } else {
             return <div>{newDate}{time}</div>
