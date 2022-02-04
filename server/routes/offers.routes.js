@@ -697,13 +697,12 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
         const pool = mysql.createPool(mysqlConfig);
 
         const idOffers =  request.body.idOffer;
-
+		const userId = request.user.id;
+console.log(idOffers, userId);
 		if(!idOffers)
 		{
 			response.status(400)
 			response.send();
-
-			return;
 		}
 		
 		const query = `SELECT
@@ -712,8 +711,11 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
 							dep.name
 						FROM
 							?? AS o
+						INNER JOIN offersworker AS o2
+							ON o2.id = ?
 						INNER JOIN offers AS o3
 							ON o3.Id = ?
+								AND o3.tabelNum = o2.tabelNum
 						INNER JOIN kadry_all AS ka 
 							ON ka.tabnum = o.responsible_tabnum
 								AND ka.factory = 1 
@@ -724,8 +726,8 @@ router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
 							o.deleted <> 1
 							AND o.offer_id = o3.Id`;
 
-		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", idOffers]);
-		const sqlOfferResponsible_rg = await pool.query(query, ["offersresponsible_rg", idOffers]);
+		const sqlOfferResponsible = await pool.query(query, ["offersresponsible", userId, idOffers]);
+		const sqlOfferResponsible_rg = await pool.query(query, ["offersresponsible_rg", userId, idOffers]);
 
 		let result = {responsibles: [],
 								responsibles_rg: []};
@@ -758,13 +760,12 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
 
         const idOffers =  request.body.idOffer;
+		const userId = request.user.id;
 
 		if(!idOffers)
 		{
 			response.status(400)
 			response.send();
-
-			return;
 		}
 
 		const query = `SELECT
@@ -781,8 +782,11 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 							o.extent
 						FROM
 							?? AS o
+						INNER JOIN offersworker AS o2 ON
+							o2.id = ?
 						INNER JOIN offers AS o3 ON
 							o3.Id = ?
+							AND o3.tabelNum = o2.tabelNum
 						INNER JOIN kadry_all AS ka 
 								ON ka.tabnum = o.responsible_tabnum
 									AND ka.factory = 1 
@@ -794,8 +798,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 						AND
 							o.offer_id = o3.Id`
 
-		let placeholders = ['offersendler.offersresponsible', idOffers];
-		let placeholders_rg = ['offersendler.offersresponsible_rg', idOffers];
+		let placeholders = ['offersendler.offersresponsible', userId, idOffers];
+		let placeholders_rg = ['offersendler.offersresponsible_rg', userId, idOffers];
 
 		const responsibles = await pool.query(query, placeholders)
 		const responsibles_rg = await pool.query(query, placeholders_rg)
