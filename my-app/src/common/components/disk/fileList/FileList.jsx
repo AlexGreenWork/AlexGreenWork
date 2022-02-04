@@ -12,9 +12,9 @@ function Files(props){
     let elemFilesArr = []; //елементы  файлами
     let allfilesObj = JSON.parse(props.allFiles)
     let downloadFolder;
-    if(props.dirName == "SendlerFiles"){
+    if(props.dirName === "SendlerFiles"){
         downloadFolder = "SendlerFiles"
-    } else if( props.dirName.slice(-1) == "R"){
+    } else if( props.dirName.slice(-1) === "R"){
         downloadFolder = 'ResponsibleRg/' +props.dirName.slice(0, 5);
        
     } else{
@@ -71,7 +71,7 @@ function Folders(props){
                  
         } else{
             
-            elemFilesArr.push(React.createElement("div", {className:"qwer"} , <div> Нет файлов1</div>))
+            elemFilesArr.push(React.createElement("div", {className:"qwer"} , <div> Нет файлов</div>))
         }
         
     }
@@ -113,7 +113,7 @@ const FileList = () => {
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
        
         xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState === 4 && this.status === 200) {
               let resp = xhr.response
                 
               
