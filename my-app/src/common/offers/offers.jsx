@@ -24,8 +24,8 @@ const Offer = (props) => {
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
            
             xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    let offersData = JSON.parse(xhr.response);           
+                if (this.readyState === 4 && this.status === 200) {
+                    // let offersData = JSON.parse(xhr.response);           
                     requestInfoAutor(xhr.response);                                               
                 } 
             }     
@@ -38,7 +38,7 @@ const Offer = (props) => {
             req.open('POST', `${API_URL}api/files/workData`, true); 
             req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             req.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
+                if (this.readyState === 4 && this.status === 200) {
                   
                    let offersData = JSON.parse(xhr); 
                    let workData = JSON.parse(req.response); 
@@ -85,7 +85,7 @@ const Offer = (props) => {
             
             xhr.onreadystatechange = function () {
 
-                if (this.readyState == 4 && this.status == 200) {
+                if (this.readyState === 4 && this.status === 200) {
 
                     dispatch(addSendler(xhr.response))
                     
@@ -139,7 +139,7 @@ const Offer = (props) => {
 }
 
 function SortOffers(props){
-    const [sortArr, setSortArr] = useState(null);
+    // const [sortArr, setSortArr] = useState(null);
 
     let offersData = JSON.parse(props.request);
     let sort = props.sort
@@ -190,7 +190,7 @@ function SortOffers(props){
 
     case "fullname":
         
-        if(sort == null){
+        if(sort === null){
             sort = " "
         }
         let fullname = sort.toLowerCase().split(" ")
@@ -294,7 +294,7 @@ const Offers = () => {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', `${API_URL}api/offers/allOffers`, false)
         xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState === 4 && this.status === 200) {
                 setReqAllOff(xhr.response)
             }
         }
