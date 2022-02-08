@@ -11,13 +11,14 @@ const ContentContainer = () => {
                 </NavLink>
             </div>
             <div className={s.button2}>
-                <NavLink id="production" className={s.btnA} to="/personalCabinet/offers1">
-                    Продукция
+                <NavLink id="administration" className={s.btnA} to="/administration">   
+                
+                   Внутренний портал
 
                 </NavLink>
             </div>
             <div className={s.button3}>
-                <NavLink id="administration" className={s.btnA} to="/administration">
+               <NavLink id="production" className={s.btnA} to="/personalCabinet/offers1">
                     Руководство
 
                 </NavLink>

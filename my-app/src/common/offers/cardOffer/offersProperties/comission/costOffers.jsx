@@ -87,7 +87,7 @@ function OffersCostBlock(props) {
                                 {props.fio.surname} {props.fio.name} {props.fio.middlename}
                             </div>
                         </div>
-                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }} onInput={e => {/*  inputProperty(e, props.number) */ }} > {props.fio.profit}</div>
+                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
                     </div>
                 </div>
             </div>
@@ -97,12 +97,12 @@ function OffersCostBlock(props) {
 }
 
 function CostOffersList(props) {
-    console.log(props.req)
+   
 
 
     if (props.req !== null) {
         return props.req.map((elem, key) => {
-            console.log(elem)
+           
 
             return <OffersCostBlock key={key} fio={elem} number={key} />
         })
@@ -201,7 +201,7 @@ function CostOffers() {
                     cost: cost,
                 })
                     .then(res => {
-                        console.log(res.data)
+                       alert(res.data)
 
                     }
 
@@ -232,17 +232,16 @@ function CostOffers() {
     }
 
     if (reqCost === null) {
-        console.log(reqCost)
-
+        
+     
         return (<div>
 
-            {/* <CostOffersList req={reqCost} />
-            <ProfitChange /> */}
+            <CostOffersList req={reqCost} />
+            <ProfitChange />
         </div>
 
         )
     } else {
-        console.log(reqCost)
         return (<div>
 
             <CostOffersList req={reqCost} />

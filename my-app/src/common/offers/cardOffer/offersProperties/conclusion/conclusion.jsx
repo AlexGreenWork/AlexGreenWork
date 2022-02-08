@@ -468,19 +468,19 @@ function AdminChangeAnnotationWiev(props){
                     </TableHead>
                     <TableBody>
                         <TableCell/>
-                        <TableCell  align="right"  type="number">1</TableCell>
-                        <TableCell align="right"  type="number">1</TableCell>
-                        <TableCell align="right"  type="number">1</TableCell>
-                        <TableCell align="right"  type="number">1</TableCell>
+                        <TableCell  align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.actual}</TableCell>
+                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.innov}</TableCell>
+                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.cost}</TableCell>
+                        <TableCell align="right"  type="number">{store.getState().offers.offer.responsibles_rg?.extent}</TableCell>
                     </TableBody>
                 </Table>
             </TableContainer>);
         }
     }
     function CloseChange(isClose){
-        console.log(isClose.isClose)
+        
         if(isClose.isClose == "null"){
-            console.log("Отработало")
+           
             return <div></div>
         }if(isClose.isClose == "undefined"){
             return <div></div>
@@ -578,9 +578,10 @@ function AdminChangeAnnotationWiev(props){
                     <div style={{
                         marginBottom: "25px",
                     }}>Краткая аннотация заключения рабочей группы:</div>
+                    <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userTabelNum")}/>   
                     <AdminChangeAnnotationWiev isAdmin={localStorage.getItem("userTabelNum")}/>
                     
-                    <AdminChangeUploadAnnotation isAdmin={localStorage.getItem("userTabelNum")}/>
+                    
 
                 </div>
 
