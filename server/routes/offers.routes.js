@@ -1054,28 +1054,28 @@ router.post("/responsibleToOffers", urlencodedParser,
 
     router.post("/comission", urlencodedParser,
     async function (request, response) {
-    //     const mysqlConfig = {
-    //         host: config.database.host,
-    //         user: config.database.user,
-    //         password: config.database.password,
-    //         database: config.database.database,
-    //     }
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
         
-    //     const pool = mysql.createPool(mysqlConfig);
-    //  console.log("comission - отработало")
-    // let offerId = request.body.idOffer
-    // try{
-    // const sqlR = await pool.query(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
-    //     let resp = sqlR[0][0].annotation
+        const pool = mysql.createPool(mysqlConfig);
+     console.log("comission - отработало")
+    let offerId = request.body.idOffer
+    try{
+    const sqlR = await pool.query(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
+        let resp = sqlR[0][0].annotation
         
-    // if(sqlR[0] == undefined){
-    //     return console.log("нет такой записи в таблице комиссия")
-    // }
-    //  console.log(resp)
-    //  response.json(resp)
-    // }catch(e){console.log(e)}
+    if(sqlR[0] == undefined){
+        return console.log("нет такой записи в таблице комиссия")
+    }
+     console.log(resp)
+     response.json(resp)
+    }catch(e){console.log(e)}
 
-  //  pool.end()
+   pool.end()
 
     })
     
