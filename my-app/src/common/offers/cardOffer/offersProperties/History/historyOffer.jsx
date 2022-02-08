@@ -22,7 +22,7 @@ class Panel extends React.Component
 
 	get_date(date)
 	{
-		return (date)? moment(this.props.open).format("YYYY-MM-DD"): 'N/A';
+		return (date)? moment(date).format("YYYY-MM-DD"): 'N/A';
 	}
 
 	get_info(date)

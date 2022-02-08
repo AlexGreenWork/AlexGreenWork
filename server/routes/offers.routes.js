@@ -327,7 +327,7 @@ router.post("/toStatus", urlencodedParser,
         let category = request.body.category
         let status = request.body.status
         try {
-            await pool.query(`UPDATE offers SET view = ${view}, category = ${category}, status = ${status} WHERE  Id = (${id}) `);
+            await pool.query(`UPDATE offers SET view = '${view}', category = '${category}', status = '${status}' WHERE  Id = '${id}' `);
             response.status(200).send() 
         } catch (e) { console.log(e) }
         pool.end()
@@ -914,16 +914,6 @@ router.post("/responsibleToOffers", urlencodedParser,
     
     router.post("/saveNotesToDbRG", urlencodedParser,
     async function (request, response) {
-      
-        const mysqlConfig = {
-            host: config.database.host,
-            user: config.database.user,
-            password: config.database.password,
-            database: config.database.database,
-        }
-        
-        const pool = mysql.createPool(mysqlConfig);
-
     let actual = request.body.actual
     let innovate = request.body.innovate
     let cost = request.body.cost
@@ -983,6 +973,20 @@ router.post("/responsibleToOffers", urlencodedParser,
         response.status(200).send() 
         pool.end()
     })
+
+    router.post("/closeConclusionResponsible", urlencodedParser,
+    async function (request, response) {
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+        try{
+        console.log(Date(),"Заключение Responsible закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        response.status(200).send()
+        }catch(e){
+            console.log(e)
+        } 
+    })
+
 
     router.post("/saveComissionAnnotationToDb", urlencodedParser,
     async function (request, response) {
@@ -1066,18 +1070,24 @@ router.post("/responsibleToOffers", urlencodedParser,
     let offerId = request.body.idOffer
     try{
     const sqlR = await pool.query(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
-        let resp = sqlR[0][0].annotation
+console.log(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)        
+
+	
         
-    if(sqlR[0] == undefined){
-        return console.log("нет такой записи в таблице комиссия")
-    }
+    if(sqlR[0][0].annotation == undefined){
+	response.send("")       
+ return console.log("нет такой записи в таблице комиссия")
+	
+    }else{
+    let resp = sqlR[0][0].annotation
+    
      console.log(resp)
      response.json(resp)
+    }
     }catch(e){console.log(e)}
 
    pool.end()
 
     })
-    
 
 module.exports = router

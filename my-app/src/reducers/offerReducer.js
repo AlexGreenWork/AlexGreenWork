@@ -39,6 +39,7 @@ export default function offerReducer(state = defaultState, action) {
 		case SELECT_TO_MYOFFER:
 			state.offer.responsibles_rg = action.payload
 			break;
+		
 		default:
             break;
            
@@ -48,12 +49,12 @@ export default function offerReducer(state = defaultState, action) {
 
 export const selectToMyOffer = (fio,tabnum)=>({type:SELECT_TO_MYOFFER, payload:{
 
-		fiofull:fio,
-		responsible_tabnum:tabnum
+	fiofull:fio,
+	responsible_tabnum:tabnum
 
-	}})
+}})
 
-    export const selectMyOffers = (Id,
+export const selectMyOffers = (Id,
 									nameOffer,
 									date,
 									tabelNum,
@@ -91,8 +92,9 @@ export const selectToMyOffer = (fio,tabnum)=>({type:SELECT_TO_MYOFFER, payload:{
 												dateComission : dateCommision,
 												departament : departament,
 												division : division,
-												
-                } 
-            })
+												 	} 
+												})
 
     export const addSendler = (addSendler) => ({type:ADD_SENDLER, payload: addSendler })
+	
+	
