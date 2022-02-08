@@ -507,11 +507,11 @@ let nameStatus;
         }
 
         if (ev == 7 || ev == 8 || ev == 9 || ev == 10) {
-            stepStatus = 3;
+            stepStatus = 4;
             return stepStatus
         }
         if (ev == 11) {
-            stepStatus = 3;
+            stepStatus = 4;
             return stepStatus
         }
         if (ev == 12 || ev == 13) {

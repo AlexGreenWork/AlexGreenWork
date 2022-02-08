@@ -534,5 +534,112 @@ router.post("/fioSendler", urlencodedParser, async (req, res) => {
   
 })
 
+router.post("/allAuthors", urlencodedParser, async (req, res) => {
+
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+   
+    const pool = mysql.createPool(mysqlConfig);
+
+    console.log(req.body)
+
+    let arrFio = []
+    let idOffers = req.body.idOffers
+    if (idOffers != undefined) {
+        let sqlSendler = await pool.execute(`SELECT ow.name, ow.surname, ow.middlename, ow.tabelNum FROM offersworker as ow inner join offers as o on o.Id = '${idOffers}' where ow.tabelnum = o.tabelNum; `);
+
+        let sqlCoAuthorTab = await pool.execute(`SELECT co_author_tabNum FROM senleradditional WHERE IdOffers=${idOffers}`)
+
+        if (sqlSendler[0].length != 0) {
+            let profit = await pool.query(`SELECT costOffers FROM cost_offers WHERE id_offers='${idOffers}' AND tabNum = '${sqlSendler[0][0].tabelNum}' AND actual = 0`)
+            // console.log(profit[0])
+            if (profit[0].length != 0) {
+                sqlSendler[0][0].profit = profit[0][0].costOffers
+            } else {
+                sqlSendler[0][0].profit = "0"
+            }
+            console.log('sqlSendler[0][0]', sqlSendler[0][0])
+            arrFio.push(sqlSendler[0][0])
+        }
+
+        for (let i = 0; i < sqlCoAuthorTab[0].length; i++) {
+
+            if (sqlCoAuthorTab[0].length != 0) {
+               
+
+                let sqlCoAuthor = await pool.execute(`SELECT name, surname, middlename, tabelNum  FROM offersworker WHERE tabelnum=${sqlCoAuthorTab[0][i].co_author_tabNum}`)
+                sqlCoAuthor[0][0].coAuthor = "Соавтор"
+                let profit = await pool.query(`SELECT costOffers FROM cost_offers WHERE id_offers='${idOffers}' AND tabNum = '${sqlCoAuthorTab[0][i].co_author_tabNum}' AND actual = 0 `)
+
+                if (profit[0].length != 0) {
+                    sqlCoAuthor[0][0].profit = profit[0][0].costOffers
+                } else {
+                    sqlCoAuthor[0][0].profit = "0"
+                }
+                arrFio.push(sqlCoAuthor[0][0])
+
+            }
+            
+        }
+        res.send(arrFio)
+        console.log(arrFio)
+    } else {
+        res.send("noData")
+    }
+pool.end()
+})
+
+router.post("/CostOffersSave", urlencodedParser, async (req, res) => {
+
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+    const pool = mysql.createPool(mysqlConfig);
+
+    let idOffers = req.body.idOffers;
+    let tabNum = req.body.tabNum;
+    let cost = req.body.cost;
+    let date = moment().format('YYYY-DD-MM h:mm:ss')
+    console.log(req.body)
+    let checkProfit = await pool.query(`SELECT id, actual FROM cost_offers WHERE id_offers='${idOffers}' AND tabNum = '${tabNum}' `)
+
+    if (checkProfit[0].length != 0) {
+
+        try {
+
+            for (let i = 0; i < Object.keys(checkProfit[0]).length; i++) {
+                await pool.query(`UPDATE cost_offers SET actual = 1 WHERE  id = ("${checkProfit[0][i].id}") AND actual = 0`)
+            }
+
+        } catch (e) {
+            console.log(e)
+        }
+        try {
+            await pool.query(`INSERT INTO cost_offers (id_offers, tabNum, costOffers, dateProfit, actual) VALUES ('${idOffers}', '${tabNum}', '${cost}', '${date}', 0)`)
+        } catch (e) {
+            console.log(e)
+        }
+
+    } else {
+        try {
+            await pool.query(`INSERT INTO cost_offers (id_offers, tabNum, costOffers, dateProfit, actual) VALUES ('${idOffers}', '${tabNum}', '${cost}', '${date}', 0)`)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+pool.end()
+    res.send("Суммы записаны")
+})
+
 
 module.exports = router

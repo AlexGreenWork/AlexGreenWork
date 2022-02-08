@@ -11,20 +11,8 @@ class Administration extends React.Component
 
 	render()
 	{
-        return <div className={s.container} >
-			<table>
-				<tr>
-					<td>
-						<img className={s.img} src = {`${API_URL}files/presentation/1.jpg`}/>
-					</td>
-					<td>
-						<img className={s.img} src = {`${API_URL}files/presentation/2.jpg`}/>
-					</td>
-					<td>
-						<img className={s.img} src = {`${API_URL}files/presentation/3.jpg`}/>
-					</td>
-				</tr>
-			</table>
+        return <div className={s.container} style={{gridRow: "1 / 6", gridColumn: "1/6", display: "flex"}}>
+			<iframe className={s.framePortal} src="http://integrity.belaz.minsk.by"></iframe>
 			</div>
 	}
 };
