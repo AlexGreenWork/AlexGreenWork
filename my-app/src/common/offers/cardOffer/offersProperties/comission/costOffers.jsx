@@ -59,40 +59,73 @@ function inputProperty(e, id) {
 function OffersCostBlock(props) {
     const [value, setValue] = useState(null)
 
-
-    console.log(props.fio)
-    if (props.fio.coAuthor === undefined) {
-        return (
-            <div>
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <div> Автор:
-                            <div>
-                                {props.fio.surname} {props.fio.name} {props.fio.middlename}
+    if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
+        if (props.fio.coAuthor === undefined) {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Автор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
                             </div>
+                            <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
                         </div>
-                        {/* <input type="number" step="0.01" min="0" value={value} onChange={(e)=>{setValue(e.target.value)}}/> */}
-                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }} onInput={(e) => { /* console.log(e.nativeEvent); inputProperty(e, props.number) */ }} > {props.fio.profit}</div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Соавтор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
+                            </div>
+                            <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
     } else {
-        return (
-            <div>
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <div> Соавтор:
-                            <div>
-                                {props.fio.surname} {props.fio.name} {props.fio.middlename}
+        if (props.fio.coAuthor === undefined) {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Автор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
                             </div>
+                            <div id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
                         </div>
-                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Соавтор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
+                            </div>
+                            <div id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
     }
+    
+   
 
 }
 
