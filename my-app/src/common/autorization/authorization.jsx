@@ -33,7 +33,7 @@ const AuthorizationWorker = () => {
                     <h4>Авторизация сотрудника</h4>
                 </div>
                 <div className={s.form_field}>
-                    <input onKeyDown={onKeyDown} onChange={emailChange} type="text" placeholder="Введите email..."/>
+                    <input onKeyDown={onKeyDown} onChange={emailChange} type="text" placeholder="Введите табельный или email..."/>
                 </div>
                 <div className={s.form_field}>
                     <input  onKeyDown={onKeyDown} onChange={passwordChange} type="password" placeholder="Введите пароль..."/>

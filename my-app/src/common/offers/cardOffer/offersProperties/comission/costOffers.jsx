@@ -16,7 +16,8 @@ function OffersCostBlock(props) {
                                 {props.fio.surname} {props.fio.name} {props.fio.middlename}
                             </div>
                         </div>
-                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                        <div style={{display:"flex"}}>
+                        <div contentEditable={"true"} id={`author${props.number}`}  style={{ backgroundColor: "white", minWidth:"20px" }}  > {props.fio.profit}</div> руб.</div>
                     </div>
                 </div>
             </div>
@@ -31,7 +32,8 @@ function OffersCostBlock(props) {
                                 {props.fio.surname} {props.fio.name} {props.fio.middlename}
                             </div>
                         </div>
-                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                       <div style={{display:"flex"}}>
+                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white", minWidth:"20px" }}  > {props.fio.profit}</div> руб.</div>
                     </div>
                 </div>
             </div>
@@ -107,6 +109,53 @@ function CostOffers() {
 
     }
 
+    function inputValidator(number, req) {
+
+        let validInput = true;
+       
+        for (let i = 0; i < number; i++) {
+          
+            let countPont = 0
+            let cost = document.querySelector(`#author${i}`).innerText;
+           
+            for (let j = 0; j < cost.length; j++) {
+              
+                let codeKey = cost[j].charCodeAt()
+
+                if (codeKey > 47 && codeKey < 58 || codeKey === 9 || codeKey === 8 || codeKey === 46) {
+
+                    validInput = true;
+
+                    if (codeKey === 46) {
+                        countPont++
+                        console.log('countPont')
+                    }
+
+                } else {
+                    console.log(false)
+                    validInput = false;
+                    i = number
+                    j = cost.length
+                }
+                
+                if (countPont > 1) {
+                    validInput = false;
+                    i = number
+                    j = cost.length
+                }
+            }
+
+            countPont = 0
+
+        }
+        if (validInput === true) {
+          
+            SaveProfit(number, req)
+        
+        } else {
+            alert("Вы ввели неверную сумму")
+        }
+    }
 
     function ProfitChange(props) {
 
@@ -116,7 +165,7 @@ function CostOffers() {
                     border: '1px solid lightblue',
                     boxShadow: '1px 4px 8px 4px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
                     margin: '10px'
-                }} onClick={() => { SaveProfit(props.number, props.req) }}>Сохранить суммы</Button>
+                }} onClick={() => { inputValidator (props.number, props.req) }}>Сохранить суммы</Button>
 
             </div>
 

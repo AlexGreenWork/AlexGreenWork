@@ -57,8 +57,11 @@ export default function userReducer(state = defaultState, action) {
             localStorage.removeItem('userAvatar')
             localStorage.removeItem('dateComission')
             localStorage.removeItem('idOffers')
-
-
+            localStorage.removeItem('sendlerTabWG')
+            localStorage.removeItem('status')
+            localStorage.removeItem('annotateComission')
+            
+             
             return {
                 ...state,
                 isAuth: state.isAuth = false,
