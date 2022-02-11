@@ -84,8 +84,8 @@ class Row extends React.Component
 											<TableCell style={{width: "250px"}}>Проверил</TableCell>
 											<TableCell>Актуальность</TableCell>
 											<TableCell>Инновативность</TableCell>
-											<TableCell>Затратность</TableCell>
-											<TableCell>Протяженность</TableCell>
+											<TableCell>Экономичность</TableCell>
+											<TableCell>Скорость внедрения</TableCell>
 											<TableCell>Общая оценка</TableCell>
 										</TableRow>
 									</TableHead>
@@ -208,8 +208,8 @@ class ResultTable extends React.Component
 							<TableCell>Проверяющий</TableCell>
 							<TableCell>Актуальность</TableCell>
 							<TableCell>Инновативность</TableCell>
-							<TableCell>Затратность</TableCell>
-							<TableCell>Протяженность</TableCell>
+							<TableCell>Экономичность</TableCell>
+							<TableCell>Скорость внедрения</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

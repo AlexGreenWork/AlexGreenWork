@@ -263,6 +263,8 @@ function OffersForm(props) {
     const [newSendler, setNewSendler] = useState();
     const [count, setCount] = useState(0);
 
+    console.log(localStorage.getItem('userTabelNum'))
+
     function addFioYetSebdler(tabNum) {
 
         try {
@@ -283,24 +285,24 @@ function OffersForm(props) {
                         document.querySelector(`#firstName${count}`).value = fio[1];
                         document.querySelector(`#lastName${count}`).value = fio[0];
                         document.querySelector(`#middleName${count}`).value = fio[2];
-                        document.querySelector(`#emailInput${count}`).value = fio[3];
-                        if (fio[3] !== undefined) {
-                            document.querySelector(`#emailInput${count}`).value = fio[3];
-                        } else {
-                            document.querySelector(`#emailInput${count}`).value = "";
-                        }
-                        if (fio[5] !== undefined) {
-                            document.querySelector(`#phoneNumber${count}`).value = "+" + fio[5].slice(1);
-                        } else {
-                            document.querySelector(`#phoneNumber${count}`).value = "";
-                        }
+                        // document.querySelector(`#emailInput${count}`).value = fio[3];
+                        // if (fio[3] !== undefined) {
+                        //     document.querySelector(`#emailInput${count}`).value = fio[3];
+                        // } else {
+                        //     document.querySelector(`#emailInput${count}`).value = "";
+                        // }
+                        // if (fio[5] !== undefined) {
+                        //     document.querySelector(`#phoneNumber${count}`).value = "+" + fio[5].slice(1);
+                        // } else {
+                        //     document.querySelector(`#phoneNumber${count}`).value = "";
+                        // }
 
                        
                         setNameNew(fio[1])
                         setLastNameNew(fio[0])
                         setMiddleNameNew(fio[2])
-                        setEmailNew(fio[3])
-                        setPhoneNumberNew(fio[5])
+                        // setEmailNew(fio[3])
+                        // setPhoneNumberNew(fio[5])
 
 
                     }
@@ -313,25 +315,66 @@ function OffersForm(props) {
 
 
     function addFioSendler(tabNum) {
-
-        try {
-            axios.post(`${API_URL}api/auth/fioSendler`, {
-                tabNum: tabNum,
-            })
-                .then(res => {
-
-                    let fio = res.data;
-                  
-                    setName(fio[1])
-                    setLastName(fio[0])
-                    setMiddleName(fio[2])
-                    setEmail(fio[3])
-                    setPhoneNumber(fio[5])
-
+        if(localStorage.getItem('userTabelNum') === null){
+            try {
+                axios.post(`${API_URL}api/auth/fioSendler`, {
+                    tabNum: tabNum,
                 })
-        } catch (e) {
-            alert(e.response)
+                    .then(res => {
+    
+                        let fio = res.data;
+                      
+                        setName(fio[1])
+                        setLastName(fio[0])
+                        setMiddleName(fio[2])
+                        // setEmail(fio[3])
+                        // setPhoneNumber(fio[5])
+    
+                    })
+            } catch (e) {
+                alert(e.response)
+            }
+        } else if(localStorage.getItem('userTabelNum') ===  document.querySelector('#tabelNumber').value){
+            try {
+                axios.post(`${API_URL}api/auth/fioSendler`, {
+                    tabNum: tabNum,
+                })
+                    .then(res => {
+    
+                        let fio = res.data;
+                      
+                        setName(fio[1])
+                        setLastName(fio[0])
+                        setMiddleName(fio[2])
+                        setEmail(fio[3])
+                        setPhoneNumber("+" + fio[5].slice(1))
+                        console.log(phoneNumber)
+                        console.log(Email)
+                    })
+            } catch (e) {
+                alert(e.response)
+            }
+        } else{
+            try {
+                axios.post(`${API_URL}api/auth/fioSendler`, {
+                    tabNum: tabNum,
+                })
+                    .then(res => {
+    
+                        let fio = res.data;
+                      
+                        setName("")
+                        setLastName("")
+                        setMiddleName("")
+                        setEmail("")
+                        setPhoneNumber('')
+    
+                    })
+            } catch (e) {
+                alert(e.response)
+            }
         }
+      
     }
 
     let addNewSendler = {
@@ -574,7 +617,7 @@ function OffersForm(props) {
             console.log(".close-btn true");
         }
     }
-
+if(localStorage.getItem('userTabelNum') === null){
     return (
 
         <div className={s.sendOfferContainer}>
@@ -582,10 +625,16 @@ function OffersForm(props) {
             <form className="offers" onSubmit={handleSubmit}>
                 <div className="form-fields">
 
-                    <div className={s.formFilds}>
-                        <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
+                <div className={s.formFilds}>
+                        <input type="text" placeholder="табельный номер" className="input-data" id="tabelNumber"
                             name="tabelNumber" required autoComplete="on"
-                            value={tabelNumber} onChange={(e) => { setTabelNumber(e.target.value); }} onBlur={(e) => { addFioSendler(e.target.value) }} />
+                            value={tabelNumber} onChange={(e) => {
+                                setTabelNumber(e.target.value)
+                                if (e.target.value.length === 5) {
+                                    console.log(tabelNumber.length)
+                                    addFioSendler(e.target.value)
+                                }
+                            }} onBlur={(e) => { addFioSendler(e.target.value) }} />
                         <label htmlFor="tabelNumber">Табельный номер</label>
                         <div className="false-input false-tabelNumber"></div>
                     </div>
@@ -614,19 +663,7 @@ function OffersForm(props) {
                         <div className="false-input false-middleName"></div>
                     </div>
 
-                    <div className={s.formFilds}>
-                        <input type="text" placeholder="табельный номер" className="input-data" id="tabelNumber"
-                            name="tabelNumber" required autoComplete="on"
-                            value={tabelNumber} onChange={(e) => {
-                                setTabelNumber(e.target.value)
-                                if (e.target.value.length === 5) {
-                                    console.log(tabelNumber.length)
-                                    addFioSendler(e.target.value)
-                                }
-                            }} onBlur={(e) => { addFioSendler(e.target.value) }} />
-                        <label htmlFor="tabelNumber">Табельный номер</label>
-                        <div className="false-input false-tabelNumber"></div>
-                    </div>
+                 
 
                     <div className={s.formFilds}>
                         <input type="email" placeholder="e-mail-adress@gmail.com" className="input-data" id="emailInput"
@@ -709,6 +746,137 @@ function OffersForm(props) {
         </div>
 
     )
+} else{
+    return (
+
+        <div className={s.sendOfferContainer}>
+            {yetSendler}
+            <form className="offers" onSubmit={handleSubmit}>
+                <div className="form-fields">
+
+                <div className={s.formFilds}>
+                        <input type="text" disabled placeholder="табельный номер" className="input-data" id="tabelNumber"
+                            name="tabelNumber" required autoComplete="on"
+                            value={tabelNumber} onChange={(e) => {
+                                setTabelNumber(e.target.value)
+                                if (e.target.value.length === 5) {
+                                    console.log(tabelNumber.length)
+                                    addFioSendler(e.target.value)
+                                }
+                            }} onBlur={(e) => { addFioSendler(e.target.value) }} />
+                        <label htmlFor="tabelNumber">Табельный номер</label>
+                        <div className="false-input false-tabelNumber"></div>
+                    </div>
+                    <div className={s.formFilds}>
+                        <input type="text" disabled placeholder="Иванов" id="lastName" className="input-data" name="lastName"
+                            required autoComplete="off"
+                            value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                        <label htmlFor="lastName">Фамилия</label>
+                        <div className="false-input false-lastName"></div>
+                    </div>
+
+                    <div className={s.formFilds}>
+                        <input type="text" disabled placeholder="Иван" id="firstName" className="input-data" name="firstName"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)} required autoComplete="off" />
+                        <label htmlFor="firstName">Имя</label>
+                        <div className="false-input false-name"></div>
+                    </div>
+
+
+                    <div className={s.formFilds}>
+                        <input type="text" disabled placeholder="Иванович" id="middleName" className="input-data"
+                            name="middleName" required autoComplete="off"
+                            value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
+                        <label htmlFor="middleName">Отчество</label>
+                        <div className="false-input false-middleName"></div>
+                    </div>
+
+                 
+
+                    {/* <div className={s.formFilds}>
+                        <input type="email" placeholder="e-mail-adress@gmail.com" className="input-data" id="emailInput"
+                            name="email" required autoComplete="off"
+                            value={Email} onChange={(e) => setEmail(e.target.value)} />
+                        <label htmlFor="emailInput">E-mail</label>
+                        <div className="false-input false-emailInput"></div>
+                    </div>
+                    <div className={s.formFilds}>
+                        <input type="tel" maxLength="13" minLength="13" pattern="\+\d\d\d\d\d\d\d\d\d\d\d\d"
+                            id="phoneNumber" placeholder="+375293333333" className="input-data" name="phoneNumber"
+                            required autoComplete="off"
+                            value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        <label htmlFor="phoneNumber">Номер телефона</label>
+                        <div className="false-input false-phoneNumber"></div>
+                    </div> */}
+
+                    <div className={s.formFilds}>
+
+                        <input type="text" placeholder="Название" id="nameOffer" className="input-data" name="nameOffer"
+                            required autoComplete="on"
+                            value={nameOffer} onChange={(e) => setNameOffer(e.target.value)} />
+                        <label htmlFor="nameOffer">Название предложения</label>
+                        <div className="false-input false-nameOffer"></div>
+
+                    </div>
+                    <div className="problem">
+                        <div className={s.formFilds}>
+
+                            <textarea id="problem" className="input-data" name="problem" required autoComplete="off" cols="50"
+                                value={problem}
+                                onChange={(e) => {setProblem(e.target.value); textAreaOnChange(e, "problem");}}
+                                onBlur={(e) => { textAreaOnBlur("problem"); }}
+                                onFocus={() => {textAreaOnFocus("problem")}}></textarea>
+                            <footer>
+                                <label htmlFor="problem">Описание проблемы</label>
+                            </footer>
+
+                            <div className="false-input false-problem"></div>
+                        </div>
+                    </div>
+                    <div className="offer">
+                        <div className={s.formFilds}>
+                            <textarea id="offer" className="input-data" name="offer" required autoComplete="off" cols="50"
+                                value={offer}
+                                onChange={(e) => {setOffer(e.target.value); textAreaOnChange(e, "offer");}}
+                                onBlur={(e) => {textAreaOnBlur("offer");}
+                              }
+                                onFocus={() => {textAreaOnFocus("offer")}}></textarea>
+                            <footer>
+                                <label htmlFor="problem">Предложение</label>
+                            </footer>
+                            <div className="false-input false-offer"></div>
+                        </div>
+                    </div>
+                    <input type="file" name="myFile" id="file"></input>
+                    <div className={s.formFieldCheckbox}>
+                        <input type="checkbox" name="agreement" id="agree" className="input-data" required
+                            value={checked} onChange={(e) => setChecked(!checked)} />
+                        <label htmlFor="agree" className="label-checkbox">Разрешаю передачу персональных данных</label>
+                        <div className="false-input false-agree"></div>
+                    </div>
+                    <NewSendler />
+                    {newSendler}
+                    <ComponentDestruction />
+
+                    <div className={s.buttonConfirm}>
+                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit" >Подтвердить
+                            запись
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+
+
+
+        </div>
+
+    )
+}
+
 }
 
 

@@ -892,8 +892,8 @@ router.post("/responsibleToOffers", urlencodedParser,
 console.log(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)        
 
 	
-        
-    if(sqlR[0][0].annotation == undefined){
+        // console.log("аннотация", sqlR[0][0].annotation)
+    if(sqlR[0][0].annotation == undefined ){
 	response.send("")       
  return console.log("нет такой записи в таблице комиссия")
 	
