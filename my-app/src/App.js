@@ -28,6 +28,7 @@ import OffersResponsible from "./common/personalCabinet/responsible/responsible"
 import {Budget} from "./common/topComissionPanel/TopComission";
 import TopComission from "./common/topComissionPanel/TopComission";
 import Administration from "./common/administration/administration";
+import News from "./common/news/news";
 
 
 
@@ -100,6 +101,7 @@ function App(props) {
                     <Route exact path='/' component={ContentContainer}/>
                     <Route path='/workerVariable' component={WorkerVariable}/>
                     <Route path='/administration' component={Administration}/>
+                    <Route path='/news' component={News}/>
                     <Route path='/personalCabinet/myOffers' component={MyOffers} />
                     <Route path='/personalCabinet/findWorkers' component={FindWorkers}/>
                     <Route path='/personalCabinet/tasks' component={Tasks}/>
