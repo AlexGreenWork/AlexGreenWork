@@ -2,6 +2,8 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    position: relative;
+    overflow: hidden;
     grid-area: header;
     -ms-grid-column: 2;
     -ms-grid-column-span: 2;
@@ -34,6 +36,7 @@
 .brand{
     position: absolute;
     right: calc(50% - 167px);
+    z-index: 5;
 }
 .loginBar{
     display: flex;
@@ -47,6 +50,7 @@
     top: 0;
     border-radius: 5px;
     width: 100px;
+    z-index: 5;
 }
 .avatar {
     width: 40px;
@@ -66,12 +70,13 @@
     color: white;
 }
 .clear>img {
-
+    
     border-radius: 50%;
 
 height: 5vh;
 }
 .clear{
+    z-index: 5;
     margin-left: 10px;
     border-radius: 30%;
     background-color: rgba(255,255,255,.5);
@@ -118,6 +123,61 @@ height: 5vh;
     color: white;
 }
 
+.waves {
+    position:relative;
+    width: 100%;
+    height:1vh;
+    top: 7.2vh;
+    margin-bottom:-7px; /*Fix for safari gap*/
+    min-height:100px;
+    max-height:150px;
+  }
+.containerWaves{
+    width: 100%;
+    position: absolute;
+    bottom: 50px;
+    z-index: 0;
+}
+  .parallax > use {
+    animation: move-forever 25s cubic-bezier(.55,.5,.45,.5)     infinite;
+  }
+  .parallax > use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 7s;
+  }
+  .parallax > use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 10s;
+  }
+  .parallax > use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 13s;
+  }
+  .parallax > use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 20s;
+  }
+  @keyframes move-forever {
+    0% {
+     transform: translate3d(-90px,0,0);
+    }
+    100% { 
+      transform: translate3d(85px,0,0);
+    }
+  }
+  /*Shrinking for mobile*/
+  @media (max-width: 768px) {
+    .waves {
+      height:40px;
+      min-height:40px;
+    }
+    .content {
+      height:30vh;
+    }
+    h1 {
+      font-size:24px;
+    }
+  }
 
 
 @media (max-width: 553px) {
