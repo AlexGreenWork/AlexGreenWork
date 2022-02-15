@@ -39,7 +39,7 @@ module.exports.CheckLastEntry = async function(){
     let lstEntry = await sqlCheckLastEntry();
    
     fs.stat(`../server/files/offers/idOffers/id${lstEntry[0][0].Id}`, function(err) {
-        console.log(err.code);
+        
         if (!err) {
            // console.log(`Директория id${lstEntry[0][0].Id} есть`);
         }
