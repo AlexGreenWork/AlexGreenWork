@@ -4,9 +4,12 @@ import s from "./header.module.css"
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../reducers/userReducer";
+import {clearMyOffers} from "../../reducers/offerReducer";
 // import avatarLogo from '../../assets/img/avatar.svg'
 import {API_URL} from "../../config";
 import GoBack from "../buttons/backButton/backButton";
+
+
 
 
 const Header = () => {
@@ -57,7 +60,7 @@ const Header = () => {
 
                 {/*<img className={s.avatar} src={avatar} alt="avatarLogo"/>*/}
             </NavLink>}
-            {isAuth && <div className={s.navbarLogin} onClick={() => dispatch(logout())}>Выход</div>}
+            {isAuth && <div id="exit" className={s.navbarLogin} onClick={() =>{ dispatch(clearMyOffers()); dispatch(logout()); }}>Выход</div>}
 
         </div>
     </div>)

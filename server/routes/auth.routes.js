@@ -218,6 +218,10 @@ router.post("/forms", urlencodedParser, async (request, response) => {
     const password = hashPassword;
     // console.log(hashPassword)
 
+    if (tabelNumber.length < 5) {
+        return response.send("Неверный табельный");
+    }
+
     const mysqlConfig = {
         host: config.database.host,
         user: config.database.user,
@@ -244,9 +248,10 @@ router.post("/forms", urlencodedParser, async (request, response) => {
 
         const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${tabelNumber})`);
         const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${emailInput}")`);
-        const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = ("${phoneNumber}") WHERE tabelNum = ("${tabelNumber}") AND email = ("${emailInput}")`);
+        const checkSendData = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${emailInput}") AND tabelNum IN ("${tabelNumber}")`)
+        // const updSendData = await pool.query(`UPDATE offersworker SET phoneNumber = ("${phoneNumber}") WHERE tabelNum = ("${tabelNumber}") AND email = ("${emailInput}")`);
 
-        return [checkTab, checkEmail, updSendData];
+        return [checkTab, checkEmail, checkSendData/* , updSendData */];
 
     }
 
@@ -254,39 +259,48 @@ router.post("/forms", urlencodedParser, async (request, response) => {
         var codes = await CheckTabAndEmail(tabelNumber, emailInput, phoneNumber);
         var tb = codes[0][0]; // первый елемент данные, второй это метаданные
         var eml = codes[1][0]; //второй sql запрос
-        let upd = codes[2][0] // запрос обновления строки
+        // let upd = codes[2][0] // запрос обновления строки
+        let checkSendData = codes[2][0]
+        
         let messageSend = "";
+
         if (tb[0] != undefined || eml[0] != undefined) {
             //  console.log("Такой табельный или емейл уже зарегистрирован в системе");
 
-            if (upd.changedRows != 0) { // запрос.количество затронутых строк
+            if (checkSendData.length != 0) {
                 messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`;
             } else {
-
-                //  console.log("данные пользователя не записаны");
-                if (upd.affectedRows != 0) {
-
-                    messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`
-
-                } else {
-
-                    if (tabelNumber == 0) {
-
-                        messageSend = messageSend + "Ваше предложение опубликовано";
-
-                        await pool.query(`INSERT INTO offersworker (name, middlename, surname, tabelNum, email, phoneNumber, password, adminOptions, date)` +
-                            `VALUES("${firstName}", "${middleName}", "${lastName}", "${tabelNumber}", "${emailInput}", "${phoneNumber}", "${password}", "user", "${moment().format('YYYY-MM-DD')}")`);
-                        //   console.log("Пользователь зарегистрирован");
-                        await InsertTabOffers(nameOffer, offer)
-
-                    } else {
-                        //  console.log("email или табельный уже зарегистрирован");
-                        messageSend = messageSend + "Не совпадение данных Email и табельного уже зарегистрированого пользователя";
-                    }
-
-                }
-
+                messageSend = messageSend + "Не совпадение данных Email и табельного уже зарегистрированого пользователя";
             }
+
+            // if (upd.changedRows != 0) { // запрос.количество затронутых строк
+            //     messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`;
+            // } else {
+
+            //  console.log("данные пользователя не записаны");
+            // if (upd.affectedRows != 0) {
+
+            //     messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`
+
+            // } else {
+
+            // if (tabelNumber == 0) {
+
+            // messageSend = messageSend + "Ваше предложение опубликовано";
+
+            // await pool.query(`INSERT INTO offersworker (name, middlename, surname, tabelNum, email, phoneNumber, password, adminOptions, date)` +
+            //     `VALUES("${firstName}", "${middleName}", "${lastName}", "${tabelNumber}", "${emailInput}", "${phoneNumber}", "${password}", "user", "${moment().format('YYYY-MM-DD')}")`);
+            // //   console.log("Пользователь зарегистрирован");
+            // await InsertTabOffers(nameOffer, offer)
+
+            // } else {
+            //     //  console.log("email или табельный уже зарегистрирован");
+            //     messageSend = messageSend + "Не совпадение данных Email и табельного уже зарегистрированого пользователя";
+            // }
+
+            // }
+
+            // }
 
             return messageSend;
 
@@ -376,42 +390,46 @@ async function coAuthorRegistration(coAuthor) {
     let sqlLstEntry = await pool.query("SELECT Id FROM offers WHERE id=(SELECT max(id) FROM offers);");
 
     // первый ключ объекта всегда 0 !!!!!!!!
+    console.log('coAuthor', coAuthor)
+    if (coAuthor !== undefined) {
+        let parseSenlerAdd = JSON.parse(coAuthor);
 
-    let parseSenlerAdd = JSON.parse(coAuthor);
+        let keyParseSenlerAdd = Object.keys(parseSenlerAdd)
+        for (let i = 1; i < keyParseSenlerAdd.length; i++) {
 
-    let keyParseSenlerAdd = Object.keys(parseSenlerAdd)
-    for (let i = 1; i < keyParseSenlerAdd.length; i++) {
+            let key = keyParseSenlerAdd[i];
 
-        let key = keyParseSenlerAdd[i];
-
-        if (Object.keys(parseSenlerAdd[key]).length != 0) {
+            if (Object.keys(parseSenlerAdd[key]).length != 0) {
 
 
-            const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${parseSenlerAdd[key].tabelNumber})`);
-            const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${parseSenlerAdd[key].email}")`);
-            const checkFired = await pool.execute(`SELECT deleted FROM kadry_all WHERE tabnum IN ("${parseSenlerAdd[key].tabelNumber}")`);
-            //  console.log("tab in kadryall", checkFired[0][0].deleted);
+                const checkTab = await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${parseSenlerAdd[key].tabelNumber})`);
+                const checkEmail = await pool.execute(`SELECT * FROM offersworker WHERE email IN ("${parseSenlerAdd[key].email}")`);
+                const checkFired = await pool.execute(`SELECT deleted FROM kadry_all WHERE tabnum IN ("${parseSenlerAdd[key].tabelNumber}")`);
+                //  console.log("tab in kadryall", checkFired[0][0].deleted);
 
-            if (checkTab[0].length != 0 || checkEmail[0].length != 0) {
-                //   console.log("Табельный или емейл есть");
-                await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
-            } else {
+                if (checkTab[0].length != 0 || checkEmail[0].length != 0) {
+                    //   console.log("Табельный или емейл есть");
+                    await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+                } else {
 
-                // console.log("Табельный или емейл отсуствует");
+                    // console.log("Табельный или емейл отсуствует");
 
-                await pool.query(`INSERT INTO offersworker (name, middlename, surname,
-                                     tabelNum, email, phoneNumber,
-                                     password, adminOptions, date, fired)` +
-                    `VALUES("${parseSenlerAdd[key].name}", "${parseSenlerAdd[key].middlename}", "${parseSenlerAdd[key].surname}", 
-                                     "${parseSenlerAdd[key].tabelNumber}","${parseSenlerAdd[key].email}", "${parseSenlerAdd[key].phoneNumber}", 
-                                     "${password}", "user", "${moment().format('YYYY-MM-DD')}", "${checkFired[0][0].deleted}" ) `);
+                    await pool.query(`INSERT INTO offersworker (name, middlename, surname,
+                                         tabelNum, email, phoneNumber,
+                                         password, adminOptions, date, fired)` +
+                        `VALUES("${parseSenlerAdd[key].name}", "${parseSenlerAdd[key].middlename}", "${parseSenlerAdd[key].surname}", 
+                                         "${parseSenlerAdd[key].tabelNumber}","${parseSenlerAdd[key].email}", "${parseSenlerAdd[key].phoneNumber}", 
+                                         "${password}", "user", "${moment().format('YYYY-MM-DD')}", "${checkFired[0][0].deleted}" ) `);
 
-                await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
-                // await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+                    await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+                    // await pool.query(`INSERT INTO senleradditional (IdOffers, co_author_tabNum) VALUES("${sqlLstEntry[0][0].Id}", '${parseSenlerAdd[key].tabelNumber}')`);
+                }
             }
-        }
 
+        }
     }
+
+
     pool.end();
 }
 
@@ -543,7 +561,7 @@ router.post("/fioSendler", urlencodedParser, async (req, res) => {
             }
 
         } else {
-            res.send(["Имя", "Фамилия", "Отчество"])
+            res.send(["", "", ""])
 
         }
     }
@@ -562,7 +580,7 @@ router.post("/allAuthors", urlencodedParser, async (req, res) => {
         database: config.database.database,
 
     }
-   
+
     const pool = mysql.createPool(mysqlConfig);
 
     console.log(req.body)
@@ -589,15 +607,15 @@ router.post("/allAuthors", urlencodedParser, async (req, res) => {
         for (let i = 0; i < sqlCoAuthorTab[0].length; i++) {
 
             if (sqlCoAuthorTab[0].length != 0) {
-               
+
 
                 let sqlCoAuthor = await pool.execute(`SELECT name, surname, middlename, tabelNum  FROM offersworker WHERE tabelnum=${sqlCoAuthorTab[0][i].co_author_tabNum}`)
                 sqlCoAuthor[0][0].coAuthor = "Соавтор"
                 let profit = await pool.query(`SELECT costOffers FROM cost_offers WHERE id_offers='${idOffers}' AND tabNum = '${sqlCoAuthorTab[0][i].co_author_tabNum}' AND actual = 0 `)
-             
+
                 if (profit[0].length != 0) {
                     sqlCoAuthor[0][0].profit = profit[0][0].costOffers
-                 
+
                 } else {
                     sqlCoAuthor[0][0].profit = "0"
                 }
@@ -610,7 +628,7 @@ router.post("/allAuthors", urlencodedParser, async (req, res) => {
     } else {
         res.send("noData")
     }
-pool.end()
+    pool.end()
 })
 
 router.post("/CostOffersSave", urlencodedParser, async (req, res) => {
@@ -656,7 +674,7 @@ router.post("/CostOffersSave", urlencodedParser, async (req, res) => {
         }
     }
 
-pool.end()
+    pool.end()
     res.send("ok")
 })
 
