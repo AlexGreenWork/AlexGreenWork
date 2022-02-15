@@ -106,6 +106,75 @@ const Offer = (props) => {
 
     } 
 
+    let nameStatus;
+    let colorStatus;
+    let colorStatus1;
+    if (props.status == 1) {
+        nameStatus = "Подано";
+        
+        colorStatus1="#d5b71d";
+    }
+    if (props.status == 2) {
+        colorStatus= "#ffd600";
+        nameStatus = "Рассматривается первоначальной рабочей группой"
+        colorStatus1="#d5b71d";
+    }
+    if (props.status == 3) {
+        nameStatus = "Отклонено первоначальной рабочей группой"
+        colorStatus="red"
+        colorStatus1="red"
+    }
+    if (props.status == 4) {
+        nameStatus = "Направлено в подразделения для подготовки заключения и предварительного обоснования"
+        colorStatus="#508dff"
+        colorStatus1 ="#2d68d7"
+    }
+    if (props.status == 5) {
+        nameStatus = "Рассматривается рабочей группой"
+        colorStatus="#508dff"
+        colorStatus1 ="#2d68d7"
+    }
+    if (props.status == 6) {
+        nameStatus = "Отклонено рабочей группой после рассмотрения подразделением(ями)"
+        colorStatus="red"
+        colorStatus1="red"
+    }
+    if (props.status == 7) {
+        nameStatus = "Направлено секретарю комиссии"
+        colorStatus="#c499f1"
+        colorStatus1 = "#b67df1"
+    }
+    if (props.status == 8) {
+        nameStatus = "Запланировано к рассмотрению комиссией"
+        colorStatus="#7aa8ff"
+        colorStatus1 = "#b67df1"
+    }
+    if (props.status == 9) {
+        nameStatus = "Рассмотрено комиссией. Оформление результатов"
+        colorStatus="#7aa8ff"
+        colorStatus1 = "#b67df1"
+    }
+    if (props.status == 10) {
+        nameStatus = "Результаты рассмотрения комиссией оформлены"
+        colorStatus="#7aa8ff"
+        colorStatus1 = "#b67df1"
+    }
+    if (props.status == 11) {
+        nameStatus = "Отклонено комиссией"
+        colorStatus1="red"
+    }
+    if (props.status == 12) {
+        nameStatus = "Направлено для внедрения"
+        colorStatus="#8ef392"
+        colorStatus1 = "#2db873"
+    }   
+    if (props.status == 13) {
+        nameStatus = "Внедрено"
+        colorStatus="#8ef392"
+        colorStatus1 = "#2db873"
+    }
+    
+
     return (
         <div>
             <NavLink to='/cardOffer' onClick={() => { 
@@ -114,13 +183,26 @@ const Offer = (props) => {
               localStorage.setItem('sendlerTabWG', props.tabelNum);
              
             }}>
-                <div className={s.header}>
+                <div className={s.header} style={{backgroundColor: colorStatus}}>
                     <div className={s.offerPreview}>
-                        <div className={s.from}>
+                        <div className={s.from} style={{justifyContent:"space-between"}}>
                         
-                            <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
+                            <div className={s.fromName} style={{
+                                backgroundColor: "darkorange",
+                                borderRadius: "5px",
+                                color: "white",
+                                textShadow: "1px 1px 2px #0e23ff"
+                            }}>  {props.surname + " " + props.name + " " + props.midlename}</div>
                             {/* <div className={s.date}> {props.date.slice(0, 9)}</div> */}
-                            <div className={s.status}>  {props.status}</div>
+                            <div className={s.status} style={{
+                                backgroundColor: colorStatus1,
+                                textShadow: "1px 1px 2px black",
+                                color:"white",
+                                borderRadius: "20px",
+                                paddingLeft: "12px",
+                                paddingRight: "12px",
+                                border: "1px solid",
+                            }}>  {nameStatus}</div>
                         </div>
                         <div className={s.offerText} style={{
                             display: "flex",

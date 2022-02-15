@@ -33,7 +33,7 @@ function EventClose() {
             document.querySelector('#file').value = '';
             removeDiv.remove();
           // window.location = "http://localhost:3000/personalCabinet/myOffers";
-           window.location.href = "http://isi.belaz.minsk.by:3000/";
+           window.location.href = "/";
         } else {
             console.log('removeDiv не существует');
         }
