@@ -116,7 +116,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
     }
 
     let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
-
+   
     let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
@@ -139,23 +139,26 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
         let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
 
         let sqlOffersqwe = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);	// нашли табельный автора подавшего предложения
+        
+        if(sqlOffersqwe[0].length != 0){
+            let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
+        
+            let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+            newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
+            newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
+            newObject['middlenameSendler'] = sqlinfoOffersCoAuthor[0][0].middlename;
+            newObject['coAuthor'] = "Соавтор"; //опметка соавтор
+            let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
 
-
-        let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
-
-        let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
-        newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
-        newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
-        newObject['middlenameSendler'] = sqlinfoOffersCoAuthor[0][0].middlename;
-        newObject['coAuthor'] = "Соавтор"; //опметка соавтор
-
-        let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
-
-        infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
-
-        myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
-
+            infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
+    
+            myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
+        }
     }
+
+       
+
+    
 
     return [myAllOfffers]
 }
@@ -794,7 +797,7 @@ router.post("/responsibleToOffers", urlencodedParser,
     let offerId = request.body.idOffer
     let respTabnum = request.body.tabNum
 
-        console.log(Date(),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        console.log(moment().format('YYYY-MM-DD'),"Запись оценок RG"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
@@ -809,7 +812,7 @@ router.post("/responsibleToOffers", urlencodedParser,
     let respTabnum = request.body.tabNum
     let position = request.body.position
 
-        console.log(Date(),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        console.log(moment().format('YYYY-MM-DD'),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
@@ -819,7 +822,7 @@ router.post("/responsibleToOffers", urlencodedParser,
     let offerId = request.body.idOffer
     let respTabnum = request.body.tabNum
 
-        console.log(Date(),"Заключение RG закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        console.log(moment().format('YYYY-MM-DD'),"Заключение RG закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
@@ -829,7 +832,7 @@ router.post("/responsibleToOffers", urlencodedParser,
     let offerId = request.body.idOffer
     let respTabnum = request.body.tabNum
         try{
-        console.log(Date(),"Заключение Responsible закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        console.log(moment().format('YYYY-MM-DD'),"Заключение Responsible закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send()
         }catch(e){
@@ -849,7 +852,7 @@ router.post("/responsibleToOffers", urlencodedParser,
      console.log(textComission)
      console.log(sqlR[0])
     if(sqlR[0][0] == null){
-        console.log(Date(),"Запись Аннотации Комиссии", "в предложение",offerId, "с табельного ", comissionTabnum)
+        console.log(moment().format('YYYY-MM-DD'),"Запись Аннотации Комиссии", "в предложение",offerId, "с табельного ", comissionTabnum)
         await pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
           response.status(200).send()
      }else{
@@ -875,7 +878,7 @@ router.post("/responsibleToOffers", urlencodedParser,
         return console.log("Сработал андефайнд")
      }
       
-    console.log(Date(),"Запись Аннотации Ответственного", "в предложение",offerId, "с табельного ", tabnum)
+    console.log(moment().format('YYYY-MM-DD'),"Запись Аннотации Ответственного", "в предложение",offerId, "с табельного ", tabnum)
       await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
         response.status(200).send() 
     }catch(e){console.log(e)}
@@ -889,13 +892,13 @@ router.post("/responsibleToOffers", urlencodedParser,
     let offerId = request.body.idOffer
     try{
     const sqlR = await pool.query(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
-console.log(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)        
+//console.log(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)        
 
 	
-        // console.log("аннотация", sqlR[0][0].annotation)
-    if(sqlR[0][0].annotation == undefined ){
+        //console.log("аннотация", sqlR[0][0])
+    if(sqlR[0][0] == undefined ){
 	response.send("")       
- return console.log("нет такой записи в таблице комиссия")
+ return console.log(moment().format('YYYY-MM-DD'), "нет аннотации в предложении", offerId)
 	
     }else{
     let resp = sqlR[0][0].annotation
