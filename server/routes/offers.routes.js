@@ -1052,10 +1052,7 @@ router.post("/comission", urlencodedParser,
         let offerId = request.body.idOffer
         try {
             const sqlR = await pool.query(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
-            console.log(`SELECT annotation FROM comission WHERE offerID = '${offerId}'`)
-
-
-
+       
             if (sqlR[0][0] == undefined) {
                 response.send("")
                 pool.end()
@@ -1070,6 +1067,62 @@ router.post("/comission", urlencodedParser,
         } catch (e) { console.log(e) }
 
         pool.end()
+
+    })
+
+    router.post("/getHistoryBrowsing", urlencodedParser,
+    async function (req, res) {
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+
+        const pool = mysql.createPool(mysqlConfig);
+        let tabNum = req.body.tabNum;
+        let sqlHistBrows = await pool.query(`SELECT id_offers FROM browsing_history WHERE tabNum = '${tabNum}'`)
+        console.log(sqlHistBrows[0])
+        if(sqlHistBrows[0].length != 0){
+            res.send(sqlHistBrows[0]);
+        } else {
+            res.send("null");
+        }
+       
+        pool.end()
+    })
+
+    router.post("/setHistoryBrowsing", urlencodedParser,
+    async function (req, res) {
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+
+        const pool = mysql.createPool(mysqlConfig);
+        let tabNum = req.body.tabNum;
+        let offerId = req.body.offerId;
+        let sqlHist = await pool.query(`SELECT id_offers FROM browsing_history WHERE tabNum = '${tabNum}' AND id_offers = '${offerId}'`)
+        console.log('sqlHist[0]', sqlHist[0])
+        //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+        if(sqlHist[0].length === 0){
+            let sqlHistBrows = await pool.query(`INSERT INTO  browsing_history (id_offers, tabNum) VALUES ('${offerId}', '${tabNum}')`)
+     
+            if(sqlHistBrows[0].length != 0){
+                res.send(sqlHistBrows[0]);
+            } else {
+                res.send("null");
+            }
+        }
+       
+       
+        pool.end()
+    })
+
+    router.post("/PersonalAreaHistoryBrowsing", urlencodedParser,
+    async function (req, res) {
 
     })
 

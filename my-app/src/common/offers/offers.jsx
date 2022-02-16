@@ -6,12 +6,49 @@ import {useContext} from "react";
 import Context from "../context/Context";
 import { useDispatch } from "react-redux";
 import { addSendler, selectMyOffers } from "../../reducers/offerReducer";
+import axios from "axios";
+import { number } from "prop-types";
 
+const Notification = (props)=>{
+if(props.history !== null){
+    let arrObjHistory = props.history
+
+    if(props.history.length !== 0){
+
+        let i = arrObjHistory.findIndex(elem => elem.id_offers == props.idOffers);
+        console.log(typeof i)
+
+        if(typeof i === 'number' && i < 0){
+            return (
+                <div>
+                   &#128276;
+                </div>
+            )
+        } else {
+            return (
+                <div></div>
+            )
+        }
+    }  else {
+        return (
+            <div></div>
+        )
+    } 
+} else {
+    return (
+        <div>
+           &#128276;
+        </div>
+    )
+}
+   
+    
+}
 
 const Offer = (props) => {
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState('');
-
+    
     const dispatch = useDispatch();
 
     function DispatchOffers(){
@@ -177,14 +214,18 @@ const Offer = (props) => {
 
     return (
         <div>
+            
             <NavLink to='/cardOffer' onClick={() => { 
               clickOnOfferLink(); DispatchOffers(); DispatchAddSendler();
               localStorage.setItem('idOffers', props.id);
               localStorage.setItem('sendlerTabWG', props.tabelNum);
-             
+              setBrowseHistory(props.id);
             }}>
+              
                 <div className={s.header} style={{backgroundColor: colorStatus}}>
+                <Notification idOffers={props.id} history = {props.histBrows} />
                     <div className={s.offerPreview}>
+                   
                         <div className={s.from} style={{justifyContent:"space-between"}}>
                         
                             <div className={s.fromName} style={{
@@ -354,21 +395,45 @@ const OffersLink = (props) => {
     return offersDataReverse.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
                                              surname={number.surnameSendler} midlename={number.middlenameSendler}
                                              status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission}
-                                             email={number.email}/>)
+                                             email={number.email} histBrows = {props.history}/>)
 
     }
     
 }
 
+function setBrowseHistory(idOffers){
+    let tabNum = localStorage.getItem('userTabelNum');
+    try {
+        axios.post(`${API_URL}api/offers/setHistoryBrowsing`, {
+            tabNum: tabNum,
+            offerId:idOffers,
+
+        })
+            .then(res => {
+
+
+                let history = res.data;
+
+               
+               
+              
+               
+            })
+    } catch (e) {
+        alert(e.response)
+    }
+}
 // function sortNumberOffer
 
 const Offers = () => {
     const [reqAllOff, setReqAllOff] = useState(0);
     const [sort, setSort] = useState("null");
     const [typeSort, setTypeSort] = useState("numberOffer");
+    const [histBrows, sethistBrows] = useState("")
   
     if(reqAllOff === 0){
         Resp();
+        BrowseHistory();
     }
    
    function Resp() {
@@ -384,6 +449,28 @@ const Offers = () => {
 
         return xhr.response;
 
+    }
+
+    function BrowseHistory(){
+        let tabNum = localStorage.getItem('userTabelNum');
+        try {
+            axios.post(`${API_URL}api/offers/getHistoryBrowsing`, {
+                tabNum: tabNum,
+
+            })
+                .then(res => {
+
+
+                    let history = res.data;
+
+                    sethistBrows(history)
+                    console.log(history)
+                  
+                   
+                })
+        } catch (e) {
+            alert(e.response)
+        }
     }
    
    if(sort === "null" || sort.length === 0 ){
@@ -408,7 +495,7 @@ const Offers = () => {
             </div>
             
             <SortOffers request = {reqAllOff} sort={sort} typeSort = {typeSort}/>
-            <OffersLink request={reqAllOff} />
+            <OffersLink request={reqAllOff} history = {histBrows} />
            
         </div>
     )
