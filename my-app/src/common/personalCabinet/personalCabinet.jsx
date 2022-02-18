@@ -17,7 +17,7 @@ const CountNoBrowsing = () =>{
         BrowseHistory(tabNum)
   
     } else{
-        console.log(alloffers.length)
+     
     }
     function BrowseHistory(tab){
         let tabNum = localStorage.getItem('userTabelNum');
@@ -32,7 +32,7 @@ const CountNoBrowsing = () =>{
                     let history = res.data;
     
                     Resp(history)
-                    console.log(history)
+                    
                   
                    
                 })
@@ -50,7 +50,7 @@ const CountNoBrowsing = () =>{
                 if (this.readyState === 4 && this.status === 200) {
                     if(history !== null){
                         setAllOffers(JSON.parse(xhr.response).length-history.length)
-                        console.log(JSON.parse(xhr.response).length-history.length)  
+                        
                     } else {
                         setAllOffers(JSON.parse(xhr.response).length)
                     }
@@ -59,8 +59,15 @@ const CountNoBrowsing = () =>{
             }
             xhr.send();
     }
+    console.log(alloffers)
+    if(alloffers > 0){
+        return (
+            <div>{alloffers}</div>
+        )
+      
+    }
     return (
-        <div>{alloffers}</div>
+        <div></div>
     )
 }
 

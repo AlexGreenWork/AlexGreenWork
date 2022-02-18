@@ -44,7 +44,14 @@ router.get("/allOffers",
         }
 
         const pool = mysql.createPool(mysqlConfig);
-
+      console.log(request.query)
+       
+        
+        // if(sqlHistBrows[0].length != 0){
+        //     res.send(sqlHistBrows[0]);
+        // } else {
+        //     res.send("null");
+        // }
 
         async function sqlSelectOffers() {
 
@@ -129,7 +136,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
     }
 
     let sqlParty = await pool.execute(`SELECT IdOffers FROM senleradditional WHERE co_author_tabNum = ${tabelNumber}`) // получаем номера предложений где участвует пользователь
-
+   
     let sqlMyOff = await pool.execute(`SELECT
 											o.nameOffer,
 											o.Id,
@@ -152,24 +159,27 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
         let infoOffersCoAuthor; //переменная в которой храним информацию об авторе предложения в котором мы являемся соавтором
 
         let sqlOffersqwe = await pool.execute(`SELECT tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);	// нашли табельный автора подавшего предложения
+        
+        if(sqlOffersqwe[0].length != 0){
+            let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
+        
+            let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
+            newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
+            newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
+            newObject['middlenameSendler'] = sqlinfoOffersCoAuthor[0][0].middlename;
+            newObject['coAuthor'] = "Соавтор"; //опметка соавтор
+            let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
 
-
-        let sqlinfoOffersCoAuthor = await pool.execute(`SELECT name, surname, middlename   FROM offersworker WHERE tabelNum=${sqlOffersqwe[0][0].tabelNum}`);	// нашли фио автора подавшего предложения
-
-        let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
-        newObject["nameSendler"] = sqlinfoOffersCoAuthor[0][0].name;
-        newObject['surnameSendler'] = sqlinfoOffersCoAuthor[0][0].surname;
-        newObject['middlenameSendler'] = sqlinfoOffersCoAuthor[0][0].middlename;
-        newObject['coAuthor'] = "Соавтор"; //опметка соавтор
-
-        let sqlOffers = await pool.execute(`SELECT nameOffer, Id, date, status, tabelNum FROM offers WHERE Id=${sqlParty[0][i].IdOffers}`);  //получаем информацию о предложении в котором текущий пользователь являеться соавтором
-
-        infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
-
-        myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
-
+            infoOffersCoAuthor = Object.assign(sqlOffers[0][0], newObject)
+    
+            myAllOfffers = myAllOfffers.concat(infoOffersCoAuthor);
+        }
     }
-    pool.end()
+
+       
+
+    
+
     return [myAllOfffers]
 }
 
@@ -837,10 +847,8 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
         response.send(result)
     })
-router.post("/responsibleToOffers", urlencodedParser,
-
+    router.post("/responsibleToOffers", urlencodedParser,
     async function (request, response) {
-
         const mysqlConfig = {
             host: config.database.host,
             user: config.database.user,
@@ -852,10 +860,10 @@ router.post("/responsibleToOffers", urlencodedParser,
 
         let arrOffer = [];
         let tabNum = request.body.tabNum
-
+     
         let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
-
-        if (sqlResponsible[0].length != 0) {
+        
+        if(sqlResponsible[0].length != 0){
             for (let i = 0; i < sqlResponsible[0].length; i++) {
 
                 let sqlOffers = await pool.query(`SELECT nameOffer,
@@ -865,50 +873,82 @@ router.post("/responsibleToOffers", urlencodedParser,
                                                          tabelNum 
                                                    FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
 
-
-                if (sqlOffers[0].length != 0) {
+                                                   
+                if(sqlOffers[0].length != 0){
                     let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
                     let offersObj = sqlOffers[0][0]
 
                     offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
                     offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
                     offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
-
+    
                     arrOffer[i] = offersObj;
-
-                    if (i == sqlResponsible[0].length - 1) {
+    
+                    if(i == sqlResponsible[0].length-1 ){
                         response.send(arrOffer)
                     }
-                } else {
-                    response.send("noResponsible")
-                }
+                    } else {
+                        response.send("noResponsible")
+                    }
+              
 
 
-
-
+               
             }
-        } else {
+        } else{
             response.send("noResponsible")
         }
-
-        pool.end();
+        pool.end()
     })
-
-router.post("/saveNotesToDbRG", urlencodedParser,
+    /////////////////////////////////////////////////////////////
+    router.post("/toDbSaveNotesResponsible", urlencodedParser,
     async function (request, response) {
-        let actual = request.body.actual
-        let innovate = request.body.innovate
-        let cost = request.body.cost
-        let duration = request.body.duration
-        let offerId = request.body.idOffer
-        let respTabnum = request.body.tabNum
+    let actual = request.body.actual
+    let innovate = request.body.innovate
+    let cost = request.body.cost
+    let duration = request.body.duration
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+    let position = request.body.position
 
-        console.log(Date(), "Запись оценок RG", " ", "'", "в предложение", offerId, "с табельного ", respTabnum,)
-        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
-        response.status(200).send()
-        pool.end();
+        console.log(moment().format('YYYY-MM-DD'),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        response.status(200).send() 
     })
-/////////////////////////////////////////////////////////////
+
+    router.post("/closeConclusionRG", urlencodedParser,
+    async function (request, response) {
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+
+        console.log(moment().format('YYYY-MM-DD'),"Заключение RG закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        response.status(200).send() 
+    })
+
+    router.post("/closeConclusionResponsible", urlencodedParser,
+    async function (request, response) {
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+
+        const pool = mysql.createPool(mysqlConfig);
+
+    let offerId = request.body.idOffer
+    let respTabnum = request.body.tabNum
+        try{
+        console.log(moment().format('YYYY-MM-DD'),"Заключение Responsible закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+        await pool.query(`UPDATE offersresponsible SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        response.status(200).send()
+        }catch(e){
+            console.log(e)
+        } 
+        pool.end()
+    })
+
 router.post("/toDbSaveNotesResponsible", urlencodedParser,
     async function (request, response) {
 
@@ -972,68 +1012,45 @@ router.post("/closeConclusionResponsible", urlencodedParser,
 
 router.post("/saveComissionAnnotationToDb", urlencodedParser,
     async function (request, response) {
-
-        const mysqlConfig = {
-            host: config.database.host,
-            user: config.database.user,
-            password: config.database.password,
-            database: config.database.database,
-        }
-
-        const pool = mysql.createPool(mysqlConfig);
-
-        console.log(" функция")
-        let textComission = request.body.w
-        let offerId = request.body.id
-        let comissionTabnum = request.body.comissionTabNum
-
-        const sqlR = await pool.query(`SELECT * FROM comission WHERE offerID = '${offerId}' AND tabelNum = ${comissionTabnum}`)
-        console.log(textComission)
-        console.log(sqlR[0])
-        if (sqlR[0][0] == null) {
-            console.log(Date(), "Запись Аннотации Комиссии", "в предложение", offerId, "с табельного ", comissionTabnum)
-            await pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
-            response.status(200).send()
-        } else {
-            await pool.query(`UPDATE comission SET annotation = '${textComission}' WHERE offerID = ${offerId} AND tabelNum = ${comissionTabnum}`);
-            response.status(200).send()
-        }
-
-        pool.end();
-
+     console.log(" функция")
+    let textComission = request.body.w
+    let offerId = request.body.id
+    let comissionTabnum = request.body.comissionTabNum
+    
+    const sqlR = await pool.query(`SELECT * FROM comission WHERE offerID = '${offerId}' AND tabelNum = ${comissionTabnum}`)
+     console.log(textComission)
+     console.log(sqlR[0])
+    if(sqlR[0][0] == null){
+        console.log(moment().format('YYYY-MM-DD'),"Запись Аннотации Комиссии", "в предложение",offerId, "с табельного ", comissionTabnum)
+        await pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+          response.status(200).send()
+     }else{
+        await pool.query(`UPDATE comission SET annotation = '${textComission}' WHERE offerID = ${offerId} AND tabelNum = ${comissionTabnum}`);
+        response.status(200).send() 
+     }
+      
+     
     })
 //////////////////////////////////////////////////////////////
 router.post("/toDbSaveAnnot", urlencodedParser,
     async function (request, response) {
-
-        const mysqlConfig = {
-            host: config.database.host,
-            user: config.database.user,
-            password: config.database.password,
-            database: config.database.database,
-        }
-
-        const pool = mysql.createPool(mysqlConfig);
-
-        console.log(" toDbSaveAnnot - отработало")
-        let textAnnotation = request.body.ann
-        let offerId = request.body.idOffer
-        let tabnum = request.body.tabNum
-        let position = request.body.position
-        console.log(textAnnotation, offerId, tabnum)
-        try {
-            const sqlR = await pool.query(`SELECT * FROM offersresponsible WHERE offer_id = '${offerId}' AND responsible_tabnum = '${tabnum}'`)
-
-            if (sqlR == undefined) {
-                return console.log("Сработал андефайнд")
-            }
-
-            console.log(Date(), "Запись Аннотации Ответственного", "в предложение", offerId, "с табельного ", tabnum)
-            await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
-            response.status(200).send()
-        } catch (e) { console.log(e) }
-
-        pool.end()
+     console.log(" toDbSaveAnnot - отработало")
+    let textAnnotation = request.body.ann
+    let offerId = request.body.idOffer
+    let tabnum = request.body.tabNum
+    let position = request.body.position
+    console.log(textAnnotation, offerId,tabnum )
+    try{
+    const sqlR = await pool.query(`SELECT * FROM offersresponsible WHERE offer_id = '${offerId}' AND responsible_tabnum = '${tabnum}'`)
+     
+    if(sqlR == undefined){
+        return console.log("Сработал андефайнд")
+     }
+      
+    console.log(moment().format('YYYY-MM-DD'),"Запись Аннотации Ответственного", "в предложение",offerId, "с табельного ", tabnum)
+      await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
+        response.status(200).send() 
+    }catch(e){console.log(e)}
     })
 
 
@@ -1082,7 +1099,7 @@ router.post("/comission", urlencodedParser,
         const pool = mysql.createPool(mysqlConfig);
         let tabNum = req.body.tabNum;
         let sqlHistBrows = await pool.query(`SELECT id_offers FROM browsing_history WHERE tabNum = '${tabNum}'`)
-        console.log(sqlHistBrows[0])
+        
         if(sqlHistBrows[0].length != 0){
             res.send(sqlHistBrows[0]);
         } else {
@@ -1105,7 +1122,7 @@ router.post("/comission", urlencodedParser,
         let tabNum = req.body.tabNum;
         let offerId = req.body.offerId;
         let sqlHist = await pool.query(`SELECT id_offers FROM browsing_history WHERE tabNum = '${tabNum}' AND id_offers = '${offerId}'`)
-        console.log('sqlHist[0]', sqlHist[0])
+        // console.log('sqlHist[0]', sqlHist[0])
         //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
         if(sqlHist[0].length === 0){
             let sqlHistBrows = await pool.query(`INSERT INTO  browsing_history (id_offers, tabNum) VALUES ('${offerId}', '${tabNum}')`)
@@ -1121,9 +1138,5 @@ router.post("/comission", urlencodedParser,
         pool.end()
     })
 
-    router.post("/PersonalAreaHistoryBrowsing", urlencodedParser,
-    async function (req, res) {
-
-    })
 
 module.exports = router

@@ -29,9 +29,7 @@ import {Budget} from "./common/topComissionPanel/TopComission";
 import TopComission from "./common/topComissionPanel/TopComission";
 import Administration from "./common/administration/administration";
 import News from "./common/news/news";
-import  {  ReactNotifications  }  from  'react-notifications-component'
-import  'react-notifications-component/dist/theme.css'
-import  {  Store  }  from  'react-notifications-component' ;
+
 
 
 
@@ -63,31 +61,7 @@ function App(props) {
         <BrowserRouter>
             <Context.Provider value = {value}>
             <div className={'container1'} id="container1">
-                <button style={{
-                    position:"fixed",
-                    top:0,
-                    left: 0,
-                    borderRadius: "5px",
-                    height: "4vh",
-                    padding: "5px",
-                    zIndex: 1500,
-                }} onClick={()=>{
-                    console.log(Store)
-                    Store.addNotification ( { 
-                        title : "Новое предложение" , 
-                        message : "Тут должно быть название предложения" , 
-                        type : "info" , 
-                        insert : "top" , 
-                        container : "bottom-right" , 
-                        animationIn : [ "animate__animated" ,  " animate__fadeIn" ] , 
-                        animationOut : [ "animate__animated" ,  "animate__fadeOut" ] , 
-                        dismiss :
-                         { duration : 5000 , 
-                          onScreen : true 
-                        } 
-                      } ) ;
-                }}>111111111</button>
-            <ReactNotifications/> 
+               
                 <Header/>
 
 
