@@ -21,7 +21,7 @@ const CustomTableRow = styled(TableRow)(({ theme }) => (
 		'&:hover td > a':
 		{
 			color: "Orange",
-			fontSize: "18px",
+			fontSize: "16px",
 			fontWeight: "bold",
 			cursor: "pointer",
 		},
