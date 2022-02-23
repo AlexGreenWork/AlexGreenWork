@@ -10,6 +10,21 @@ const CustomTableRow = styled(TableRow)(({ theme }) => (
 		{
 			border: 0,
 		},
+		'&:hover':
+		{
+			backgroundColor: "Darkgreen",
+		},
+		'&:hover td':
+		{
+			color: "white",
+		},
+		'&:hover td > a':
+		{
+			color: "Orange",
+			fontSize: "18px",
+			fontWeight: "bold",
+			cursor: "pointer",
+		},
 	}
 ));
 

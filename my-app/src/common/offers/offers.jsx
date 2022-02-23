@@ -7,10 +7,7 @@ import Context from "../context/Context";
 import { useDispatch } from "react-redux";
 import { addSendler, selectMyOffers } from "../../reducers/offerReducer";
 
-const Offers = () => {
-  const [displ, setDispl] = useState("block");
-
-  const CardOfferLinkAdapter = (props) => {
+export const CardOfferLinkAdapter = (props) => {
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState("");
 
@@ -129,6 +126,9 @@ const Offers = () => {
     );
 
   };
+
+const Offers = () => {
+  const [displ, setDispl] = useState("block");
 
 	const Offer = (props) => {
 		let nameStatus;

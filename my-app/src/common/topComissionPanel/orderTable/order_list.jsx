@@ -11,6 +11,7 @@ import CustomTableRow from './order_row'
 import { SeverityPill } from '../severity-pill';
 import moment from 'moment';
 import React from 'react';
+import {CardOfferLinkAdapter} from "../../../common/offers/offers.jsx"
 
 class OrdersList extends React.Component
 {
@@ -86,26 +87,42 @@ class OrdersList extends React.Component
 									.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
 									.map((order, id) =>
 									(
-										<CustomTableRow key={id} >
-											<TableCell>
-												{order['offer_id']}
-											</TableCell>
-											<TableCell>
-												{order['offer_sendler']}
-											</TableCell>
-											<TableCell>
-												{moment(order['offer_date']).format("DD-MM-YYYY")}
-											</TableCell>
-											<TableCell>
-												<SeverityPill
-													color={(order['offer_status'] === 'обработано' && 'success')
-														|| (order['offer_status'] === 'отклонено' && 'error')
-															|| 'warning'}
-												>
-													{order['offer_status']}
-												</SeverityPill>
-											</TableCell>
-										</CustomTableRow>
+											<CustomTableRow key={id} >
+												<TableCell>
+													<CardOfferLinkAdapter
+														  id={order['Id']}
+														  date={order['date']}
+														  name={order['nameSendler']}
+														  surname={order['surnameSendler']}
+														  midlename={order['middlenameSendler']}
+														  status={order['status']}
+														  nameOffer={order['nameOffer']}
+														  tabelNum={order['tabelNum']}
+														  dateComission={order['dateComission']}
+														  email={order['email']}
+													>
+														<div onMouseEnter={(e) => {e.target.innerText = "Подробнее"}}
+															onMouseOut={(e) => {e.target.innerText = order['Id']}}>
+															{order['Id']}
+														</div>
+													</CardOfferLinkAdapter>
+												</TableCell>
+												<TableCell>
+													{order['surnameSendler'] + " " + order['nameSendler'] + " " + order['middlenameSendler']}
+												</TableCell>
+												<TableCell>
+													{moment(order['date']).format("DD-MM-YYYY")}
+												</TableCell>
+												<TableCell>
+													<SeverityPill
+														color={(order['offer_status'] === 'обработано' && 'success')
+															|| (order['offer_status'] === 'отклонено' && 'error')
+																|| 'warning'}
+													>
+														{order['offer_status']}
+													</SeverityPill>
+												</TableCell>
+											</CustomTableRow>
 								))}
 						  </TableBody>
 						</Table>

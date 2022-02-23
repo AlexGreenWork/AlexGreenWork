@@ -1,5 +1,6 @@
 const mysql = require("mysql2/promise");
 const config = require("./../config/default.json");
+const offer_controller = require("./offersController");
 
 class Admin
 {
@@ -53,6 +54,7 @@ class Admin
 		try
 		{
 			connection = await Admin.connection_to_database();
+			const val = await offer_controller.offer_info_by_offer_id(281, connection);
 
 			const states = await connection.query(`SELECT
 														count(id) AS c,
@@ -88,12 +90,9 @@ class Admin
 
 			const last_offers = await connection.query(`SELECT
 															o.id,
-															o.date,
-															s.info,
-															ka.fiofull
+															s.info
 														FROM
 															offers AS o
-														INNER JOIN kadry_all AS ka ON ka.tabnum = o.tabelNum
 														INNER JOIN state AS s ON s.status = o.status
 														WHERE
 															YEAR(o.date) = ? AND MONTH(o.date) >= ?`,
@@ -105,10 +104,8 @@ class Admin
 				{
 					result.last_offers.push(
 						{
-							offer_id: lf.id,
-							offer_date: lf.date,
 							offer_status: lf.info,
-							offer_sendler: lf.fiofull
+							... await offer_controller.offer_info_by_offer_id(lf.id, connection),
 						});
 				}
 			}
