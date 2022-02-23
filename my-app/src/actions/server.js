@@ -36,7 +36,6 @@ class Server
 	{
 		const url = router
 		const request_config = this.concat_request_configs(config);
-		console.log(request_config.headers)
 		return axios.post(url, data, request_config);
 	}
 
