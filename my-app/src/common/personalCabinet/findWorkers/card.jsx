@@ -28,10 +28,10 @@ class Cart extends React.Component
 	    if(props?.info
 			&& (
 					this.state.info === null
-					|| this.state.info.tabnum !== props.info
+					|| this.state.info.tabnum != props.info
 				) 
 			)
-		{
+		{console.log(this.state.info, props.info);
 			server.send_post_request(`${API_URL}api/user/info`, {search: props.info}).then((res) => {
 				this.setState({info: res.data});
 			})
