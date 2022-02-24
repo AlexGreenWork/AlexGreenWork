@@ -29,7 +29,6 @@ export const CardOfferLinkAdapter = (props) => {
             let offersData = JSON.parse(xhr.response);
 
             requestInfoAutor(xhr.response);
-            console.log(xhr.response);
           }
         };
 
@@ -102,7 +101,6 @@ export const CardOfferLinkAdapter = (props) => {
       }
     }
     function clickOnOfferLink() {
-      console.log(props);
       localStorage.setItem("idOffers", props.id);
       localStorage.setItem("status", props.status);
       value.contextFunction(props.id, props.tabelNum);
