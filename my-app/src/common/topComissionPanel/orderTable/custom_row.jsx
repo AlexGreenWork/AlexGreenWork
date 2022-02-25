@@ -6,15 +6,23 @@ const CustomTableRow = styled(TableRow)(({ theme }) => (
 		{
 			backgroundColor: "lightgrey",
 		},
+
 		'&:last-child td, &:last-child th':
 		{
 			border: 0,
 		},
+
 		'&:hover':
 		{
 			backgroundColor: "Darkgreen",
 		},
-		'&:hover > td':
+
+		'&:hover > *':
+		{
+			color: "White",
+		},
+
+		'&:hover > * > *':
 		{
 			color: "White",
 		},
