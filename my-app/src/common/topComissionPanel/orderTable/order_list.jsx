@@ -66,7 +66,7 @@ class OrdersList extends React.Component
 
 	onShow(order, id)
 	{
-		return <ListRow id = {id} row = {order}/>
+		return <ListRow key = {id} id = {id} row = {order}/>
 	}
 
 	render()

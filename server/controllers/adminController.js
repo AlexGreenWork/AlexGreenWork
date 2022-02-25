@@ -28,7 +28,7 @@ class Admin
 		return (current_user_group === 'admin' || current_user_group === 'wg')
 	}
 
-	async offers_state(req, res)
+	async offers_last_offers(req, res)
 	{
 		if(!Admin.request_user_is_admin(req.current_user_info))
 		{
@@ -44,6 +44,60 @@ class Admin
         }
 
 		const begin = new Date(req.body.begin);
+
+		const result = { last_offers: []};
+
+		let connection = null;
+
+		try
+		{
+			connection = await Admin.connection_to_database();
+
+			let last_offers_query = `SELECT
+											o.id,
+											s.info
+										FROM
+											offers AS o
+										INNER JOIN state AS s ON s.status = o.status
+										WHERE
+											YEAR(o.date) = ? AND MONTH(o.date) >= ?`;
+
+			let last_offers_plasholders = [begin.getFullYear(), begin.getMonth() + 1];
+
+			const last_offers = await connection.query(last_offers_query,
+											last_offers_plasholders);
+
+			if(last_offers[0].length)
+			{
+				for(const lf of last_offers[0])
+				{
+					result.last_offers.push(
+						{
+							offer_status: lf.info,
+							... await offer_controller.offer_info_by_offer_id(lf.id, connection),
+						});
+				}
+			}
+
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
+
+	async offers_state(req, res)
+	{
+		if(!Admin.request_user_is_admin(req.current_user_info))
+		{
+			Admin.error(res, 'Нет прав на данную операцию');
+			return;
+		}
 
 		const result = {state: {},
 					info: [],
@@ -85,28 +139,6 @@ class Admin
 				for(const i of info[0])
 				{
 					result.info.push(i);
-				}
-			}
-
-			const last_offers = await connection.query(`SELECT
-															o.id,
-															s.info
-														FROM
-															offers AS o
-														INNER JOIN state AS s ON s.status = o.status
-														WHERE
-															YEAR(o.date) = ? AND MONTH(o.date) >= ?`,
-											[begin.getFullYear(), begin.getMonth() + 1]);
-
-			if(last_offers[0].length)
-			{
-				for(const lf of last_offers[0])
-				{
-					result.last_offers.push(
-						{
-							offer_status: lf.info,
-							... await offer_controller.offer_info_by_offer_id(lf.id, connection),
-						});
 				}
 			}
 
