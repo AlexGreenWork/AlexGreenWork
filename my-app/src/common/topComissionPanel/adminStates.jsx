@@ -136,15 +136,15 @@ class OffersState extends React.Component
 					 <div className = {s.state_container}> 
 						 <Budget style={{backgroundColor:"#ed6c02"}} className={s.state}
 									name="В обработке"
-									amount={this.state.state['в обработке']}/>
+									amount={this.state.state['в обработке'] | 0}/>
 
 						 <Budget style={{backgroundColor:"#2e7d32"}} className={s.state}
 									name="Обработано"
-									amount={this.state.state['обработано']}/>
+									amount={this.state.state['обработано'] | 0}/>
 
 						 <Budget style={{backgroundColor:"#d32f2f"}} className={s.state}
 									name="Отклонено"
-									amount={this.state.state['отклонено']}/>
+									amount={this.state.state['отклонено'] | 0}/>
 					</div>
 				</>
 		);

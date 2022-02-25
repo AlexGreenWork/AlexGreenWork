@@ -1,5 +1,4 @@
 import React from "react";
-import LatestOrders from "./latest-orders";
 import States from "./adminStates"
 import LastOffers from "./adminLastOffers"
 

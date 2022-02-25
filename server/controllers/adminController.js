@@ -24,6 +24,12 @@ class Admin
 
 	static request_user_is_admin(user)
 	{
+        if (!('adminOptions' in user)
+            || !user.adminOptions)
+		{
+			return false;
+        }
+
 		const current_user_group = user.adminOptions;
 		return (current_user_group === 'admin' || current_user_group === 'wg')
 	}
@@ -91,6 +97,74 @@ class Admin
 		res.send(result);
 	}
 
+	async offers_user_states(req, res)
+	{
+		if(!Admin.request_user_is_admin(req.current_user_info))
+		{
+			Admin.error(res, 'Нет прав на данную операцию');
+			return;
+		}
+
+        if (!('user' in req.body)
+            || !req.body.user)
+		{
+			Admin.error(res, 'Неверно указаны параметры');
+			return;
+        }
+
+		const user = req.body.user;
+		const result = {user: req.current_user_info.date,
+						co_offers: 0,
+						self_offers: []};
+
+		let connection = null;
+
+		try
+		{
+			connection = await Admin.connection_to_database();
+
+			const co_offers = await connection.query(`SELECT
+															count(*) AS c
+														FROM
+															senleradditional AS s2
+														WHERE
+															s2.co_author_tabNum = ?`, [user]);
+
+			if(co_offers[0].length)
+			{
+				result.co_offers = co_offers[0]["c"] | 0;
+			}
+
+			const self_offers = await connection.query(`SELECT
+														s.info,
+														count(o.Id) AS c
+													FROM
+														offers AS o
+													INNER JOIN state AS s ON s.status = o.status
+													WHERE
+														o.tabelNum = ?
+													GROUP BY
+														s.info`, [user]);
+
+			if(self_offers[0].length)
+			{
+				for(const s of self_offers[0])
+				{
+					result.self_offers.push({ "info": s.info, "c" : s.c});
+				}
+			}
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
+
 	async offers_state(req, res)
 	{
 		if(!Admin.request_user_is_admin(req.current_user_info))
@@ -99,16 +173,13 @@ class Admin
 			return;
 		}
 
-		const result = {state: {},
-					info: [],
-					last_offers: []};
+		const result = {state: {}, info: []};
 
 		let connection = null;
 
 		try
 		{
 			connection = await Admin.connection_to_database();
-			const val = await offer_controller.offer_info_by_offer_id(281, connection);
 
 			const states = await connection.query(`SELECT
 														count(id) AS c,
