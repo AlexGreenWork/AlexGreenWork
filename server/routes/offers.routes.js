@@ -165,6 +165,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 
 
 router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
+router.post("/userOfferStates", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_user_states);
 router.post("/offersState", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
 router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_last_offers);
 

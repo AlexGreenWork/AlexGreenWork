@@ -1,6 +1,7 @@
 import React from "react"
 import { Modal, Typography, Button } from 'antd';
 import Cart from "../../personalCabinet/findWorkers/card"
+import State from "./user_stats"
 import style from "./user_card.module.css"
 const { Text } = Typography;
 
@@ -52,6 +53,7 @@ class UserCard extends React.Component
 								]}
 						>
 							<Cart info = {info}/>
+							<State info = {info}/>
 						</Modal>
 					</>
 		)
