@@ -1,0 +1,11 @@
+.link
+{
+	color: black;
+}
+
+.link:hover
+{
+	font-weight: bold;
+	font-size: 17px;
+	cursor: pointer;
+}

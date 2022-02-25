@@ -119,9 +119,8 @@ class List extends React.Component
     render() {
         return (<div className = {style.listcontainer}>
 					<table className = {style.listtable} cellPadding="12">
-							<col width = "20%"/>
-							<col width = "20%"/>
-							<col width = "20%"/>
+							<col width = "10%"/>
+							<col width = "10%"/>
 						<thead>
 							<tr>
 								<th onClick={() => {this.sort_handle("tab")}}>

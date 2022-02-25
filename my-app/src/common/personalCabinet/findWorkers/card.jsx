@@ -45,8 +45,8 @@ class Cart extends React.Component
 		return (
 					<div className = {style.card} onClick = {() => this.props.dispatch(selectcard(`${this.state.info?.tabnum}`))}>
 						<table>
-							<col width = "20%"/>
-							<col width = "20%"/>
+							<col width = "160px"/>
+							<col width = "150px"/>
 							<tbody>
 								<tr>
 									<td rowSpan = "8">

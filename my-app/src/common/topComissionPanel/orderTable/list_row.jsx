@@ -6,6 +6,7 @@ import React from 'react';
 import {CardOfferLinkAdapter} from "../../../common/offers/offers.jsx"
 import { SeverityPill } from '../severity-pill';
 import moment from 'moment';
+import UserCard from '../userCard/user_card';
 
 class ListRow extends React.Component
 {
@@ -20,7 +21,7 @@ class ListRow extends React.Component
 		const offerSendler = row['surnameSendler'] + " " + row['nameSendler'] + " " + row['middlenameSendler'];
 
 		return ( <CustomTableRow key={this.props.id}>
-				<TableCell>
+				<TableCell style={{width: "20%"}}>
 					<CardOfferLinkAdapter
 						  id={row['Id']}
 						  date={row['date']}
@@ -33,14 +34,14 @@ class ListRow extends React.Component
 						  dateComission={row['dateComission']}
 						  email={row['email']}
 					>
-						<div onMouseEnter={(e) => {e.target.innerText = "Подробнее"}}
+						<div onMouseEnter={(e) => {e.target.innerText = "Открыть предложение"}}
 							onMouseOut={(e) => {e.target.innerText = `№ ${row['Id']}`}}>
 							№ {row['Id']}
 						</div>
 					</CardOfferLinkAdapter>
 				</TableCell>
-				<TableCell>
-					{offerSendler}
+				<TableCell style = {{width: "30%"}}>
+					<UserCard title = {offerSendler} info={row['tabelNum']}/>
 				</TableCell>
 				<TableCell>
 					{moment(row['date']).format("DD-MM-YYYY")}
