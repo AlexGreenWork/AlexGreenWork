@@ -53,7 +53,7 @@ class UserCard extends React.Component
 								]}
 						>
 							<Cart info = {info}/>
-							<State info = {info}/>
+							<State last_offer_date = {this.props.last_offer_date} info = {info}/>
 						</Modal>
 					</>
 		)
