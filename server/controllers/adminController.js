@@ -1,5 +1,6 @@
 const mysql = require("mysql2/promise");
 const config = require("./../config/default.json");
+const offer_controller = require("./offersController");
 
 class Admin
 {
@@ -23,11 +24,17 @@ class Admin
 
 	static request_user_is_admin(user)
 	{
+        if (!('adminOptions' in user)
+            || !user.adminOptions)
+		{
+			return false;
+        }
+
 		const current_user_group = user.adminOptions;
 		return (current_user_group === 'admin' || current_user_group === 'wg')
 	}
 
-	async offers_state(req, res)
+	async offers_last_offers(req, res)
 	{
 		if(!Admin.request_user_is_admin(req.current_user_info))
 		{
@@ -44,9 +51,181 @@ class Admin
 
 		const begin = new Date(req.body.begin);
 
-		const result = {state: {},
-					info: [],
-					last_offers: []};
+		const result = { last_offers: []};
+
+		let connection = null;
+
+		try
+		{
+			connection = await Admin.connection_to_database();
+
+			let last_offers_query = `SELECT
+											o.id,
+											s.info
+										FROM
+											offers AS o
+										INNER JOIN state AS s ON s.status = o.status
+										WHERE
+											YEAR(o.date) = ? AND MONTH(o.date) >= ?`;
+
+			let last_offers_plasholders = [begin.getFullYear(), begin.getMonth() + 1];
+
+			const last_offers = await connection.query(last_offers_query,
+											last_offers_plasholders);
+
+			if(last_offers[0].length)
+			{
+				for(const lf of last_offers[0])
+				{
+					result.last_offers.push(
+						{
+							offer_status: lf.info,
+							... await offer_controller.offer_info_by_offer_id(lf.id, connection),
+						});
+				}
+			}
+
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
+
+	async offers_user_states(req, res)
+	{
+		if(!Admin.request_user_is_admin(req.current_user_info))
+		{
+			Admin.error(res, 'Нет прав на данную операцию');
+			return;
+		}
+
+        if (!('user' in req.body)
+            || !req.body.user)
+		{
+			Admin.error(res, 'Неверно указаны параметры');
+			return;
+        }
+
+		const user = req.body.user;
+		const result = {user: req.current_user_info.date,
+						co_offers: 0,
+						responsibles: 0,
+						responsibles_rg: 0,
+						last_offer_date: {},
+						self_offers: []};
+
+		let connection = null;
+
+		try
+		{
+			connection = await Admin.connection_to_database();
+
+			const co_offers = await connection.query(`SELECT
+															count(*) AS c
+														FROM
+															senleradditional AS s2
+														WHERE
+															s2.co_author_tabNum = ?`, [user]);
+
+			if(co_offers[0].length)
+			{
+				result.co_offers = co_offers[0][0]['c'] | 0;
+			}
+
+			const self_offers = await connection.query(`SELECT
+														s.info,
+														count(o.Id) AS c
+													FROM
+														offers AS o
+													INNER JOIN state AS s ON s.status = o.status
+													WHERE
+														o.tabelNum = ?
+													GROUP BY
+														s.info`, [user]);
+
+			if(self_offers[0].length)
+			{
+				for(const s of self_offers[0])
+				{
+					result.self_offers.push({ "info": s.info, "c" : s.c});
+				}
+			}
+
+			const responsibles = await connection.query(`SELECT
+															o.o,
+															r.r
+														FROM
+															(
+																(
+																	SELECT
+																		COUNT(id) AS o
+																	FROM
+																		offersresponsible
+																	WHERE
+																		responsible_tabnum = ?
+																) AS o,
+																(
+																	SELECT
+																		COUNT(id) AS r
+																	FROM
+																		offersresponsible_rg
+																	WHERE
+																		responsible_tabnum = ?
+																) AS r
+															)`, [user, user]);
+			if(responsibles[0].length)
+			{
+				result.responsibles = responsibles[0][0]['o'] | 0;
+				result.responsibles_rg = responsibles[0][0]['r'] | 0;
+			}
+
+			const last_offer_date = await connection.query(`SELECT
+																date AS d,
+																Id
+															FROM
+																offers
+															WHERE
+																Id = (
+																	SELECT
+																		MAX(Id)
+																	FROM
+																		offers
+																	WHERE
+																		tabelNum = ?
+																)`,[user]); 
+			if(last_offer_date[0].length)
+			{
+				result.last_offer_date = {
+					...await offer_controller.offer_info_by_offer_id(last_offer_date[0][0]['Id'], connection)
+				}
+			}
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
+
+	async offers_state(req, res)
+	{
+		if(!Admin.request_user_is_admin(req.current_user_info))
+		{
+			Admin.error(res, 'Нет прав на данную операцию');
+			return;
+		}
+
+		const result = {state: {}, info: []};
 
 		let connection = null;
 
@@ -83,33 +262,6 @@ class Admin
 				for(const i of info[0])
 				{
 					result.info.push(i);
-				}
-			}
-
-			const last_offers = await connection.query(`SELECT
-															o.id,
-															o.date,
-															s.info,
-															ka.fiofull
-														FROM
-															offers AS o
-														INNER JOIN kadry_all AS ka ON ka.tabnum = o.tabelNum
-														INNER JOIN state AS s ON s.status = o.status
-														WHERE
-															YEAR(o.date) = ? AND MONTH(o.date) >= ?`,
-											[begin.getFullYear(), begin.getMonth() + 1]);
-
-			if(last_offers[0].length)
-			{
-				for(const lf of last_offers[0])
-				{
-					result.last_offers.push(
-						{
-							offer_id: lf.id,
-							offer_date: lf.date,
-							offer_status: lf.info,
-							offer_sendler: lf.fiofull
-						});
 				}
 			}
 

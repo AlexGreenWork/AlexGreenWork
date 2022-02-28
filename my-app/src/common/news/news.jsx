@@ -11,7 +11,7 @@ class News extends React.Component {
     return (
       <div className={s.contentContainer}>
         <div className={s.button1}>
-          <NavLink className={s.btnA} to="/workerVariable">
+          <NavLink className={s.btnA} to="/sendOfferWorker">
             Подать предложение
           </NavLink>
         </div>

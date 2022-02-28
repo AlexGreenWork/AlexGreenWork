@@ -18,8 +18,7 @@ export const CountNoBrowsing = () =>{
     const [alloffers, setAllOffers] =  useState(null);
     const dispatch = useDispatch()
     const countOffers = useSelector(state => state.notification.offerForProcessing)
-    
-    
+ 
     if(alloffers === null){
         BrowseHistory(tabNum)
   
@@ -56,12 +55,12 @@ export const CountNoBrowsing = () =>{
             xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
                     if(history !== null){
-                         setAllOffers(JSON.parse(xhr.response).length-history.length)
+                        // setAllOffers(JSON.parse(xhr.response).length-history.length)
                      
                         dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length-history.length));
                     } else {
                         dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length));
-                        setAllOffers(JSON.parse(xhr.response).length)
+                        // setAllOffers(JSON.parse(xhr.response).length)
                     }
                   
                 }
