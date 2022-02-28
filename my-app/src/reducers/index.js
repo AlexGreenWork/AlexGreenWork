@@ -8,7 +8,7 @@ import appReducer from "./appReducer";
 import ReducerStepper from "./reducerStepper"
 import searchReducer from "./searchReducer";
 import offerReducer from "./offerReducer";
-
+import notificationReducer from "./notificationReducer";
 
 const rootReducer = combineReducers({
     user: userReducer,
@@ -18,6 +18,7 @@ const rootReducer = combineReducers({
     stepper:ReducerStepper,
     search:searchReducer,
     offers: offerReducer,
+    notification: notificationReducer,
 })
 
 export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))

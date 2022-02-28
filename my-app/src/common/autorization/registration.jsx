@@ -45,7 +45,8 @@ const Registration = () => {
     }
 
     function inpPhoneNumber(event) {
-        setPhoneNumber(event.target.value)
+        setPhoneNumber("375"+event.target.value)
+        console.log(phoneNumber)
     }
 
     function addFioSendler(tabNum) {
@@ -130,12 +131,15 @@ const Registration = () => {
                     height: "4vh",
                     padding: "5px"
                 }} className={s.inp} onChange={inpEmail} type="text" placeholder="Введите email..." value={email} />
-                <input style={{
+                <div style={{display:"flex", alignItems: "baseline"}}>
+                    +375
+                    <input style={{
                     borderRadius: "5px",
                     height: "4vh",
                     padding: "5px"
-                }} className={s.inp} onChange={inpPhoneNumber} type="number"
+                }} className={s.inp} onChange={inpPhoneNumber} type="tel" maxLength="9" 
                     placeholder="Введите номер телефона..." />
+                </div>
                 <input style={{
                     borderRadius: "5px",
                     height: "4vh",

@@ -3,9 +3,84 @@ import s from "./personalCabinet.module.css"
 import {NavLink} from "react-router-dom";
 import axios from 'axios';
 import { API_URL } from "../../config";
-import Messages from "./messages/messages";
-import Offers from "../offers/offers";
-import OffersResponsible from "./responsible/responsible";
+import {useDispatch, useSelector} from "react-redux";
+import { store } from "../../reducers";
+import {NotifOffersProcessing} from "../../reducers/notificationReducer"
+
+
+// const isAuth = useSelector(state => state.user.isAuth)
+// const dispatch = useDispatch()
+
+
+
+export const CountNoBrowsing = () =>{
+    let tabNum = localStorage.getItem('userTabelNum');
+    const [alloffers, setAllOffers] =  useState(null);
+    const dispatch = useDispatch()
+    const countOffers = useSelector(state => state.notification.offerForProcessing)
+ 
+    if(alloffers === null){
+        BrowseHistory(tabNum)
+  
+    } else{
+     
+    }
+    function BrowseHistory(tab){
+        let tabNum = localStorage.getItem('userTabelNum');
+        try {
+            axios.post(`${API_URL}api/offers/getHistoryBrowsing`, {
+                tabNum: tabNum,
+    
+            })
+                .then(res => {
+    
+    
+                    let history = res.data;
+    
+                    Resp(history)
+                    
+                  
+                   
+                })
+        } catch (e) {
+            alert(e.response)
+        }
+    }
+    
+   
+        function Resp(history) {
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', `${API_URL}api/offers/allOffers`, true)
+            xhr.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    if(history !== null){
+                        // setAllOffers(JSON.parse(xhr.response).length-history.length)
+                     
+                        dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length-history.length));
+                    } else {
+                        dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length));
+                        // setAllOffers(JSON.parse(xhr.response).length)
+                    }
+                  
+                }
+            }
+            xhr.send();
+    }
+   
+    if (countOffers > 0) {
+    return (
+      <div className={s.countNoBrowser}>
+        {countOffers}
+      </div>
+    );
+  } else {
+    return (
+        <div></div>
+    )
+  }
+
+}
 
 
 const PersonalCabinet = () => {
@@ -38,6 +113,7 @@ const PersonalCabinet = () => {
             <div className={s.navPCab}>
                 <div className={s.linksPC}>
                     <NavLink className={s.offers} to="/personalCabinet/myOffers">Мои Предложения</NavLink>
+                    
                 </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers}
@@ -69,7 +145,8 @@ const PersonalCabinet = () => {
                 </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/Offers">Предложения для
-                    обработки</NavLink></div>
+                    обработки</NavLink>
+                    <CountNoBrowsing/></div>
 
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink></div>
@@ -103,7 +180,8 @@ const PersonalCabinet = () => {
                 </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/Offers">Предложения для
-                    обработки</NavLink></div>
+                    обработки
+                    <CountNoBrowsing/></NavLink></div>
 
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink></div>
@@ -135,7 +213,8 @@ const PersonalCabinet = () => {
                 </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/Offers">Предложения для
-                    обработки</NavLink></div>
+                    обработки</NavLink>
+                    <CountNoBrowsing/></div>
 
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink></div>

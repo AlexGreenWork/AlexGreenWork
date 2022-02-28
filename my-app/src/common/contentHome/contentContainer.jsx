@@ -6,7 +6,7 @@ const ContentContainer = () => {
     return (
         <div className={s.contentContainer}>
             <div className={s.button1}>
-                <NavLink  className={s.btnA} to="/workerVariable">
+                <NavLink  className={s.btnA} to="/sendOfferWorker">
                     Подать предложение
                 </NavLink>
             </div>
@@ -18,7 +18,7 @@ const ContentContainer = () => {
                 </NavLink>
             </div>
             <div className={s.button3}>
-               <NavLink id="production" className={s.btnA} to="/personalCabinet/offers1">
+               <NavLink id="production" className={s.btnA} to="/management">
                     Руководство
 
                 </NavLink>
