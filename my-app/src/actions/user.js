@@ -8,7 +8,7 @@ export const registration = async (surname, name, middlename,  email, tabelNum, 
 
         const date= new Date().toISOString().slice(0, 10);
 
-
+        if(phoneNumber.length === 12){
         console.log(date)
         const response = await server.send_post_request(`${API_URL}api/auth/registration`, {
             surname,
@@ -23,7 +23,29 @@ export const registration = async (surname, name, middlename,  email, tabelNum, 
             date
         })
         alert(response.data.message)
+        window.location.href = '/authorization';
+         }if(phoneNumber.length < 12){
+            alert("Неправильно введенный номер телефона")
+         }
 
+    } catch (e) {
+        alert(e.response.data.message)
+    }
+}
+
+export const changePassword = async (oldPassword, newPassword) => {
+    try {
+        const date= new Date().toISOString().slice(0, 10);
+        const tabelNum = localStorage.getItem('userTabelNum')
+
+        console.log(date)
+        const response = await server.send_post_request(`${API_URL}api/auth/changePassword`, {
+            tabelNum,
+            newPassword, 
+            oldPassword
+        })
+        alert(response.data.message)
+     
     } catch (e) {
         alert(e.response.data.message)
     }
