@@ -21,7 +21,7 @@ class ListRow extends React.Component
 		const offerSendler = row['surnameSendler'] + " " + row['nameSendler'] + " " + row['middlenameSendler'];
 
 		return ( <CustomTableRow key={this.props.id}>
-				<TableCell style={{width: "20%"}}>
+				<TableCell key={`id_${row['Id']}`} style={{width: "20%"}}>
 					<CardOfferLinkAdapter
 						  id={row['Id']}
 						  date={row['date']}
@@ -40,13 +40,13 @@ class ListRow extends React.Component
 						</div>
 					</CardOfferLinkAdapter>
 				</TableCell>
-				<TableCell style = {{width: "30%"}}>
+				<TableCell key={`sendler_${row['Id']}`} style = {{width: "30%"}}>
 					<UserCard title = {offerSendler} info={row['tabelNum']}/>
 				</TableCell>
-				<TableCell>
+				<TableCell key={`date_${row['Id']}`} >
 					{moment(row['date']).format("DD-MM-YYYY")}
 				</TableCell>
-				<TableCell>
+				<TableCell key={`state_${row['Id']}`} >
 					<SeverityPill
 						color={(row['offer_status'] === 'обработано' && 'success')
 							|| (row['offer_status'] === 'отклонено' && 'error')
