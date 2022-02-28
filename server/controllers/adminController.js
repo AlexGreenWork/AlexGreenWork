@@ -115,6 +115,9 @@ class Admin
 		const user = req.body.user;
 		const result = {user: req.current_user_info.date,
 						co_offers: 0,
+						responsibles: 0,
+						responsibles_rg: 0,
+						last_offer_date: {},
 						self_offers: []};
 
 		let connection = null;
@@ -132,7 +135,7 @@ class Admin
 
 			if(co_offers[0].length)
 			{
-				result.co_offers = co_offers[0]["c"] | 0;
+				result.co_offers = co_offers[0][0]['c'] | 0;
 			}
 
 			const self_offers = await connection.query(`SELECT
@@ -152,6 +155,56 @@ class Admin
 				{
 					result.self_offers.push({ "info": s.info, "c" : s.c});
 				}
+			}
+
+			const responsibles = await connection.query(`SELECT
+															o.o,
+															r.r
+														FROM
+															(
+																(
+																	SELECT
+																		COUNT(id) AS o
+																	FROM
+																		offersresponsible
+																	WHERE
+																		responsible_tabnum = ?
+																) AS o,
+																(
+																	SELECT
+																		COUNT(id) AS r
+																	FROM
+																		offersresponsible_rg
+																	WHERE
+																		responsible_tabnum = ?
+																) AS r
+															)`, [user, user]);
+			if(responsibles[0].length)
+			{
+				result.responsibles = responsibles[0][0]['o'] | 0;
+				result.responsibles_rg = responsibles[0][0]['r'] | 0;
+			}
+
+			const last_offer_date = await connection.query(`SELECT
+																date AS d,
+																Id
+															FROM
+																offers
+															WHERE
+																Id = (
+																	SELECT
+																		MAX(Id)
+																	FROM
+																		offers
+																	WHERE
+																		tabelNum = ?
+																)`,[user]); 
+			if(last_offer_date[0].length)
+			{
+				result.last_offer_date = {
+					...await offer_controller.offer_info_by_offer_id(last_offer_date[0][0]['Id'], connection)
+				}
+				console.log(result.last_offer_date)
 			}
 		}
 		catch(e)
