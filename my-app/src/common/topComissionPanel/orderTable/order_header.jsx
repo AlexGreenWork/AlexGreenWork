@@ -12,10 +12,10 @@ class OrdersHeader extends React.Component
 	{
 		super(props);
 		this.state = {
-				columns: new Map([['offer_id', {label: 'Номер предложения', sort: 'desc', active: false}],
-									['offer_sendler', {label: 'Автор', sort: 'desc', active: false}],
-									['offer_date', {label: 'Дата', sort: 'desc', active: false}],
-									['offer_status', {label: 'Статус', sort: 'desc', active: false}]
+				columns: new Map([['Id', {label: 'Номер предложения', sort: 'desc', active: false}],
+									['surnameSendler', {label: 'Автор предложения', sort: 'desc', active: false}],
+									['date', {label: 'Дата поступления', sort: 'desc', active: false}],
+									['offer_status', {label: 'Статус предложения', sort: 'desc', active: false}]
 			])
 		};
 

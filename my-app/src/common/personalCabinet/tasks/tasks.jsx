@@ -153,6 +153,17 @@ class Tasks extends React.Component
 	}
 
 	/**
+	 * @param {string} header
+	**/
+	get_header_name(header)
+	{
+		const trim_header = header.trim();
+		const head = trim_header[0].toUpperCase();
+		const tail = trim_header.substring(1);
+		return head + tail;
+	}
+
+	/**
 		* @typedef {Object} Content
 		* @property {String} type
 		* @property {String} content
@@ -170,7 +181,7 @@ class Tasks extends React.Component
 			{
                 task_.push(
                     { type: `${this.get_task_type(task.category)}`,
-						content: `В ${taskMoment.format("HH:mm")} ${task.header}` },
+						content: `Предложение № ${task.offer}: В ${taskMoment.format("HH:mm")} "${this.get_header_name(task.header)}"` },
 				)
 			}
 		}
