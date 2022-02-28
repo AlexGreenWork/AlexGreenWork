@@ -3,16 +3,23 @@ import s from "./personalCabinet.module.css"
 import {NavLink} from "react-router-dom";
 import axios from 'axios';
 import { API_URL } from "../../config";
+import {useDispatch, useSelector} from "react-redux";
+import { store } from "../../reducers";
+import {NotifOffersProcessing} from "../../reducers/notificationReducer"
+
+
+// const isAuth = useSelector(state => state.user.isAuth)
+// const dispatch = useDispatch()
 
 
 
-
-
-
-const CountNoBrowsing = () =>{
+export const CountNoBrowsing = () =>{
     let tabNum = localStorage.getItem('userTabelNum');
     const [alloffers, setAllOffers] =  useState(null);
-   
+    const dispatch = useDispatch()
+    const countOffers = useSelector(state => state.notification.offerForProcessing)
+    
+    
     if(alloffers === null){
         BrowseHistory(tabNum)
   
@@ -49,9 +56,11 @@ const CountNoBrowsing = () =>{
             xhr.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
                     if(history !== null){
-                        setAllOffers(JSON.parse(xhr.response).length-history.length)
-                        
+                         setAllOffers(JSON.parse(xhr.response).length-history.length)
+                     
+                        dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length-history.length));
                     } else {
+                        dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length));
                         setAllOffers(JSON.parse(xhr.response).length)
                     }
                   
@@ -59,16 +68,19 @@ const CountNoBrowsing = () =>{
             }
             xhr.send();
     }
-    console.log(alloffers)
-    if(alloffers > 0){
-        return (
-            <div>{alloffers}</div>
-        )
-      
-    }
+   
+    if (countOffers > 0) {
+    return (
+      <div className={s.countNoBrowser}>
+        {countOffers}
+      </div>
+    );
+  } else {
     return (
         <div></div>
     )
+  }
+
 }
 
 

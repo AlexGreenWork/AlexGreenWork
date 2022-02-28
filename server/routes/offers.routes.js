@@ -44,7 +44,7 @@ router.get("/allOffers",
         }
 
         const pool = mysql.createPool(mysqlConfig);
-      console.log(request.query)
+     
        
         
         // if(sqlHistBrows[0].length != 0){
