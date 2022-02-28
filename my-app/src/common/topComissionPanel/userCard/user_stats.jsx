@@ -127,7 +127,7 @@ class State extends React.Component
 				<div style={{display: "grid", gridTemplateColumns:"auto auto auto auto", paddingTop: "24px"}}>
 					<div>
 						<span style={{fontWeight: "bold", fontSize: "15px"}}>
-							Был Соавтором:
+							Был(а) Соавтором:
 						</span>
 						&nbsp;{this.state.co_offers}
 					</div>
@@ -136,7 +136,7 @@ class State extends React.Component
 				<div style={{display: "grid", gridTemplateColumns:"auto auto auto auto", paddingTop: "24px"}}>
 					<div>
 						<span style={{fontWeight: "bold", fontSize: "15px"}}>
-							Был назначен ответственным сотрудником:
+							Был(а) назначен(а) ответственным сотрудником:
 						</span>
 						&nbsp;{this.state.responsibles}
 					</div>
@@ -145,7 +145,7 @@ class State extends React.Component
 				<div style={{display: "grid", gridTemplateColumns:"auto auto auto auto", paddingTop: "24px"}}>
 					<div>
 						<span style={{fontWeight: "bold", fontSize: "15px"}}>
-							Был в составе рабочей группы:
+							Был(а) в составе рабочей группы:
 						</span>
 						&nbsp;{this.state.responsibles_rg}
 					</div>
