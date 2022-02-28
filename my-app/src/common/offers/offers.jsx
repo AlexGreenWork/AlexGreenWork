@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import s from "./sendOffer/offerForm/offers.module.css";
 import { API_URL } from "../../config";
@@ -10,62 +10,23 @@ import axios from "axios";
 
 function setInHistory(offerId) {
 
- let tabNum = localStorage.getItem("userTabelNum")
+  let tabNum = localStorage.getItem("userTabelNum")
   try {
     axios.post(`${API_URL}api/offers/setHistoryBrowsing`, {
-        tabNum: tabNum,
-        offerId: offerId
+      tabNum: tabNum,
+      offerId: offerId
     })
-        .then(res => {  
-        })
-} catch (e) {
+      .then(res => {
+      })
+  } catch (e) {
     alert(e.response)
-}
-}
-
-
-const Offers = () => {
-
-  const Notification = (props)=>{
-   
-    if(props.history !== null && props.history !== undefined){
-        let arrObjHistory = props.history
-     
-        if(props.history.length !== 0){
-    
-            let i = arrObjHistory.findIndex(elem => elem.id_offers == props.idOffers);
-          
-            if(typeof i === 'number' && i < 0){
-           
-                return (
-                    <div className="yellow">
-                       &#128276;
-                    </div>
-                )
-            } else {
-                return (
-                    <div></div>
-                )
-            }
-        }  else {
-            return (
-                <div></div>
-            )
-        } 
-    } else {
-      
-        return (
-            <div> &#128276;</div>
-        )
-    }
   }
+}
 
-  const [displ, setDispl] = useState("block");
-
-  const Offer = (props) => {
+export const CardOfferLinkAdapter = (props) => {
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState("");
-
+    // console.log(props)
     const dispatch = useDispatch();
 
     function DispatchOffers() {
@@ -84,7 +45,7 @@ const Offers = () => {
             let offersData = JSON.parse(xhr.response);
 
             requestInfoAutor(xhr.response);
-          
+
           }
         };
 
@@ -157,13 +118,71 @@ const Offers = () => {
       }
     }
     function clickOnOfferLink() {
-      
+
       localStorage.setItem("idOffers", props.id);
       localStorage.setItem("status", props.status);
       value.contextFunction(props.id, props.tabelNum);
       localStorage.setItem("dateComission", props.dateComission);
       setDateComission(localStorage.getItem("dateComission"));
     }
+
+    return (
+            <NavLink
+              to="/cardOffer"
+              onClick={() => {
+                clickOnOfferLink();
+                DispatchOffers();
+                DispatchAddSendler();
+                localStorage.setItem("idOffers", props.id);
+                localStorage.setItem("sendlerTabWG", props.tabelNum);
+                setInHistory(props.id)
+              }}
+            >
+              {props.children}
+            </NavLink>);
+};
+
+
+
+const Offers = () => {
+
+  const Notification = (props) => {
+
+    if (props.history !== null && props.history !== undefined) {
+      let arrObjHistory = props.history
+     
+      if (props.history.length !== 0) {
+
+        let i = arrObjHistory.findIndex(elem => elem.id_offers == props.idOffers);
+       
+        if (typeof i === 'number' && i < 0 && props.search !== true) {
+
+          return (
+            <div className="yellow" >
+              &#128276;
+            </div>
+          )
+        } else {
+          return (
+            <div></div>
+          )
+        }
+      } else {
+        return (
+          <div></div>
+        )
+      }
+    } else {
+
+      return (
+        <div> </div>
+      )
+    }
+  }
+
+  const [displ, setDispl] = useState("block");
+
+  const Offer = (props) => {
 
     let nameStatus;
     let colorStatus;
@@ -236,20 +255,10 @@ const Offers = () => {
     }
     // console.log(props.histBrows)
     return (
-      <div className={colorStatus} style={{ }}>
-        <NavLink
-          to="/cardOffer"
-          onClick={() => {
-            clickOnOfferLink();
-            DispatchOffers();
-            DispatchAddSendler();
-            localStorage.setItem("idOffers", props.id);
-            localStorage.setItem("sendlerTabWG", props.tabelNum);
-            setInHistory(props.id)
-          }}
-        >
+      <div className={colorStatus} style={{}}>
+        <CardOfferLinkAdapter {...props}>
           <div className={s.header} id={props.id} style={{ backgroundColor: colorStatus }}>
-          <Notification history={props.histBrows} idOffers = {props.id}/>
+            <Notification history={props.histBrows} idOffers={props.id} search={props.search}/>
             <div className={s.offerPreview}>
               <div
                 className={s.from}
@@ -310,14 +319,14 @@ const Offers = () => {
               </div>
             </div>
           </div>
-        </NavLink>
+        </CardOfferLinkAdapter>
       </div>
     );
   };
 
   function SortOffers(props) {
     const [sortArr, setSortArr] = useState(null);
-    if(props.request !== 0){
+    if (props.request !== 0) {
       let offersData = JSON.parse(props.request.xhr);
       let sort = props.sort;
       let arr = [];
@@ -334,22 +343,22 @@ const Offers = () => {
               return <div>sort null</div>;
             }
           });
-         
-         
-         
+
+
+
           if (arr.length !== 0 && sort.length !== 0) {
             objArr['xhr'] = arr
             return (
               <div>
                 {" "}
-                Результат поиска <OffersLink request={objArr} />{" "}
+                Результат поиска <OffersLink request={objArr} search={true}/>{" "}
               </div>
             );
           } else {
             return <div>{/* нет сортировки */}</div>;
           }
           break;
-  
+
         case "nameOffer":
           offersData.map((number, count) => {
             if (
@@ -361,26 +370,26 @@ const Offers = () => {
               return <div>sort null</div>;
             }
           });
-         
+
           objArr['xhr'] = arr
           if (arr.length !== 0 && sort.length !== 0) {
             return (
               <div>
                 {" "}
-                Результат поиска <OffersLink request={objArr} />{" "}
+                Результат поиска <OffersLink request={objArr}  search={true}/>{" "}
               </div>
             );
           } else {
             return <div>{/* нет сортировки */}</div>;
           }
           break;
-  
+
         case "fullname":
           if (sort == null) {
             sort = " ";
           }
           let fullname = sort.toLowerCase().split(" ");
-          
+
           if (fullname.length === 1) {
             offersData.map((number, count) => {
               if (
@@ -392,15 +401,15 @@ const Offers = () => {
                 return <div>sort null</div>;
               }
             });
-          
-           
+
+
             if (arr.length !== 0 && sort.length !== 0) {
               objArr['xhr'] = arr
-           
+
               return (
                 <div>
                   {" "}
-                  Результат поиска <OffersLink request={objArr} />{" "}
+                  Результат поиска <OffersLink request={objArr}  search={true}/>{" "}
                 </div>
               );
             } else {
@@ -410,22 +419,22 @@ const Offers = () => {
             offersData.map((number, count) => {
               if (
                 `${number.surnameSendler.toLowerCase()}`.includes(fullname[0]) ===
-                  true &&
+                true &&
                 `${number.nameSendler.toLowerCase()}`.includes(fullname[1]) ===
-                  true
+                true
               ) {
                 arr.push(number);
               } else {
                 return <div>sort null</div>;
               }
             });
-  
+
             if (arr.length !== 0 && sort.length !== 0) {
               objArr['xhr'] = arr
               return (
                 <div>
                   {" "}
-                  Результат поиска <OffersLink request={objArr} />{" "}
+                  Результат поиска <OffersLink request={objArr}  search={true}/>{" "}
                 </div>
               );
             } else {
@@ -435,9 +444,9 @@ const Offers = () => {
             offersData.map((number, count) => {
               if (
                 `${number.surnameSendler.toLowerCase()}`.includes(fullname[0]) ===
-                  true &&
+                true &&
                 `${number.nameSendler.toLowerCase()}`.includes(fullname[1]) ===
-                  true &&
+                true &&
                 `${number.middlenameSendler.toLowerCase()}`.includes(fullname[2])
               ) {
                 arr.push(number);
@@ -445,13 +454,13 @@ const Offers = () => {
                 return <div>sort null</div>;
               }
             });
-  
+
             if (arr.length !== 0 && sort.length !== 0) {
               objArr['xhr'] = arr
               return (
                 <div style={{ marginBottom: "10px" }}>
                   {" "}
-                  Результат поиска <OffersLink request={objArr} />
+                  Результат поиска <OffersLink request={objArr}  search={true} />
                 </div>
               );
             } else {
@@ -462,19 +471,17 @@ const Offers = () => {
       }
     } else {
       return (<div>
-       
+
       </div>)
     }
-    
+
   }
 
   const OffersLink = (props) => {
-    
-      // console.log(props.request.xhr)
-      // console.log(props.request.history)
-    if(props.request !== 0){
+
+    if (props.request !== 0) {
       if (typeof props.request.xhr === "object") {
-       
+
         return props.request.xhr.map((number) => (
           <Offer
             key={`offer_${number.Id}`}
@@ -488,15 +495,16 @@ const Offers = () => {
             tabelNum={number.tabelNum}
             dateComission={number.dateComission}
             email={number.email}
+            search={props.search}
           />
         ));
       } else {
-      
+
         // console.log(JSON.parse(props.request.xhr))
         let offersData = JSON.parse(props.request.xhr);
         // console.log(offersData)
         let offersDataReverse = offersData.reverse();
-       
+
         return offersDataReverse.map((number) => (
           <Offer
             key={`offer_${number.Id}`}
@@ -510,26 +518,26 @@ const Offers = () => {
             tabelNum={number.tabelNum}
             dateComission={number.dateComission}
             email={number.email}
-            histBrows = {props.request.history}
+            histBrows={props.request.history}
           />
         ));
       }
     } else {
       return (
         <div>
-       
+
         </div>
       )
     }
-    }
-   
+  }
+
 
   // function sortNumberOffer
 
   class CheckboxNewList extends React.Component {
     constructor(props) {
       super(props);
-      
+
       this.state = {
         check: this.props.check,
         img: "M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z",
@@ -538,67 +546,83 @@ const Offers = () => {
     }
 
     check(event) {
-      
-      this.setState({ check: event.target.checked });
 
+      this.setState({ check: event.target.checked });
+      console.log(this.state.check)
       if (this.state.check === true) {
         this.setState({
           img: "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z",
         });
-       
+
         let arrClass = ["white", "#ffd600", "#7aa8ff", "#8ef392", "#c499f1", "red"];
-        if(this.props.color === "yellow"){
-        
-          for(let i = 0; i < arrClass.length; i++){
+        if (this.props.color === "yellow") {
+
+          for (let i = 0; i < arrClass.length; i++) {
             let x = document.getElementsByClassName(`${arrClass[i]}`);
-        
-            for(let j = 0; j < x.length; j++){
-             
-              if(!x[j].querySelector('.yellow')){
-                x[j].className += ' newclassname'; // WITH space added
+
+            for (let j = 0; j < x.length; j++) {
+
+              if (!x[j].querySelector('.yellow')) {
+                x[j].className += ' noBrowsing'; // WITH space added
               }
-             
+
             }
           }
-         
+
         } else {
+
           var x = document.getElementsByClassName(`${this.props.color}`);
+
           var i;
-          for (i = 0; i < x.length; i++) 
-        {
-         x[i].className += ' newclassname'; // WITH space added
+          for (i = 0; i < x.length; i++) {
+            if (x[i].className.includes('noBrowsing') === true) {
+              x[i].className = x[i].className.replace(/noBrowsing-/g, '');; // WITH space added
+
+            } else {
+              x[i].className += ' newclassname'; // WITH space added
+            }
+
+          }
         }
-        }
-       
-        
-       
+
+
+
+
       }
       if (this.state.check === false) {
         this.setState({
           img: "M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z",
         });
         let arrClass = ["white", "#ffd600", "#7aa8ff", "#8ef392", "#c499f1", "red"];
-        if(this.props.color === "yellow")
-        {
-          for(let i = 0; i < arrClass.length; i++){
+        if (this.props.color === "yellow") {
+          for (let i = 0; i < arrClass.length; i++) {
             let x = document.getElementsByClassName(`${arrClass[i]}`)
-            for(let j = 0; j < x.length; j++){
 
-              x[j].className =arrClass[i]; // WITH space added
+            for (let j = 0; j < x.length; j++) {
+              if (x[j].className.includes('newclassname') === true) {
+
+                x[j].className = arrClass[i] + ' newclassname';
+              } else {
+                x[j].className = arrClass[i];
+              }
+
             }
           }
-        } else{
+        } else {
+          console.log(this.props.color)
+
           var x = document.getElementsByClassName(`${this.props.color}`);
+
           var i;
-          for (i = 0; i < x.length; i++) 
-        {
-         x[i].className = `${this.props.color}`;
-        }
-        }
-       
+          for (i = 0; i < x.length; i++) {
+            if (x[i].className.includes('noBrowsing') === true) {
+            
+            } else {
+              x[i].className = `${this.props.color}`;
+            }
 
-
-       
+          }
+        }
       }
 
       if (this.props.checked && typeof this.props.checked === "function") {
@@ -625,7 +649,7 @@ const Offers = () => {
               onChange={this.check}
             />
             <svg
-              style={{ width: "25px", fill: this.props.color, boxShadow: "-1px 1px 1px 1px rgb(34 60 80 / 20%"}}
+              style={{ width: "25px", fill: this.props.color, boxShadow: "-1px 1px 1px 1px rgb(34 60 80 / 20%" }}
               focusable="false"
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -656,7 +680,7 @@ const Offers = () => {
 
     const [dis, setDis] = React.useState("checked");
     function CheckTrueFalse(props) {
-       
+
       setChecked(!checked);
 
       if (dis == "notChecked") {
@@ -666,7 +690,7 @@ const Offers = () => {
           "M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
         );
         setDispl(props);
-        
+
       } else {
         setDis("notChecked");
         setIconCheck("CheckBoxOutlineBlankIcon");
@@ -674,7 +698,7 @@ const Offers = () => {
           "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
         );
         setDispl("none");
-       
+
       }
       console.log("ривет");
     }
@@ -697,7 +721,7 @@ const Offers = () => {
             onChange={CheckTrueFalse}
           />
           <svg
-            style={{ width: "25px", fill: props.color, boxShadow: "-1px 1px 6px 5px rgb(34 60 80 / 20%"}}
+            style={{ width: "25px", fill: props.color, boxShadow: "-1px 1px 6px 5px rgb(34 60 80 / 20%" }}
             focusable="false"
             viewBox="0 0 24 24"
             aria-hidden="true"
@@ -723,7 +747,7 @@ const Offers = () => {
       { name: "Непросмотренные", color: "yellow" },
     ];
     return chkBoxesList.map((item) => (
-      <CheckboxNewList name={item.name} color={item.color} check={true}/>
+      <CheckboxNewList name={item.name} color={item.color} check={true} />
       // <CheckBoxItem name={item.name} color={item.color} />
     ));
   }
@@ -736,13 +760,13 @@ const Offers = () => {
   function Resp() {
     let xhr = new XMLHttpRequest();
     let tabNum = localStorage.getItem('userTabelNum');
-    xhr.open("GET", `${API_URL}api/offers/allOffers?tabNum=`+tabNum, false);
+    xhr.open("GET", `${API_URL}api/offers/allOffers?tabNum=` + tabNum, false);
     xhr.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-       
+
         // setReqAllOff(xhr.response);
         BrowseHistory(xhr.response);
-      
+
       }
     };
     xhr.send();
@@ -750,27 +774,27 @@ const Offers = () => {
     return xhr.response;
   }
 
-  function BrowseHistory(xhr){
+  function BrowseHistory(xhr) {
     let tabNum = localStorage.getItem('userTabelNum');
     try {
-        axios.post(`${API_URL}api/offers/getHistoryBrowsing`, {
-            tabNum: tabNum,
+      axios.post(`${API_URL}api/offers/getHistoryBrowsing`, {
+        tabNum: tabNum,
+
+      })
+        .then(res => {
+
+          let objResponse = {}
+          objResponse["xhr"] = xhr
+          objResponse["history"] = res.data
+          setReqAllOff(objResponse);
+
+
 
         })
-            .then(res => {
-
-                let objResponse = {}
-                objResponse["xhr"] = xhr
-                objResponse["history"] = res.data
-                setReqAllOff(objResponse);
-              
-              
-               
-            })
     } catch (e) {
-        alert(e.response)
+      alert(e.response)
     }
-}
+  }
 
   if (sort === "null" || sort.length === 0) {
     return (
@@ -824,14 +848,14 @@ const Offers = () => {
             }}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", backgroundColor: "gainsboro"}}>
+        <div style={{ display: "flex", justifyContent: "space-between", backgroundColor: "gainsboro" }}>
           <CheckBoxesList />
         </div>
 
-        
+
 
         <SortOffers request={reqAllOff} sort={sort} typeSort={typeSort} />
-        <OffersLink request={reqAllOff}  />
+        <OffersLink request={reqAllOff} />
       </div>
     );
   } else {
