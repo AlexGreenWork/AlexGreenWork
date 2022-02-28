@@ -21,7 +21,7 @@ class Offers
 		res.send(msg);
 	}
 
-	static async offer_info_by_id(connection, offer_id)
+	static async offer_info_by_id(offer_id, connection)
 	{
         const query = `SELECT 
 							o.*,
@@ -38,6 +38,13 @@ class Offers
 		const result = await connection.query(query, [offer_id]);
 
 		return result[0][0];
+	}
+
+	async offer_info_by_offer_id(offer_id, connection)
+	{
+		if(!connection) connection = await Offers.connection_to_database();
+
+		return await Offers.offer_info_by_id(offer_id, connection);
 	}
 	
 	async offer_info(req, res)
@@ -87,7 +94,7 @@ class Offers
 			const sqlOfferResponsible_Rg = await connection.query(query, ["offersresponsible_rg", idOffers])
 
 			res.send({
-					... await Offers.offer_info_by_id(connection, idOffers),
+					... await Offers.offer_info_by_id(idOffers, connection),
 				responsibles: [
 					...sqlOfferResponsible[0]
 				],

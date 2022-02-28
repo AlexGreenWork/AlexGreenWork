@@ -157,6 +157,84 @@ router.post('/login',
 
     })
 
+
+    router.post('/changePassword',
+    async (req, res) => {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+
+        const pool = mysql.createPool(mysqlConfig);
+        try {
+
+            const {tabelNum, oldPassword, newPassword } = req.body
+            
+            
+            const user = await pool.query(`SELECT * FROM offersworker WHERE  tabelNum = '${tabelNum}'`);
+            
+            const isPassValid = bcrypt.compareSync(oldPassword, user[0][0].password)
+            if(!isPassValid){
+                pool.end()
+                return res.status(400).json({ message: "Пароль не корректен" })
+            }
+            const hashPassword = await bcrypt.hash(newPassword, 8)
+            const userPass = ({
+                password: hashPassword,
+            })
+            console.log("пароль в базе", user[0][0].password)
+            console.log("новый пароль",userPass)
+            
+
+            await pool.query(`UPDATE offersworker SET password ="${hashPassword}"  WHERE  tabelNum = '${tabelNum}'`)
+            return res.json({ message: "Пароль изменен" })
+            
+
+
+            // if (!user[0][0]) {
+            //     pool.end()
+            //     return res.status(404).json({ message: "Пользователь не найден" })
+            // }
+
+            // const isPassValid = bcrypt.compareSync(password, user[0][0].password)
+
+            // if (!isPassValid) {
+            //     pool.end()
+            //     return res.status(400).json({ message: "Пароль не корректен" })
+            // }
+
+            // const token = jwt.sign({ id: user[0][0].id }, conf.get("secretKey"), { expiresIn: "8h" })
+            // pool.end()
+            // return res.json({
+            //     token,
+            //     user: {
+            //         id: user[0][0].id,
+            //         name: user[0][0].name,
+            //         surname: user[0][0].surname,
+            //         middlename: user[0][0].middlename,
+            //         tabelNum: user[0][0].tabelNum,
+            //         email: user[0][0].email,
+            //         phoneNumber: user[0][0].phoneNumber,
+            //         fired: user[0][0].fired,
+            //         avatar: user[0][0].avatar,
+            //         adminOptions: user[0][0].adminOptions
+            //     }
+            // })
+        }
+        catch (e) {
+            console.log(e)
+            pool.end()
+            res.send({ message: "Ошибка сервера" })
+        }
+
+
+    })
+
+
+
 router.get('/auth', authMiddleware,
     async (req, res) => {
         try {

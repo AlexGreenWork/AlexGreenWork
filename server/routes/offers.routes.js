@@ -44,7 +44,7 @@ router.get("/allOffers",
         }
 
         const pool = mysql.createPool(mysqlConfig);
-     
+      
        
         
         // if(sqlHistBrows[0].length != 0){
@@ -185,7 +185,9 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 
 
 router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
-router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
+router.post("/userOfferStates", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_user_states);
+router.post("/offersState", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
+router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_last_offers);
 
 
 router.post("/userInfo", urlencodedParser,
@@ -910,6 +912,14 @@ router.post("/respResults", urlencodedParser, authMiddleware,
     let offerId = request.body.idOffer
     let respTabnum = request.body.tabNum
     let position = request.body.position
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+    }
+
+    const pool = mysql.createPool(mysqlConfig);
 
         console.log(moment().format('YYYY-MM-DD'),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
         await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
@@ -1016,6 +1026,14 @@ router.post("/saveComissionAnnotationToDb", urlencodedParser,
     let textComission = request.body.w
     let offerId = request.body.id
     let comissionTabnum = request.body.comissionTabNum
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+    }
+
+    const pool = mysql.createPool(mysqlConfig);
     
     const sqlR = await pool.query(`SELECT * FROM comission WHERE offerID = '${offerId}' AND tabelNum = ${comissionTabnum}`)
      console.log(textComission)
@@ -1028,7 +1046,7 @@ router.post("/saveComissionAnnotationToDb", urlencodedParser,
         await pool.query(`UPDATE comission SET annotation = '${textComission}' WHERE offerID = ${offerId} AND tabelNum = ${comissionTabnum}`);
         response.status(200).send() 
      }
-      
+      pool.end()
      
     })
 //////////////////////////////////////////////////////////////
@@ -1040,17 +1058,29 @@ router.post("/toDbSaveAnnot", urlencodedParser,
     let tabnum = request.body.tabNum
     let position = request.body.position
     console.log(textAnnotation, offerId,tabnum )
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+    }
+
+    const pool = mysql.createPool(mysqlConfig);
     try{
     const sqlR = await pool.query(`SELECT * FROM offersresponsible WHERE offer_id = '${offerId}' AND responsible_tabnum = '${tabnum}'`)
      
     if(sqlR == undefined){
+        pool.end()
         return console.log("Сработал андефайнд")
+        
      }
       
     console.log(moment().format('YYYY-MM-DD'),"Запись Аннотации Ответственного", "в предложение",offerId, "с табельного ", tabnum)
       await pool.query(`UPDATE offersresponsible SET mark = '${textAnnotation}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${tabnum}`)
         response.status(200).send() 
+        pool.end()
     }catch(e){console.log(e)}
+    
     })
 
 
@@ -1137,6 +1167,49 @@ router.post("/comission", urlencodedParser,
        
         pool.end()
     })
+    
+    router.post("/readAdministration", urlencodedParser,
+    async function (req, res) {
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
 
+        const pool = mysql.createPool(mysqlConfig);
+        let sqlReadAdmin = await pool.query(`SELECT * FROM kadryok WHERE CEHCODE = '400'`)
+        console.log(sqlReadAdmin[0])
+        //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+       
+                res.send(sqlReadAdmin[0]);
+                pool.end()
+            
+        }
+       
+            
+    )
+
+    router.post("/readContacts", urlencodedParser,
+    async function (req, res) {
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+
+        const pool = mysql.createPool(mysqlConfig);
+        let sqlReadAdmin = await pool.query(`SELECT * FROM telephone`)
+        console.log(sqlReadAdmin[0])
+        //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+       
+                res.send(sqlReadAdmin[0]);
+                pool.end()
+            
+        }
+       
+            
+    )
 
 module.exports = router

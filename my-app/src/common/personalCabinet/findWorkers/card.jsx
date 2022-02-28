@@ -28,10 +28,10 @@ class Cart extends React.Component
 	    if(props?.info
 			&& (
 					this.state.info === null
-					|| this.state.info.tabnum !== props.info
+					|| this.state.info.tabnum != props.info
 				) 
 			)
-		{
+		{console.log(this.state.info, props.info);
 			server.send_post_request(`${API_URL}api/user/info`, {search: props.info}).then((res) => {
 				this.setState({info: res.data});
 			})
@@ -45,11 +45,9 @@ class Cart extends React.Component
 		return (
 					<div className = {style.card} onClick = {() => this.props.dispatch(selectcard(`${this.state.info?.tabnum}`))}>
 						<table>
-							<col width = "20%"/>
-							<col width = "20%"/>
 							<tbody>
 								<tr>
-									<td rowSpan = "8">
+									<td width={"160px"} rowSpan = "8">
 										<div style={
 														{
 															width: "150px",
@@ -63,7 +61,7 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Табельный номер
 									</td>
 									<td>
@@ -72,7 +70,7 @@ class Cart extends React.Component
 
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										ФИО
 									</td>
 									<td colSpan = "2">
@@ -80,7 +78,7 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Должность
 									</td>
 									<td colSpan = "2">
@@ -88,7 +86,7 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Цех
 									</td>
 									<td colSpan = "2">
@@ -96,7 +94,7 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Отдел
 									</td>
 									<td colSpan = "2">
@@ -105,7 +103,7 @@ class Cart extends React.Component
 								</tr>
 								{this.state.info?.brigada ?
 									<tr>
-										<td>
+										<td width={"160px"} >
 											Бригада
 										</td>
 										<td colSpan = "2">
@@ -116,7 +114,7 @@ class Cart extends React.Component
 								}
 								{this.state.info?.email ?
 									<tr>
-										<td>
+										<td width={"160px"} >
 											Электронная Почта
 										</td>
 										<td colSpan = "2">
