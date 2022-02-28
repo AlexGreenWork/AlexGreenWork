@@ -204,7 +204,6 @@ class Admin
 				result.last_offer_date = {
 					...await offer_controller.offer_info_by_offer_id(last_offer_date[0][0]['Id'], connection)
 				}
-				console.log(result.last_offer_date)
 			}
 		}
 		catch(e)
