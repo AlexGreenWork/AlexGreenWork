@@ -35,8 +35,8 @@ class ListRow extends React.Component
 						  email={row['email']}
 					>
 						<div onMouseEnter={(e) => {e.target.innerText = "Открыть предложение"}}
-							onMouseOut={(e) => {e.target.innerText = `№ ${row['Id']}`}}>
-							№ {row['Id']}
+							onMouseOut={(e) => {e.target.innerText = `${row['Id']}`}}>
+							{row['Id']}
 						</div>
 					</CardOfferLinkAdapter>
 				</TableCell>
