@@ -35,6 +35,58 @@ class Admin
 		return (current_user_group === 'admin' || current_user_group === 'wg')
 	}
 
+	async offers_avaliable_offers(req, res)
+	{
+		/**if(!Admin.request_user_is_admin(req.current_user_info))
+		{
+			Admin.error(res, 'Нет прав на данную операцию');
+			return;
+		}**/
+
+		const result = { last_offers: {}};
+
+		let connection = null;
+
+		try
+		{
+			connection = await Admin.connection_to_database();
+
+			let last_offers_query = `SELECT
+											YEAR(o.date) AS y,
+											MONTH(o.date) AS m
+										FROM
+											offers AS o
+										GROUP BY
+											MONTH(o.date)`;
+
+
+			const last_offers = await connection.query(last_offers_query)
+
+			if(last_offers[0].length)
+			{
+				for(const lf of last_offers[0])
+				{
+					if(!result.last_offers[lf.y])
+					{
+						result.last_offers[lf.y] = [];
+					}
+
+					result.last_offers[lf.y].push(lf.m);
+				}
+			}
+
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
+
 	async offers_last_offers(req, res)
 	{
 		if(!Admin.request_user_is_admin(req.current_user_info))
@@ -43,14 +95,21 @@ class Admin
 			return;
 		}
 
-        if (!('begin' in req.body)
-            || !req.body.begin)
+        if (!('year' in req.body)
+            || !req.body.year
+			|| !('month' in req.body)
+            || !req.body.month)
 		{
 			Admin.error(res, 'Неверно указаны параметры');
 			return;
         }
 
-		const begin = new Date(req.body.begin);
+		const time = new Date(req.body.year, req.body.month, 0);
+		if(isNaN(time))
+		{
+			Admin.error(res, 'Неверно указаны параметры');
+			return;
+		}
 
 		const result = { last_offers: []};
 
@@ -67,10 +126,10 @@ class Admin
 											offers AS o
 										INNER JOIN state AS s ON s.status = o.status
 										WHERE
-											YEAR(o.date) = ? AND MONTH(o.date) >= ?
+											YEAR(o.date) = ? AND MONTH(o.date) = ?
 										ORDER BY o.date DESC`;
 
-			let last_offers_plasholders = [begin.getFullYear(), begin.getMonth() + 1];
+			let last_offers_plasholders = [time.getFullYear(), time.getMonth() + 1];
 
 			const last_offers = await connection.query(last_offers_query,
 											last_offers_plasholders);
@@ -86,7 +145,6 @@ class Admin
 						});
 				}
 			}
-
 		}
 		catch(e)
 		{

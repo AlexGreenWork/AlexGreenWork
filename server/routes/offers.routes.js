@@ -44,8 +44,6 @@ router.get("/allOffers",
         }
 
         const pool = mysql.createPool(mysqlConfig);
-      console.log(request.query)
-       
         
         // if(sqlHistBrows[0].length != 0){
         //     res.send(sqlHistBrows[0]);
@@ -189,6 +187,7 @@ router.post("/userOfferStates", urlencodedParser, authMiddleware, userMiddleware
 router.post("/userLastOffer", urlencodedParser, authMiddleware, userMiddleware, admin_controller.last_user_offer);
 router.post("/offersState", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
 router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_last_offers);
+router.post("/avaliableOffersDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_avaliable_offers);
 
 
 router.post("/userInfo", urlencodedParser,
