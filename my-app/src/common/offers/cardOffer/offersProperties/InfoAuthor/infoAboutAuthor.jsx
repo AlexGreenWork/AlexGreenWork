@@ -34,7 +34,7 @@ function UserInfo(userTabelNum){
 }
 let  offersDataCount;
 const CreateCompMyOffers = (props)=>{
-     console.log(props)
+     
     const  [offersData, SetOffersData] = useState(0)
 
     if(offersData === 0 ){
@@ -85,7 +85,7 @@ const CreateCompMyOffers = (props)=>{
  
     if(offersData !== 0){
      
-        return offersData.map((number, index)=><MyOffersComp key = {"myOffComp"+number.Id} id={number.Id} date={number.date}
+        return offersData.map((number, index)=><MyOffersComp key = {"myOffComp"+number.Id+index} id={number.Id} date={number.date}
         nameOffer={number.nameOffer}  counter={index+1} coAuthor = {number.coAuthor}  />)
 
     } else {
@@ -197,7 +197,7 @@ const InfoAboutAuthor = () => {
                 objAll[`${i+1}`] = objYetSendlers[i]
             }
         
-         console.log(objAll)
+         
        
         return Object.keys(objAll).map((key, i)=><SendlerTab key={`numAut${i}`} numAut={i+1} name={objAll[key].nameSendler}
                                                 surname={objAll[key].surnameSendler} middlename={objAll[key].middlenameSendler} 
