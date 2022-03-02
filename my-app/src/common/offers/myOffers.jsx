@@ -72,7 +72,7 @@ const Offer = (props) => {
             
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-
+                    
                     dispatch(addSendler(xhr.response))
 
                 }
@@ -124,21 +124,24 @@ const Offer = (props) => {
 
 const OffersLink = (props) => {
     let offersData = JSON.parse(props.request);
-    let offersDataReverse = offersData.reverse();
-   
-    for (let i = 0; i < Object.keys(offersDataReverse).length; i++) {
-       
-        if (offersDataReverse[i].coAuthor === "Соавтор") {
-             offersDataReverse.push(offersDataReverse[i]);
-             offersDataReverse.splice(i, 1); 
+    let offersDataReverse = [];
+
+    for (let i = 0; i < Object.keys(offersData).length; i++) {
+        if (offersData[i].coAuthor === undefined){
+            offersDataReverse.unshift(offersData[i])
         }
     }
-
-    return offersDataReverse.map((number) =>
-        <Offer key = {"myOffer"+number.Id} id={number.Id} date={number.date} name={number.nameSendler}
-               surname={number.surnameSendler} midlename={number.middlenameSendler}
-               status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} coAuthor={number.coAuthor} />)
-
+    for (let i = 0; i < Object.keys(offersData).length; i++) {
+       
+        if (offersData[i].coAuthor !== undefined && offersData[i].coAuthor === "Соавтор") {
+            offersDataReverse.push(offersData[i])
+          
+         }
+    }
+    return offersDataReverse.map((number, key) =>
+    <Offer key = {"myOffer"+number.Id+key} id={number.Id} date={number.date} name={number.nameSendler}
+           surname={number.surnameSendler} midlename={number.middlenameSendler}
+           status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum} dateComission={number.dateComission} coAuthor={number.coAuthor} />)
 }
 
 const Offers = () => {
@@ -165,7 +168,7 @@ const Offers = () => {
             if (this.readyState == 4 && this.status == 200) {
 
                setReqMyOff(xhr.response)
-             
+                
             }
     
         }

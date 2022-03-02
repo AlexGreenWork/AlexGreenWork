@@ -1,6 +1,7 @@
 const SELECT_MYOFFERS = "SELECT_MYOFFERS"
 const ADD_SENDLER = "ADD_SENDLER"
 const SELECT_TO_MYOFFER = "SELECT_TO_MYOFFER"
+const CLEAR_MYOFFERS = "CLEAR_MYOFFERS"
 
 
 const defaultState = {
@@ -39,6 +40,10 @@ export default function offerReducer(state = defaultState, action) {
 		case SELECT_TO_MYOFFER:
 			state.offer.responsibles_rg = action.payload
 			break;
+		case CLEAR_MYOFFERS:
+			state.offer = action.payload;
+			state.addSendler = ''
+			break;	
 		
 		default:
             break;
@@ -97,4 +102,25 @@ export const selectMyOffers = (Id,
 
     export const addSendler = (addSendler) => ({type:ADD_SENDLER, payload: addSendler })
 	
-	
+	export const clearMyOffers = () => ({ type:CLEAR_MYOFFERS, payload:{ 
+						Id: null,
+						nameOffer: null,
+						date: "0123456789",
+						tabelNum: null,
+						nameSendler: null,
+						surnameSendler: null,
+						middlenameSendler: null,
+						email: null,
+						status: null,
+						descriptionProblem:null,
+						category: null,
+						view: null,
+						responsibles: [],
+						responsibles_rg: [],
+						textOffer: null, 
+						phoneNumber: null, 
+						dateComission : null,
+						departament : null,
+						division : null,
+								}
+						}) 
