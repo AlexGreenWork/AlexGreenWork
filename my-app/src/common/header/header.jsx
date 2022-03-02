@@ -28,7 +28,7 @@ const Header = () => {
       <div className={s.clear}>
         <GoBack />
       </div>
-        <Clock/>
+      <Clock/>
       <div
         className={s.brand}
         style={{

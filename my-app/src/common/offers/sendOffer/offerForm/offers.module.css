@@ -115,20 +115,14 @@ from div{
     .searchOffer{
        width: 40%;
        vertical-align: bottom;
-       /* position: relative;
-       left: 40px;
-       top: -35px; */
     }
 
     select{
         grid-column:2/3;
         grid-row: 1/2;
         width: 40%;
-        /* position: relative;
-        left: 40px;
-        top: -35px; */
     }
-
+    
     .searchContainer{
 
         display: grid;
@@ -139,3 +133,4 @@ from div{
         grid-row-gap: 3px;
         margin-bottom: 10px;
     }
+

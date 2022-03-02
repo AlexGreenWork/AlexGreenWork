@@ -66,8 +66,8 @@ const Registration = () => {
                     setName(fio[1])
                     setSurName(fio[0])
                     setMiddleName(fio[2])
-                    setEmail(fio[3])
-                    setPhoneNumber(fio[4])
+                    // setEmail(fio[3])
+                    // setPhoneNumber(fio[4])
                 })
         } catch (e) {
             alert(e.response)

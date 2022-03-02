@@ -44,6 +44,8 @@ router.get("/allOffers",
         }
 
         const pool = mysql.createPool(mysqlConfig);
+      
+       
         
         // if(sqlHistBrows[0].length != 0){
         //     res.send(sqlHistBrows[0]);
@@ -1085,7 +1087,7 @@ router.post("/toDbSaveAnnot", urlencodedParser,
 
 
 
-    router.post("/comission", urlencodedParser,
+router.post("/comission", urlencodedParser,
     async function (request, response) {
         const mysqlConfig = {
             host: config.database.host,
