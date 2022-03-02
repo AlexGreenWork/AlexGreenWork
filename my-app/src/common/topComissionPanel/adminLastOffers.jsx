@@ -11,6 +11,7 @@ class LastOffers extends React.Component
 	{
 		super(props)
 		this.state = {list: {last_offers: []},
+						mount: false,
 						pointer: moment(),
 						avaliable_year: null,
 						year: moment().year(),
@@ -27,6 +28,7 @@ class LastOffers extends React.Component
 
 	componentDidMount()
 	{
+		this.setState({mount: true})
 		this.update(this.state.year, this.state.month);
 
 		server.send_post_request(`${API_URL}api/offers/avaliableOffersDate`)
@@ -35,12 +37,20 @@ class LastOffers extends React.Component
 			});
 	}
 
+	componentWillUnmount()
+	{
+		this.setState({mount: false})
+	}
+
 	update(year, month)
 	{
-		server.send_post_request(`${API_URL}api/offers/lastOffersByDate`, {year: year, month: month})
-			.then((res) => {
-					this.setState({list: {last_offers: res.data.last_offers}, year: year, month: month})
-			});
+		if(this.state.mount)
+		{
+			server.send_post_request(`${API_URL}api/offers/lastOffersByDate`, {year: year, month: month})
+				.then((res) => {
+						this.setState({list: {last_offers: res.data.last_offers}, year: year, month: month})
+				});
+		}
 	}
 
 	/**
@@ -48,16 +58,19 @@ class LastOffers extends React.Component
      */
 	init(data)
 	{
-		let years = [];
-		for(let year in data)
+		if(this.state.mount)
 		{
-			years.push(year);
-		}
+			let years = [];
+			for(let year in data)
+			{
+				years.push(year);
+			}
 
-		//Блядский option ругается на out-of-bound, поэтому добавляем текущий месяц и год, чтобы он заткнулся
-		//Почему в методе init? для того что-бы лишний раз не дергать state, да и данные из базы подъедут
-		data[this.state.year][this.state.month] = this.state.month;
-		this.setState({avaliable_month: data, avaliable_year: years});
+			//Блядский option ругается на out-of-bound, поэтому добавляем текущий месяц и год, чтобы он заткнулся
+			//Почему в методе init? для того что-бы лишний раз не дергать state, да и данные из базы подъедут
+			data[this.state.year][this.state.month] = this.state.month;
+			this.setState({avaliable_month: data, avaliable_year: years});
+		}
 	}
 
 	onDateChange(value)

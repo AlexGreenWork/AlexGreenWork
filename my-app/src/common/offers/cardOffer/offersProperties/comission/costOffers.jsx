@@ -3,42 +3,133 @@ import axios from "axios";
 import Button from "@material-ui/core/Button";
 import { API_URL } from "../../../../../config.js"
 
+function inputProperty(e, id) {
+    let text = document.querySelector(`#author${id}`)
+
+    if (e.nativeEvent.inputType !== "deleteContentBackward" && e.nativeEvent.inputType !== "deleteContentForward" && e.nativeEvent.inputType !== "insertFromPaste") {
+
+        let codeKey = e.nativeEvent.data.charCodeAt();
+
+        if (codeKey > 47 && codeKey < 58 || codeKey === 9 || codeKey === 8 || codeKey === 46) {
+
+            text.innerText = e.target.innerText
+            // console.log(text)
+            text.focus();
+            if (typeof window.getSelection != "undefined"
+                && typeof document.createRange != "undefined") {
+                var range = document.createRange();
+                range.selectNodeContents(text);
+                range.collapse(false);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else if (typeof document.body.createTextRange != "undefined") {
+                var textRange = document.body.createTextRange();
+                textRange.moveToElementText(text);
+                textRange.collapse(false);
+                textRange.select();
+            }
+
+        } else {
+
+            text.innerText = text.innerText.slice(0, -1)
+            text.focus();
+            if (typeof window.getSelection != "undefined"
+                && typeof document.createRange != "undefined") {
+                var range = document.createRange();
+                range.selectNodeContents(text);
+                range.collapse(false);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else if (typeof document.body.createTextRange != "undefined") {
+                var textRange = document.body.createTextRange();
+                textRange.moveToElementText(text);
+                textRange.collapse(false);
+                textRange.select();
+            }
+
+        }
+    }
+
+}
+
+
 
 function OffersCostBlock(props) {
-    
-    if (props.fio.coAuthor === undefined) {
-        return (
-            <div>
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <div> Автор:
-                            <div>
-                                {props.fio.surname} {props.fio.name} {props.fio.middlename}
+    const [value, setValue] = useState(null)
+
+    if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
+        if (props.fio.coAuthor === undefined) {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Автор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
                             </div>
+                            <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
                         </div>
                         <div style={{display:"flex"}}>
                         <div contentEditable={"true"} id={`author${props.number}`}  style={{ backgroundColor: "white", minWidth:"20px" }}  > {props.fio.profit}</div> руб.</div>
                     </div>
                 </div>
-            </div>
-        )
-    } else {
-        return (
-            <div>
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <div> Соавтор:
-                            <div>
-                                {props.fio.surname} {props.fio.name} {props.fio.middlename}
+            )
+        } else {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Соавтор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
                             </div>
+                            <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+    } else {
+        if (props.fio.coAuthor === undefined) {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Автор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
+                            </div>
+                            <div id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
                         </div>
                        <div style={{display:"flex"}}>
                         <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white", minWidth:"20px" }}  > {props.fio.profit}</div> руб.</div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return (
+                <div>
+                    <div style={{ display: "flex" }}>
+                        <div>
+                            <div> Соавтор:
+                                <div>
+                                    {props.fio.surname} {props.fio.name} {props.fio.middlename}
+                                </div>
+                            </div>
+                            <div id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
     }
+    
+   
 
 }
 
@@ -66,15 +157,16 @@ function CostOffers() {
     const [reqCost, setreqCost] = useState(null)
 
     let idOffers = localStorage.getItem('idOffers')
-   
+
     if (reqCost === null) {
+        console.log(reqCost)
         try {
             axios.post(`${API_URL}api/auth/allAuthors`, {
                 idOffers: idOffers,
 
             })
                 .then(res => {
-                    
+                    console.log(res.data.length)
                     setreqCost(res.data)
                 }
 
@@ -84,8 +176,57 @@ function CostOffers() {
         }
     }
 
+    function inputValidator(number, req) {
+
+        let validInput = true;
+       
+        for (let i = 0; i < number; i++) {
+          
+            let countPont = 0
+            let cost = document.querySelector(`#author${i}`).innerText;
+           
+            for (let j = 0; j < cost.length; j++) {
+              
+                let codeKey = cost[j].charCodeAt()
+
+                if (codeKey > 47 && codeKey < 58 || codeKey === 9 || codeKey === 8 || codeKey === 46) {
+
+                    validInput = true;
+
+                    if (codeKey === 46) {
+                        countPont++
+                        console.log('countPont')
+                    }
+
+                } else {
+                    console.log(false)
+                    validInput = false;
+                    i = number
+                    j = cost.length
+                }
+                
+                if (countPont > 1) {
+                    validInput = false;
+                    i = number
+                    j = cost.length
+                }
+            }
+
+            countPont = 0
+
+        }
+        if (validInput === true) {
+          
+            SaveProfit(number, req)
+        
+        } else {
+            alert("Вы ввели неверную сумму")
+        }
+    }
+
     function SaveProfit(number, req) {
         let idOffers = localStorage.getItem('idOffers')
+
 
         for (let i = 0; i < number; i++) {
             let cost = document.querySelector(`#author${i}`).innerText;
