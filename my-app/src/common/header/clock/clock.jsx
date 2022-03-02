@@ -26,7 +26,6 @@ function tick() {
         let timeDate = new Date()
         let monthA = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
         
-       
         document.querySelector('.hours').innerHTML = timeDate.getHours()
         if(timeDate.getMinutes() < 10){
             document.querySelector('.minuts').innerHTML = "0" + timeDate.getMinutes()
@@ -40,7 +39,6 @@ function tick() {
             document.querySelector('.seconds').innerHTML = timeDate.getSeconds()
         }
         
-        // document.querySelector('.seconds').innerHTML = timeDate.getSeconds()
         document.querySelector('.year').innerHTML = timeDate.getFullYear()
         document.querySelector('.day').innerHTML = timeDate.getDate()
         document.querySelector('.month').innerHTML = monthA[timeDate.getMonth()]
