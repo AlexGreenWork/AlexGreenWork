@@ -185,9 +185,7 @@ async function sqlMyOffers(tabelNumber, email, idOffers, place) {
 
 
 router.post("/selectMyOffers", urlencodedParser, offers_controller.offer_info);
-router.post("/userOfferStates", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_user_states);
-router.post("/offersState", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
-router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_last_offers);
+router.post("/lastOffersByDate", urlencodedParser, authMiddleware, userMiddleware, admin_controller.offers_state);
 
 
 router.post("/userInfo", urlencodedParser,
@@ -1205,6 +1203,30 @@ router.post("/toDbSaveAnnot", urlencodedParser,
         //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
        
                 res.send(sqlReadAdmin[0]);
+                pool.end()
+            
+        }
+       
+            
+    )
+
+    router.post("/writeContacts", urlencodedParser,
+    async function (req, res) {
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+
+        const pool = mysql.createPool(mysqlConfig);
+
+        console.log(req.body)
+        // let sqlReadAdmin = await pool.query(`SELECT * FROM telephone`)
+        // console.log(sqlReadAdmin[0])
+        // //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+       
+        //         res.send(sqlReadAdmin[0]);
                 pool.end()
             
         }
