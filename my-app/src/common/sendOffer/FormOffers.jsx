@@ -113,7 +113,7 @@ function OffersForm() {
         event.preventDefault();
         let btnFormON = document.querySelector('.close-btn');
 
-        if (btnFormON == null) {
+        if (btnFormON === null) {
 
             OffFunc(name, lastName, middleName, Email, tabelNumber, phoneNumber, nameOffer, problem, offer, checked);
 

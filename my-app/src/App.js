@@ -35,7 +35,6 @@ import News from "./common/news/news";
 
 
 
-
 function App(props) {
     const [change, setChange] = useState(0)
     const [secondCotext, setSecondCotext] = useState(0)
@@ -50,6 +49,8 @@ function App(props) {
 
     };
 
+   
+
     const isAuth = useSelector(state => state.user.isAuth)
     const dispatch = useDispatch()
 
@@ -62,6 +63,7 @@ function App(props) {
         <BrowserRouter>
             <Context.Provider value = {value}>
             <div className={'container1'} id="container1">
+               
                 <Header/>
 
 

@@ -238,7 +238,7 @@ function OffersForm(props) {
     const MiddleNameMid = localStorage.getItem('userMiddleName') ? `${localStorage.getItem('userMiddleName')}` : ``
     const EmailMid = localStorage.getItem('userEmail') ? `${localStorage.getItem('userEmail')}` : ``
     const TabelNumMid = localStorage.getItem('userTabelNum') ? `${localStorage.getItem('userTabelNum')}` : ``
-    const PhoneNumberMid = localStorage.getItem('userPhoneNumber') ? `+${localStorage.getItem('userPhoneNumber').slice(2)}` : ``
+    const PhoneNumberMid = localStorage.getItem('userPhoneNumber') ? `+${localStorage.getItem('userPhoneNumber').slice(1)}` : ``
 
 
     const [name, setName] = useState(`${nameMid}`);
@@ -263,7 +263,33 @@ function OffersForm(props) {
     const [newSendler, setNewSendler] = useState();
     const [count, setCount] = useState(0);
 
-    console.log(localStorage.getItem('userTabelNum'))
+   function StateClear(){
+    setName('')
+    setLastName('')
+    setMiddleName('')
+    setEmail('')
+    setTabelNumber('')
+    setPhoneNumber('')
+    setNameOffer('')
+    setProblem('')
+    setOffer('')
+    setChecked(false)
+    setLastNameNew()
+    setNameNew()
+    setMiddleNameNew()
+    setMiddleNameNew()
+    setEmailNew()
+    setTabelNumberNew()
+    setPhoneNumberNew()
+    setYetSendler()
+    setNewSendler()
+    setCount(0)
+   }
+
+   if(document.querySelector('#exit') !== null){
+    document.querySelector('#exit').addEventListener('click', StateClear )
+   }
+    
 
     function addFioYetSebdler(tabNum) {
 
@@ -349,7 +375,7 @@ function OffersForm(props) {
                         setEmail(fio[3])
                         setPhoneNumber("+" + fio[5].slice(1))
                         console.log(phoneNumber)
-                        console.log(Email)
+                        console.log(fio[5])
                     })
             } catch (e) {
                 alert(e.response)
@@ -626,7 +652,7 @@ if(localStorage.getItem('userTabelNum') === null){
                 <div className="form-fields">
 
                 <div className={s.formFilds}>
-                        <input type="text" placeholder="табельный номер" className="input-data" id="tabelNumber"
+                        <input type="text" minLength="5" placeholder="табельный номер" className="input-data" id="tabelNumber"
                             name="tabelNumber" required autoComplete="on"
                             value={tabelNumber} onChange={(e) => {
                                 setTabelNumber(e.target.value)
