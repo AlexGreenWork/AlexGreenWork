@@ -7,6 +7,7 @@ import { logout } from "../../reducers/userReducer";
 // import avatarLogo from '../../assets/img/avatar.svg'
 import { API_URL } from "../../config";
 import GoBack from "../buttons/backButton/backButton";
+import Clock from "./clock/clock";
 
 const Header = () => {
   const isAuth = useSelector((state) => state.user.isAuth);
@@ -27,7 +28,7 @@ const Header = () => {
       <div className={s.clear}>
         <GoBack />
       </div>
-
+      <Clock/>
       <div
         className={s.brand}
         style={{
