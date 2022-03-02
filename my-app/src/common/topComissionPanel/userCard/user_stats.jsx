@@ -12,11 +12,13 @@ class State extends React.Component
 		this.state = {list: []}
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.load = this.load.bind(this);
+		this.load_last_offer_data = this.load_last_offer_data.bind(this);
 	}
 
 	componentDidMount()
 	{
 		this.load();
+		this.load_last_offer_data();
 	}
 
 	load()
@@ -25,6 +27,26 @@ class State extends React.Component
 			.then((res) => {
 				this.init(res.data);
 			});
+		
+	}
+
+	load_last_offer_data()
+	{
+		if(!this.props?.last_offer_date)
+		{
+			server.send_post_request(`${API_URL}api/offers/userLastOffer`, {user: this.props.info})
+				.then((res) => {
+					this.setState({
+						last_offer_date: {...res.data.last_offer_date, date: moment(res.data.last_offer_date.date).format('DD-MM-YYYY') },
+					})
+				});
+		}
+		else
+		{
+			this.setState({
+				last_offer_date: {...this.props.last_offer_date, date: moment(this.props.last_offer_date.date).format('DD-MM-YYYY') },
+			})
+		}
 	}
 
 	init(data)
@@ -38,9 +60,9 @@ class State extends React.Component
 		this.setState({list: data.self_offers,
 						sum: sum,
 						register: data.user,
+						permission: data.permission,
 						responsibles: data.responsibles,
 						responsibles_rg: data.responsibles_rg,
-						last_offer_date: {...data.last_offer_date, date: moment(data.last_offer_date.date).format('DD-MM-YYYY') },
 						co_offers: data.co_offers});
 	}
 
@@ -59,6 +81,19 @@ class State extends React.Component
 		</span>)
 	}
 
+	create_permission_status(stat)
+	{
+		switch(stat)
+		{
+			case 'admin':
+				return 'Администратор'
+			case 'wg':
+				return 'Рабочая группа'
+			case 'user':
+				return 'Пользователь'
+		}
+	}
+
 	render()
 	{
 		return (<>
@@ -73,6 +108,15 @@ class State extends React.Component
 				<span>
 					{moment(this.state.register).format("DD-MM-YYYY")}
 				</span>
+
+				<div style={{display: "grid", gridTemplateColumns:"auto auto auto auto", paddingTop: "24px"}}>
+					<div>
+						<span style={{fontWeight: "bold", fontSize: "15px"}}>
+							Права:
+						</span>
+						&nbsp;{this.create_permission_status(this.state.permission)}
+					</div>
+				</div>
 
 				<div style={{display: "grid", gridTemplateColumns:"auto auto auto auto", paddingTop: "24px"}}>
 					<div>

@@ -46,8 +46,7 @@ class LatestOrders extends React.Component
 
 	componentDidUpdate(props)
 	{
-		if(this.props !== props
-			&& this.props.last_offers.length > 0)
+		if(this.props !== props)
 		{
 			this.setState({list:this.props.last_offers});
 		}
@@ -64,7 +63,7 @@ class LatestOrders extends React.Component
 	{
 		return (
 		  <Card {...this.props}>
-			<CardHeader title="Последние предложения" />
+			<CardHeader title={this.props.title} />
 			  <Box sx={{ minWidth: 800 }}>
 				<div style={{height: "auto", width: "100%", paddingLeft: "16px"}}>
 					{Array.from(this.state.box, ([label, status], id) => <CheckBox key = {id}

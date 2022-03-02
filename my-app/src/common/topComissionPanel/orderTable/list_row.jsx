@@ -41,7 +41,11 @@ class ListRow extends React.Component
 					</CardOfferLinkAdapter>
 				</TableCell>
 				<TableCell key={`sendler_${row['Id']}`} style = {{width: "30%"}}>
-					<UserCard title = {offerSendler} info={row['tabelNum']}/>
+					<UserCard
+							title = {offerSendler}
+							info={row['tabelNum']}
+							last_offer_date = {row}
+					/>
 				</TableCell>
 				<TableCell key={`date_${row['Id']}`} >
 					{moment(row['date']).format("DD-MM-YYYY")}

@@ -1,6 +1,7 @@
 const mysql = require("mysql2/promise");
 const config = require("./../config/default.json");
 const offer_controller = require("./offersController");
+const user_controller = require("./userController");
 
 class Admin
 {
@@ -34,6 +35,58 @@ class Admin
 		return (current_user_group === 'admin' || current_user_group === 'wg')
 	}
 
+	async offers_avaliable_offers(req, res)
+	{
+		/**if(!Admin.request_user_is_admin(req.current_user_info))
+		{
+			Admin.error(res, 'Нет прав на данную операцию');
+			return;
+		}**/
+
+		const result = { last_offers: {}};
+
+		let connection = null;
+
+		try
+		{
+			connection = await Admin.connection_to_database();
+
+			let last_offers_query = `SELECT
+											YEAR(o.date) AS y,
+											MONTH(o.date) AS m
+										FROM
+											offers AS o
+										GROUP BY
+											MONTH(o.date)`;
+
+
+			const last_offers = await connection.query(last_offers_query)
+
+			if(last_offers[0].length)
+			{
+				for(const lf of last_offers[0])
+				{
+					if(!result.last_offers[lf.y])
+					{
+						result.last_offers[lf.y] = [];
+					}
+
+					result.last_offers[lf.y].push(lf.m);
+				}
+			}
+
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
+
 	async offers_last_offers(req, res)
 	{
 		if(!Admin.request_user_is_admin(req.current_user_info))
@@ -42,14 +95,21 @@ class Admin
 			return;
 		}
 
-        if (!('begin' in req.body)
-            || !req.body.begin)
+        if (!('year' in req.body)
+            || !req.body.year
+			|| !('month' in req.body)
+            || !req.body.month)
 		{
 			Admin.error(res, 'Неверно указаны параметры');
 			return;
         }
 
-		const begin = new Date(req.body.begin);
+		const time = new Date(req.body.year, req.body.month, 0);
+		if(isNaN(time))
+		{
+			Admin.error(res, 'Неверно указаны параметры');
+			return;
+		}
 
 		const result = { last_offers: []};
 
@@ -66,9 +126,10 @@ class Admin
 											offers AS o
 										INNER JOIN state AS s ON s.status = o.status
 										WHERE
-											YEAR(o.date) = ? AND MONTH(o.date) >= ?`;
+											YEAR(o.date) = ? AND MONTH(o.date) = ?
+										ORDER BY o.date DESC`;
 
-			let last_offers_plasholders = [begin.getFullYear(), begin.getMonth() + 1];
+			let last_offers_plasholders = [time.getFullYear(), time.getMonth() + 1];
 
 			const last_offers = await connection.query(last_offers_query,
 											last_offers_plasholders);
@@ -84,7 +145,62 @@ class Admin
 						});
 				}
 			}
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
 
+	async last_user_offer(req, res)
+	{
+		if(!Admin.request_user_is_admin(req.current_user_info))
+		{
+			Admin.error(res, 'Нет прав на данную операцию');
+			return;
+		}
+
+        if (!('user' in req.body)
+            || !req.body.user)
+		{
+			Admin.error(res, 'Неверно указаны параметры');
+			return;
+        }
+
+		const user = req.body.user;
+		const result = { last_offer_date: {} };
+
+		let connection = null;
+
+		try
+		{
+			connection = await Admin.connection_to_database();
+
+			const last_offer_date = await connection.query(`SELECT
+																date AS d,
+																Id
+															FROM
+																offers
+															WHERE
+																Id = (
+																	SELECT
+																		MAX(Id)
+																	FROM
+																		offers
+																	WHERE
+																		tabelNum = ?
+																)`,[user]); 
+			if(last_offer_date[0].length)
+			{
+				result.last_offer_date = {
+					...await offer_controller.offer_info_by_offer_id(last_offer_date[0][0]['Id'], connection)
+				}
+			}
 		}
 		catch(e)
 		{
@@ -114,6 +230,7 @@ class Admin
 
 		const user = req.body.user;
 		const result = {user: req.current_user_info.date,
+						permission: '',
 						co_offers: 0,
 						responsibles: 0,
 						responsibles_rg: 0,
@@ -185,26 +302,8 @@ class Admin
 				result.responsibles_rg = responsibles[0][0]['r'] | 0;
 			}
 
-			const last_offer_date = await connection.query(`SELECT
-																date AS d,
-																Id
-															FROM
-																offers
-															WHERE
-																Id = (
-																	SELECT
-																		MAX(Id)
-																	FROM
-																		offers
-																	WHERE
-																		tabelNum = ?
-																)`,[user]); 
-			if(last_offer_date[0].length)
-			{
-				result.last_offer_date = {
-					...await offer_controller.offer_info_by_offer_id(last_offer_date[0][0]['Id'], connection)
-				}
-			}
+			const userInfo = await user_controller.get_info_by_tabnum(user, connection);
+			if(userInfo) result.permission = userInfo.adminOptions;
 		}
 		catch(e)
 		{
