@@ -42,7 +42,7 @@ function tick() {
         
         // document.querySelector('.seconds').innerHTML = timeDate.getSeconds()
         document.querySelector('.year').innerHTML = timeDate.getFullYear()
-        document.querySelector('.day').innerHTML = timeDate.getDay()
+        document.querySelector('.day').innerHTML = timeDate.getDate()
         document.querySelector('.month').innerHTML = monthA[timeDate.getMonth()]
     }, 1000)
 }
