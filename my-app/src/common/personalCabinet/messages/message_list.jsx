@@ -30,7 +30,8 @@ class MessageList extends React.Component
 		return ( <div id = "messages_user_container" className={s.messages}>
 					{this.props.messages.map((message, id) => (
 						<Message key = {id}
-								from = {this.props.users[message.from].sendler}
+								sendler = {this.props.users[message.from].sendler}
+								from = {message.from}
 								id = {id}
 								to = {message.to}
 								users = {this.props.users}

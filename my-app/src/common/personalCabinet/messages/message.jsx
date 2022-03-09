@@ -40,7 +40,7 @@ class Message extends React.Component
 					<div className = {s.user}>
 						<h3>
 							<span className = {s.from}>
-								{this.props.from}
+								{this.props.sendler}
 							</span>
 						</h3>
 						<span className = {s.time}>
