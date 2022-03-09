@@ -1,52 +1,62 @@
-.messagesContainer{
+.messagesContainer
+{
     width:98%;
     padding: 20px;
-    background-color: white;
+    background-color: #102027;
+	border-radius: 10px;
     border: solid 2px white;
     grid-column: 2/6;
     grid-row: 2/6;
     z-index: 2;
+	display: grid;
+	grid-template-rows: 80% auto;
+}
 
+.lockContainer
+{
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	border-bottom: 2px solid #fff;
 }
-.messagesContainer:hover{
-    background-color: #ccdbf6;
+
+.lockHeader
+{
+    display: flex;
+    width: 100%;
+    justify-content: center;
 }
-.titleHeader{
+
+.lockHeader > h2
+{
+	font-weight: bold;
+	color: yellow;
+}
+
+.titleHeader
+{
     display: flex;
     width: 100%;
     justify-content: center;
     padding-bottom: 20px;
 }
-.ava{
 
+.messages
+{
+	grid-row: 1/2;
+	overflow-y: auto;
+	scrollbar-width: none;
 }
-.ava>img{
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
 
+.card
+{
+    position: absolute;
+	z-index: 1;
 }
-.header{
-    display: flex;
-    background-color: white;
-    border: 1px solid;
-    border-radius: 15px;
 
-}
-.header:hover{
-    background-color: #aad1ff;
-}
-.messagePreview{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-
-}
-.from{
-    font-weight: bold;
-}
-@media (max-width: 553px) {
-    .messagesContainer{
+@media (max-width: 553px)
+{
+    .messagesContainer
+	{
         grid-column: 1/6;
         grid-row: 2/6;
         z-index: 2;

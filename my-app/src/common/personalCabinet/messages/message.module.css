@@ -1,0 +1,75 @@
+.header
+{
+    display: flex;
+	margin-bottom: 10px;
+}
+
+.ava
+{
+	margin-right: 10px;
+    width: 50px;
+	height: 50px;
+}
+
+.messagePreview
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+	width: 95%;
+}
+
+.from
+{
+    font-weight: bold;
+	color: #c67c00;
+}
+
+.to
+{
+	color: #5a9216;
+}
+
+.user
+{
+	display: grid;
+	grid-template-columns: auto auto;
+	width: 95%;
+}
+
+.time
+{
+	color: White;
+	text-align: end;
+}
+
+.message
+{
+	margin-left: 20px;
+	border-radius: 3px;
+	background-color: #fff;
+	width: 95%;
+	min-height: 30px;
+	padding: 5px 5px;
+}
+
+.youMessage
+{
+	background-color: green;
+	margin-left: 20px;
+	border-radius: 3px;
+	width: 95%;
+	min-height: 30px;
+	padding: 5px 5px;
+}
+
+.toMessage
+{
+	background-color: orange;
+	margin-left: 20px;
+	border-radius: 3px;
+	width: 95%;
+	min-height: 30px;
+	padding: 5px 5px;
+}
+

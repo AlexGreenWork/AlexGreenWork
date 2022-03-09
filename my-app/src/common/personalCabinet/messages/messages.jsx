@@ -1,42 +1,72 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
-import s from "./messages.module.css"
+import server from "../../../actions/server";
+import { API_URL } from "../../../config";
+import MessagesMain from './messages_main.jsx'
 
+class Messages extends React.Component
+{
+	constructor(props)
+	{
+		super(props);
+		this.state = { messages: [],
+						timer: null,
+						users: {}}
 
+		this.update = this.update.bind(this);
+		this.load = this.load.bind(this);
+	}
 
-const Message = (props) => {
+	componentWillMount()
+	{
+		this.load();
+		this.setState({timer: setInterval(this.update, 10000)});
+	}
 
-    return (
-        <div className={s.header}>
-            <div className={s.ava}>
-                <img
-                    src={props.src}
-                    alt=""/>
-            </div>
-            <div className={s.messagePreview}>
-                <div className={s.from}>{props.name}</div>
-                <div className={s.message}>{props.message}</div>
-            </div>
-        </div>
-    )
+	componentWillUnmount()
+	{
+		if(this.state.timer)
+		{
+			clearInterval(this.state.timer);
+		}
+	}
 
+	load()
+	{
+		server.send_post_request(`${API_URL}api/messages/allMessages`).then((res) => {
+			this.setState({messages: res.data.messages,
+							users: res.data.users});
+		});
+	}
+
+	update()
+	{
+		if(this.state.messages?.length <= 0)
+		{
+			this.load();
+
+			return;
+		}
+
+		server.send_post_request(`${API_URL}api/messages/lastMessages`,
+			{
+				lastId: this.state.messages[this.state.messages.length - 1].messageId
+			}).then((res) =>
+			{
+				if(res.data.messages.length > 0)
+				{
+					this.setState({messages: this.state.messages.concat(res.data.messages),
+									users: res.data.users});
+				}
+			});
+	}
+
+	render()
+	{
+		return (
+			<MessagesMain messages = {this.state.messages}
+						users = {this.state.users}/>
+		)
+	}
 }
 
-const Messages = () => {
-    let messageData = [
-        {name: 'Василий Виссарионович Столыпин',src:'https://i.pinimg.com/736x/20/51/ff/2051fff4c0c5cd31ac0f1393ea87f637--boys-style-man-style.jpg', message:'Приказ сверху работать сверх нормы!' },
-        {name: 'Анна Витольдовна Власова',src: 'https://drasler.ru/wp-content/uploads/2019/05/%D0%9A%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D0%BD%D0%B0-%D0%B0%D0%B2%D1%83-%D0%B2-%D1%81%D1%82%D0%B8%D0%BC-%D0%BA%D1%80%D0%B0%D1%81%D0%B8%D0%B2%D1%8B%D0%B5-%D0%B4%D0%B5%D0%B2%D1%83%D1%88%D0%BA%D0%B8-%D0%BF%D0%BE%D0%B4%D0%B1%D0%BE%D1%80%D0%BA%D0%B0-5.jpg', message:"Перешли мне паспорта." },
-        {name: 'Леонид Викторович Леонов',src: 'https://i12.fotocdn.net/s123/d85cb51dd117b1bd/user_l/2803251259.jpg', message:'Нужно отформатировать таблицу?' }
-
-    ]
-    return (
-        <div className={s.messagesContainer}>
-            <div className={s.titleHeader}><NavLink to="/messages"> Сообщения</NavLink></div>
-            <Message name={messageData[0].name} src={messageData[0].src} message = {messageData[0].message}/>
-            <Message name={messageData[1].name} src={messageData[1].src} message = {messageData[1].message}/>
-            <Message name={messageData[2].name} src={messageData[2].src} message = {messageData[2].message}/>
-
-        </div>
-    )
-}
 export default Messages;
