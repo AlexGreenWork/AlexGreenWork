@@ -2,8 +2,6 @@ import React from "react";
 import s from "./messages.module.css"
 import {Button, Tooltip} from '@mui/material'
 import MessageList from './message_list'
-import server from "../../../actions/server";
-import { API_URL } from "../../../config";
 import MessageInputForm from "./message_input_form";
 
 class MessageMain extends React.Component
@@ -13,20 +11,24 @@ class MessageMain extends React.Component
 		super(props);
 		this.state = { to: [] }
 
-		this.added_mailed = this.added_mailed.bind(this);
-		this.deleted_mailed = this.deleted_mailed.bind(this);
-		this.submit = this.submit.bind(this);
+		this.onAddedMailed = this.onAddedMailed.bind(this);
+		this.onDeletedMailed = this.onDeletedMailed.bind(this);
+		this.onSubmit = this.onSubmit.bind(this);
+		this.onScrollToTop = this.onScrollToTop.bind(this);
 	}
 
-	submit(e)
+	onSubmit(e)
 	{
 		const field = document.getElementById("message_user_input");
 
-		server.send_post_request(`${API_URL}api/messages/newMessage`,
-			{
+		if(this.props?.onSubmitMessages
+			&& typeof this.props.onSubmitMessages === 'function')
+		{
+			this.props.onSubmitMessages({
 				message: field.value,
 				to: this.state.to
-			})
+			});
+		}
 
 		field.value = '';
 		this.setState({to: []});
@@ -34,7 +36,7 @@ class MessageMain extends React.Component
 		return false;
 	}
 
-	added_mailed(e)
+	onAddedMailed(e)
 	{
 		let to = this.state.to;
 		const user = this.props.messages[e].from;
@@ -44,7 +46,7 @@ class MessageMain extends React.Component
 		this.setState({to: to});
 	}
 
-	deleted_mailed(e)
+	onDeletedMailed(e)
 	{
 		const id = e.target.id;
 		let to = this.state.to;
@@ -53,20 +55,30 @@ class MessageMain extends React.Component
 		this.setState({to: to});
 	}
 
+	onScrollToTop()
+	{
+		if(this.props?.onPullLastMessages
+			&& typeof this.props.onPullLastMessages === 'function')
+		{
+			this.props.onPullLastMessages();
+		}
+	}
+
 	render()
 	{
 		return (
 				<div className={s.messagesContainer}>
 					<MessageList messages = {this.props.messages}
 									users = {this.props.users}
-									onMessageClick = {this.added_mailed}
+									onMessageClick = {this.onAddedMailed}
+									onScrollToTop = {this.onScrollToTop}
 					/>
 					<div style={{overflowY: "scroll", height: "40px"}}>
 						{this.state.to?.map((val, id) => (
-							<Tooltip title = "Убрать пользователя из рассылки">
+							<Tooltip key = {id} title = "Убрать пользователя из рассылки">
 								<Button key = {id} id = {val}
-									onClick = {this.deleted_mailed}
-									variant = "outlined"
+									onClick = {this.onDeletedMailed}
+									variant = "contained"
 									color = "primary"
 								>
 									{this.props.users[val].sendler}
@@ -75,7 +87,7 @@ class MessageMain extends React.Component
 						))}
 					</div>
 					<div>
-						<MessageInputForm onSubmit = {this.submit}/>
+						<MessageInputForm onSubmit = {this.onSubmit}/>
 					</div>
 				</div>
 		)

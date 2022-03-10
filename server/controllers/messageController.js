@@ -1,7 +1,5 @@
 const mysql = require("mysql2/promise");
 const config = require("./../config/default.json");
-const moment = require("moment");
-const user_controller = require("./userController");
 
 class Message
 {
@@ -95,7 +93,7 @@ class Message
 		return result;
 	}
 
-	async last_message(req, res)
+	static async pull_messages(req, res, message_query)
 	{
 		let result = [];
 
@@ -110,23 +108,6 @@ class Message
 
 		try
 		{
-			let message_query = `SELECT
-									o.id,
-									CONCAT(
-											o.surname, " ",
-											SUBSTR(o.name ,1,1), ". ",
-											SUBSTR(o.middlename, 1, 1), "."
-										) AS sendler,
-									o.avatar,
-									o.tabelNum,
-									m.message,
-									m.time,
-									m.id AS messageId
-								FROM
-									messages AS m
-								INNER JOIN offersworker AS o ON o.tabelNum = m.sendler
-								WHERE m.id > ?`;
-
 			connection = await Message.connection_to_database();
 
 			const messages = await connection.query(message_query, [req.body.lastId]);
@@ -146,7 +127,54 @@ class Message
 		res.status(200).send(result);
 	}
 
-	async new_message(req, res)
+	async pull_new_messages(req, res)
+	{
+		let message_query = `SELECT
+								o.id,
+								CONCAT(
+										o.surname, " ",
+										SUBSTR(o.name ,1,1), ". ",
+										SUBSTR(o.middlename, 1, 1), "."
+									) AS sendler,
+								o.avatar,
+								o.tabelNum,
+								m.message,
+								m.time,
+								m.id AS messageId
+							FROM
+								messages AS m
+							INNER JOIN offersworker AS o ON o.tabelNum = m.sendler
+							WHERE m.id > ?
+							AND m.time > DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK))`;
+
+		Message.pull_messages(req, res, message_query);
+	}
+
+	async pull_old_messages(req, res)
+	{
+		let message_query = `SELECT
+								o.id,
+								CONCAT(
+										o.surname, " ",
+										SUBSTR(o.name ,1,1), ". ",
+										SUBSTR(o.middlename, 1, 1), "."
+									) AS sendler,
+								o.avatar,
+								o.tabelNum,
+								m.message,
+								m.time,
+								m.id AS messageId
+							FROM
+								messages AS m
+							INNER JOIN offersworker AS o ON o.tabelNum = m.sendler
+							WHERE m.id < ?
+							AND m.time > DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK))`;
+
+		Message.pull_messages(req, res, message_query);
+	}
+
+	
+	async send_message(req, res)
 	{
 		let message = null;
 		let to = null;
@@ -196,7 +224,7 @@ class Message
 
 	}
 
-	async all_messages(req, res)
+	async pull_all_messages(req, res)
 	{
 		let result = [];
 
@@ -218,7 +246,8 @@ class Message
 									m.id AS messageId
 								FROM
 									messages AS m
-								INNER JOIN offersworker AS o ON o.tabelNum = m.sendler`;
+								INNER JOIN offersworker AS o ON o.tabelNum = m.sendler
+								WHERE m.time > DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK))`;
 
 			connection = await Message.connection_to_database();
 

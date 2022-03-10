@@ -10,8 +10,9 @@ router.use((req, res, next) => {
     return next();
 })
 
-router.post("/allMessages", authMiddleware, message_controller.all_messages)
-router.post("/newMessage", authMiddleware, userMiddleware, message_controller.new_message)
-router.post("/lastMessages", authMiddleware, message_controller.last_message)
+router.post("/pull_all_messages", authMiddleware, message_controller.pull_all_messages)
+router.post("/send_message", authMiddleware, userMiddleware, message_controller.send_message)
+router.post("/pull_new_messages", authMiddleware, message_controller.pull_new_messages)
+router.post("/pull_old_messages", authMiddleware, message_controller.pull_old_messages)
 
 module.exports = router;

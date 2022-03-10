@@ -1,17 +1,17 @@
 import React from "react";
 import s from "./messages.module.css"
-import moment from "moment";
 import Message from "./message";
-import { API_URL } from "../../../config";
+import moment from "moment";
 
 class MessageList extends React.Component
 {
 	constructor(props)
 	{
 		super(props);
+		this.onScrollTop = this.onScrollTop.bind(this);
 	}
 
-	scroll_message_to_bottom()
+	scrollMessageToBottom()
 	{
 		const messageContainer = document.getElementById('messages_user_container');
 		messageContainer.scrollTo(0, messageContainer.scrollHeight);
@@ -21,26 +21,42 @@ class MessageList extends React.Component
 	{
 		if(this.props !== props)
 		{
-			this.scroll_message_to_bottom();
+			this.scrollMessageToBottom();
+		}
+	}
+
+	onScrollTop(e)
+	{
+		if(e.target.scrollTop <= 0)
+		{
+			if(this.props?.onScrollToTop
+				&& typeof this.props.onScrollToTop === 'function')
+			{
+				this.props.onScrollToTop();
+			}
 		}
 	}
 
 	render()
 	{
-		return ( <div id = "messages_user_container" className={s.messages}>
-					{this.props.messages.map((message, id) => (
-						<Message key = {id}
-								sendler = {this.props.users[message.from].sendler}
-								from = {message.from}
-								id = {id}
-								to = {message.to}
-								users = {this.props.users}
-								message = {message.message}
-								time = {moment(message.time).format("DD-MM-YYYY HH:mm")}
-								src = {`${API_URL}files/${this.props.users[message.from].avatarFolder}/${this.props.users[message.from].src}`}
-								onClick = {this.props.onMessageClick}/>
-					))}
-				</div>
+		return (
+					<div id = "messages_user_container" className={s.messages}
+							onScroll = {this.onScrollTop}
+					>
+						<div style = {{color: "white",
+										width: "100%",
+										textAlign: "center"}}
+						>
+							Сообщения за: {moment(this.props.messages[0]?.time).format("DD-MM-YYYY")}
+						</div>
+						{this.props.messages.map((message, id) => (
+							<Message key = {id}
+									id = {id}
+									users = {this.props.users}
+									{...message}
+									onClick = {this.props.onMessageClick}/>
+						))}
+					</div>
 		)
 	}
 }
