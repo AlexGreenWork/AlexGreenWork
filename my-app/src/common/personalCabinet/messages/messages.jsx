@@ -12,14 +12,15 @@ class Messages extends React.Component
 						timer: null,
 						users: {}}
 
-		this.update = this.update.bind(this);
-		this.load = this.load.bind(this);
+		this.pull_new_messages = this.pull_new_messages.bind(this);
+		this.pull_all_messages = this.pull_all_messages.bind(this);
+		this.pull_last_messages = this.pull_last_messages.bind(this);
 	}
 
 	componentWillMount()
 	{
-		this.load();
-		this.setState({timer: setInterval(this.update, 10000)});
+		this.pull_all_messages();
+		this.setState({timer: setInterval(this.pull_new_messages, 10000)});
 	}
 
 	componentWillUnmount()
@@ -30,24 +31,24 @@ class Messages extends React.Component
 		}
 	}
 
-	load()
+	pull_all_messages()
 	{
-		server.send_post_request(`${API_URL}api/messages/allMessages`).then((res) => {
+		server.send_post_request(`${API_URL}api/messages/pull_all_messages`).then((res) => {
 			this.setState({messages: res.data.messages,
 							users: res.data.users});
 		});
 	}
 
-	update()
+	pull_new_messages()
 	{
 		if(this.state.messages?.length <= 0)
 		{
-			this.load();
+			this.pull_all_messages();
 
 			return;
 		}
 
-		server.send_post_request(`${API_URL}api/messages/lastMessages`,
+		server.send_post_request(`${API_URL}api/messages/pull_new_messages`,
 			{
 				lastId: this.state.messages[this.state.messages.length - 1].messageId
 			}).then((res) =>
@@ -55,16 +56,46 @@ class Messages extends React.Component
 				if(res.data.messages.length > 0)
 				{
 					this.setState({messages: this.state.messages.concat(res.data.messages),
-									users: res.data.users});
+									users: {...res.data.users, ...this.state.users}});
 				}
 			});
+	}
+
+	pull_last_messages()
+	{
+		if(this.state.messages?.length <= 0)
+		{
+			this.pull_all_messages();
+
+			return;
+		}
+
+		server.send_post_request(`${API_URL}api/messages/pull_old_messages`,
+			{
+				lastId: this.state.messages[0].messageId
+			}).then((res) =>
+			{
+				if(res.data.messages.length > 0)
+				{
+					this.setState({messages: res.data.messages.concat(this.state.messages),
+									users: {...res.data.users, ...this.state.users}});
+				}
+			});
+	}
+
+	submit_message(message)
+	{
+		server.send_post_request(`${API_URL}api/messages/send_message`, message);
 	}
 
 	render()
 	{
 		return (
 			<MessagesMain messages = {this.state.messages}
-						users = {this.state.users}/>
+						users = {this.state.users}
+						onSubmitMessages = {this.submit_message}
+						onPullLastMessages = {this.pull_last_messages}
+			/>
 		)
 	}
 }
