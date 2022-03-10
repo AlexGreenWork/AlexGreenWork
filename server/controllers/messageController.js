@@ -144,8 +144,19 @@ class Message
 							FROM
 								messages AS m
 							INNER JOIN offersworker AS o ON o.tabelNum = m.sendler
-							WHERE m.id > ?
-							AND m.time > DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK))`;
+							WHERE
+								m.time < DATE(
+									DATE_ADD((
+												SELECT
+													m2.time
+												FROM
+													messages AS m2
+												WHERE
+													m2.id = ?
+											), INTERVAL 1 WEEK
+										)
+								)							
+							ORDER BY m.time`;
 
 		Message.pull_messages(req, res, message_query);
 	}
@@ -167,8 +178,19 @@ class Message
 							FROM
 								messages AS m
 							INNER JOIN offersworker AS o ON o.tabelNum = m.sendler
-							WHERE m.id < ?
-							AND m.time > DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK))`;
+							WHERE m.time < DATE(
+									DATE_SUB(
+												(
+													SELECT
+														m2.time
+													FROM
+														messages AS m2
+													WHERE m2.id = ?
+												),
+												INTERVAL 1 WEEK
+											)
+										)
+							ORDER BY m.time`;
 
 		Message.pull_messages(req, res, message_query);
 	}
@@ -247,7 +269,8 @@ class Message
 								FROM
 									messages AS m
 								INNER JOIN offersworker AS o ON o.tabelNum = m.sendler
-								WHERE m.time > DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK))`;
+								WHERE m.time > DATE(DATE_SUB(NOW(), INTERVAL 1 WEEK))
+								ORDER BY m.time`;
 
 			connection = await Message.connection_to_database();
 
