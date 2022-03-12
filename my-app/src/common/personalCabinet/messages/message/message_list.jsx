@@ -1,5 +1,5 @@
 import React from "react";
-import s from "./messages.module.css"
+import s from "../style/messages.module.css"
 import Message from "./message";
 import moment from "moment";
 
@@ -47,15 +47,10 @@ class MessageList extends React.Component
 										width: "100%",
 										textAlign: "center"}}
 						>
-							Сообщения за: {moment(this.props.messages[0]?.time).format("DD-MM-YYYY")}
+							Сообщения от: {moment(this.props.messages[0]?.time).format("DD-MM-YYYY")}
 						</div>
 						{this.props.messages.map((message, id) => (
-							<Message key = {id}
-									id = {id}
-									users = {this.props.users}
-									{...message}
-									onClick = {this.props.onMessageClick}/>
-						))}
+							<Message key = {id} id = {id} {...message} users = {this.props.users}/>))}
 					</div>
 		)
 	}

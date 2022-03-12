@@ -1,8 +1,8 @@
 import { Avatar } from "@mui/material";
 import React from "react";
-import s from "./message.module.css"
+import s from "../style/message.module.css"
 import {connect} from 'react-redux'
-import { API_URL } from "../../../config";
+import { API_URL } from "../../../../config";
 import moment from "moment";
 
 class Message extends React.Component
@@ -22,16 +22,6 @@ class Message extends React.Component
 		super(props);
 	}
 
-	messageStyle()
-	{
-		if(this.props.from === this.props.user.tabelNum)
-			return s.youMessage;
-		else if(this.props.to.includes(this.props.user.tabelNum))
-			return s.toMessage;
-		else
-			return s.message;
-	}
-
 	render()
 	{
 		const message_sendler = this.props.users[this.props.from].sendler;
@@ -40,16 +30,8 @@ class Message extends React.Component
 		const avatar = `${API_URL}files/${this.props.users[from].avatarFolder}/${this.props.users[from].src}`
 		const message = this.props.message;
 
-		let to = [];
-		for(const user of this.props.to)
-		{
-			to.push(this.props.users[user].sendler)
-		}
-
-		const users = to.join(', ');
-
 		return (
-			<div className={s.header} onClick = {() => {this.props.onClick(this.props.id)}}>
+			<div className={s.header}>
 					<Avatar className = {s.ava} alt="" src = {avatar} />
 				<div className = {s.messagePreview}>
 					<div className = {s.user}>
@@ -62,10 +44,7 @@ class Message extends React.Component
 							{time}
 						</span>
 					</div>
-					{users.length > 0? 
-						(<p className = {s.to}>Пользователю: {users}</p>)
-					: null}
-					<div className = {this.messageStyle()}>
+					<div className = {s.message}>
 						{message}
 					</div>
 				</div>

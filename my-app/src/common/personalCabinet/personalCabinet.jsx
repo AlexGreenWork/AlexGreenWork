@@ -6,7 +6,7 @@ import { API_URL } from "../../config";
 import {useDispatch, useSelector} from "react-redux";
 import { store } from "../../reducers";
 import {NotifOffersProcessing} from "../../reducers/notificationReducer"
-
+import MessageStatus from "./messages/messages_status";
 
 // const isAuth = useSelector(state => state.user.isAuth)
 // const dispatch = useDispatch()
@@ -82,6 +82,28 @@ export const CountNoBrowsing = () =>{
 
 }
 
+export const CountMessageNoBrowsing = (props) => {
+	if(props?.unread_message_count)
+	{
+		let unread = 0
+		for(const key in props.unread_message_count)
+		{
+			unread += props.unread_message_count[key];
+		}
+
+		if(unread > 0)
+		{
+			return (
+					  <div className={s.countNoBrowser}>
+						{unread}
+					  </div>
+			)
+		}
+	}
+
+	return null;
+}
+
 
 const PersonalCabinet = () => {
 
@@ -148,8 +170,15 @@ const PersonalCabinet = () => {
                     обработки</NavLink>
                     <CountNoBrowsing/></div>
 
-                <div className={s.linksPC}><NavLink className={s.offers}
-                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
+                <div className={s.linksPC}>
+					<NavLink className={s.offers}
+								to="/personalCabinet/messages">
+						Сообщения
+					</NavLink>
+					<MessageStatus>
+						<CountMessageNoBrowsing/>
+					</MessageStatus>
+				</div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
@@ -184,7 +213,12 @@ const PersonalCabinet = () => {
                     <CountNoBrowsing/></NavLink></div>
 
                 <div className={s.linksPC}><NavLink className={s.offers}
-                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
+                                                    to="/personalCabinet/messages"> Сообщения </NavLink>
+
+					<MessageStatus>
+						<CountMessageNoBrowsing/>
+					</MessageStatus>
+				</div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
@@ -217,7 +251,11 @@ const PersonalCabinet = () => {
                     <CountNoBrowsing/></div>
 
                 <div className={s.linksPC}><NavLink className={s.offers}
-                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
+                                                    to="/personalCabinet/messages"> Сообщения </NavLink>
+					<MessageStatus>
+						<CountMessageNoBrowsing/>
+					</MessageStatus>
+				</div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
