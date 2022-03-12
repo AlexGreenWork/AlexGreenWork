@@ -2,9 +2,12 @@ import React from "react"
 import {connect} from "react-redux"
 import style from "./card.module.css"
 import {selectcard} from "../../../actions/search";
+import Mail from "@mui/icons-material/MailOutline"
 
 import {API_URL} from "../../../config.js"
 import server from "../../../actions/server"
+import { NavLink } from "react-router-dom";
+import Message from "../messages/message/message";
 
 class Cart extends React.Component
 {
@@ -67,7 +70,12 @@ class Cart extends React.Component
 									<td>
 										{this.state.info?.tabnum}
 									</td>
-
+									<td style = {{float: "right", marginRight: "20px"}}>
+										<NavLink to={{pathname: '/personalCabinet/messages',
+												aboutProps: {addressee: this.state.info?.tabnum}}}>
+											<Mail/>
+										</NavLink>
+									</td>
 								</tr>
 								<tr>
 									<td width={"160px"} >

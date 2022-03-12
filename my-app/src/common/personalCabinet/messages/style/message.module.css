@@ -25,11 +25,6 @@
 	color: #c67c00;
 }
 
-.to
-{
-	color: #5a9216;
-}
-
 .user
 {
 	display: grid;
@@ -52,25 +47,3 @@
 	min-height: 30px;
 	padding: 5px 5px;
 }
-
-.youMessage
-{
-	background-color: green;
-	color: white;
-	margin-left: 20px;
-	border-radius: 3px;
-	width: 95%;
-	min-height: 30px;
-	padding: 5px 5px;
-}
-
-.toMessage
-{
-	background-color: orange;
-	margin-left: 20px;
-	border-radius: 3px;
-	width: 95%;
-	min-height: 30px;
-	padding: 5px 5px;
-}
-
