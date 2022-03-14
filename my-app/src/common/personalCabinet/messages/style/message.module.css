@@ -2,6 +2,7 @@
 {
     display: flex;
 	margin-bottom: 10px;
+	width: 60%;
 }
 
 .ava
@@ -23,27 +24,34 @@
 {
     font-weight: bold;
 	color: #c67c00;
+	text-align: start;
+}
+
+.you
+{
+    font-weight: bold;
+	color: #c67c00;
+	text-align: end;
 }
 
 .user
 {
-	display: grid;
-	grid-template-columns: auto auto;
 	width: 95%;
 }
 
 .time
 {
-	color: White;
 	text-align: end;
+	float: right;
 }
 
 .message
 {
 	margin-left: 20px;
 	border-radius: 3px;
-	background-color: #fff;
-	width: 95%;
+	background-color: Teal;
 	min-height: 30px;
 	padding: 5px 5px;
+	color: White;
+	font-size: 16px;
 }

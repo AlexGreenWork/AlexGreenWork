@@ -27,7 +27,12 @@
 .header:hover
 {
 	cursor: pointer;
-	border-color: White;
+	background-color: darkorange;
+}
+
+.header:hover span
+{
+	color: black;
 }
 
 .ava
