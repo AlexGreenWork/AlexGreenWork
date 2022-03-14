@@ -19,6 +19,7 @@ class Messages extends React.Component
 		super(props);
 		this.state = { messages: [],
 						timer: null,
+						addresseeTimer: null,
 						readTimer: null,
 						addressee: [],
 						window: ADDRESS_BOOK_WINDOW,
@@ -29,6 +30,7 @@ class Messages extends React.Component
 		this.pull_new_messages			= this.pull_new_messages.bind(this);
 		this.pull_all_messages			= this.pull_all_messages.bind(this);
 		this.pull_last_messages			= this.pull_last_messages.bind(this);
+		this.pull_all_message_addressee	= this.pull_all_message_addressee.bind(this);
 		this.submit_message				= this.submit_message.bind(this);
 
 		this.show_user_messages			= this.show_user_messages.bind(this);
@@ -43,7 +45,14 @@ class Messages extends React.Component
 		this.clearReadInterval			= this.clearReadInterval.bind(this);
 		this.messageReadyTimerHandler	= this.messageReadyTimerHandler.bind(this);
 
+		this.initAddresseeInterval		= this.initAddresseeInterval.bind(this);
+		this.resetAddresseeInterval		= this.resetAddresseeInterval.bind(this);
+		this.clearAddresseeInterval		= this.clearAddresseeInterval.bind(this);
+
 		this.closeAllMessageDescriptors = this.closeAllMessageDescriptors.bind(this);
+
+		this.componentDidMount			= this.componentDidMount.bind(this);
+		this.componentWillUnmount		= this.componentWillUnmount.bind(this);
 	}
 
 	componentDidMount()
@@ -55,80 +64,14 @@ class Messages extends React.Component
 		}
 		else
 		{
-			this.pull_all_message_addressee();
+			this.show_address_book();
 		}
 	}
 
 	componentWillUnmount()
 	{
 		this.closeAllMessageDescriptors();
-	}
-
-	closeAllMessageDescriptors()
-	{
-		this.setState({messageUser: null, window: ADDRESS_BOOK_WINDOW});
-		this.clearUpdateInterval();
-		this.clearReadInterval();
-	}
-
-	clearUpdateInterval()
-	{
-		if(this.state.timer)
-		{
-			clearInterval(this.state.timer);
-		}
-	}
-
-	clearReadInterval()
-	{
-		if(this.state.readTimer)
-		{
-			clearInterval(this.state.readTimer);
-		}
-	}
-
-	initUpdateInterval()
-	{
-		this.setState({timer: setInterval(() => this.pull_new_messages(this.state.messageUser), 10000)});
-	}
-
-	initReadInterval()
-	{
-		this.setState({readTimer: setInterval(this.messageReadyTimerHandler, 10000)});
-	}
-
-	resetUpdateInterval()
-	{
-		this.clearUpdateInterval();
-		this.initUpdateInterval();
-	}
-
-	resetReadInterval()
-	{
-		this.clearReadInterval();
-		this.initReadInterval();
-	}
-
-	messageReadyTimerHandler()
-	{
-		let unreadMessages = [];
-
-		for(let message of this.state.messages)
-		{
-			if(message.from === this.state.messageUser)
-			{
-				if(!message.is_read)
-				{
-					message.is_read = !message.is_read;
-					unreadMessages.push(message.messageId);
-				}
-			}
-		}
-
-		if(unreadMessages.length > 0)
-		{
-			this.set_message_status_read(unreadMessages);
-		}
+		this.clearAddresseeInterval();
 	}
 
 	set_message_status_read(messageId)
@@ -225,19 +168,105 @@ class Messages extends React.Component
 		});
 	}
 
+	closeAllMessageDescriptors()
+	{
+		this.setState({messageUser: null, window: ADDRESS_BOOK_WINDOW});
+		this.clearUpdateInterval();
+		this.clearReadInterval();
+	}
+
+	clearAddresseeInterval()
+	{
+		if(this.state.addresseeTimer)
+		{
+			clearInterval(this.state.addresseeTimer);
+		}
+	}
+
+	initAddresseeInterval()
+	{
+		this.setState({addresseeTimer: setInterval(this.pull_all_message_addressee, 10000)});
+	}
+
+	resetAddresseeInterval()
+	{
+		this.clearAddresseeInterval();
+		this.initAddresseeInterval();
+	}
+
+	clearUpdateInterval()
+	{
+		if(this.state.timer)
+		{
+			clearInterval(this.state.timer);
+		}
+	}
+
+	clearReadInterval()
+	{
+		if(this.state.readTimer)
+		{
+			clearInterval(this.state.readTimer);
+		}
+	}
+
+	initUpdateInterval()
+	{
+		this.setState({timer: setInterval(() => this.pull_new_messages(this.state.messageUser), 10000)});
+	}
+
+	initReadInterval()
+	{
+		this.setState({readTimer: setInterval(this.messageReadyTimerHandler, 10000)});
+	}
+
+	resetUpdateInterval()
+	{
+		this.clearUpdateInterval();
+		this.initUpdateInterval();
+	}
+
+	resetReadInterval()
+	{
+		this.clearReadInterval();
+		this.initReadInterval();
+	}
+
+	messageReadyTimerHandler()
+	{
+		let unreadMessages = [];
+
+		for(let message of this.state.messages)
+		{
+			if(message.from === this.state.messageUser)
+			{
+				if(!message.is_read)
+				{
+					message.is_read = !message.is_read;
+					unreadMessages.push(message.messageId);
+				}
+			}
+		}
+
+		if(unreadMessages.length > 0)
+		{
+			this.set_message_status_read(unreadMessages);
+		}
+	}
+
+
 	show_user_messages(user)
 	{
 		this.pull_all_messages(user);
 		this.resetReadInterval();
 		this.resetUpdateInterval();
+		this.clearAddresseeInterval();
 	}
 
 	show_address_book()
 	{
-		if(this.state.addressee.length === 0)
-		{
-			this.pull_all_message_addressee();
-		}
+		this.pull_all_message_addressee();
+		this.resetAddresseeInterval();
 		this.closeAllMessageDescriptors();
 	}
 
@@ -269,10 +298,24 @@ class Messages extends React.Component
 		{
 			return (
 					<div className={s.messagesContainer}>
-						<MessageStatus>
-							<MessagesAddresseeList addressee = {this.state.addressee}
-													onClick={this.open_message_page}/>
-						</MessageStatus>
+						{this.state.addressee.length > 0?
+							(
+								<MessageStatus>
+									<MessagesAddresseeList addressee = {this.state.addressee}
+															onClick={this.open_message_page}/>
+								</MessageStatus>
+							)
+							 :
+							(
+								<h1 style={{width: "100%",
+											textAlign: "center",
+											color: "white",
+											fontWeight: "bold",
+											}}>
+									Нет сообщений
+								</h1>
+							)
+						}
 					</div>
 					)
 		}

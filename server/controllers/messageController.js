@@ -161,7 +161,7 @@ class Message
 		{
 			const current_user_info = req.current_user_info.tabelNum;
 
-			const query = `INSERT INTO messages VALUES(null, ?, ?, ?, 0, NOW())`;
+			const query = `INSERT INTO messages VALUES(null, ?, ?, ?, 0, 0, NOW())`;
 
 			connection = await Message.connection_to_database();
 			await connection.query(query, [current_user_info, req.body.addressee, message]);
@@ -358,6 +358,7 @@ class Message
 									FROM messages AS m
 									WHERE m.addressee = ?
 									AND m.is_read <> 1
+									AND m.deleted <> 1
 									GROUP BY m.sendler
 									ORDER BY m.sendler`;
 
@@ -411,6 +412,7 @@ class Message
 												FROM
 													messages AS m
 												WHERE m.sendler = ?
+												AND m.deleted <> 1
 											)
 											UNION
 											(
@@ -418,7 +420,9 @@ class Message
 													m.sendler AS sendler,
 													m.time
 												FROM messages AS m
-												WHERE m.addressee = ?)
+												WHERE m.addressee = ?
+												AND m.deleted <> 1
+											)
 										) AS m
 										WHERE o.tabelNum = m.sendler
 										GROUP BY m.sendler
