@@ -30,26 +30,56 @@ class Message extends React.Component
 		const avatar = `${API_URL}files/${this.props.users[from].avatarFolder}/${this.props.users[from].src}`
 		const message = this.props.message;
 
-		return (
-			<div className={s.header}>
+		if(from != this.props.user.tabelNum)
+		{
+			return (
+				<div className={s.header}>
 					<Avatar className = {s.ava} alt="" src = {avatar} />
-				<div className = {s.messagePreview}>
-					<div className = {s.user}>
-						<h3>
-							<span className = {s.from}>
-								{message_sendler}
+					<div className = {s.messagePreview}>
+						<div className = {s.user}>
+							<h3 className={s.from}>
+								<span>
+									{message_sendler}
+								</span>
+							</h3>
+						</div>
+						<div className = {s.message}>
+							<span style={{whiteSpace: "pre-line"}}>
+								{message}
 							</span>
-						</h3>
-						<span className = {s.time}>
-							{time}
-						</span>
-					</div>
-					<div className = {s.message}>
-						{message}
+							<p className = {s.time}>
+								{time}
+							</p>
+						</div>
 					</div>
 				</div>
-			</div>
-		)
+			)
+		}
+		else
+		{
+			return (
+				<div className={s.header} style={{float: "right"}}>>
+					<div className = {s.messagePreview}>
+						<div className = {s.user}>
+							<h3 className={s.you}>
+								<span>
+									{message_sendler}
+								</span>
+							</h3>
+						</div>
+						<div className = {s.message}>
+							<span style={{whiteSpace: "pre-line"}}>
+								{message}
+							</span>
+							<p className = {s.time}>
+								{time}
+							</p>
+						</div>
+					</div>
+					<Avatar className = {s.ava} alt="" src = {avatar} />
+				</div>
+			)
+		}
 	}
 }
 

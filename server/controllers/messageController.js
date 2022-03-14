@@ -30,27 +30,10 @@ class Message
 		{
 			for(const lf of messages[0])
 			{
-				result.users[lf.sendler_tabnum] = {
-					sendler: lf.sendler_name,
-					src: lf.sendler_avatar? lf.sendler_avatar : lf.sendler_tabnum + ".jpg",
-					avatarFolder: lf.sendler_avatar? "avatar" : "photos"
-				}
-
-				let to = [];
-
-				result.users[lf.addressee_tabnum] = {
-					sendler: lf.addressee_name,
-					src: lf.addressee_avatar? lf.addressee_avatar : lf.addressee_tabnum + ".jpg",
-					avatarFolder: lf.addressee_avatar? "avatar" : "photos"
-				}
-
-				to.push(lf.addressee_tabnum);
-
 				result.messages.push(
 					{
 						messageId: lf.messageId,
 						from: lf.sendler_tabnum,
-						to: to,
 						message: lf.message,
 						time: lf.time,
 						is_read: lf.is_read
@@ -83,7 +66,6 @@ class Message
 			connection = await Message.connection_to_database();
 
 			const messages = await connection.query(message_query, [current_user_info, req.body.addressee,
-																	req.body.addressee, current_user_info,
 																	req.body.lastId]);
 
 			result = await Message.create_response(messages);
@@ -104,35 +86,23 @@ class Message
 	async pull_new_messages(req, res)
 	{
 		let message_query = `SELECT
-									CONCAT(
-											sendler.surname, " ",
-											SUBSTR(sendler.name ,1,1), ". ",
-											SUBSTR(sendler.middlename, 1, 1), "."
-										) AS sendler_name,
-									sendler.avatar AS sendler_avatar,
-									sendler.tabelNum AS sendler_tabnum,
-									CONCAT(
-											addressee.surname, " ",
-											SUBSTR(addressee.name ,1,1), ". ",
-											SUBSTR(addressee.middlename, 1, 1), "."
-										) AS addressee_name,
-									addressee.avatar AS addressee_avatar,
-									addressee.tabelNum AS addressee_tabnum,
 									m.message,
 									m.time,
 									m.id AS messageId,
 									m.addressee,
-									m.is_read
+									m.is_read,
+									m.sendler AS sendler_tabnum
 								FROM
 									messages AS m
-								INNER JOIN offersworker AS sendler ON sendler.tabelNum = m.sendler
-								INNER JOIN offersworker AS addressee ON addressee.tabelNum = m.addressee
+								INNER JOIN offersworker AS sendler ON sendler.tabelNum = ?
+								INNER JOIN offersworker AS addressee ON addressee.tabelNum = ?
 								WHERE
 									(
-											(m.sendler = ? AND m.addressee = ?)
+											(m.sendler = sendler.tabelNum AND m.addressee = addressee.tabelNum)
 										OR
-											(m.sendler = ? AND m.addressee = ?)
+											(m.sendler = addressee.tabelNum AND m.addressee = sendler.tabelNum)
 									)
+								AND m.deleted <> 1
 								AND m.id > ?
 								ORDER BY m.time
 								LIMIT 50`;
@@ -143,35 +113,23 @@ class Message
 	async pull_old_messages(req, res)
 	{
 		let message_query = `SELECT
-									CONCAT(
-											sendler.surname, " ",
-											SUBSTR(sendler.name ,1,1), ". ",
-											SUBSTR(sendler.middlename, 1, 1), "."
-										) AS sendler_name,
-									sendler.avatar AS sendler_avatar,
-									sendler.tabelNum AS sendler_tabnum,
-									CONCAT(
-											addressee.surname, " ",
-											SUBSTR(addressee.name ,1,1), ". ",
-											SUBSTR(addressee.middlename, 1, 1), "."
-										) AS addressee_name,
-									addressee.avatar AS addressee_avatar,
-									addressee.tabelNum AS addressee_tabnum,
 									m.message,
 									m.time,
 									m.id AS messageId,
 									m.addressee,
-									m.is_read
+									m.is_read,
+									m.sendler AS sendler_tabnum
 								FROM
 									messages AS m
-								INNER JOIN offersworker AS sendler ON sendler.tabelNum = m.sendler
-								INNER JOIN offersworker AS addressee ON addressee.tabelNum = m.addressee
+								INNER JOIN offersworker AS sendler ON sendler.tabelNum = ?
+								INNER JOIN offersworker AS addressee ON addressee.tabelNum = ?
 								WHERE
 									(
-											(m.sendler = ? AND m.addressee = ?)
+											(m.sendler = sendler.tabelNum AND m.addressee = addressee.tabelNum)
 										OR
-											(m.sendler = ? AND m.addressee = ?)
+											(m.sendler = addressee.tabelNum AND m.addressee = sendler.tabelNum)
 									)
+								AND m.deleted <> 1
 								AND m.id < ?
 								ORDER BY m.time
 								LIMIT 50`;
@@ -221,6 +179,68 @@ class Message
 
 	}
 
+	async get_addressee_info(req, res)
+	{
+        if (!('addressee' in req.body)
+            || !req.body.addressee)
+		{
+			Message.error(res, 'Неверно указаны параметры');
+			return;
+        }
+
+		let result = {users: {}};
+
+		let connection = null;
+
+		try
+		{
+			const current_user_info = req.current_user_info.tabelNum;
+			const user_query = `SELECT
+										CONCAT(
+												sendler.surname, " ",
+												SUBSTR(sendler.name ,1,1), ". ",
+												SUBSTR(sendler.middlename, 1, 1), "."
+											) AS sendler_name,
+										CONCAT(
+													sendler.surname, " ",
+													sendler.name, " ",
+													sendler.middlename
+												) AS fullName,
+										sendler.avatar AS sendler_avatar,
+										sendler.tabelNum AS sendler_tabnum
+									FROM
+										 offersworker AS sendler
+									WHERE
+										sendler.tabelNum = ? OR sendler.tabelNum = ?`;
+
+			connection = await Message.connection_to_database();
+
+			const user = await connection.query(user_query, [current_user_info, req.body.addressee]);
+
+			if(user[0].length)
+			{
+				for(const lf of user[0])
+				{
+					result.users[lf.sendler_tabnum] = {
+						sendler: lf.sendler_name,
+						sendlerFullName: lf.fullName,
+						src: lf.sendler_avatar? lf.sendler_avatar : lf.sendler_tabnum + ".jpg",
+						avatarFolder: lf.sendler_avatar? "avatar" : "photos"
+					}
+				}
+			}
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+		res.send(result);
+	}
+
 	async pull_all_messages(req, res)
 	{
         if (!('addressee' in req.body)
@@ -239,42 +259,29 @@ class Message
 			const current_user_info = req.current_user_info.tabelNum;
 
 			const message_query = `SELECT
-										CONCAT(
-												sendler.surname, " ",
-												SUBSTR(sendler.name ,1,1), ". ",
-												SUBSTR(sendler.middlename, 1, 1), "."
-											) AS sendler_name,
-										sendler.avatar AS sendler_avatar,
-										sendler.tabelNum AS sendler_tabnum,
-										CONCAT(
-												addressee.surname, " ",
-												SUBSTR(addressee.name ,1,1), ". ",
-												SUBSTR(addressee.middlename, 1, 1), "."
-											) AS addressee_name,
-										addressee.avatar AS addressee_avatar,
-										addressee.tabelNum AS addressee_tabnum,
-										m.message,
-										m.time,
-										m.id AS messageId,
-										m.addressee,
-										m.is_read
-									FROM
-										messages AS m
-									INNER JOIN offersworker AS sendler ON sendler.tabelNum = m.sendler
-									INNER JOIN offersworker AS addressee ON addressee.tabelNum = m.addressee
-									WHERE
-										(
-												(m.sendler = ? AND m.addressee = ?)
-											OR
-												(m.sendler = ? AND m.addressee = ?)
-										)
-									ORDER BY m.time
-									LIMIT 50`;
+											m.message,
+											m.time,
+											m.id AS messageId,
+											m.addressee,
+											m.is_read,
+											m.sendler AS sendler_tabnum
+										FROM
+											messages AS m
+										INNER JOIN offersworker AS sendler ON sendler.tabelNum = ?
+										INNER JOIN offersworker AS addressee ON addressee.tabelNum = ?
+										WHERE
+											(
+													(m.sendler = sendler.tabelNum AND m.addressee = addressee.tabelNum)
+												OR
+													(m.sendler = addressee.tabelNum AND m.addressee = sendler.tabelNum)
+											)
+										AND m.deleted <> 1
+										ORDER BY m.time
+										LIMIT 50`;
 
 			connection = await Message.connection_to_database();
 
-			const messages = await connection.query(message_query, [current_user_info, req.body.addressee,
-																	req.body.addressee, current_user_info]);
+			const messages = await connection.query(message_query, [req.body.addressee, current_user_info]);
 
 			result = await Message.create_response(messages);
 
@@ -362,8 +369,6 @@ class Message
 				{
 					result[val.s] = val.c
 				}
-				res.status(200).send(result);
-				return;
 			}
 		}
 		catch(e)
@@ -375,7 +380,7 @@ class Message
 			if(connection) connection.end();
 		}
 
-		Message.error(res, "Error");
+		res.status(200).send(result);
 	}
 
 	async pull_all_message_addresse(req, res)

@@ -6,6 +6,11 @@ import MessagesAddresseeList from "./addressee/message_addressee_list";
 import s from "./style/messages.module.css"
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft"
 import MessageStatus from "./messages_status";
+import Window from "./message_error_window";
+
+const MESSAGE_WINDOW = '1';
+const ADDRESS_BOOK_WINDOW = '2';
+const ERROR_WINDOW_USER_NOT_FOUND = '3';
 
 class Messages extends React.Component
 {
@@ -16,17 +21,18 @@ class Messages extends React.Component
 						timer: null,
 						readTimer: null,
 						addressee: [],
-						isMessage: false,
+						window: ADDRESS_BOOK_WINDOW,
 						messageUser: null,
 						users: {}}
 
+		this.open_message_page			= this.open_message_page.bind(this);
 		this.pull_new_messages			= this.pull_new_messages.bind(this);
 		this.pull_all_messages			= this.pull_all_messages.bind(this);
 		this.pull_last_messages			= this.pull_last_messages.bind(this);
 		this.submit_message				= this.submit_message.bind(this);
 
 		this.show_user_messages			= this.show_user_messages.bind(this);
-		this.hide_user_messages			= this.hide_user_messages.bind(this);
+		this.show_address_book			= this.show_address_book.bind(this);
 
 		this.initUpdateInterval			= this.initUpdateInterval.bind(this);
 		this.resetUpdateInterval		= this.resetUpdateInterval.bind(this);
@@ -45,8 +51,7 @@ class Messages extends React.Component
 		if(this.props?.location?.aboutProps?.addressee)
 		{
 			const addressee = this.props?.location?.aboutProps?.addressee;
-			this.setState({messageUser: addressee, isMessage: true})
-			this.show_user_messages(addressee);
+			this.open_message_page(addressee);
 		}
 		else
 		{
@@ -61,7 +66,7 @@ class Messages extends React.Component
 
 	closeAllMessageDescriptors()
 	{
-		this.setState({messageUser: null, isMessage: false});
+		this.setState({messageUser: null, window: ADDRESS_BOOK_WINDOW});
 		this.clearUpdateInterval();
 		this.clearReadInterval();
 	}
@@ -137,9 +142,7 @@ class Messages extends React.Component
 		{
 			addressee: user,
 		}).then((res) => {
-			this.setState({messages: res.data.messages,
-							users: res.data.users});
-		});
+			this.setState({messages: res.data.messages})});
 	}
 
 	pull_new_messages(user)
@@ -159,14 +162,15 @@ class Messages extends React.Component
 			{
 				if(res.data.messages.length > 0)
 				{
-					this.setState({messages: this.state.messages.concat(res.data.messages),
-									users: {...res.data.users, ...this.state.users}});
+					this.setState({messages: this.state.messages.concat(res.data.messages)});
 				}
 			});
 	}
 
-	pull_last_messages(user)
+	pull_last_messages()
 	{
+		const user = this.state.messageUser;
+
 		if(this.state.messages?.length <= 0)
 		{
 			this.pull_all_messages(user);
@@ -182,8 +186,7 @@ class Messages extends React.Component
 			{
 				if(res.data.messages.length > 0)
 				{
-					this.setState({messages: res.data.messages.concat(this.state.messages),
-									users: {...res.data.users, ...this.state.users}});
+					this.setState({messages: res.data.messages.concat(this.state.messages)});
 				}
 			});
 	}
@@ -201,15 +204,35 @@ class Messages extends React.Component
 			});
 	}
 
+	open_message_page(user)
+	{
+		server.send_post_request(`${API_URL}api/messages/get_addressee_info`,
+		{
+			addressee: user,
+		}).then((res) => {
+			if(res.data?.users && (user in res.data.users))
+			{
+				this.setState({messageUser: user,
+								window: MESSAGE_WINDOW,
+								messages: [],
+								users: res.data.users});
+				this.show_user_messages(user);
+			}
+			else
+			{
+				this.setState({window: ERROR_WINDOW_USER_NOT_FOUND});
+			}
+		});
+	}
+
 	show_user_messages(user)
 	{
-		this.setState({messageUser: user, isMessage: true});
 		this.pull_all_messages(user);
 		this.resetReadInterval();
 		this.resetUpdateInterval();
 	}
 
-	hide_user_messages()
+	show_address_book()
 	{
 		if(this.state.addressee.length === 0)
 		{
@@ -220,37 +243,44 @@ class Messages extends React.Component
 
 	render()
 	{
-		const addressee = this.state.addressee.find((e) => {return e.user === this.state.messageUser});
 
-		return (
-				<div className={s.messagesContainer}>
-					{this.state.isMessage?
-						(
-							<>
-								<h3 className = {s.userMessageHeader}>
-									<ArrowCircleLeftIcon className = {s.userMessageHeaderBack}
-										onClick = {this.hide_user_messages}
-									/>
-									<span style = {{color: "#c67c00"}}>
-										{addressee.addressee}
-									</span>
-								</h3>
-								<MessagesPage messages = {this.state.messages}
-											users = {this.state.users}
-											onSubmitMessages = {this.submit_message}
-											onPullLastMessages = {this.pull_last_messages}
-											onClosePage = {this.hide_user_messages}
-								/>
-							</>
-						)
-					: (
+		if(this.state.window === MESSAGE_WINDOW)
+		{
+			return (
+					<div className={s.messagesContainer}>
+						<h3 className = {s.userMessageHeader}>
+							<ArrowCircleLeftIcon className = {s.userMessageHeaderBack}
+								onClick = {this.show_address_book}
+							/>
+							<span className = {s.userMessageHeaderUser}>
+								{this.state.users[this.state.messageUser]?.sendlerFullName}
+							</span>
+						</h3>
+						<MessagesPage messages = {this.state.messages}
+									users = {this.state.users}
+									onSubmitMessages = {this.submit_message}
+									onPullLastMessages = {this.pull_last_messages}
+									onClosePage = {this.show_address_book}
+						/>
+					</div>
+					)
+		}
+		else if (this.state.window === ADDRESS_BOOK_WINDOW)
+		{
+			return (
+					<div className={s.messagesContainer}>
 						<MessageStatus>
 							<MessagesAddresseeList addressee = {this.state.addressee}
-													onClick={this.show_user_messages}/>
+													onClick={this.open_message_page}/>
 						</MessageStatus>
-					)}
-			</div>
-		)
+					</div>
+					)
+		}
+
+		else if(this.state.window === ERROR_WINDOW_USER_NOT_FOUND)
+		{
+			return <Window title = {"Ошибка"} message = {"Пользователь не найден"} onClose = {this.show_address_book}/>
+		}
 	}
 }
 
