@@ -238,7 +238,7 @@ class Messages extends React.Component
 
 		for(let message of this.state.messages)
 		{
-			if(message.from === this.state.messageUser)
+			if(message.from == this.state.messageUser)
 			{
 				if(!message.is_read)
 				{
