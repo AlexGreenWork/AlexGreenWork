@@ -24,19 +24,15 @@ class MessagesPage extends React.Component
 		}
 	}
 
-	onSubmit(e)
+	onSubmit(message)
 	{
-		const field = document.getElementById("message_user_input");
-
 		if(this.props?.onSubmitMessages
 			&& typeof this.props.onSubmitMessages === 'function')
 		{
 			this.props.onSubmitMessages({
-				message: field.value,
+				message: message,
 			});
 		}
-
-		field.value = '';
 
 		return false;
 	}
