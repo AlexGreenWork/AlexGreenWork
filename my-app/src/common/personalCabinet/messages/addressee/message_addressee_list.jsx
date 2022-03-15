@@ -2,7 +2,6 @@ import React from "react";
 import MessagesAddressee from "./message_addressee";
 import s from "../style/message.module.css"
 import h from "../style/addressee.module.css"
-import TextField from '@mui/material/TextField';
 import Field from "../message/text_field";
 
 class MessagesAddresseeList extends React.Component
@@ -23,7 +22,6 @@ class MessagesAddresseeList extends React.Component
 		let value = e.target.value;
 		value = value.trim();
 		value = (value.length > 0)? value : null;
-		console.log(value);
 		this.setState({filter: value})
 	}
 
