@@ -179,6 +179,54 @@ class Message
 
 	}
 
+	async delete_addressee(req, res)
+	{
+        if (!('addressee' in req.body)
+            || !req.body.addressee)
+		{
+			Message.error(res, 'Неверно указаны параметры');
+			return;
+        }
+
+		let connection = null;
+
+		try
+		{
+			const current_user_info = req.current_user_info.tabelNum;
+
+			const query = `UPDATE
+								messages AS m
+							INNER JOIN offersworker AS sender ON sender.tabelNum = ?
+							INNER JOIN offersworker AS addressee ON addressee.tabelNum = ?
+							SET
+								deleted = 1
+							WHERE
+								(
+									(
+										m.sendler = sender.tabelNum 
+											AND m.addressee = addressee.tabelNum
+									)
+									OR (
+										m.sendler = addressee.tabelNum 
+											AND m.addressee = sender.tabelNum
+									)
+								)`;
+
+			connection = await Message.connection_to_database();
+			await connection.query(query, [current_user_info, req.body.addressee]);
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+
+		res.status(200).send();
+	}
+
 	async get_addressee_info(req, res)
 	{
         if (!('addressee' in req.body)
