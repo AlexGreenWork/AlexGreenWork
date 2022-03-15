@@ -21,7 +21,6 @@ class MessagesAddresseeList extends React.Component
 		 **/
 		let value = e.target.value;
 		value = value.trim();
-		value = (value.length > 0)? value : null;
 		this.setState({filter: value})
 	}
 
@@ -54,7 +53,10 @@ class MessagesAddresseeList extends React.Component
 						<MessagesAddressee key={id}
 											id = {address.user}
 											unreads = {this.props.unread_message_count[address.user]}
-											onClick = {this.props.onClick} {...address}/>
+											onClick = {this.props.onClick}
+											onDeleteAddressee = {this.props.onDeleteAddressee}
+											{...address}
+						/>
 					))}
 				</div>
 		)

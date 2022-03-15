@@ -55,6 +55,8 @@ class Messages extends React.Component
 
 		this.componentDidMount			= this.componentDidMount.bind(this);
 		this.componentWillUnmount		= this.componentWillUnmount.bind(this);
+
+		this.onDeleteAddressee			= this.onDeleteAddressee.bind(this);
 	}
 
 	componentDidMount()
@@ -258,6 +260,23 @@ class Messages extends React.Component
 		}
 	}
 
+	onDeleteAddressee(userId)
+	{
+		server.send_post_request(`${API_URL}api/messages/delete_addressee`,
+		{
+			addressee: userId
+		})
+
+		const index = this.state.addressee.findIndex((v) => {return v.user == userId});
+
+		if(index >= 0)
+		{
+			this.state.addressee.splice(index, 1);
+			console.log(this.state.addressee);
+			this.setState({addressee: this.state.addressee});
+		}
+	}
+
 	show_user_messages(user)
 	{
 		this.pull_all_messages(user);
@@ -306,7 +325,9 @@ class Messages extends React.Component
 							(
 								<MessageStatus>
 									<MessagesAddresseeList addressee = {this.state.addressee}
-															onClick={this.open_message_page}/>
+															onClick={this.open_message_page}
+															onDeleteAddressee = {this.onDeleteAddressee}
+								/>
 								</MessageStatus>
 							)
 							 :

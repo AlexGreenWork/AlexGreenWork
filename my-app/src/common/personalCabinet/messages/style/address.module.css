@@ -24,6 +24,12 @@
 	border-radius: 5px;
 }
 
+.name
+{
+	display: flex;
+	width: 100%;
+}
+
 .header:hover
 {
 	cursor: pointer;
