@@ -57,6 +57,7 @@ class MessagesPage extends React.Component
 					<MessageList messages = {this.props.messages}
 									users = {this.props.users}
 									onScrollToTop = {this.onScrollToTop}
+									onMessageRead = {this.props.onMessageRead}
 					/>
 					<div>
 						<MessageInputForm onSubmit = {this.onSubmit}/>

@@ -22,6 +22,7 @@ class Messages extends React.Component
 						addresseeTimer: null,
 						readTimer: null,
 						addressee: [],
+						readedMessages: [],
 						window: ADDRESS_BOOK_WINDOW,
 						messageUser: null,
 						users: {}}
@@ -44,6 +45,7 @@ class Messages extends React.Component
 		this.resetReadInterval			= this.resetReadInterval.bind(this);
 		this.clearReadInterval			= this.clearReadInterval.bind(this);
 		this.messageReadyTimerHandler	= this.messageReadyTimerHandler.bind(this);
+		this.onMessageRead				= this.onMessageRead.bind(this);
 
 		this.initAddresseeInterval		= this.initAddresseeInterval.bind(this);
 		this.resetAddresseeInterval		= this.resetAddresseeInterval.bind(this);
@@ -85,7 +87,8 @@ class Messages extends React.Component
 		{
 			addressee: user,
 		}).then((res) => {
-			this.setState({messages: res.data.messages})});
+			this.setState({messages: res.data.messages});
+		})
 	}
 
 	pull_new_messages(user)
@@ -108,7 +111,7 @@ class Messages extends React.Component
 					this.setState({messages: this.state.messages.concat(res.data.messages)});
 				}
 			});
-	}
+		}
 
 	pull_last_messages()
 	{
@@ -170,7 +173,8 @@ class Messages extends React.Component
 
 	closeAllMessageDescriptors()
 	{
-		this.setState({messageUser: null, window: ADDRESS_BOOK_WINDOW});
+		this.state.messageUser = null;
+		this.state.window = ADDRESS_BOOK_WINDOW;
 		this.clearUpdateInterval();
 		this.clearReadInterval();
 	}
@@ -185,7 +189,7 @@ class Messages extends React.Component
 
 	initAddresseeInterval()
 	{
-		this.setState({addresseeTimer: setInterval(this.pull_all_message_addressee, 10000)});
+		this.state.addresseeTimer = setInterval(this.pull_all_message_addressee, 10000);
 	}
 
 	resetAddresseeInterval()
@@ -212,12 +216,12 @@ class Messages extends React.Component
 
 	initUpdateInterval()
 	{
-		this.setState({timer: setInterval(() => this.pull_new_messages(this.state.messageUser), 10000)});
+		this.state.timer = setInterval(() => this.pull_new_messages(this.state.messageUser), 10000);
 	}
 
 	initReadInterval()
 	{
-		this.setState({readTimer: setInterval(this.messageReadyTimerHandler, 10000)});
+		this.state.readTimer = setInterval(this.messageReadyTimerHandler, 10000);
 	}
 
 	resetUpdateInterval()
@@ -234,26 +238,25 @@ class Messages extends React.Component
 
 	messageReadyTimerHandler()
 	{
-		let unreadMessages = [];
-
-		for(let message of this.state.messages)
+		if(this.state.readedMessages.length > 0)
 		{
-			if(message.from == this.state.messageUser)
-			{
-				if(!message.is_read)
-				{
-					message.is_read = !message.is_read;
-					unreadMessages.push(message.messageId);
-				}
-			}
-		}
-
-		if(unreadMessages.length > 0)
-		{
-			this.set_message_status_read(unreadMessages);
+			this.set_message_status_read(this.state.readedMessages);
+			this.setState({readedMessages: []});
 		}
 	}
 
+	onMessageRead(messageId)
+	{
+		const message = this.state.messages.find((e) => {return e.messageId == messageId});
+		if(message && !message.is_read)
+		{
+			let messages = this.state.readedMessages;
+			messages.push(message.messageId);
+			message.is_read = true;
+			this.setState({readedMessages: messages,
+							messages: this.state.messages});
+		}
+	}
 
 	show_user_messages(user)
 	{
@@ -290,6 +293,7 @@ class Messages extends React.Component
 									onSubmitMessages = {this.submit_message}
 									onPullLastMessages = {this.pull_last_messages}
 									onClosePage = {this.show_address_book}
+									onMessageRead = {this.onMessageRead}
 						/>
 					</div>
 					)

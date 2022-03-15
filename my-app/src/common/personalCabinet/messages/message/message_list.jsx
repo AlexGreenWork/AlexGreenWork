@@ -1,7 +1,38 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import s from "../style/messages.module.css"
 import Message from "./message";
 import moment from "moment";
+
+const Observer = (ref) =>
+{
+	const [visible, set_visible] = useState(false);
+
+	const observer = new IntersectionObserver(([entry]) => set_visible(entry.isIntersecting));
+		
+	useEffect(() => {
+		observer.observe(ref.current);
+		return () => {observer.disconnect()}
+	}, [])
+
+	return visible;
+}
+
+const ObserverDispatcher = (props) =>
+{
+	const ref = useRef();
+	const isVisible = Observer(ref);
+	useEffect(() => {
+		if(isVisible)
+		{
+			if(props?.onView && typeof props.onView === 'function')
+			{
+				props.onView(props.id);
+			}
+		}
+	})
+
+	return	<div ref={ref}>{props.children}</div>
+}
 
 class MessageList extends React.Component
 {
@@ -9,6 +40,7 @@ class MessageList extends React.Component
 	{
 		super(props);
 		this.onScrollTop = this.onScrollTop.bind(this);
+		this.messageViewPortIntersection = this.messageViewPortIntersection.bind(this);
 	}
 
 	scrollMessageToBottom()
@@ -37,6 +69,15 @@ class MessageList extends React.Component
 		}
 	}
 
+	messageViewPortIntersection(messageId)
+	{
+		if(this.props?.onMessageRead
+			&& typeof this.props.onMessageRead === 'function')
+		{
+			this.props.onMessageRead(messageId);
+		}
+	}
+
 	render()
 	{
 		return (
@@ -50,7 +91,10 @@ class MessageList extends React.Component
 							Сообщения от: {moment(this.props.messages[0]?.time).format("DD-MM-YYYY")}
 						</div>
 						{this.props.messages.map((message, id) => (
-							<Message key = {id} id = {id} {...message} users = {this.props.users}/>))}
+							<ObserverDispatcher key={id} id = {message.messageId} onView = {this.messageViewPortIntersection}>
+								<Message key = {id} id = {id} {...message} users = {this.props.users}/>
+							</ObserverDispatcher>
+						))}
 					</div>
 		)
 	}
