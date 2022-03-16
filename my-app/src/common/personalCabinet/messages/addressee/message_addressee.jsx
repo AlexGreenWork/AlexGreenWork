@@ -62,7 +62,7 @@ class MessagesAddressee extends React.Component
 						</div>
 					</div>
 				</div>
-				<Button
+				{/*<Button
 						color="error"
 						variant="contained"
 						onClick = {this.onConfirmOpen}
@@ -90,7 +90,7 @@ class MessagesAddressee extends React.Component
 								Удалить
 							</Button>
 						</DialogActions>
-					</Dialog>
+					</Dialog>*/}
 			</div>
 		)
 	}

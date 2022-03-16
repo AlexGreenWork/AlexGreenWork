@@ -374,7 +374,7 @@ class Message
 									AND messages.id IN (?)
 									AND messages.is_read <> 1`;
 
-			await connection.query(update_query, [current_user_info, req.body.messageId.join(', ')]);
+			await connection.query(update_query, [current_user_info, req.body.messageId]);
 		}
 		catch(e)
 		{
