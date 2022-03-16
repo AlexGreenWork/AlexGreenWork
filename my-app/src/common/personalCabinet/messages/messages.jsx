@@ -223,7 +223,7 @@ class Messages extends React.Component
 
 	initReadInterval()
 	{
-		this.state.readTimer = setInterval(this.messageReadyTimerHandler, 10000);
+		this.state.readTimer = setInterval(this.messageReadyTimerHandler, 5000);
 	}
 
 	resetUpdateInterval()
@@ -250,7 +250,7 @@ class Messages extends React.Component
 	onMessageRead(messageId)
 	{
 		const message = this.state.messages.find((e) => {return e.messageId == messageId});
-		if(message && !message.is_read)
+		if(message && !message.is_read && message.from == this.state.messageUser)
 		{
 			let messages = this.state.readedMessages;
 			messages.push(message.messageId);

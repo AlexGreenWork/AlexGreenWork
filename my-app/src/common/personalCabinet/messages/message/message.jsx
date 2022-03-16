@@ -29,6 +29,7 @@ class Message extends React.Component
 		const time = moment(this.props.time).format("DD-MM-YYYY HH:mm");
 		const avatar = `${API_URL}files/${this.props.users[from].avatarFolder}/${this.props.users[from].src}`
 		const message = this.props.message;
+		const style = this.props?.is_read > 0? s.messageYou : s.messageYouUnread;
 
 		if(from != this.props.user.tabelNum)
 		{
@@ -58,7 +59,7 @@ class Message extends React.Component
 		else
 		{
 			return (
-				<div className={s.header} style={{float: "right"}}>>
+				<div className={s.header} style={{float: "right"}}>
 					<div className = {s.messagePreview}>
 						<div className = {s.user}>
 							<h3 className={s.you}>
@@ -67,7 +68,7 @@ class Message extends React.Component
 								</span>
 							</h3>
 						</div>
-						<div className = {s.message}>
+						<div className = {style}>
 							<span style={{whiteSpace: "pre-line"}}>
 								{message}
 							</span>

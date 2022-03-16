@@ -45,11 +45,33 @@
 	float: right;
 }
 
-.message
+.messageYouUnread
+{
+	margin-left: 20px;
+	border-radius: 3px;
+	background-color: rgb(50, 50, 50);
+	min-height: 30px;
+	padding: 5px 5px;
+	color: White;
+	font-size: 18px;
+}
+
+.messageYou
 {
 	margin-left: 20px;
 	border-radius: 3px;
 	background-color: #c67c00;
+	min-height: 30px;
+	padding: 5px 5px;
+	color: Black;
+	font-size: 18px;
+}
+
+.message
+{
+	margin-left: 20px;
+	border-radius: 3px;
+	background-color: Teal;
 	min-height: 30px;
 	padding: 5px 5px;
 	color: Black;
