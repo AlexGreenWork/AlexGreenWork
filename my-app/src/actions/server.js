@@ -18,12 +18,15 @@ class Server
 	{
 		const header = this.generate_default_auth_header();
 
-		return {
-				...user_config,
-				headers: {...header.headers,
-							...user_config.headers
-						}
-			}
+		let obj = {headers: {}}
+		for(const key in user_config)
+		{
+			obj[key] = user_config[key];
+		}
+
+		obj.headers = header.headers;
+
+		return obj;
 	}
 
 	/**
