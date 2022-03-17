@@ -4,58 +4,50 @@ import { API_URL } from "../../../config";
 
 class MessageStatus extends React.Component
 {
+	static timer = setInterval(this.get_unread_messages_count, 10000)
+	static defaultTimer = {
+							ref_count: 0,
+							refs: {},
+							state: [],
+							is_run: false}
+
 	constructor(props)
 	{
 		super(props);
-		this.state = { unreads: [], is_run: true,
-						readTimer: null};
-
-		this.componentDidMount			= this.componentDidMount.bind(this);
-		this.componentWillUnmount		= this.componentWillUnmount.bind(this);
-		this.get_unread_messages_count	= this.get_unread_messages_count.bind(this);
-
-		this.initReadInterval			= this.initReadInterval.bind(this);
-		this.resetReadInterval			= this.resetReadInterval.bind(this);
-		this.clearReadInterval			= this.clearReadInterval.bind(this);
+		this.state = {unreads: []};
 	}
 
 	componentDidMount()
 	{
-		this.get_unread_messages_count();
-		this.initReadInterval();
+		if(MessageStatus.defaultTimer.ref_count === 0)
+		{
+			MessageStatus.defaultTimer.is_run = true;
+		}
+		MessageStatus.defaultTimer.ref_count ++;
+		MessageStatus.defaultTimer.refs[MessageStatus.defaultTimer.ref_count] = this;
 	}
 
 	componentWillUnmount()
 	{
-		this.setState({is_run: false});
-		this.clearReadInterval();
-	}
-
-	clearReadInterval()
-	{
-		if(this.state.readTimer)
+		MessageStatus.defaultTimer.ref_count --;
+		delete MessageStatus.defaultTimer.refs[MessageStatus.defaultTimer.ref_count];
+		if(MessageStatus.defaultTimer.ref_count === 0)
 		{
-			clearInterval(this.state.readTimer);
+			MessageStatus.defaultTimer.is_run = false;
+			clearInterval(MessageStatus.defaultTimer.timer);
 		}
 	}
 
-	initReadInterval()
-	{
-		this.setState({readTimer: setInterval(this.get_unread_messages_count, 20000)});
-	}
-
-	resetReadInterval()
-	{
-		this.clearReadInterval();
-		this.initReadInterval();
-	}
-
-	get_unread_messages_count()
+	static get_unread_messages_count()
 	{
 		server.send_post_request(`${API_URL}api/messages/get_unread_messages_count`).then((res) => {
-			if(this.state.is_run)
+			if(MessageStatus.defaultTimer.is_run)
 			{
-				this.setState({unreads: res.data});
+				MessageStatus.defaultTimer.state = res.data;
+				for(let a in MessageStatus.defaultTimer.refs)
+				{
+					MessageStatus.defaultTimer.refs[a].setState({unreads: res.data});
+				}
 			}
 		});
 	}
