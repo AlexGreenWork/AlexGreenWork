@@ -14,7 +14,7 @@ class MessageStatus extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {unreads: []};
+		this.state = {unreads: MessageStatus.defaultTimer.state};
 	}
 
 	componentDidMount()
@@ -34,7 +34,7 @@ class MessageStatus extends React.Component
 		if(MessageStatus.defaultTimer.ref_count === 0)
 		{
 			MessageStatus.defaultTimer.is_run = false;
-			clearInterval(MessageStatus.defaultTimer.timer);
+			clearInterval(MessageStatus.timer);
 		}
 	}
 
