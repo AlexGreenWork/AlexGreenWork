@@ -160,11 +160,15 @@ class Message
 		try
 		{
 			const current_user_info = req.current_user_info.tabelNum;
-
 			const query = `INSERT INTO messages VALUES(null, ?, ?, ?, 0, 0, NOW())`;
 
 			connection = await Message.connection_to_database();
 			await connection.query(query, [current_user_info, req.body.addressee, message]);
+
+			const addressee_query = `REPLACE INTO message_addressee_book VALUES(?, ?, 0), (?, ?, 0)`;
+			await connection.query(addressee_query, [current_user_info,	req.body.addressee,
+														req.body.addressee, current_user_info
+													]);
 		}
 		catch(e)
 		{
@@ -194,23 +198,10 @@ class Message
 		{
 			const current_user_info = req.current_user_info.tabelNum;
 
-			const query = `UPDATE
-								messages AS m
-							INNER JOIN offersworker AS sender ON sender.tabelNum = ?
-							INNER JOIN offersworker AS addressee ON addressee.tabelNum = ?
-							SET
-								deleted = 1
-							WHERE
-								(
-									(
-										m.sendler = sender.tabelNum 
-											AND m.addressee = addressee.tabelNum
-									)
-									OR (
-										m.sendler = addressee.tabelNum 
-											AND m.addressee = sender.tabelNum
-									)
-								)`;
+			const query = `UPDATE message_addressee_book
+								SET deleted = 1
+							WHERE user = ?
+								AND addressee = ?`
 
 			connection = await Message.connection_to_database();
 			await connection.query(query, [current_user_info, req.body.addressee]);
@@ -452,33 +443,14 @@ class Message
 											o.avatar
 										FROM
 											offersworker AS o
-										INNER JOIN (
-											(
-												SELECT
-													m.addressee AS sendler,
-													m.time
-												FROM
-													messages AS m
-												WHERE m.sendler = ?
-												AND m.deleted <> 1
-											)
-											UNION
-											(
-												SELECT
-													m.sendler AS sendler,
-													m.time
-												FROM messages AS m
-												WHERE m.addressee = ?
-												AND m.deleted <> 1
-											)
-										) AS m
-										WHERE o.tabelNum = m.sendler
-										GROUP BY m.sendler
-										ORDER BY m.time`;
+										INNER JOIN message_addressee_book AS mab
+											ON mab.user = ?
+											AND mab.deleted <> 1
+										WHERE o.tabelNum = mab.addressee`
 
 			connection = await Message.connection_to_database();
 
-			const addressee = await connection.query(addressee_query, [current_user_info, current_user_info]);
+			const addressee = await connection.query(addressee_query, [current_user_info]);
 
 			if(addressee[0].length)
 			{
