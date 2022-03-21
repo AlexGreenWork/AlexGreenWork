@@ -7,11 +7,23 @@ const Observer = (ref) =>
 {
 	const [visible, set_visible] = useState(false);
 
-	const observer = new IntersectionObserver(([entry]) => set_visible(entry.isIntersecting));
+	let observer = null;
+
+	if(typeof IntersectionObserver === 'function')
+	{
+		observer = new IntersectionObserver(([entry]) => set_visible(entry.isIntersecting));
+	}
 		
 	useEffect(() => {
-		observer.observe(ref.current);
-		return () => {observer.disconnect()}
+		if(observer)
+		{
+			observer.observe(ref.current);
+			return () => {observer.disconnect()}
+		}
+		else
+		{
+			set_visible(true);
+		}
 	}, [])
 
 	return visible;
