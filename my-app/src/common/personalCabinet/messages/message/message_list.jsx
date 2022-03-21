@@ -1,50 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import s from "../style/messages.module.css"
 import Message from "./message";
-import moment from "moment";
-
-const Observer = (ref) =>
-{
-	const [visible, set_visible] = useState(false);
-
-	let observer = null;
-
-	if(typeof IntersectionObserver === 'function')
-	{
-		observer = new IntersectionObserver(([entry]) => set_visible(entry.isIntersecting));
-	}
-		
-	useEffect(() => {
-		if(observer)
-		{
-			observer.observe(ref.current);
-			return () => {observer.disconnect()}
-		}
-		else
-		{
-			set_visible(true);
-		}
-	}, [])
-
-	return visible;
-}
-
-const ObserverDispatcher = (props) =>
-{
-	const ref = useRef();
-	const isVisible = Observer(ref);
-	useEffect(() => {
-		if(isVisible)
-		{
-			if(props?.onView && typeof props.onView === 'function')
-			{
-				props.onView(props.id);
-			}
-		}
-	})
-
-	return	<div ref={ref}>{props.children}</div>
-}
 
 class MessageList extends React.Component
 {
@@ -79,6 +35,22 @@ class MessageList extends React.Component
 				this.props.onScrollToTop();
 			}
 		}
+
+		const children = e.target.children;
+
+		for(const child of children)
+		{
+			let rectangle = child.getBoundingClientRect();
+			if(
+				rectangle.top >= 0 &&
+				rectangle.left >= 0 &&
+				rectangle.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+				rectangle.right <= (window.innerWidth || document.documentElement.clientWidth)
+			)
+			{
+				this.messageViewPortIntersection(child.id);
+			}
+		}
 	}
 
 	messageViewPortIntersection(messageId)
@@ -96,16 +68,10 @@ class MessageList extends React.Component
 					<div id = "messages_user_container" className={s.messages}
 							onScroll = {this.onScrollTop}
 					>
-						<div style = {{color: "white",
-										width: "100%",
-										textAlign: "center"}}
-						>
-							Сообщения от: {moment(this.props.messages[0]?.time).format("DD-MM-YYYY")}
-						</div>
 						{this.props.messages.map((message, id) => (
-							<ObserverDispatcher key={id} id = {message.messageId} onView = {this.messageViewPortIntersection}>
+							<div key = {id} id = {message.messageId}>
 								<Message key = {id} id = {id} {...message} users = {this.props.users}/>
-							</ObserverDispatcher>
+							</div>
 						))}
 					</div>
 		)
