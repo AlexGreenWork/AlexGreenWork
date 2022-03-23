@@ -11,7 +11,7 @@ const defaultState = {
 export default function userReducer(state = defaultState, action) {
     switch (action.type) {
         case SET_USER:
-
+            
             return {
                 ...state,
                 isAuth: state.isAuth = true,
@@ -57,8 +57,11 @@ export default function userReducer(state = defaultState, action) {
             localStorage.removeItem('userAvatar')
             localStorage.removeItem('dateComission')
             localStorage.removeItem('idOffers')
-
-
+            localStorage.removeItem('sendlerTabWG')
+            localStorage.removeItem('status')
+            localStorage.removeItem('annotateComission')
+            
+             
             return {
                 ...state,
                 isAuth: state.isAuth = false,

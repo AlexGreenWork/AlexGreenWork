@@ -6,7 +6,7 @@ import {searchuser} from "../../../actions/search";
 import {React, useState} from "react";
 import {useDispatch} from "react-redux";
 
-const FindWorkers = () => {
+const FindWorkers = (props) => {
 	const [searchCategory, set_search_category] = useState('');
 	const [searchCategoryValue, set_search_category_value] = useState('');
 	const [searchItemValue, set_search_item_value] = useState('');
@@ -15,7 +15,8 @@ const FindWorkers = () => {
 	const dispatcher = useDispatch();
 
 	return (
-				<div className={style.sendOfferContainer}>
+
+				<div className={props?.className? props.className:style.sendOfferContainer}>
 					<div className={style.sendOfferInnerContainer}>
 						<div className={style.sendOfferSearchBar}>
 							<Complete

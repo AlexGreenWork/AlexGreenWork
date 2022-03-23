@@ -37,25 +37,13 @@ class Tasks
 		return false;
 	}
 
-	static async get_current_user_tabnum(connection, user_id)
-	{
-		connection = await Tasks.connection_to_database();
-
-		const user_tabnum_db_result = await connection.query(`SELECT
-														tabelNum AS tabnum
-													FROM
-														offersworker
-													WHERE id = ?`, [user_id] )
-
-		return await user_tabnum_db_result[0][0].tabnum;
-	}
-
 	async range(req, res)
 	{
 		if(!Tasks.check_all(req))
 		{
 			res.status(400);
 			res.send('Error');
+			return;
 		}
 
 		const beginMark = req.body.beginMark;
@@ -70,13 +58,6 @@ class Tasks
 		try
 		{
 			connection = await Tasks.connection_to_database();
-
-			const tabnum = await Tasks.get_current_user_tabnum(connection, req.user.id);
-			if(!tabnum)
-			{
-				res.status(400);
-				res.send('Error');
-			}
 
 			const db_result = await connection.query(`SELECT
 															DISTINCT outer_tbl.offer_id,
@@ -102,7 +83,7 @@ class Tasks
 															offers.Id = outer_tbl.offer_id
 															AND outer_tbl.responsible_tabnum = ?
 															AND offers.dateComission BETWEEN ? AND ?
-															AND outer_tbl.deleted <> 1`, [tabnum,
+															AND outer_tbl.deleted <> 1`, [req.current_user_info.tabelNum,
 																							beginTimespan.toISOString(),
 																							endTimespan.toISOString()]);
 			for(let result of db_result[0])
@@ -136,6 +117,7 @@ class Tasks
 		{
 			res.status(400);
 			res.send();
+			return;
 		}
 
 		const year = req.body.year;
@@ -146,13 +128,6 @@ class Tasks
 		try
 		{
 			connection = await Tasks.connection_to_database();
-
-			const tabnum = await Tasks.get_current_user_tabnum(connection, req.user.id);
-			if(!tabnum)
-			{
-				res.status(400);
-				res.send('Error');
-			}
 
 			const db_result = await connection.query(`SELECT
 															COUNT(offers.dateComission) AS count,
@@ -177,7 +152,7 @@ class Tasks
 															AND outer_tbl.responsible_tabnum = ?
 															AND YEAR(offers.dateComission) = ?
 															AND outer_tbl.deleted <> 1
-														GROUP BY MONTH(offers.dateComission)`, [tabnum,
+														GROUP BY MONTH(offers.dateComission)`, [req.current_user_info.tabelNum,
 																								year]);
 			for(let result of db_result[0])
 			{

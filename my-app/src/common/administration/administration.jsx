@@ -1,12 +1,23 @@
 import React from 'react';
 import s from './administration.module.css'
 
-const Administration = () => {
-   return (
-        <div className={s.container}>
-            привет работает
-        </div>
-    );
+class Administration extends React.Component
+{
+	constructor(props)
+	{
+		super(props);
+	}
+
+	showAdministrtion(){
+		
+	}
+
+	render()
+	{
+        return <div className={s.container} style={{gridRow: "1 / 6", gridColumn: "1/6", display: "flex"}}>
+				<iframe id="integrity" className={s.framePortal} src="http://integrity.belaz.minsk.by"></iframe>
+			</div>
+	}
 };
 
 export default Administration;

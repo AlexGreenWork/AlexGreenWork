@@ -162,4 +162,14 @@ export function closeConclusionRG(tabNum, idOffer){
         }
     }
 }
+export function closeConclusionResponsible(tabNum, idOffer){
+        return async ()=>{
+        try{
+            console.log(tabNum, idOffer)
+            await axios.post(`${API_URL}api/offers/closeConclusionResponsible`, {tabNum, idOffer})
+        }catch(e){
+            console.log(e)
+        }
+    }
+}
 

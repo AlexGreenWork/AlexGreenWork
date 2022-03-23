@@ -34,7 +34,7 @@ function UserInfo(userTabelNum){
 }
 let  offersDataCount;
 const CreateCompMyOffers = (props)=>{
-     
+     console.log(props)
     const  [offersData, SetOffersData] = useState(0)
 
     if(offersData === 0 ){
@@ -86,7 +86,7 @@ const CreateCompMyOffers = (props)=>{
     if(offersData !== 0){
      
         return offersData.map((number, index)=><MyOffersComp key = {"myOffComp"+number.Id} id={number.Id} date={number.date}
-        nameOffer={number.nameOffer}  counter={index+1} coAuthor = {number.coAuthor}/>)
+        nameOffer={number.nameOffer}  counter={index+1} coAuthor = {number.coAuthor}  />)
 
     } else {
         return(
@@ -108,6 +108,7 @@ const MyOffersComp = (props) => {
                №{props.id} {props.nameOffer}           
             </div>
             <div> {props.coAuthor}</div>
+            <div>{ props.phonenumber}</div>
             
         </div>
     )
@@ -196,7 +197,7 @@ const InfoAboutAuthor = () => {
                 objAll[`${i+1}`] = objYetSendlers[i]
             }
         
-         
+         console.log(objAll)
        
         return Object.keys(objAll).map((key, i)=><SendlerTab key={`numAut${i}`} numAut={i+1} name={objAll[key].nameSendler}
                                                 surname={objAll[key].surnameSendler} middlename={objAll[key].middlenameSendler} 
@@ -267,9 +268,13 @@ const InfoAboutAuthor = () => {
                     <div>E-mail:</div>
                     <div> {userInfo.email}</div>
                 </div>
+                <div className={s.nameOffer}>
+                    <div>Телефон:</div>
+                    <div> +{phoneNumber}</div>
+                </div>
                 <div className={s.insideOffers}>
                     <div>Поступившие предложения:</div>
-                    
+                
                     <CreateCompMyOffers  name={name} surname={surname} middlename={middlename} email={email} tabelNumber={tabelNumber} phoneNumber={phoneNumber}/>
                 </div>
 

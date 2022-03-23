@@ -129,13 +129,6 @@ function OffersForm() {
         <form className="offers" onSubmit={handleSubmit}>
             <div className="form-fields">
                 <div className="form-field">
-                    <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
-                           name="tabelNumber" required autoComplete="on"
-                           value={tabelNumber} onChange={(e) => setTabelNumber(e.target.value)}/>
-                    <label htmlFor="tabelNumber">Табельный номер</label>
-                    <div className="false-input false-tabelNumber"></div>
-                </div>
-                <div className="form-field">
                     <input type="text" placeholder="Иван" id="firstName" className="input-data" name="firstName"
                            value={name}
                            onChange={(e) => setName(e.target.value)} required autoComplete="off"/>
@@ -158,7 +151,13 @@ function OffersForm() {
                     <div className="false-input false-middleName"></div>
                 </div>
 
-                
+                <div className="form-field">
+                    <input type="number" placeholder="табельный номер" className="input-data" id="tabelNumber"
+                           name="tabelNumber" required autoComplete="on"
+                           value={tabelNumber} onChange={(e) => setTabelNumber(e.target.value)}/>
+                    <label htmlFor="tabelNumber">Табельный номер</label>
+                    <div className="false-input false-tabelNumber"></div>
+                </div>
 
                 <div className="form-field">
                     <input type="email" placeholder="e-mail-adress@gmail.com" className="input-data" id="emailInput"

@@ -1,6 +1,6 @@
 .navContainer {
     position: relative;
-    height: 100%;
+    height: 70px;
     -ms-grid-column: 1;
     -ms-grid-column-span: 5;
     grid-column: 1/ 5;

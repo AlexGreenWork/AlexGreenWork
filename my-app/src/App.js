@@ -28,6 +28,12 @@ import OffersResponsible from "./common/personalCabinet/responsible/responsible"
 import {Budget} from "./common/topComissionPanel/TopComission";
 import TopComission from "./common/topComissionPanel/TopComission";
 import Administration from "./common/administration/administration";
+import Management from "./common/administration/Management";
+import Contacts from "./common/contacts/contacts";
+import News from "./common/news/news";
+import PublicServices from "./common/publicServices/publicServices";
+import Excursion from "./common/excursion/excursion";
+
 
 
 
@@ -65,56 +71,87 @@ function App(props) {
                 <div className='app-wrapper-content' id="wrapperContent">
                     {!isAuth ?
                         <Switch>
-                            <Route exact path='/'  component={ContentContainer}  />
+                            <Route exact path='/' component={ContentContainer}/>
+                            <Route path='/news' component={News}/>
+                            <Route path='/publicServices' component={PublicServices}/>
+                            <Route path='/excursion' component={Excursion}/>
+                            <Route path='/contacts' component={Contacts}/>
+                            <Route path='/management' component={Management}/>
                             <Route path='/workerVariable' component={WorkerVariable}/>
                             <Route path='/sendOfferWorker' component={OffersForm}/>
                             <Route path='/sendOfferFree' component={OffersFormFree}/>
                             <Route path="/registration" component={Registration}/>
                             <Route path="/authorization" component={AuthorizationWorker}/>
                             <Redirect to='/authorization'/>
+
                         </Switch>
                         :
                         <Switch>
                             <Route path='/sendOfferWorker' component={OffersForm}/>
                             <Route path='/sendOfferFree' component={OffersFormFree}/>
+
+                            <Redirect to="/"/>
+                            <Route path="/authorization" component={AuthorizationWorker}/>
                             <Redirect to="/"/>
                             <Route path="/registration" component={Registration}/>
                             <Redirect to='/authorization'/>
                         </Switch>
 
                     }
+                    <Route path='/personalCabinet' component={PersonalCabinet}/>
                     {isAuth ?
                         <Switch>
-                            <Route path="/authorization" component={AuthorizationWorker}/>
-                            <Redirect to="/"/>
+
+                            <Route exact path='/' component={ContentContainer}/>
+                            <Route path='/news' component={News}/>
+                            <Route path='/excursion' component={Excursion}/>
+
+                            <Route path='/workerVariable' component={WorkerVariable}/>
+                            <Route path='/administration' component={Administration}/>
+                            <Route path='/management' component={Management}/>
+                            <Route path='/contacts' component={Contacts}/>
+                            <Route path='/publicServices' component={PublicServices}/>
+
+                            <Route path='/personalCabinet/myOffers' component={MyOffers} />
+                            <Route path='/personalCabinet/findWorkers' component={FindWorkers}/>
+                            <Route path='/personalCabinet/tasks' component={Tasks}/>
+                            <Route path='/profile' component={Profile}/>
+
+                            <Route exact path="/personalCabinet/disk" component={Disk}/>
+                            <Route path='/cardOffer' component={CardOffer} />
+                            <Route path='/cardOffer/infoAboutAuthor' component={InfoAboutAuthor}/>
+                            <Route path='/cardOffer/conclusion' component={ConclusionOffer}/>
+
+                            <Route path='/personalCabinet/messages' component={Messages}/>
+                            <Route path='/personalCabinet/offers' component={Offers}/>
+                            <Route path='/personalCabinet/myFiles' component={MyFiles}/>
+                            <Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>
+                            <Route path='/personalCabinet/adminPanelComission' component={TopComission}/>
+
+
                         </Switch>
                         :
                         <Switch>
+
+
                             {/*<Route path="/registration" component={Registration}/>*/}
                             {/*<Redirect to='/authorization'/>*/}
                         </Switch>
+
                     }
 
 
+                    {/*<Route path='/personalCabinet/messages' component={Messages}/>*/}
+                    {/*<Route path='/personalCabinet/offers' component={Offers}/>*/}
+                    {/*<Route path='/personalCabinet/myFiles' component={MyFiles}/>*/}
+                    {/*<Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>*/}
+                    {/*<Route path='/personalCabinet/adminPanelComission' component={TopComission}/>*/}
+                    {/*<Route path='/personalCabinet' component={PersonalCabinet}/>*/}
+
                     {/*<Route path="/adminPanel" component={AdminPanel}/>*/}
-                    <Route exact path='/' component={ContentContainer}/>
-                    <Route path='/workerVariable' component={WorkerVariable}/>
-                    <Route path='/administration' component={Administration}/>
-                    <Route path='/personalCabinet/myOffers' component={MyOffers} />
-                    <Route path='/personalCabinet/findWorkers' component={FindWorkers}/>
-                    <Route path='/personalCabinet/tasks' component={Tasks}/>
-                    <Route path='/profile' component={Profile}/>
-                    <Route path='/personalCabinet' component={PersonalCabinet}/>
-                    <Route exact path="/personalCabinet/disk" component={Disk}/>
-                    <Route path='/cardOffer' component={CardOffer} />
-                    <Route path='/cardOffer/infoAboutAuthor' component={InfoAboutAuthor}/>
-                    <Route path='/cardOffer/conclusion' component={ConclusionOffer}/>
-                    <Route path='/personalCabinet' component={PersonalCabinet}/>
-                    <Route path='/personalCabinet/messages' component={Messages}/>
-                    <Route path='/personalCabinet/offers' component={Offers}/>
-                    <Route path='/personalCabinet/myFiles' component={MyFiles}/>
-                    <Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>
-                    <Route path='/personalCabinet/adminPanelComission' component={TopComission}/>
+
+
+
                     
 
                 </div>

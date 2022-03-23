@@ -14,6 +14,7 @@ import pdfFile from "./../../../52179.pdf";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
+    console.log(props)
     return <Slide direction="up" ref={ref} {...props} />;
 });
 

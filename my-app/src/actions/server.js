@@ -21,7 +21,7 @@ class Server
 		return {
 				...user_config,
 				headers: {...header.headers,
-							...user_config.headers
+					      ...user_config.headers
 						}
 			}
 	}

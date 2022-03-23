@@ -1,3 +1,21 @@
-.container{
-    width: auto;
+.container
+{
+width: 100%;
 }
+
+.img
+{
+	width: 400px;
+	height: 500px;
+}
+.framePortal{
+	width:100%;
+	
+}
+#list4 { width:320px; font-family:Georgia, Times, serif; font-size:15px; }
+#list4 ul { list-style: none; }
+#list4 ul li { }
+#list4 ul li a { display:block; text-decoration:none; color:#000000; background-color:#FFFFFF; line-height:30px;
+  border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#CCCCCC; padding-left:10px; cursor:pointer; }
+#list4 ul li a:hover { color:#FFFFFF;  background-repeat:repeat-x; }
+#list4 ul li a strong { margin-right:10px; }

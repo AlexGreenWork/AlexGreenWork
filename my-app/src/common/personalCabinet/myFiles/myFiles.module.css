@@ -1,18 +1,31 @@
 .personalCabinetContainer{
-    grid-column: 2/6;
-    grid-row: 2/5;
-    overflow: auto;
+
+    overflow-y: scroll;
     font-family: Helvetica, sans-serif;
     font-weight: 100;
     font-size: 1.1em;
     background: linear-gradient(90deg, #ffffff, #d3e1f3);
+    width: 90%;
+    position: absolute;
+    left: 10%;
+    height: calc(100vh - 170px);
+    min-height: 70%;
+    padding: 5px;
+    top:100px;
+    border: solid 2px white;
+    z-index: 2;
+
+
+
+}
+.personalCabinetContainer{
+
 }
 
 
 @media screen and (max-width: 600px) {
     .personalCabinetContainer{
-        grid-column: 1/6;
-        grid-row: 1/5;
+
         flex-direction: column;
         background-color: whitesmoke;
     

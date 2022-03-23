@@ -48,7 +48,7 @@ function Folders(props){
    
 
     let dirName = Object.keys(allfilesObj);
-   
+    console.log(dirName)
     
     for(let i = 0; i < dirName.length; i++ ){
        let fileName = allfilesObj[dirName[i]];   
@@ -97,8 +97,9 @@ const FileList = () => {
     window.addEventListener("popstate",function(e){
    
     },false);
-
-    if(filesObj == 0){
+  
+    if(filesObj === 0){
+       
         ReadDir();
         
     } else {
@@ -108,7 +109,7 @@ const FileList = () => {
     function ReadDir() {
         let idOffers = localStorage.getItem('idOffers');
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', `${API_URL}api/files/allFiles`, true); /// АСИНХРОННЫЙ ЗАПРОС!!!
+        xhr.open('POST', `${API_URL}api/files/allFiles`, true); 
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
        
         xhr.onreadystatechange = function () {

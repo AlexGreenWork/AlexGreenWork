@@ -76,7 +76,7 @@ class Row extends React.Component
 						<Collapse in={this.state.open} timeout="auto" unmountOnExit>
 							<Box sx={{ margin: 1 }}>
 								<Typography variant="h6" gutterBottom component="div">
-									Оценка предложения
+									Оценка предложения (максимальная оценка - 5 баллов)
 								</Typography>
 								<Table size="small" aria-label="purchases">
 									<TableHead>
@@ -84,8 +84,8 @@ class Row extends React.Component
 											<TableCell style={{width: "250px"}}>Проверил</TableCell>
 											<TableCell>Актуальность</TableCell>
 											<TableCell>Инновативность</TableCell>
-											<TableCell>Затратность</TableCell>
-											<TableCell>Протяженность</TableCell>
+											<TableCell>Экономичность</TableCell>
+											<TableCell>Скорость внедрения</TableCell>
 											<TableCell>Общая оценка</TableCell>
 										</TableRow>
 									</TableHead>
@@ -208,8 +208,8 @@ class ResultTable extends React.Component
 							<TableCell>Проверяющий</TableCell>
 							<TableCell>Актуальность</TableCell>
 							<TableCell>Инновативность</TableCell>
-							<TableCell>Затратность</TableCell>
-							<TableCell>Протяженность</TableCell>
+							<TableCell>Экономичность</TableCell>
+							<TableCell>Скорость внедрения</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -234,6 +234,15 @@ class ResultsOffer extends React.Component
 	{
 		return (
 			<div className={s.containerOff} >
+				<div className={s.idOffer} style={{
+					display:"flex",
+					justifyContent: "space-between",
+					paddingLeft: "10px",
+				}}>
+              	  <div style={{fontWeight: "bold"}}>№:{this.props.offerId}</div>
+             	   <div className={s.nameOfferHead} style={{fontWeight: "bold"}}> {this.props.offerName}</div>
+					<div></div>
+         	   </div>
 				<TableContainer component={Paper}>
 					<ResultTable offerId = {this.props.offerId}/>
 				</TableContainer>
@@ -244,7 +253,7 @@ class ResultsOffer extends React.Component
 
 const mapReduxStateToClassProps = (state) =>
 {
-	return {offerId: state.offers.offer.Id}
+	return {offerId: state.offers.offer.Id, offerName: state.offers.offer.nameOffer}
 }
 
 export default connect(mapReduxStateToClassProps)(ResultsOffer);

@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { v4 as uuid } from 'uuid';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+
 import {
   Box,
   Button,
@@ -15,7 +15,7 @@ import {
   Tooltip
 } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import { SeverityPill } from '../severity-pill';
+import { SeverityPill } from './severity-pill';
 
 const orders = [
   {
@@ -83,7 +83,7 @@ const orders = [
 export const LatestOrders = (props) => (
   <Card {...props}>
     <CardHeader title="Последние предложения" />
-    <PerfectScrollbar>
+   
       <Box sx={{ minWidth: 800 }}>
         <Table>
           <TableHead>
@@ -141,7 +141,7 @@ export const LatestOrders = (props) => (
           </TableBody>
         </Table>
       </Box>
-    </PerfectScrollbar>
+    
     <Box
       sx={{
         display: 'flex',
