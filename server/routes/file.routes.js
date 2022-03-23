@@ -12,12 +12,12 @@ const fileUpload = require('express-fileupload');
 router.use(fileUpload({}));
 router.use(Router.static('public'));
 
-// const pool = mysql.createPool({
-//     host: dataBaseConfig.database.host,
-//     user: dataBaseConfig.database.user,
-//     database: dataBaseConfig.database.database,
-//     password: dataBaseConfig.database.password,
-// });
+const pool = mysql.createPool({
+    host: dataBaseConfig.database.host,
+    user: dataBaseConfig.database.user,
+    database: dataBaseConfig.database.database,
+    password: dataBaseConfig.database.password,
+});
 
 router.use((req, res, next)=>{
     res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
@@ -37,19 +37,10 @@ router.delete('/avatar', authMiddleware, fileController.deleteAvatar)
 
 router.post("/allFiles", urlencodedParser, async function(req, res){
   
-    const pool = mysql.createPool({
-        host: dataBaseConfig.database.host,
-        user: dataBaseConfig.database.user,
-        database: dataBaseConfig.database.database,
-        password: dataBaseConfig.database.password,
-    });
-    
         let arrAllFiles= {};  
         let countResponse = 0;
         let idOffers = req.body.idOffers;
        // let membCommision = req.body.tabREsponsoble;
-      if(idOffers != undefined){
-
         try{
             
             fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/`, function(err, dirRoot){
@@ -96,14 +87,13 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                          
                             fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}`, async function(err, dirRg){
                              
-                                if(dirRg.length != 0 ){
+                                if(dirRg.length != 0){
                                   //  countResponsible++;
                                    
                                     fs.readdir(`${__dirname}/../files/offers/idOffers/id${idOffers}/${dirRoot[i]}/${dirRg[0]}`, async function(err, dirRgTab){
                                         //       console.log('dirRgTab', dirRgTab);
                                                let docFiles = dirRg[0]
-                                        console.log(dirRgTab)
-                                        console.log(docFiles)
+                                       
                                                let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${docFiles} `);
                                                let fioResp = sqlMembCommision[0][0].fiofull;
                                                let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
@@ -133,10 +123,40 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
                                
                                 
                             })
-                        }                      
+                        }
+                      //  console.log('dirRoot[i]', dirRoot[i])
+                       
+                        
+                     //  console.log(arrAllFiles)
+                        
+                       /*  console.log(i)
+                        console.log(dirRoot) */
+                     /*    if(dirRoot.length == 1 && dirRoot[i] == "SendlerFiles"){ //если есть только SendlerFiles
+                            res.send(arrAllFiles)
+                        }
+
+                        if(dirRoot.length == 2  && dirRoot[i] == "SendlerFiles"){ // если есть  SendlerFiles и ResponsibleRG
+                           
+                            res.send(arrAllFiles)
+                        } else{
+                            console.log(Object.keys(arrAllFiles).length)
+                            console.log("Object.keys(arrAllFiles).length")
+                            console.log(dirRoot.length, "dirRoot.length" )
+                            console.log(Object.keys(arrAllFiles).length == dirRoot.length-2, "Object.keys(arrAllFiles).length == dirRoot.length-2" )
+                            if( Object.keys(arrAllFiles).length == dirRoot.length-1 && Object.keys(arrAllFiles).length > 0 || Object.keys(arrAllFiles).length == dirRoot.length-2 && Object.keys(arrAllFiles).length > 0){ // -1 для и -2 для игнорирования conclusionCommission и responsible12345
+                               
+                                console.log("Ответ" , arrAllFiles)
+                                console.log(Object.keys(arrAllFiles).length)
+                               console.log(dirRoot.length-1)
+                              //  setTimeout(()=>{res.send(arrAllFiles);} , 200)
+                              res.send(arrAllFiles)
+                            } else {
+                                
+                            }
+                        } */
+                      
                         if(countResponsible == Object.keys(arrAllFiles).length && Object.keys(arrAllFiles).length != 0 && countResponse == 0){
                             countResponse++
-                            pool.end();
                            return res.send(arrAllFiles)
                         }
                       
@@ -148,20 +168,15 @@ router.post("/allFiles", urlencodedParser, async function(req, res){
         console.log(e)
      }
 
-    } else{
-        pool.end();
-        return res.send("неверные входящие данные")
-    }
 })
 
 router.post("/FilesConclusionCommission", urlencodedParser,
     async function (request, response) {
         
         let idOffers = request.body.idOffers
-        console.log(request.body)
+       
       fs.readdir(`../server/files/offers/idOffers/id${idOffers}`, (err, folder) => {
-        console.log(err)
-        console.log(folder)
+     
             if(folder.includes("conclusionCommission") == false){
                 
                 fs.mkdir(`../server/files/offers/idOffers/id${idOffers}/conclusionCommission/`, { recursive: true }, err => {
@@ -232,13 +247,8 @@ router.post("/FilesConclusionCommission", urlencodedParser,
 router.post("/workData",  urlencodedParser, async function(req, res){
 
     let membCommision = req.body.tabNum;
-    const pool = mysql.createPool({
-        host: dataBaseConfig.database.host,
-        user: dataBaseConfig.database.user,
-        database: dataBaseConfig.database.database,
-        password: dataBaseConfig.database.password,
-    });
-    console.log(membCommision)
+
+
     let sqlMembCommision = await pool.query(`SELECT * FROM kadry_all WHERE tabnum=${membCommision} `);
 
     let sqlDepartment = await pool.query(`SELECT * FROM department WHERE id=${sqlMembCommision[0][0].department} `);
@@ -247,20 +257,13 @@ router.post("/workData",  urlencodedParser, async function(req, res){
 
 
 
-    pool.end();
+
     res.send([sqlMembCommision[0][0].fiofull, sqlDepartment[0][0].fullname, sqlDivision[0][0].name])
 })
 
 
 router.post("/myFilesWG", urlencodedParser,
     async function (req, res) {
-
-        const pool = mysql.createPool({
-            host: dataBaseConfig.database.host,
-            user: dataBaseConfig.database.user,
-            database: dataBaseConfig.database.database,
-            password: dataBaseConfig.database.password,
-        });
       
         let tabResp = req.body.userTabelNum;
 
@@ -277,8 +280,6 @@ router.post("/myFilesWG", urlencodedParser,
          
             if(err != undefined){
                 console.log("Нет папки responsible"+tabResp+" в предложении "+idOffers)
-                res.send("нет файлов");
-                pool.end()
             } else {
                 
                 let dir = fs.readdirSync(`../server/files/offers/idOffers/id${idOffers}/responsible${tabResp}`);
@@ -290,9 +291,7 @@ router.post("/myFilesWG", urlencodedParser,
             
                       if(i == sqlOffResp[0].length-1){
                           a=1
-                          
                           res.send(files);
-                          pool.end()
                       }
 
            }
@@ -300,7 +299,7 @@ router.post("/myFilesWG", urlencodedParser,
        
     
         }
-       
+    
     })
 
 
@@ -476,6 +475,21 @@ router.post("/myFilesWG", urlencodedParser,
             }
 
     })
+})
+
+router.post("/publicServices", urlencodedParser,
+async function (req, res) {
+  
+    const pool = mysql.createPool({
+    host: dataBaseConfig.database.host,
+    user: dataBaseConfig.database.user,
+    database: dataBaseConfig.database.database,
+    password: dataBaseConfig.database.password,
+});
+   let matobozk = await pool.query("SELECT * FROM matobozk ")
+   let shifrzat = await pool.query("SELECT zatrname FROM shifrzat ")
+   res.send(matobozk[0].concat(shifrzat[0]))
+   pool.end()
 })
 
     

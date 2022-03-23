@@ -21,7 +21,6 @@ module.exports = async (req, res, next) => {
 		connection = mysql.createPool(connection_property);
 		const result = await connection.query("SELECT * FROM offersworker WHERE Id = ?", req.user.id);
 		req.current_user_info = result[0][0];
-		next();
 	}
 	catch(e)
 	{
@@ -31,5 +30,7 @@ module.exports = async (req, res, next) => {
 	{
 		if(connection) connection.end();
 	}
+
+	next();
 
 }

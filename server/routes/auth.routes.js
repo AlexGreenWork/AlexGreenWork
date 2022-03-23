@@ -348,7 +348,13 @@ router.post("/forms", urlencodedParser, async (request, response) => {
             if (checkSendData.length != 0) {
                 messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`;
             } else {
-                messageSend = messageSend + "Не совпадение данных Email и табельного уже зарегистрированого пользователя";
+
+                await pool.query(`UPDATE offersworker SET email = '${emailInput}'  WHERE 	tabelNum = '${tb[0].tabelNum}'`)
+                await pool.query(`UPDATE offersworker SET phoneNumber = '${phoneNumber}'  WHERE 	tabelNum = '${tb[0].tabelNum}'`)
+                messageSend = messageSend + "" + `${await InsertTabOffers(nameOffer, offer)}`;
+                // await pool.execute(`SELECT * FROM offersworker WHERE tabelNum IN (${tabelNumber})`);
+                // messageSend = messageSend + "Не совпадение данных Email и табельного уже зарегистрированого пользователя";
+
             }
 
             // if (upd.changedRows != 0) { // запрос.количество затронутых строк
@@ -778,6 +784,111 @@ router.post("/costOffers", urlencodedParser, async (req, res) => {
 
     res.send(profit[0])
     pool.end()
+})
+
+router.post("/checkRegistration", urlencodedParser, async (req, res) => {
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+    const pool = mysql.createPool(mysqlConfig);
+
+    let tabNum = req.body.tabNum
+    let checkTab = await pool.query(`SELECT tabelNum FROM offersworker WHERE tabelNum = ${tabNum}`)
+    let checkTabKadry = await pool.query(`SELECT  deleted FROM kadry_all WHERE tabnum = ${tabNum}`)
+
+    if (checkTabKadry[0][0] != undefined && checkTabKadry[0][0].deleted != 1 && checkTab[0].length != 0) {
+        res.send(true)
+    } else if (checkTabKadry[0].length != 0) {
+        res.send("falseReg")
+    } else {
+        res.send("false")
+    }
+
+    pool.end()
+})
+
+router.post("/checkPassword", urlencodedParser, async (req, res) => {
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+
+    }
+    const pool = mysql.createPool(mysqlConfig);
+
+    let tabNum = req.body.tabNum
+    let password = req.body.password
+    let checkPass = await pool.query(`SELECT password FROM offersworker WHERE tabelNum = ${tabNum}`)
+
+    if (bcrypt.compareSync(password, checkPass[0][0].password) == true) {
+        res.send(true)
+    } else {
+        res.send(false)
+    }
+    pool.end()
+})
+
+router.post("/checkUserDateBirth", urlencodedParser, async (req, res) => {
+
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+    }
+    const pool = mysql.createPool(mysqlConfig);
+
+    let tabNum = req.body.tabNum
+    let dateBrith = req.body.date
+    let dateBirth = await pool.query(`SELECT TABNUM FROM kadryok WHERE BDAY = "${dateBrith}" AND TABNUM = ${tabNum}`)
+
+    if (dateBirth[0][0] != undefined && dateBirth[0][0].TABNUM == tabNum) {
+        res.send(true)
+    } else {
+        res.send(false)
+    }
+    pool.end()
+})
+
+router.post("/checkFio", urlencodedParser, async (req, res) => {
+
+    const mysqlConfig = {
+        host: config.database.host,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+    }
+    const pool = mysql.createPool(mysqlConfig);
+    let name = req.body.name
+    let surname = req.body.surname
+    let middlename = req.body.middleName
+    let tabNum = req.body.tabNum
+    try {
+        let fio = await pool.query(`SELECT NAME1, NAME2, NAME3 FROM kadryok WHERE TABNUM = ${tabNum}`)
+        console.log(fio[0])
+
+        console.log(surname.toUpperCase() , "-", fio[0][0].NAME1 , surname.toUpperCase() == fio[0][0].NAME1)
+        console.log(name.toUpperCase() , "-", fio[0][0].NAME2, name.toUpperCase() == fio[0][0].NAME2)
+        console.log(middlename.toUpperCase() , "-", fio[0][0].NAME3, middlename.toUpperCase() == fio[0][0].NAME3)
+
+
+        if (surname.toUpperCase() == fio[0][0].NAME1 && name.toUpperCase() == fio[0][0].NAME2 && middlename.toUpperCase() == fio[0][0].NAME3) {
+            res.end("true")
+        } else {
+            res.end("false")
+        }
+
+    } catch (e) {
+        console.log(e)
+    }
+
+    pool.end();
+
 })
 
 module.exports = router

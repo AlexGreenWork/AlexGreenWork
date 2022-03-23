@@ -510,17 +510,6 @@ router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
 router.post("/toDbDeleteResponsible", urlencodedParser, authMiddleware,
     async function (request, response) {
 
-        const idOffers = request.body.idOffer;
-        const respTabnum = request.body.respTabnum;
-        const userId = request.user.id;
-
-        if (!idOffers
-            && !respTabnum) {
-            response.status(400)
-            response.send();
-			return;
-        }
-
         const mysqlConfig = {
             host: config.database.host,
             user: config.database.user,
@@ -530,26 +519,42 @@ router.post("/toDbDeleteResponsible", urlencodedParser, authMiddleware,
 
         const pool = mysql.createPool(mysqlConfig);
 
-        let placeholders = [userId, idOffers, respTabnum];
+        const idOffers = request.body.idOffer;
+        const respTabnum = request.body.respTabnum;
+        const userId = request.user.id;
+
+        if (!idOffers
+            && !respTabnum) {
+            response.status(400)
+            response.send();
+        }
+
+        const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
+
+        const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+        if (check[0].length) {
+            if (check[0][0].isset === 0) {
+                response.status(400);
+                response.send();
+            }
+        }
+
+        let placeholders = [idOffers, respTabnum];
 
         query = `UPDATE
-					offersresponsible
-				INNER JOIN offersworker AS ow ON
-					ow.id = ?
-				INNER JOIN offers AS o ON
-					o.id = ?
-				SET
-					deleted = 1
-				WHERE
-					offer_id = o.Id
-				AND (
-						ow.adminOptions = 'wg'
-						OR 
-							ow.adminOptions = 'admin'
-				)
+					offersendler.offersresponsible
+				SET deleted = 1
+				WHERE offer_id = ?
 				AND responsible_tabnum = ?`
 
-        await pool.query(query, placeholders);
+        pool.query(query, placeholders);
 
         response.status(200);
         pool.end()
@@ -558,6 +563,15 @@ router.post("/toDbDeleteResponsible", urlencodedParser, authMiddleware,
 
 router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
     async function (request, response) {
+
+        const mysqlConfig = {
+            host: config.database.host,
+            user: config.database.user,
+            password: config.database.password,
+            database: config.database.database,
+        }
+
+        const pool = mysql.createPool(mysqlConfig);
 
         const idOffers = request.body.idOffer;
         const respTabnum = request.body.respTabnum;
@@ -569,51 +583,94 @@ router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
             || !position) {
             response.status(400)
             response.send();
-			return;
         }
 
-        const mysqlConfig = {
-            host: config.database.host,
-            user: config.database.user,
-            password: config.database.password,
-            database: config.database.database,
+        async function restore(connection, idOffer, tabnum, position) {
+            try {
+                const query = `UPDATE
+								offersresponsible
+							SET
+								deleted = 0,
+								position = ?
+							WHERE
+								offer_id = ?
+								AND responsible_tabnum = ?
+								AND deleted <> 0
+							ORDER BY id DESC
+							LIMIT 1`
+
+                let placeholders = [position, idOffer, tabnum];
+
+                return await connection.query(query, placeholders);
+
+            } catch (e) {
+                console.log(e)
+            }
+
         }
 
-        const pool = mysql.createPool(mysqlConfig);
+        async function insert(connection, idOffer, tabnum, position) {
+            try{
+            const query = `INSERT INTO offersendler.offersresponsible
+								(offer_id, responsible_tabnum, open, position)
+							VALUES (?, ?, ?, ?)`
+            console.log(position)
+            let placeholders = [idOffer, tabnum, moment().format('YYYY-MM-DD'), position];
 
-		try
-		{
-            const query = `INSERT INTO offersresponsible
-								(
-									offer_id,
-									responsible_tabnum,
-									OPEN,
-									POSITION
-								)
-							SELECT
-								o.id, ?, DATE(NOW()), ?
+            return await connection.query(query, placeholders);
+            }
+            catch(e){
+           console.log(e)
+            }
+        }
+
+        async function isset(connection, idOffer, tabnum) {
+            try{
+            const query = `SELECT
+								COUNT(id) AS count
 							FROM
-								offers AS o
-							INNER JOIN offersworker AS ow ON
-								ow.Id = ?
-							WHERE o.Id = ?
-							AND (
-									ow.adminOptions = 'wg'
-									OR 
-										ow.adminOptions = 'admin'
-							)`
+								offersendler.offersresponsible
+							WHERE
+								offer_id = ?
+							AND 
+								responsible_tabnum = ?`
 
-            let placeholders = [respTabnum, position, userId, idOffers];
+            let placeholders = [idOffer, tabnum];
 
-            await pool.query(query, placeholders);
-		}
-		catch(e)
-		{
-			console.log(e);
-		}
+            const db_result = await connection.query(query, placeholders);
+
+            return (db_result[0][0]) && (db_result[0][0].count > 0)
+            }catch(e){
+                console.log(e)
+            }
+
+        }
+
+        const sqlCheck = `SELECT
+							COUNT(o.Id) AS isset
+						FROM
+							offers AS o
+						INNER JOIN offersworker AS o2 ON o2.id = ?
+						WHERE o.tabelNum = o2.tabelNum 
+							AND o.Id = ?`;
+
+        const check = await pool.query(sqlCheck, [userId, idOffers]);
+
+        if (check[0].length) {
+            if (check[0][0].isset === 0) {
+                response.status(400);
+                response.send();
+            }
+        }
+
+        if (await isset(pool, idOffers, respTabnum)) {
+            await restore(pool, idOffers, respTabnum, position)
+        }
+        else {
+            await insert(pool, idOffers, respTabnum, position)
+        }
 
         response.status(200);
-		if(pool) pool.end();
         response.send();
     })
 
