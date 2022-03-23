@@ -4,14 +4,14 @@ my-app/coverage/
 my-app/.pnp/
 my-app/src/videos/*.mp4
 my-app/jsconfig.json
+my-app/src/config.js
 
 server/node_modules/
 server/build/
 server/coverage/
 server/.pnp/
-server/config/*
-server/files/
 server/config/
+server/files/
 
 offersendler.sql
 linkDbDiagram.drawio

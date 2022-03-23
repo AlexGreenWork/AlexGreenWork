@@ -100,7 +100,7 @@ class Search
 								ka.CEHCODE AS department_code,
 								ka.DISTRFULLN AS division
 							FROM
-								offersendler.kadry_ok AS ka
+								offersendler.kadryok AS ka
 						) AS outer_tbl
 						WHERE outer_tbl.${alias} LIKE ?`
 

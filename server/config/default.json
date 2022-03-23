@@ -1,7 +1,7 @@
 {
   "serverPort" : 5000,
   "secretKey": "mern-secret-key",
-  "baseUrl": "http://localhost:5000",
+  "baseUrl": "http://loocalhost:5000",
   "database": {
     "host": "localhost",
     "user": "root",

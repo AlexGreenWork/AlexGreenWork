@@ -2,9 +2,12 @@ import React from "react"
 import {connect} from "react-redux"
 import style from "./card.module.css"
 import {selectcard} from "../../../actions/search";
+import Mail from "@mui/icons-material/MailOutline"
 
 import {API_URL} from "../../../config.js"
 import server from "../../../actions/server"
+import { NavLink } from "react-router-dom";
+import Message from "../messages/message/message";
 
 class Cart extends React.Component
 {
@@ -28,10 +31,10 @@ class Cart extends React.Component
 	    if(props?.info
 			&& (
 					this.state.info === null
-					|| this.state.info.tabnum !== props.info
+					|| this.state.info.tabnum != props.info
 				) 
 			)
-		{
+		{console.log(this.state.info, props.info);
 			server.send_post_request(`${API_URL}api/user/info`, {search: props.info}).then((res) => {
 				this.setState({info: res.data});
 			})
@@ -45,11 +48,9 @@ class Cart extends React.Component
 		return (
 					<div className = {style.card} onClick = {() => this.props.dispatch(selectcard(`${this.state.info?.tabnum}`))}>
 						<table>
-							<col width = "20%"/>
-							<col width = "20%"/>
 							<tbody>
 								<tr>
-									<td rowSpan = "8">
+									<td width={"160px"} rowSpan = "8">
 										<div style={
 														{
 															width: "150px",
@@ -63,16 +64,21 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Табельный номер
 									</td>
 									<td>
 										{this.state.info?.tabnum}
 									</td>
-
+									<td style = {{float: "right", marginRight: "20px"}}>
+										<NavLink to={{pathname: '/personalCabinet/messages',
+												aboutProps: {addressee: this.state.info?.tabnum}}}>
+											<Mail/>
+										</NavLink>
+									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										ФИО
 									</td>
 									<td colSpan = "2">
@@ -80,7 +86,7 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Должность
 									</td>
 									<td colSpan = "2">
@@ -88,7 +94,7 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Цех
 									</td>
 									<td colSpan = "2">
@@ -96,7 +102,7 @@ class Cart extends React.Component
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td width={"160px"} >
 										Отдел
 									</td>
 									<td colSpan = "2">
@@ -105,7 +111,7 @@ class Cart extends React.Component
 								</tr>
 								{this.state.info?.brigada ?
 									<tr>
-										<td>
+										<td width={"160px"} >
 											Бригада
 										</td>
 										<td colSpan = "2">
@@ -116,7 +122,7 @@ class Cart extends React.Component
 								}
 								{this.state.info?.email ?
 									<tr>
-										<td>
+										<td width={"160px"} >
 											Электронная Почта
 										</td>
 										<td colSpan = "2">

@@ -51,6 +51,11 @@ class Tasks
 
 		const beginTimespan = new Date(beginMark);
 		const endTimespan = new Date(endMark);
+		if(isNaN(beginTimespan) || isNaN(endTimespan))
+		{
+			res.status(400).send('Неверно указаны параметры');
+			return;
+		}
 
 		const results = [];
 		let connection = null;

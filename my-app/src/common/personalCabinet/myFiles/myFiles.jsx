@@ -192,8 +192,8 @@ function WgFilesList(){
         }
     }
     
-
- if(reqMyFileWg === 0){
+  
+ if(reqMyFileWg === 0 || reqMyFileWg === "нет файлов"){
         return(
 
             <div className={s.personalCabinetContainer1} >

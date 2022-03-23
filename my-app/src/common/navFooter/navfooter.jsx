@@ -1,7 +1,8 @@
 import React from "react";
 import s from "./navFooter.module.css"
 import {NavLink} from "react-router-dom";
-import {CountNoBrowsing} from "../personalCabinet/personalCabinet"
+import {CountNoBrowsing, CountMessageNoBrowsing} from "../personalCabinet/personalCabinet"
+import MessageStatus from "../personalCabinet/messages/messages_status";
 
 const Navfooter = () => {
     if(localStorage.getItem("userAdminOptions") === "wg" || localStorage.getItem("userAdminOptions") === "admin" || localStorage.getItem("userAdminOptions") === "topComission "){
@@ -15,6 +16,9 @@ const Navfooter = () => {
                     <NavLink to="/personalCabinet" title="personal Cabinet">
                         Личный кабинет
                         <CountNoBrowsing/>
+						<MessageStatus>
+							<CountMessageNoBrowsing/>
+						</MessageStatus>
                     </NavLink>
                     <NavLink to="/personalCabinet/findWorkers" title="Title 3">
                        <svg viewBox="64 64 896 896" focusable="false" data-icon="search" width="1em" height="1em" fill="currentColor" aria-hidden="true">

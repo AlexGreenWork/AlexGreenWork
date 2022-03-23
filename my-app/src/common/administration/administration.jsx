@@ -7,11 +7,6 @@ class Administration extends React.Component
 	{
 		super(props);
 	}
-
-	showAdministrtion(){
-		
-	}
-
 	render()
 	{
         return <div className={s.container} style={{gridRow: "1 / 6", gridColumn: "1/6", display: "flex"}}>
