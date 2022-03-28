@@ -150,8 +150,8 @@ const Offers = () => {
 
     if (props.history !== null && props.history !== undefined) {
       let arrObjHistory = props.history
-     
-      if (props.history.length !== 0) {
+
+      if (arrObjHistory !== 0) {
 
         let i = arrObjHistory.findIndex(elem => elem.id_offers == props.idOffers);
        
@@ -169,7 +169,7 @@ const Offers = () => {
         }
       } else {
         return (
-          <div></div>
+          <div>&#128276;</div>
         )
       }
     } else {
@@ -253,6 +253,7 @@ const Offers = () => {
       colorStatus = "#8ef392";
       colorStatus1 = "#2db873";
     }
+    // console.log(props.histBrows)
     // console.log(props.histBrows)
     return (
       <div className={colorStatus} style={{}}>
@@ -500,9 +501,9 @@ const Offers = () => {
         ));
       } else {
 
-        // console.log(JSON.parse(props.request.xhr))
+
         let offersData = JSON.parse(props.request.xhr);
-        // console.log(offersData)
+
         let offersDataReverse = offersData.reverse();
 
         return offersDataReverse.map((number) => (
@@ -548,7 +549,7 @@ const Offers = () => {
     check(event) {
 
       this.setState({ check: event.target.checked });
-      console.log(this.state.check)
+      // console.log(this.state.check)
       if (this.state.check === true) {
         this.setState({
           img: "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z",
@@ -609,7 +610,7 @@ const Offers = () => {
             }
           }
         } else {
-          console.log(this.props.color)
+          // console.log(this.props.color)
 
           var x = document.getElementsByClassName(`${this.props.color}`);
 
@@ -700,7 +701,7 @@ const Offers = () => {
         setDispl("none");
 
       }
-      console.log("ривет");
+      // console.log("ривет");
     }
 
     return (
@@ -785,7 +786,8 @@ const Offers = () => {
 
           let objResponse = {}
           objResponse["xhr"] = xhr
-          objResponse["history"] = res.data
+
+          objResponse["history"] = res.data[1]
           setReqAllOff(objResponse);
 
 

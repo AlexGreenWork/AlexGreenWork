@@ -1,15 +1,10 @@
 .personalCabinetContainer{
-    display: grid;
-    -ms-grid-columns: 15vw 1fr;
-    grid-template-columns: 15vw 1fr;
-    -ms-grid-rows: 7vh 1fr;
-    grid-template-rows: 7vh 1fr;
-    grid-gap: .1vh;
+    display: flex;
+
     flex-direction: column;
     width: 100%;
     overflow: scroll;
-    grid-column: 1/6;
-    grid-row: 1/6;
+
     --main-bg-color: #fff;
     --main-text-color: #444;
     min-height: 100%;
@@ -26,12 +21,13 @@
     border-bottom: 1px solid #14469B
 }
 .navPCab{
-    grid-column: 1/2;
-    grid-row: 2/3;
-
     display: flex;
+    position: absolute;
+    top: 100px;
     flex-direction: column;
     background-color: #E9EDF2;
+    width:10%;
+    height: 100%;
 }
 .navPCab ul{
     list-style: none;

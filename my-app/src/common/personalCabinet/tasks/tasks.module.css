@@ -1,7 +1,9 @@
 .sendOfferContainer
 {
     display: flex;
-    width: 100%;
+    width: 90%;
+    position: absolute;
+    right: 0;
     overflow: scroll;
     grid-column: 2/6;
     grid-row: 1/6;
@@ -13,6 +15,7 @@
     color: var(--main-text-color);
     font-family: sans-serif;
     justify-content: center;
+    top:100px;
 }
 
 .events

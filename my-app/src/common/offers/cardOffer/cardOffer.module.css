@@ -1,11 +1,11 @@
 .cardOfferContainer {
     display: flex;
     flex-direction: column;
-    grid-column: 1/6;
-    grid-row: 1/6;
     background-color: white;
     overflow-y: scroll;
-    width: 99%;
+    height: 100%;
+    width: 100%;
+    transform: translate(0px, -2px);
 }
 
 .date {

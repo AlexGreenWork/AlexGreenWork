@@ -196,7 +196,7 @@ function WgFilesList(){
  if(reqMyFileWg === 0 || reqMyFileWg === "нет файлов"){
         return(
 
-            <div className={s.personalCabinetContainer} >
+            <div className={s.personalCabinetContainer1} >
                 Файлов нет
                 
             </div>
@@ -204,7 +204,7 @@ function WgFilesList(){
     } else{
         return(
 
-            <div className={s.personalCabinetContainer} >
+            <div className={s.personalCabinetContainer1} >
                 <div className='filesWG'>Файлы рабочей группы</div>
                 <WgList dataFiles={reqMyFileWg}/>
             </div>
@@ -242,7 +242,7 @@ const MyFiles = () => {
     if(reqMyOff === 0){
         return(
 
-            <div className={s.personalCabinetContainer} >
+            <div className={s.personalCabinetContainer1} >
                 Файлов нет
                 <WgFilesList/>
             </div>

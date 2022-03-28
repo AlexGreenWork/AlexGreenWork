@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import s from "./general.module.css"
 import InputLabel from '@mui/material/InputLabel';
 import Box from '@mui/material/Box';
@@ -15,7 +15,8 @@ import {API_URL} from "../../../../../config";
 import {useDispatch, useSelector} from "react-redux";
 import {toStatus} from "../../../../../actions/offers";
 import { store } from "../../../../../reducers";
-
+import axios from "axios";
+import { selectMyOffers } from "../../../../../reducers/offerReducer";
 
 
 
@@ -130,6 +131,10 @@ const CommonOffer = () => {
     const [view, setView] = React.useState('');
     const offersData =  useSelector(state => store.getState().offers.offer)
     const [status, setStatus] = React.useState(`${localStorage.getItem('status')}`);
+    const [display, setDisplay] = useState(false)
+    const [focusProblem, setFocusProblem] = useState('')
+    const [focusTextoffer, setFocusTextoffer] = useState(false)
+    const dispatch = useDispatch();
 
 
     if (offersData.category == 1) {
@@ -202,19 +207,175 @@ let nameStatus;
     }
 
     ///////////////////// MULTISELECT_ROLE_FOR_WG
-    function AdminChange(props) {
+        function AdminChange(props) {
         const isAdmin = props.isAdmin;
         if (isAdmin == 'wg') {
             return <IsAdminRG/>;
 
         } else {
+            //  setDisplay(true)
             return <IsAdminUser/>
         }
     }
 
+    function EditButton(props){
+        let offersData = props.offersData
+        let focus = props.focusProblem
+        if(focus === "editPtoblem" ){
+            return(
+                <button onClick={() => {
+                    try {
+                        let problem = document.querySelector('#editPtoblem').textContent
+                        axios.post(`${API_URL}api/offers/editPropblem`, {
+                            problem: problem,
+                            tabNum: offersData.tabelNum,
+                            idOffers: `${offersData.Id}`,
+    
+                        })
+                            .then(res => {
+                                console.log(res.data)
+                                if (res.data === true) {
+                                    setFocusProblem(null);
+                                    dispatch(
+                                        selectMyOffers(
+                                            offersData.Id,
+                                            offersData.nameOffer,
+                                            offersData.date,
+                                            offersData.tabelNum,
+                                            offersData.nameSendler,
+                                            offersData.surnameSendler,
+                                            offersData.middlenameSendler,
+                                            offersData.email,
+                                            offersData.status,
+                                            problem,
+                                            offersData.category,
+                                            offersData.view,
+                                            offersData.responsibles,
+                                            offersData.responsibles_rg,
+                                            offersData.textOffer,
+                                            offersData.phoneNumber,
+                                            offersData.dateComission,
+                                        )
+                                    )
+                                }else{
+                                    alert("Ошибка")
+                                }
+                            })
+                    } catch (e) {
+                        alert(e.response)
+                    }
+                }}>Редактировать описание проблемы</button>
+            ) 
 
+            } else {
+                return (<div></div>)
+            }
+        
+        
+    }
 
+    function EditButtonTextOffers(props){
+        let offersData = props.offersData
+        let focus = props.focusTextOffer
+        
+        if(focus === "Textoffer" ){
+        return(
+              <button onClick={() => {
+                try {
+                    let textOffer = document.querySelector('#editTextOffer').textContent
+                    //  console.log(problem)
+                    axios.post(`${API_URL}api/offers/editTextOffer`, {
+                        textOffer: textOffer,
+                        tabNum: offersData.tabelNum,
+                        idOffers: `${offersData.Id}`,
 
+                    })
+                        .then(res => {
+                            if (res.data === true) {
+                                setFocusTextoffer(null);
+                                dispatch(
+                                    selectMyOffers(
+                                        offersData.Id,
+                                        offersData.nameOffer,
+                                        offersData.date,
+                                        offersData.tabelNum,
+                                        offersData.nameSendler,
+                                        offersData.surnameSendler,
+                                        offersData.middlenameSendler,
+                                        offersData.email,
+                                        offersData.status,
+                                        offersData.descriptionProblem,
+                                        offersData.category,
+                                        offersData.view,
+                                        offersData.responsibles,
+                                        offersData.responsibles_rg,
+                                        textOffer,
+                                        offersData.phoneNumber,
+                                        offersData.dateComission,
+                                    )
+                                )
+                            } else{
+                                alert("Ошибка")
+                            }
+                        })
+                } catch (e) {
+                    alert(e.response)
+                }
+            }}>Редактировать содержание предложения</button>
+        )
+        
+        
+    } else {
+        return (<div></div>)
+    }
+}
+    // if(focus === "textFocus"){
+    //     return(
+    //           <button onClick={() => {
+    //             try {
+    //                 let textOffer = document.querySelector('#editTextOffer').textContent
+    //                 //  console.log(problem)
+    //                 axios.post(`${API_URL}api/offers/editTextOffer`, {
+    //                     textOffer: textOffer,
+    //                     tabNum: offersData.tabelNum,
+    //                     idOffers: `${offersData.Id}`,
+
+    //                 })
+    //                     .then(res => {
+    //                         if (res.data === true) {
+                                
+    //                             dispatch(
+    //                                 selectMyOffers(
+    //                                     offersData.Id,
+    //                                     offersData.nameOffer,
+    //                                     offersData.date,
+    //                                     offersData.tabelNum,
+    //                                     offersData.nameSendler,
+    //                                     offersData.surnameSendler,
+    //                                     offersData.middlenameSendler,
+    //                                     offersData.email,
+    //                                     offersData.status,
+    //                                     offersData.descriptionProblem,
+    //                                     offersData.category,
+    //                                     offersData.view,
+    //                                     offersData.responsibles,
+    //                                     offersData.responsibles_rg,
+    //                                     textOffer,
+    //                                     offersData.phoneNumber,
+    //                                     offersData.dateComission,
+    //                                 )
+    //                             )
+    //                         }
+    //                     })
+    //             } catch (e) {
+    //                 alert(e.response)
+    //             }
+    //         }}>Редактировать2</button>
+    //     )
+        
+       
+  
+    // }
     function changeViewMultiSelect() {
 
         if (viewChange == true) {
@@ -657,131 +818,219 @@ let nameStatus;
     }
 
 
-
-    return (
-        <div className={s.nameOffer}>
-
-
-            <div className={s.idOffer}>
-                <div>№:{offersData.Id}</div>
-                <div className={s.nameOfferHead}>. {offersData.nameOffer}</div>
-            </div>
-            <Box sx={{width: '100%'}}>
-                <Stepper activeStep={stepStatusOff} sx={{
-                    '@media screen and (max-width: 553px)': {
-                        flexWrap: 'wrap'
-                    }
-                }}>
-                    {steps.map((label, index) => {
-                        const labelProps = {};
-                        if (isStepFailed(index)) {
-                            labelProps.optional = (
-                                <Typography variant="caption" color="error">Отклонено</Typography>
-                            );
-
-                            labelProps.error = true;
+    
+        return (
+            <div className={s.nameOffer}>
+    
+    
+                <div className={s.idOffer}>
+                    <div>№:{offersData.Id}</div>
+                    <div className={s.nameOfferHead}>. {offersData.nameOffer}</div>
+                </div>
+                <Box sx={{width: '100%'}}>
+                    <Stepper activeStep={stepStatusOff} sx={{
+                        '@media screen and (max-width: 553px)': {
+                            flexWrap: 'wrap'
                         }
-                        return (
-                            <Step key={label}>
-                                <StepLabel {...labelProps}>{label}</StepLabel>
-                            </Step>
-                        );
-                    })}
-                </Stepper>
-            </Box>
-
-
-            <div id={"containerProperties"} className={s.propertiesOffer}>
-
-                <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
-
-
-            </div>
-
-            <div className={s.cardOffer}>
-                <div className={s.from}>
-                    <div className={s.date}>Дата предложения: {offersData.date.slice(0, 10)}</div>
-                    <div className={s.fieldOfCategoryOffer}>
-                        <div className={s.nameCategoryOfOffer}>Автор предложения:</div>
-                        <div style={{
-                            fontWeight: 1000,
-                            fontFamily: "serif",
-                            padding: "10px"
-
-                        }}>{offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
-                        <AddSendlerOffers />
-                       
-                    </div>
-                    <div className={s.fieldOfCategoryOffer}>
-                        <div className={s.nameCategoryOfOffer}> Категория предложения:</div>
-                        <div style={{
-                            fontWeight: 1000,
-                            fontFamily: "serif",
-
-                            padding: "10px"
-                        }}>{offersData.category}</div>
-                    </div>
-                    <div className={s.fieldOfCategoryOffer}>
-                        <div className={s.nameCategoryOfOffer}> Вид предложения:</div>
-                        <div style={{
-                            fontWeight: 1000,
-                            fontFamily: "serif",
-
-                            padding: "10px"
-                        }}>{offersData.view}</div>
-                    </div>
-                    <div className={s.fieldOfCategoryOffer}>
-                        <div className={s.nameCategoryOfOffer}> Статус предложения:</div>
-                        <div style={{
-                            fontWeight: 1000,
-                            fontFamily: "serif",
-
-                            padding: "10px"
-                        }}>{nameStatus}</div>
-                    </div>
+                    }}>
+                        {steps.map((label, index) => {
+                            const labelProps = {};
+                            if (isStepFailed(index)) {
+                                labelProps.optional = (
+                                    <Typography variant="caption" color="error">Отклонено</Typography>
+                                );
+    
+                                labelProps.error = true;
+                            }
+                            return (
+                                <Step key={label}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
+                </Box>
+    
+    
+                <div id={"containerProperties"} className={s.propertiesOffer}>
+    
+                    <AdminChange isAdmin={localStorage.getItem("userAdminOptions")}/>
+    
+    
                 </div>
-                <div className={s.fieldOfCategoryOffer}> Содержание предложения:
-                    <div style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
-                        fontStyle: "italic"
-
-                    }}> {offersData.textOffer}</div>
-                </div>
-                <div className={s.fieldOfCategoryOffer}> Описание проблемы:
-                    <div style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
-                        fontStyle: "italic"
-
-                    }}> {offersData.descriptionProblem}  </div>
-                </div>
-            </div>
-            <div className={s.fileContainerLayer}>
-                <div id="listFile">Прикрепленные файлы</div>
-
-                <div>  {listFile} </div>
-
-                <form className="offersFile" onSubmit={handleSubmit}>
-                    <input type="file" name="myFileCard" id="fileCard"></input>
-                    <div className={s.buttonConfirm}>
-                        <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit"
-                                onClick={() => setFileList(<FileList/>)}>Отправить
-                            файл
-                        </button>
+    
+                <div className={s.cardOffer}>
+                    <div className={s.from}>
+                        <div className={s.date}>Дата предложения: {offersData.date.slice(0, 10)}</div>
+                        <div className={s.fieldOfCategoryOffer}>
+                            <div className={s.nameCategoryOfOffer}>Автор предложения:</div>
+                            <div style={{
+                                fontWeight: 1000,
+                                fontFamily: "serif",
+                                padding: "10px"
+    
+                            }}>{offersData.surnameSendler} {offersData.nameSendler} {offersData.middlenameSendler}</div>
+                            <AddSendlerOffers />
+                           
+                        </div>
+                        <div className={s.fieldOfCategoryOffer}>
+                            <div className={s.nameCategoryOfOffer}> Категория предложения:</div>
+                            <div style={{
+                                fontWeight: 1000,
+                                fontFamily: "serif",
+    
+                                padding: "10px"
+                            }}>{offersData.category}</div>
+                        </div>
+                        <div className={s.fieldOfCategoryOffer}>
+                            <div className={s.nameCategoryOfOffer}> Вид предложения:</div>
+                            <div style={{
+                                fontWeight: 1000,
+                                fontFamily: "serif",
+    
+                                padding: "10px"
+                            }}>{offersData.view}</div>
+                        </div>
+                        <div className={s.fieldOfCategoryOffer}>
+                            <div className={s.nameCategoryOfOffer}> Статус предложения:</div>
+                            <div style={{
+                                fontWeight: 1000,
+                                fontFamily: "serif",
+    
+                                padding: "10px"
+                            }}>{nameStatus}</div>
+                        </div>
                     </div>
-
-
-                </form>
+                    <div className={s.fieldOfCategoryOffer}  > Содержание предложения:
+                        <div id='editTextOffer' contentEditable="true" style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
+                            fontStyle: "italic"
+    
+                        }} onFocus = {()=>{  setFocusTextoffer("Textoffer")}}> {offersData.textOffer}</div>
+                    </div>
+                    <EditButtonTextOffers  offersData = {offersData} focusTextOffer = {focusTextoffer}/>
+                    {/* <button onClick={() => {
+                    //     try {
+                    //         let textOffer = document.querySelector('#editTextOffer').textContent
+                    //         //  console.log(problem)
+                    //         axios.post(`${API_URL}api/offers/editTextOffer`, {
+                    //             textOffer: textOffer,
+                    //             tabNum: offersData.tabelNum,
+                    //             idOffers: `${offersData.Id}`,
+    
+                    //         })
+                    //             .then(res => {
+                    //                 if (res.data === true) {
+                                        
+                    //                     dispatch(
+                    //                         selectMyOffers(
+                    //                             offersData.Id,
+                    //                             offersData.nameOffer,
+                    //                             offersData.date,
+                    //                             offersData.tabelNum,
+                    //                             offersData.nameSendler,
+                    //                             offersData.surnameSendler,
+                    //                             offersData.middlenameSendler,
+                    //                             offersData.email,
+                    //                             offersData.status,
+                    //                             offersData.descriptionProblem,
+                    //                             offersData.category,
+                    //                             offersData.view,
+                    //                             offersData.responsibles,
+                    //                             offersData.responsibles_rg,
+                    //                             textOffer,
+                    //                             offersData.phoneNumber,
+                    //                             offersData.dateComission,
+                    //                         )
+                    //                     )
+                    //                 }
+                    //             })
+                    //     } catch (e) {
+                    //         alert(e.response)
+                    //     }
+                    // }}>Редактировать</button> */}
+                   
+                    <div className={s.fieldOfCategoryOffer} onFocus = {()=>{  setFocusProblem("editPtoblem");}}
+                        > Описание проблемы:
+                        <div contentEditable="true" id="editPtoblem" style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
+                            fontStyle: "italic"
+    
+    
+                        }} > {offersData.descriptionProblem}  </div>
+                    </div>
+                    {/* <button onClick={() => {
+                        try {
+                            let problem = document.querySelector('#editPtoblem').textContent
+                            axios.post(`${API_URL}api/offers/editPropblem`, {
+                                problem: problem,
+                                tabNum: offersData.tabelNum,
+                                idOffers: `${offersData.Id}`,
+    
+                            })
+                                .then(res => {
+                                    if (res.data === true) {
+                                        
+                                        dispatch(
+                                            selectMyOffers(
+                                                offersData.Id,
+                                                offersData.nameOffer,
+                                                offersData.date,
+                                                offersData.tabelNum,
+                                                offersData.nameSendler,
+                                                offersData.surnameSendler,
+                                                offersData.middlenameSendler,
+                                                offersData.email,
+                                                offersData.status,
+                                                problem,
+                                                offersData.category,
+                                                offersData.view,
+                                                offersData.responsibles,
+                                                offersData.responsibles_rg,
+                                                offersData.textOffer,
+                                                offersData.phoneNumber,
+                                                offersData.dateComission,
+                                            )
+                                        )
+                                    }
+                                })
+                        } catch (e) {
+                            alert(e.response)
+                        }
+                    }}>Редактировать</button> */}
+                 <EditButton offersData = {offersData} focusProblem = {focusProblem}/>
+                </div>
+              
+                <div className={s.fileContainerLayer}>
+                    <div id="listFile">Прикрепленные файлы</div>
+    
+                    <div>  {listFile} </div>
+    
+                    <form className="offersFile" onSubmit={handleSubmit}>
+                        <input type="file" name="myFileCard" id="fileCard"></input>
+                        <div className={s.buttonConfirm}>
+                            <button id="form-button" className="form-btn-sendOffer" type="submit" value="submit"
+                                    onClick={() => setFileList(<FileList/>)}>Отправить
+                                файл
+                            </button>
+                        </div>
+    
+    
+                    </form>
+                </div>
+    
             </div>
-
-        </div>
-
-    )
+    
+        )
+   
+    
+   
 }
 
 

@@ -1,0 +1,79 @@
+.header
+{
+    display: flex;
+	margin-bottom: 10px;
+	width: 60%;
+}
+
+.ava
+{
+	margin-right: 10px;
+    width: 50px;
+	height: 50px;
+}
+
+.messagePreview
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+	width: 95%;
+}
+
+.from
+{
+    font-weight: bold;
+	color: #c67c00;
+	text-align: start;
+}
+
+.you
+{
+    font-weight: bold;
+	color: #c67c00;
+	text-align: end;
+}
+
+.user
+{
+	width: 95%;
+}
+
+.time
+{
+	text-align: end;
+	float: right;
+}
+
+.messageYouUnread
+{
+	margin-left: 20px;
+	border-radius: 3px;
+	background-color: rgb(50, 50, 50);
+	min-height: 30px;
+	padding: 5px 5px;
+	color: White;
+	font-size: 18px;
+}
+
+.messageYou
+{
+	margin-left: 20px;
+	border-radius: 3px;
+	background-color: #c67c00;
+	min-height: 30px;
+	padding: 5px 5px;
+	color: Black;
+	font-size: 18px;
+}
+
+.message
+{
+	margin-left: 20px;
+	border-radius: 3px;
+	background-color: Teal;
+	min-height: 30px;
+	padding: 5px 5px;
+	color: Black;
+	font-size: 18px;
+}

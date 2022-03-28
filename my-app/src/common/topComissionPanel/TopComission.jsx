@@ -13,9 +13,13 @@ class TopComission extends React.Component
 	{
 
 		return(<div style={{
-					gridColumn: "2/6",
-					gridRow: "2/6",
-					overflowY: "scroll"
+					position:"absolute",
+				width:"90%",
+				top:"100px",
+				right:0,
+				height:"calc(100% - 170px)",
+					overflowY: "scroll",
+				backgroundColor:"white"
 				}}> 
 					<div style={{
 								display: "flex",

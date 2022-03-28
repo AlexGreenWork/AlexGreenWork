@@ -57,12 +57,15 @@ class State extends React.Component
 			sum += a.c;
 		}
 
+		const userPhoneNumber = data.phone_number.trim();
+
 		this.setState({list: data.self_offers,
 						sum: sum,
 						register: data.user,
 						permission: data.permission,
 						responsibles: data.responsibles,
 						responsibles_rg: data.responsibles_rg,
+						phone_number: userPhoneNumber.startsWith('+') ? userPhoneNumber : '+' + userPhoneNumber,
 						co_offers: data.co_offers});
 	}
 
@@ -115,6 +118,15 @@ class State extends React.Component
 							Права:
 						</span>
 						&nbsp;{this.create_permission_status(this.state.permission)}
+					</div>
+				</div>
+
+				<div style={{display: "grid", gridTemplateColumns:"auto auto auto auto", paddingTop: "24px"}}>
+					<div>
+						<span style={{fontWeight: "bold", fontSize: "15px"}}>
+							Номер телефона:
+						</span>
+						&nbsp;{this.state.phone_number}
 					</div>
 				</div>
 

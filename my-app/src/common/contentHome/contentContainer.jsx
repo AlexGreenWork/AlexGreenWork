@@ -4,31 +4,39 @@ import {NavLink} from "react-router-dom";
 
 const ContentContainer = () => {
     return (
-        <div className={s.contentContainer}>
-            <div className={s.button1}>
-                <NavLink  className={s.btnA} to="/sendOfferWorker">
-                    Подать предложение
-                </NavLink>
-            </div>
-            <div className={s.button2}>
-                <NavLink id="administration" className={s.btnA} to="/administration">   
-                
-                   Внутренний портал
 
-                </NavLink>
-            </div>
-            <div className={s.button3}>
-               <NavLink id="production" className={s.btnA} to="/management">
+
+        <div className={s.contentContainer}>
+
+           <div className={s.colBtnLeft} >
+             <div className={s.button1}>
+                 <NavLink  className={s.btnA} to="/sendOfferWorker">
+                      Подать предложение
+                   </NavLink>
+                  </div>
+               <div className={s.button2}>
+                  <NavLink id="administration" className={s.btnA} to="/administration">
+                
+                     Внутренний портал
+
+                   </NavLink>
+               </div>
+               <div className={s.button3}>
+                   <NavLink id="production" className={s.btnA} to="/management">
                     Руководство
 
-                </NavLink>
-            </div>
-            <div className={s.button4}>
-                <NavLink id="contacts" className={s.btnA} to="/contacts">
+                    </NavLink>
+             </div>
+               <div className={s.button4}>
+                 <NavLink id="contacts" className={s.btnA} to="/contacts">
                     Контакты
 
-                </NavLink>
-            </div>
+                  </NavLink>
+                </div>
+           </div>
+
+
+            <div className={s.colBtnRight} >
             <div className={s.button5}>
                 <NavLink id="excursion" className={s.btnA} to="/excursion">
                     Экскурсии
@@ -52,6 +60,7 @@ const ContentContainer = () => {
                     Городской гид
 
                 </NavLink>
+            </div>
             </div>
         </div>
     );

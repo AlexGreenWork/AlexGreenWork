@@ -81,7 +81,7 @@ const ConclusionOffer = () => {
           </div>
 
           <div className={s.finder}>
-            <FindWorkers />
+            <FindWorkers className={s.sendOfferContainer1}  />
             <div
               style={{
                 width: "100%",

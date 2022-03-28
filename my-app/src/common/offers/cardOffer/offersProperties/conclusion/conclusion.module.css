@@ -125,6 +125,32 @@
     border-radius: 10px;
 
 }
+.sendOfferContainer1{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+    padding-top: 20px;
+
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    --main-bg-color: #fff;
+    --main-text-color: #444;
+
+    margin: 0;
+    background-color: rgba(255,255,255,0.6);
+    color: var(--main-text-color);
+    font-family: sans-serif;
+    z-index: 1;
+
+    width: 90%;
+    right: 0;
+    background-color: white;
+    height: 100%;
+    top: 100px;
+}
 
 .nameOffer {
     display: flex;

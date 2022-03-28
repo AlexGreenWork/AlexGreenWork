@@ -94,7 +94,7 @@ const ConclusionCard = (props) => {
           </div>
 
           <div className={s.finder}>
-            <FindWorkers />
+            <FindWorkers className={s.sendOfferContainer1}/>
             <div
               style={{
                 width: "100%",
@@ -150,6 +150,7 @@ const ConclusionCard = (props) => {
 
   async function deleteResponsible(idOffer, respTabnum) {
     try {
+      console.log(respTabnum,idOffer)
       await server.send_post_request(
         `${API_URL}api/offers/toDbDeleteResponsible`,
         {
@@ -176,7 +177,7 @@ const ConclusionCard = (props) => {
           position,
         }
       );
-
+      console.log(respTabnum,idOffer, position)
       alert("Ответственный сотрудник добавлен");
     } catch (e) {
       alert(e.response.data.message);

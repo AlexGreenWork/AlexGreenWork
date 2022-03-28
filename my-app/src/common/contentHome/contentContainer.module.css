@@ -121,40 +121,39 @@
 
 
 .contentContainer{
-
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
+    height: 80vh;
     align-items: center;
-    margin: .5%;
-    grid-column: 1 / 6;
-    grid-row: 1 / 6;
-    display: grid;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
     width: 99%;
     min-height: 98%;
-    -webkit-box-flex: 1;
-    -ms-flex: 1 1 auto;
     flex: 1 1 auto;
-    -ms-grid-columns: 1fr 32.5vw 32.5vw 1fr;
-    grid-template-columns: 1fr 32.5vw 32.5vw 1fr;
-    -ms-grid-rows: 20vh 20vh 20vh 20vh;
-    grid-template-rows: 20vh 20vh 20vh 20vh;
-    grid-gap: .1vh;
+    position: relative;
+    overflow: hidden;
+
+
     position: relative;
     overflow: hidden;
 
 }
+.colBtnLeft{
+    flex-direction: column;
+    height: 100%;
+    display: flex;
+    width: 15vw;
+}
+.colBtnRight{
+    flex-direction: column;
+    height: 100%;
+    display: flex;
+    width: 15vw;
+}
+
 .button1 {
     position: relative;
-    -ms-grid-column: 1;
-    -ms-grid-column-span: 1;
-    grid-column: 1/ 2;
-    -ms-grid-row: 2;
-    -ms-grid-row-span: 1;
-    grid-row: 1 / 2;
-    margin-right: 7px;
+margin: 10px;
+
     -webkit-animation-name: fromLeftToRight;
     animation-name: fromLeftToRight;
     -webkit-animation-duration: .3s;
@@ -166,13 +165,8 @@
 
 .button2 {
     position: relative;
-    -ms-grid-column: 1;
-    -ms-grid-column-span: 1;
-    grid-column: 1/ 2;
-    -ms-grid-row: 3;
-    -ms-grid-row-span: 1;
-    grid-row: 2 / 3;
-    margin-right: 7px;
+    margin: 10px;
+
     -webkit-animation-name: fromLeftToRight;
     animation-name: fromLeftToRight;
     -webkit-animation-duration: .3s;
@@ -183,13 +177,8 @@
 
 .button3 {
     position: relative;
-    -ms-grid-column: 1;
-    -ms-grid-column-span: 1;
-    grid-column: 1/ 2;
-    -ms-grid-row: 4;
-    -ms-grid-row-span: 1;
-    grid-row: 3 / 4;
-    margin-right: 7px;
+    margin: 10px;
+
     -webkit-animation-name: fromLeftToRight;
     animation-name: fromLeftToRight;
     -webkit-animation-duration: .3s;
@@ -200,13 +189,8 @@
 
 .button4 {
     position: relative;
-    -ms-grid-column: 1;
-    -ms-grid-column-span: 1;
-    grid-column: 1/ 2;
-    -ms-grid-row: 5;
-    -ms-grid-row-span: 1;
-    grid-row: 4 / 5;
-    margin-right: 7px;
+    margin: 10px;
+
     -webkit-animation-name: fromLeftToRight;
     animation-name: fromLeftToRight;
     -webkit-animation-duration: .3s;
@@ -217,13 +201,8 @@
 
 .button5 {
     position: relative;
-    -ms-grid-column: 4;
-    -ms-grid-column-span: 1;
-    grid-column: 4/ 5;
-    -ms-grid-row: 2;
-    -ms-grid-row-span: 1;
-    grid-row: 1 / 2;
-    margin-right: 7px;
+    margin: 10px;
+
     -webkit-animation-name:  fromRightToLeft ;
     animation-name:  fromRightToLeft ;
     -webkit-animation-duration: .3s;
@@ -234,13 +213,8 @@
 
 .button6 {
     position: relative;
-    -ms-grid-column: 4;
-    -ms-grid-column-span: 1;
-    grid-column: 4/ 5;
-    -ms-grid-row: 3;
-    -ms-grid-row-span: 1;
-    grid-row: 2 / 3;
-    margin-right: 7px;
+    margin: 10px;
+
     -webkit-animation-name:  fromRightToLeft ;
     animation-name:  fromRightToLeft ;
     -webkit-animation-duration: .3s;
@@ -252,13 +226,8 @@
 
 .button7 {
     position: relative;
-    -ms-grid-column: 4;
-    -ms-grid-column-span: 1;
-    grid-column: 4/ 5;
-    -ms-grid-row: 4;
-    -ms-grid-row-span: 1;
-    grid-row: 3 / 4;
-    margin-right: 7px;
+    margin: 10px;
+
     -webkit-animation-name:  fromRightToLeft ;
     animation-name:  fromRightToLeft ;
     -webkit-animation-duration: .3s;
@@ -269,14 +238,9 @@
 
 
 .button8 {
+    margin: 10px;
     position: relative;
-    -ms-grid-column: 4;
-    -ms-grid-column-span: 1;
-    grid-column: 4/ 5;
-    -ms-grid-row: 5;
-    -ms-grid-row-span: 1;
-    grid-row: 4 / 5;
-    margin-right: 7px;
+
     -webkit-animation-name:  fromRightToLeft ;
     animation-name:  fromRightToLeft ;
     -webkit-animation-duration: .3s;

@@ -26,19 +26,17 @@ class Administration extends React.Component {
     return (
       <div
         style={{
-          gridColumn: "1/6",
-          gridRow: "1/6",
           position: "relative",
           display: "flex",
           justifyContent: "center",
+            width:"100%"
         }}
       >
         <ContentContainer />
 		
         <div
           style={{
-            gridColumn: "2/5",
-            gridRow: "1/6",
+
             backgroundColor: "white",
             // backgroundColor: "#ffffffd1",
             position: "absolute",

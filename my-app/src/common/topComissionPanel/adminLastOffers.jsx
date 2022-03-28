@@ -28,8 +28,7 @@ class LastOffers extends React.Component
 
 	componentDidMount()
 	{
-		this.setState({mount: true})
-		this.update(this.state.year, this.state.month);
+		this.setState({mount: true});
 
 		server.send_post_request(`${API_URL}api/offers/avaliableOffersDate`)
 			.then((res) => {
@@ -48,7 +47,7 @@ class LastOffers extends React.Component
 		{
 			server.send_post_request(`${API_URL}api/offers/lastOffersByDate`, {year: year, month: month})
 				.then((res) => {
-						this.setState({list: {last_offers: res.data.last_offers}, year: year, month: month})
+					this.setState({list: {last_offers: res.data.last_offers}, year: year, month: month})
 				});
 		}
 	}
@@ -68,9 +67,11 @@ class LastOffers extends React.Component
 
 			//Блядский option ругается на out-of-bound, поэтому добавляем текущий месяц и год, чтобы он заткнулся
 			//Почему в методе init? для того что-бы лишний раз не дергать state, да и данные из базы подъедут
-			data[this.state.year][this.state.month] = this.state.month;
+			data[this.state.year][this.state.month - 1] = this.state.month;
 			this.setState({avaliable_month: data, avaliable_year: years});
 		}
+
+		this.update(this.state.year, this.state.month);
 	}
 
 	onDateChange(value)
