@@ -4,6 +4,7 @@ import { API_URL } from "../../../config";
 
 class MessageStatus extends React.Component
 {
+
 	static timer = null;
 	static defaultTimer = {
 							ref_count: 0,
@@ -46,6 +47,7 @@ class MessageStatus extends React.Component
 		{
 			MessageStatus.defaultTimer.is_run = false;
 			clearInterval(MessageStatus.timer);
+
 			MessageStatus.timer = null;
 		}
 	}

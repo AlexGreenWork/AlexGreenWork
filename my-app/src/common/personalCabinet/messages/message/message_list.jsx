@@ -21,6 +21,7 @@ class MessageList extends React.Component
 	{
 		if(this.props !== props)
 		{
+
 			this.scrollToBottom();
 			const messageContainer = document.getElementById('messages_user_container');
 			this.messageViewCheck(messageContainer.children, messageContainer);

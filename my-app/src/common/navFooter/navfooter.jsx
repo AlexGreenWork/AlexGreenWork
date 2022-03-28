@@ -22,6 +22,9 @@ const Navfooter = () => {
                     <NavLink to="/personalCabinet" title="personal Cabinet">
                         <span style={{filter:"drop-shadow(2px 4px 6px black)"}}>Личный кабинет</span>
                         <CountNoBrowsing/>
+						<MessageStatus>
+							<CountMessageNoBrowsing/>
+						</MessageStatus>
                     </NavLink>
                     <NavLink className="active" to="/personalCabinet/messages" title="home">
                         <svg style={{marginRight:"5px", filter:"drop-shadow(2px 4px 6px black)"}} xmlns="http://www.w3.org/2000/svg" version="1.0" width="20.000000pt" height="20.000000pt" viewBox="0 0 64.000000 64.000000" preserveAspectRatio="xMidYMid meet">
