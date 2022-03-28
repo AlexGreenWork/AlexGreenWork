@@ -180,7 +180,6 @@ class Messages extends React.Component
 
 	submit_message(message)
 	{
-
 		server.send_post_request(`${API_URL}api/messages/send_message`, {...message, addressee: this.state.messageUser}).then(res => {
 			if(res.status === 200)
 			{
