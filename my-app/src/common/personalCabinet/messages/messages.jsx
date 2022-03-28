@@ -147,7 +147,6 @@ class Messages extends React.Component
 				}
 			});
 
-
 			const watched_messages = this.pull_unreads_messages_status();
 			if(watched_messages.length > 0)
 			{
