@@ -6,11 +6,7 @@ import { API_URL } from "../../config";
 import {useDispatch, useSelector} from "react-redux";
 import { store } from "../../reducers";
 import {NotifOffersProcessing} from "../../reducers/notificationReducer"
-<<<<<<< HEAD
-
-=======
 import MessageStatus from "./messages/messages_status";
->>>>>>> testing
 
 // const isAuth = useSelector(state => state.user.isAuth)
 // const dispatch = useDispatch()
@@ -40,21 +36,15 @@ export const CountNoBrowsing = () =>{
 
 
                     let history = res.data;
-<<<<<<< HEAD
 
+                    // Resp(history)
                     if(history !== null){
-                        // setAllOffers(JSON.parse(xhr.response).length-history.length)
 
                         dispatch(NotifOffersProcessing(history[0]));
                     } else {
                         dispatch(NotifOffersProcessing(history[0]));
-                        // setAllOffers(JSON.parse(xhr.response).length)
+
                     }
-=======
-
-                    Resp(history)
->>>>>>> testing
-
 
 
                 })
@@ -64,92 +54,82 @@ export const CountNoBrowsing = () =>{
     }
 
 
-        function Resp(history) {
-
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', `${API_URL}api/offers/allOffers`, true)
-            xhr.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    if(history !== null){
-                        // setAllOffers(JSON.parse(xhr.response).length-history.length)
-
-                        dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length-history.length));
-<<<<<<< HEAD
-                        console.log(JSON.parse(xhr.response).length)
-                        console.log(xhr.response)
-                        console.log(history.length)
-                        console.log(history)
-=======
->>>>>>> testing
-                    } else {
-                        dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length));
-                        // setAllOffers(JSON.parse(xhr.response).length)
-                    }
-
-                }
-            }
-            xhr.send();
-    }
+    // function Resp(history) {
+    //
+    //     let xhr = new XMLHttpRequest();
+    //     xhr.open('GET', `${API_URL}api/offers/allOffers`, true)
+    //     xhr.onreadystatechange = function () {
+    //         if (this.readyState === 4 && this.status === 200) {
+    //             if(history !== null){
+    //                 // setAllOffers(JSON.parse(xhr.response).length-history.length)
+    //
+    //                 dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length-history.length));
+    //             } else {
+    //                 dispatch(NotifOffersProcessing(JSON.parse(xhr.response).length));
+    //                 // setAllOffers(JSON.parse(xhr.response).length)
+    //             }
+    //
+    //         }
+    //     }
+    //     xhr.send();
+    // }
 
     if (countOffers > 0) {
-    return (
-      <div className={s.countNoBrowser}>
-        {countOffers}
-      </div>
-    );
-  } else {
-    return (
-        <div></div>
-    )
-  }
+        return (
+            <div className={s.countNoBrowser}>
+                {countOffers}
+            </div>
+        );
+    } else {
+        return (
+            <div></div>
+        )
+    }
 
 }
-<<<<<<< HEAD
-=======
 
 export const CountMessageNoBrowsing = (props) => {
-	if(props?.unread_message_count)
-	{
-		let unread = 0
-		for(const key in props.unread_message_count)
-		{
-			unread += props.unread_message_count[key];
-		}
+    if(props?.unread_message_count)
+    {
+        let unread = 0
+        for(const key in props.unread_message_count)
+        {
+            unread += props.unread_message_count[key];
+        }
 
-		if(unread > 0)
-		{
-			return (
-					  <div className={s.countNoBrowser}>
-						{unread}
-					  </div>
-			)
-		}
-	}
+        if(unread > 0)
+        {
+            return (
+                <div className={s.countNoBrowser}>
+                    {unread}
+                </div>
+            )
+        }
+    }
 
-	return null;
+    return null;
 }
->>>>>>> testing
 
 
 const PersonalCabinet = () => {
 
     const [responsible, setResponsible] = useState(null)
     let tabNum = localStorage.getItem('userTabelNum');
-     try{
+    try{
         axios.post(`${API_URL}api/offers/responsibleToOffers`, {  tabNum: tabNum,
 
-                                                    })
-                                                    .then(res => {
-                                                        if(responsible == null){
-                                                            if(res.data != 'noResponsible' ){
-                                                                setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Ваши заключения</NavLink></div>)
-                                                            }
+        })
+            .then(res => {
+                if(responsible == null){
+                    if(res.data != 'noResponsible' ){
+                        setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Ваши заключения</NavLink></div>)
+                    }
 
-                                                        }
+                }
 
 
 
-                                                    })
+            })
     } catch (e){
         alert(e.response)
     }
@@ -165,7 +145,11 @@ const PersonalCabinet = () => {
                 </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers}
-                                                    to="/personalCabinet/messages"> Сообщения </NavLink></div>
+                                                    to="/personalCabinet/messages"> Сообщения </NavLink>
+                    <MessageStatus>
+                        <CountMessageNoBrowsing/>
+                    </MessageStatus>
+                </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
@@ -177,7 +161,7 @@ const PersonalCabinet = () => {
                     Найти сотрудника
                 </NavLink></div>
 
-                    {responsible}
+                {responsible}
 
             </div>
         )
@@ -197,14 +181,14 @@ const PersonalCabinet = () => {
                     <CountNoBrowsing/></div>
 
                 <div className={s.linksPC}>
-					<NavLink className={s.offers}
-								to="/personalCabinet/messages">
-						Сообщения
-					</NavLink>
-					<MessageStatus>
-						<CountMessageNoBrowsing/>
-					</MessageStatus>
-				</div>
+                    <NavLink className={s.offers}
+                             to="/personalCabinet/messages">
+                        Сообщения
+                    </NavLink>
+                    <MessageStatus>
+                        <CountMessageNoBrowsing/>
+                    </MessageStatus>
+                </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
@@ -241,10 +225,10 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink>
 
-					<MessageStatus>
-						<CountMessageNoBrowsing/>
-					</MessageStatus>
-				</div>
+                    <MessageStatus>
+                        <CountMessageNoBrowsing/>
+                    </MessageStatus>
+                </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
@@ -260,7 +244,7 @@ const PersonalCabinet = () => {
                 </NavLink></div>
 
 
-                    {responsible}
+                {responsible}
 
             </div>
         )
@@ -278,10 +262,10 @@ const PersonalCabinet = () => {
 
                 <div className={s.linksPC}><NavLink className={s.offers}
                                                     to="/personalCabinet/messages"> Сообщения </NavLink>
-					<MessageStatus>
-						<CountMessageNoBrowsing/>
-					</MessageStatus>
-				</div>
+                    <MessageStatus>
+                        <CountMessageNoBrowsing/>
+                    </MessageStatus>
+                </div>
 
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/myFiles">
                     Мои файлы
@@ -314,11 +298,11 @@ const PersonalCabinet = () => {
         if (isAdmin == 'admin') {
             return <IsAdminAdmin/>;
         }if (isAdmin == 'topComission') {
-            return <IsAdminTopComission/>;
-        }
-        else{
-            return <IsAdminUser/>
-        }
+        return <IsAdminTopComission/>;
+    }
+    else{
+        return <IsAdminUser/>
+    }
     }
 
 

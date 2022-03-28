@@ -160,10 +160,10 @@ class Message
 		try
 		{
 			const current_user_info = req.current_user_info.tabelNum;
-			const query = `INSERT INTO messages VALUES(null, ?, ?, ?, 0, 0, NOW())`;
+			const query = `INSERT INTO messages VALUES(null, ?, ?, ?, 0, 0, NOW(), ?)`;
 
 			connection = await Message.connection_to_database();
-			await connection.query(query, [current_user_info, req.body.addressee, message]);
+			await connection.query(query, [current_user_info, req.body.addressee, message, req.socket.remoteAddress]);
 
 			const addressee_query = `REPLACE INTO message_addressee_book VALUES(?, ?, 0), (?, ?, 0)`;
 			await connection.query(addressee_query, [current_user_info,	req.body.addressee,
@@ -378,6 +378,64 @@ class Message
 
 		res.status(200).send();
 	}
+
+	async get_message_status_read(req, res)
+	{
+        if (!('messageId' in req.body)
+            || !req.body.messageId
+			|| !('addressee' in req.body)
+            || !req.body.addressee)
+		{
+			Message.error(res, 'Неверно указаны параметры');
+			return;
+        }
+
+        if (typeof req.body.messageId != 'object')
+		{
+			Message.error(res, 'Неверно указаны параметры должен быть массив');
+			return;
+        }
+
+		let result = [];
+
+		let connection = null;
+
+		try
+		{
+			connection = await Message.connection_to_database();
+
+			const current_user_info = req.current_user_info.tabelNum;
+			const query = `SELECT 
+								id AS messageId,
+								is_read
+								FROM messages AS m 
+								WHERE m.sendler = ?
+								AND m.addressee = ?
+								AND m.id IN (?)`;
+
+			const stmt = await connection.query(query, [current_user_info, req.body.addressee, req.body.messageId]);
+
+			if(stmt[0].length)
+			{
+				for(const lf of stmt[0])
+				{
+					result.push({id: lf.messageId,
+						is_read: lf.is_read})
+				}
+			}
+		}
+		catch(e)
+		{
+			console.log(e)
+		}
+		finally
+		{
+			if(connection) connection.end();
+		}
+
+		res.status(200).send(result);
+	}
+
 
 	async get_unread_messages_count(req, res)
 	{

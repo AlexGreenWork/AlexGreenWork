@@ -1,4 +1,4 @@
-import {setUser, setUserLocal} from "../reducers/userReducer";
+import {logout, setUser, setUserLocal} from "../reducers/userReducer";
 import {API_URL} from "../config";
 import server from './server';
 
@@ -112,18 +112,7 @@ export const auth = () => {
 			}
 			else
 			{
-				try
-				{
-					const response = await server.send_get_request(`${API_URL}api/auth/auth`)
-
-					localStorage.setItem('token', response.data.token)
-                   
-					dispatch(setUser(response.data.user))
-				}
-				catch (e)
-				{
-					console.log('Auth Action ' + e)
-				}
+				dispatch(logout());
 			}
 		}
 	}

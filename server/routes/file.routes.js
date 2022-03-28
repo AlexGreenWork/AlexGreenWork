@@ -487,8 +487,9 @@ async function (req, res) {
     password: dataBaseConfig.database.password,
 });
    let matobozk = await pool.query("SELECT * FROM matobozk ")
-   let shifrzat = await pool.query("SELECT zatrname FROM shifrzat ")
-   res.send(matobozk[0].concat(shifrzat[0]))
+   // let shifrzat = await pool.query("SELECT zatrname FROM shifrzat ")
+    let matoboz = await pool.query("SELECT * FROM matoboz ")
+   res.send(matobozk[0].concat(matoboz[0]))
    pool.end()
 })
 

@@ -45,6 +45,7 @@ class UserCard extends React.Component
 						<Modal title={<Text style={{fontSize: "17px", fontWeight: "bold"}}>Карточка пользователя</Text>}
 								visible={this.state.show}
 								onOk={this.closeModal}
+								onCancel={this.closeModal}
 								width="800px"
 								footer = {[
 								   <Button type="primary" key="back" danger onClick={this.closeModal}>

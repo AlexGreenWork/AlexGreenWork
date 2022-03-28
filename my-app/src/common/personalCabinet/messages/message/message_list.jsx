@@ -7,11 +7,11 @@ class MessageList extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.onScrollTop = this.onScrollTop.bind(this);
+		this.onScroll = this.onScroll.bind(this);
 		this.messageViewPortIntersection = this.messageViewPortIntersection.bind(this);
 	}
 
-	scrollMessageToBottom()
+	scrollToBottom()
 	{
 		const messageContainer = document.getElementById('messages_user_container');
 		messageContainer.scrollTo(0, messageContainer.scrollHeight);
@@ -21,34 +21,54 @@ class MessageList extends React.Component
 	{
 		if(this.props !== props)
 		{
-			this.scrollMessageToBottom();
+			this.scrollToBottom();
+			const messageContainer = document.getElementById('messages_user_container');
+			this.messageViewCheck(messageContainer.children, messageContainer);
 		}
 	}
 
-	onScrollTop(e)
+	onScroll(e)
 	{
 		if(e.target.scrollTop <= 0)
 		{
-			if(this.props?.onScrollToTop
-				&& typeof this.props.onScrollToTop === 'function')
+			if(this.props?.onPullOldMessages 
+				&& typeof this.props.onPullOldMessages  === 'function')
 			{
-				this.props.onScrollToTop();
+				this.props.onPullOldMessages();
 			}
 		}
+		
+		this.messageViewHandle(e);
+	}
 
+	isVisible(ele, container)
+	{
+		const eleTop = ele.offsetTop;
+		const eleBottom = eleTop + ele.clientHeight;
+
+		const containerTop = container.scrollTop + container.offsetTop;
+		const containerBottom = containerTop + container.clientHeight;
+
+		return (
+			(eleTop >= containerTop && eleBottom <= containerBottom) ||
+			(eleTop < containerTop && containerTop < eleBottom) ||
+			(eleTop < containerBottom && containerBottom < eleBottom)
+		);
+	};
+
+	messageViewHandle(e)
+	{
 		const children = e.target.children;
+		this.messageViewCheck(children, e.target)
+	}
 
-		for(const child of children)
+	messageViewCheck(elements, container)
+	{
+		for(const element of elements)
 		{
-			let rectangle = child.getBoundingClientRect();
-			if(
-				rectangle.top >= 0 &&
-				rectangle.left >= 0 &&
-				rectangle.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-				rectangle.right <= (window.innerWidth || document.documentElement.clientWidth)
-			)
+			if(this.isVisible(element, container))
 			{
-				this.messageViewPortIntersection(child.id);
+				this.messageViewPortIntersection(element.id);
 			}
 		}
 	}
@@ -66,10 +86,10 @@ class MessageList extends React.Component
 	{
 		return (
 					<div id = "messages_user_container" className={s.messages}
-							onScroll = {this.onScrollTop}
+							onScroll = {this.onScroll}
 					>
 						{this.props.messages.map((message, id) => (
-							<div key = {id} id = {message.messageId}>
+							<div key = {id} id = {id}>
 								<Message key = {id} id = {id} {...message} users = {this.props.users}/>
 							</div>
 						))}

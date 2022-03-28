@@ -51,7 +51,7 @@ class MessagesAddressee extends React.Component
 							<MessageStatusIcon count = {this.props.unreads}/>
 						)
 					: null}
-					<Avatar className = {h.ava} alt={this.props.id} src = {avatar} />
+					<Avatar className = {h.ava} alt={this.props.id.toString()} src = {avatar} />
 					<div className = {h.messagePreview}>
 						<div className = {h.user}>
 							<h3>

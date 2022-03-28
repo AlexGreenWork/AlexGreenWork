@@ -1,11 +1,14 @@
-import React from "react";
-import s from "../contentHome/contentContainer.module.css";
+import React, {useState} from "react";
 import { API_URL } from "../../config";
-import { NavLink } from "react-router-dom";
+
+import axios from "axios";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import s from "./contacts.module.css"
 import ContentContainer from "../contentHome/contentContainer";
-import { style } from "@mui/system";
-import { fn } from "moment";
-import server from "../../actions/server";
 
 const CehList = [
   { number: 400, name: "ГЕНЕРАЛЬНАЯ ДИРЕКЦИЯ" },
@@ -17,7 +20,8 @@ const CehList = [
   { number: 433, name: "УПРАВЛЕНИЕ ПО МЕЖДУНАРОДНОЙ ФИНАНСОВОЙ ОТЧЕТНОСТИ" },
   { number: 436, name: "ОТДЕЛ СИСТЕМ ИНТЕЛЛЕКТУАЛЬНОГО УПРАВЛЕНИЯ КАРЬЕРОМ" },
   { number: 437, name: "ОТДЕЛ СОВЕРШЕНСТВОВАНИЯ УПРАВЛЕНИЯ ПРОИЗВОДСТВОМ И" },
-  { number: 438, name: "ОТДЕЛ ПРОМЫШЛЕННОЙ ЭЛЕКТРОНИКИ" },
+  { number: 438, name:  'ОТДЕЛ ОХРАНЫ ОКРУЖАЮЩЕЙ СРЕДЫ И ПРОМСАНИТАРИИ'},
+  { number: 439, name:  "ОТДЕЛ ПРОМЫШЛЕННОЙ ЭЛЕКТРОНИКИ"},
   { number: 441, name: "УПРАВЛЕНИЕ КАДРОВ" },
   { number: 443, name: "ФИНАНСОВОЕ УПРАВЛЕНИЕ" },
   { number: 444, name: "УПРАВЛЕНИЕ БУХГАЛТЕРСКОГО УЧЁТА И ОТЧЁТНОСТИ" },
@@ -86,152 +90,124 @@ const CehList = [
   { number: 270, name: "ЦЕХ ЗАПАСНЫХ ЧАСТЕЙ И ТНП" },
   { number: 972, name: "РУКОВОДСТВО ФИЛИАЛА МОАЗ" },
   { number: 820, name: 'РУКОВОДСТВО "СПК"ПЕРВОМАЙСКИЙ""' },
+
 ];
 
-class Contacts extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { list: [], ceh: CehList };
+function Contacts(){
+  const [req, setReq] = useState(null)
+  if(req === null){
+    try {
+      axios.post(`${API_URL}api/offers/readContacts`, {})
+        .then(res => {
+          console.log(res.data)
+          setReq(res.data)
+        })
+    } catch (e) {
+      alert(e.response)
+    }
+  
   }
 
-  componentDidMount() {
-    server
-      .send_post_request(`${API_URL}api/offers/readContacts`)
-      .then((res) => {
-        this.setState({ list: res.data });
-      });
-  }
-  showName() {}
-  showDepartment() {}
 
-  render() {
-    return (
-      <div
-        style={{
-          width:"100%",
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <ContentContainer />
-        <div
-          style={{
+  return(
+      <div style={{width:"100%",
+          position:"relative",
+          display:"flex",
+          justifyContent:"center",
+          }}>
+          <ContentContainer />
+    <div  className={s.contactContainer}>
 
-            backgroundColor: "white",
-
-            position: "absolute",
-            top: "0",
-            transform: "translate(-0.4vw)",
-            width: "65vw",
-            height: "100%",
-            overflowY: "scroll",
-          }}
-        >
-          <div
-            style={{ width: "100%", display: "flex", justifyContent: "center" }}
-          >
-            <h2>Контакты</h2>
-          </div>
-
-          <div style={{ display: "flex" }}>
-            {/* <div style={{ width: "30%" }}>
-              <div style={{ padding: "10px" }}>
-                <input
-                  placeholder="введите подразделение"
-                  onChange={this.showDepartment}
-                ></input>
-              </div>
-            </div>
-            <div style={{ width: "30%" }}>
-              <div style={{ padding: "10px" }}>
-                <input
-                  placeholder="введите имя"
-                  onChange={this.showName}
-                ></input>
-              </div>
-            </div> */}
-            {/* <div style={{ width: "30%" }}>
-              <div style={{ padding: "10px" }}>
-                <input placeholder="введите табельный" onChange={this.showTabel}></input>
-              </div>
-            </div> */}
-          </div>
-          <div style={{ padding: "10px", display: "flex" }}>
-            {/* <button style={{ margin: "10px" }} onClick={this.readContacts}>
-              поиск
-            </button> */}
-            {/* <button style={{ margin: "10px" }}>Сбросить данные</button> */}
-          </div>
-          
-
-          <div>
-            {this.state.ceh.map((ceh, index) => (
-              <div name={ceh.number} style={{ border: "1px solid", padding:"20px", backgroundColor:`${'#' + Math.floor(Math.random()*16777215).toString(16)+'36'}` }}>
-                <div style={{width:"100%", display:"flex", alignItems:"center", justifyContent:"center", backgroundColor: "darkorange"}}>{ceh.name}</div>
-                  <div>
-                
-                  {this.state.list.map((person, index) => (
-                    <div>
-                    {person.department == ceh.number ? <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        margin: "5px",
-                        boxShadow: "2px 2px 3px 0px rgba(34, 60, 80, 0.52)",
-                        
-                      }}
-                    >
-                      
-                      <div>
-                        <div
-                          style={{
-                            border: "1px solid",
-                            padding: "8px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <div style={{ color: "crimson" }}>{person.fio}</div>
-                            <div>
-                              {person.nameDepartment}
-                            </div>
-                          </div>
-                          <div>
-                            <div>{person.position}</div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-around",
-                            }}
-                          >
-                            <div style={{ display: "flex", color: "blue" }}>
-                              внутренний: <div>{person.inside}</div>
-                            </div>
-                            <div style={{ display: "flex", color: "blue" }}>
-                              городской: <div>{person.city}</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> :<div></div>}
-                    
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+    
+ <ListAccordion req = {req}/>
+  
+    </div>
       </div>
-    );
+  )
+}
+
+function ListAccordion(props){
+
+  if(props.req !== null){
+    return CehList.map((number, index)=><AccordionName id={'accordionName'+index} key = {index+"ListAccordion"} ceh={number} req = {props.req}/>)
+    // return props.req.map()
+  } else{
+    return <div style={{
+      backgroundColor: "white",
+      height: '100%',
+
+    }}><div className={s.expectation}></div>
+    </div>
   }
+ 
+}
+function AccordionName(props){
+    const [view, setView] = useState(0)
+return(
+  <Accordion id={"accordionName"+props.id} >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+          onClick={()=>{
+              let elem =  document.querySelector('#accordionName'+props.id);
+              if(view === 0){
+
+                  elem.style.transition = "background-color 0.8s , color 0.8s"
+                  elem.style.backgroundColor= "#02a9c1"
+                  elem.style.color= "white"
+                  setView(1)
+              } else{
+                  setView(0)
+                  elem.style.backgroundColor= "#ffffff"
+                  elem.style.color= "black"
+              }
+
+          }
+          }>
+          <Typography>{props.ceh.name}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+         <ContactList req={props.req} ceh = {props.ceh.name} number = {props.ceh.number}/>
+        </AccordionDetails>
+      </Accordion>
+      
+)
+}
+
+function ContactList(props){
+   
+ return props.req.map((count, index)=>{
+  
+      if(Number(count.department) === props.number){
+
+      return (<ContactItem key = {"ContactItem"+index} ceh={props.ceh} inside={count.inside} position={count.position} fio={count.fio} city = {count.city} />)
+    } /* else{
+      return(<div>null</div>)
+    } */
+  })
+}
+
+function ContactItem(props){
+ 
+return (
+  <div className={s.blockInfo}>
+    
+     <div className={s.blockFio}>
+     <div >{props.fio}</div>
+     <div>{props.ceh}</div>
+     </div>
+  
+   
+    <div>Должность: {props.position}</div>
+    <div className={s.blockPhone}>
+    <div style={{color:"rgb(204, 43, 43)"}} >Внутренний: {props.inside}</div>
+    <div style={{color:"rgb(51 0 255)"}}>Городской: {props.city}</div>
+    </div>
+    
+    </div>
+
+)
 }
 
 export default Contacts;

@@ -7,6 +7,8 @@ import s from "./style/messages.module.css"
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft"
 import MessageStatus from "./messages_status";
 import Window from "./message_error_window";
+import {connect} from "react-redux"
+
 
 const MESSAGE_WINDOW = '1';
 const ADDRESS_BOOK_WINDOW = '2';
@@ -30,7 +32,7 @@ class Messages extends React.Component
 		this.open_message_page			= this.open_message_page.bind(this);
 		this.pull_new_messages			= this.pull_new_messages.bind(this);
 		this.pull_all_messages			= this.pull_all_messages.bind(this);
-		this.pull_last_messages			= this.pull_last_messages.bind(this);
+		this.pull_old_messages			= this.pull_old_messages.bind(this);
 		this.pull_all_message_addressee	= this.pull_all_message_addressee.bind(this);
 		this.submit_message				= this.submit_message.bind(this);
 
@@ -82,6 +84,37 @@ class Messages extends React.Component
 	{
 		server.send_post_request(`${API_URL}api/messages/set_message_status_read`, {messageId: messageId})
 	}
+	get_message_status_read(messageId, user)
+	{
+		server.send_post_request(`${API_URL}api/messages/get_message_status_read`, {messageId: messageId, addressee: user}).then((res) => {
+			
+			if(res.data.length > 0)
+			{
+				let messages = this.state.messages;
+				const response = res.data;
+
+				let is_update = false;
+
+				for(let state of response)
+				{
+					if(state.is_read != 0)
+					{
+						let message = messages.find((e) => {return e.messageId == state.id});
+						if(message)
+						{
+							is_update = true;
+							message.is_read = state.is_read;
+						}
+					}
+				}
+
+				if(is_update)
+				{
+					this.setState({messages: messages});
+				}
+			}
+		})
+	}
 
 	pull_all_messages(user)
 	{
@@ -113,9 +146,15 @@ class Messages extends React.Component
 					this.setState({messages: this.state.messages.concat(res.data.messages)});
 				}
 			});
+
+			const watched_messages = this.pull_unreads_messages_status();
+			if(watched_messages.length > 0)
+			{
+				this.get_message_status_read(watched_messages, user);
+			}
 		}
 
-	pull_last_messages()
+	pull_old_messages()
 	{
 		const user = this.state.messageUser;
 
@@ -141,7 +180,13 @@ class Messages extends React.Component
 
 	submit_message(message)
 	{
-		server.send_post_request(`${API_URL}api/messages/send_message`, {...message, addressee: this.state.messageUser});
+		server.send_post_request(`${API_URL}api/messages/send_message`, {...message, addressee: this.state.messageUser}).then(res => {
+			if(res.status === 200)
+			{
+				this.resetUpdateInterval();
+				this.pull_new_messages(this.state.messageUser);
+			}
+		});
 	}
 
 	pull_all_message_addressee()
@@ -171,6 +216,20 @@ class Messages extends React.Component
 				this.setState({window: ERROR_WINDOW_USER_NOT_FOUND});
 			}
 		});
+	}
+
+	pull_unreads_messages_status()
+	{
+		let unreadMessages = [];
+		for(const message of this.state.messages)
+		{
+			if(message.is_read == 0 &&
+				message.from == this.props?.currentUser)
+			{
+				unreadMessages.push(message.messageId);
+			}
+		}
+		return unreadMessages;
 	}
 
 	closeAllMessageDescriptors()
@@ -249,14 +308,15 @@ class Messages extends React.Component
 
 	onMessageRead(messageId)
 	{
-		const message = this.state.messages.find((e) => {return e.messageId == messageId});
+		const messages = this.state.messages;
+		const message = messages[messageId];
+
 		if(message && !message.is_read && message.from == this.state.messageUser)
 		{
-			let messages = this.state.readedMessages;
-			messages.push(message.messageId);
-			message.is_read = true;
-			this.setState({readedMessages: messages,
-							messages: this.state.messages});
+			let readedMessages = this.state.readedMessages;
+			readedMessages.push(message.messageId);
+			message.is_read = !message.is_read;
+			this.setState({readedMessages: readedMessages, messages: messages})
 		}
 	}
 
@@ -272,7 +332,6 @@ class Messages extends React.Component
 		if(index >= 0)
 		{
 			this.state.addressee.splice(index, 1);
-			console.log(this.state.addressee);
 			this.setState({addressee: this.state.addressee});
 		}
 	}
@@ -290,6 +349,7 @@ class Messages extends React.Component
 		this.pull_all_message_addressee();
 		this.resetAddresseeInterval();
 		this.closeAllMessageDescriptors();
+		this.messageReadyTimerHandler();
 	}
 
 	render()
@@ -310,7 +370,7 @@ class Messages extends React.Component
 						<MessagesPage messages = {this.state.messages}
 									users = {this.state.users}
 									onSubmitMessages = {this.submit_message}
-									onPullLastMessages = {this.pull_last_messages}
+									onPullOldMessages = {this.pull_old_messages}
 									onClosePage = {this.show_address_book}
 									onMessageRead = {this.onMessageRead}
 						/>
@@ -352,4 +412,10 @@ class Messages extends React.Component
 	}
 }
 
-export default Messages;
+function mapStateToProps(state)
+{
+	return { currentUser: state.user.currentUser.tabelNum }
+}
+
+export default connect(mapStateToProps)(Messages)
+

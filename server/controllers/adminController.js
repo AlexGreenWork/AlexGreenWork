@@ -235,6 +235,7 @@ class Admin
 						responsibles: 0,
 						responsibles_rg: 0,
 						last_offer_date: {},
+						phone_number: null,
 						self_offers: []};
 
 		let connection = null;
@@ -303,7 +304,11 @@ class Admin
 			}
 
 			const userInfo = await user_controller.get_info_by_tabnum(user, connection);
-			if(userInfo) result.permission = userInfo.adminOptions;
+			if(userInfo)
+			{
+				result.permission = userInfo.adminOptions;
+				result.phone_number = userInfo.phoneNumber;
+			}
 		}
 		catch(e)
 		{

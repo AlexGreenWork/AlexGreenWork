@@ -17,7 +17,7 @@ class TopComission extends React.Component
 				width:"90%",
 				top:"100px",
 				right:0,
-				height:"100%",
+				height:"calc(100% - 170px)",
 					overflowY: "scroll",
 				backgroundColor:"white"
 				}}> 

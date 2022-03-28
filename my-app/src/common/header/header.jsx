@@ -37,7 +37,7 @@ const Header = () => {
           borderRadius: "3px",
         }}
       >
-        <img className={s.logotype} src={logo} alt="logo"></img>
+        <img className={s.logotype} style={{filter: "drop-shadow(2px 4px 6px black)"}}src={logo} alt="logo"></img>
       </div>
       <div
         style={{

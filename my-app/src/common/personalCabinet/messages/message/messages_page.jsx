@@ -11,7 +11,7 @@ class MessagesPage extends React.Component
 		super(props);
 
 		this.onSubmit = this.onSubmit.bind(this);
-		this.onScrollToTop = this.onScrollToTop.bind(this);
+		this.onPullOldMessages = this.onPullOldMessages.bind(this);
 		this.componentWillUnmount = this.componentWillUnmount.bind('qwe');
 	}
 
@@ -37,12 +37,12 @@ class MessagesPage extends React.Component
 		return false;
 	}
 
-	onScrollToTop()
+	onPullOldMessages()
 	{
-		if(this.props?.onPullLastMessages
-			&& typeof this.props.onPullLastMessages === 'function')
+		if(this.props?.onPullOldMessages
+			&& typeof this.props.onPullOldMessages === 'function')
 		{
-			this.props.onPullLastMessages();
+			this.props.onPullOldMessages();
 		}
 	}
 
@@ -52,7 +52,7 @@ class MessagesPage extends React.Component
 				<>
 					<MessageList messages = {this.props.messages}
 									users = {this.props.users}
-									onScrollToTop = {this.onScrollToTop}
+									onPullOldMessages = {this.onPullOldMessages}
 									onMessageRead = {this.props.onMessageRead}
 					/>
 					<div>
