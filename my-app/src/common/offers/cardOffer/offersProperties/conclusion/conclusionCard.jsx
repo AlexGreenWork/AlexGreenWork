@@ -160,7 +160,9 @@ const ConclusionCard = (props) => {
           respTabnum,
           idOffer,
         }
-      );
+      ).then(() => {
+		  ref.handleRemove();
+	  });
 
       if (respTabnum !== undefined) {
         alert("Ответственный сотрудник удален");

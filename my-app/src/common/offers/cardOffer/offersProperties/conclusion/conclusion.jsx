@@ -122,18 +122,12 @@ const ConclusionOffer = () => {
 
   function addResp(value) {
 
-    setResponsibles(responsibles.push({}));
+    setResponsibles(responsibles.concat([{}]));
   }
 
   function deleteResp() {
-    setResponsibles(responsibles.pop({}));
+    setResponsibles(responsibles.pop());
   }
-
-  function onChange(e)
-  {
-        setResponsibles(e)
-  }
-
 
   function IsAdminRG() {
     return (
@@ -619,7 +613,7 @@ const ConclusionOffer = () => {
   return (
     <div id="OffContainer" className={s.cardOfferContainer1}>
       <AdminChange isAdmin={localStorage.getItem("userAdminOptions")} />
-      <ConclusionList onChange = {onChange} responsibles={responsibles} />
+      <ConclusionList onChange = {setResponsibles} responsibles={responsibles} />
 
       {/*{responsibles.map((index) =>*/}
       {/*       <ConclusionCard name={index} id={index} resp={index.fiofull} tabel={index.responsible_tabnum} /> ).reverse()*/}
