@@ -120,13 +120,39 @@ const ConclusionOffer = () => {
 
   useEffect(() => {});
 
-  function addResp(value) {
-
+  function addResp(value)
+  {
     setResponsibles(responsibles.concat([{}]));
   }
 
-  function deleteResp() {
+  function deleteResp()
+  {
     setResponsibles(responsibles.pop());
+  }
+
+  function changeOfferResponsibles(responsibles)
+  {
+	  dispatch(selectMyOffers(offer.Id,
+		  offer.nameOffer,
+		  offer.date,
+		  offer.tabelNum,
+		  offer.nameSendler,
+		  offer.surnameSendler,
+		  offer.middlenameSendler,
+		  offer.email,
+		  offer.status,
+		  offer.descriptionProblem,
+		  offer.category,
+		  offer.view,
+		  responsibles,
+		  offer.responsibles_rg,
+		  offer.textOffer,
+		  offer.phoneNumber,
+		  offer.dateCommision,
+		  offer.departament,
+		  offer.division
+	  ))
+	  setResponsibles(responsibles)
   }
 
   function IsAdminRG() {
@@ -346,12 +372,11 @@ const ConclusionOffer = () => {
      **/
 
   ///////////////////////////////////////////////////////////////
-  // const responsibles = store.getState().offers.offer.responsibles
-      const Sell= useSelector(state => state.offers.offer.responsibles)
+  const offer = useSelector(state => state.offers.offer)
+
   const [responsibles, setResponsibles] = React.useState(
-    Sell
+    offer.responsibles
   );
-      console.log(Sell)
 
   //console.log("Респы - ", responsibles)
 
@@ -613,7 +638,7 @@ const ConclusionOffer = () => {
   return (
     <div id="OffContainer" className={s.cardOfferContainer1}>
       <AdminChange isAdmin={localStorage.getItem("userAdminOptions")} />
-      <ConclusionList onChange = {setResponsibles} responsibles={responsibles} />
+      <ConclusionList onChange = {changeOfferResponsibles} responsibles={responsibles} />
 
       {/*{responsibles.map((index) =>*/}
       {/*       <ConclusionCard name={index} id={index} resp={index.fiofull} tabel={index.responsible_tabnum} /> ).reverse()*/}
