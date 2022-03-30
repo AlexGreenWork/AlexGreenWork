@@ -3,11 +3,10 @@ import {connect} from "react-redux"
 import style from "./card.module.css"
 import {selectcard} from "../../../actions/search";
 import Mail from "@mui/icons-material/MailOutline"
-
+import PropTypes from "prop-types"
 import {API_URL} from "../../../config.js"
 import server from "../../../actions/server"
 import { NavLink } from "react-router-dom";
-import Message from "../messages/message/message";
 
 class Cart extends React.Component
 {
@@ -34,7 +33,7 @@ class Cart extends React.Component
 					|| this.state.info.tabnum != props.info
 				) 
 			)
-		{console.log(this.state.info, props.info);
+		{
 			server.send_post_request(`${API_URL}api/user/info`, {search: props.info}).then((res) => {
 				this.setState({info: res.data});
 			})
@@ -55,7 +54,7 @@ class Cart extends React.Component
 														{
 															width: "150px",
 															height: "200px", 
-															backgroundImage: `url(${API_URL}files/photos/${this.state.info?.tabnum}.jpg)`,
+															backgroundImage: this.props?.img ? `url(${this.props.img})` : `url(${API_URL}files/photos/${this.state.info?.tabnum}.jpg)`,
 															backgroundRepeat: "round",
 															borderRadius: "10px"
 														}
@@ -131,17 +130,17 @@ class Cart extends React.Component
 									</tr>
 									: null
 								}
-								{/*<tr>*/}
-								{/*	<td>*/}
-								{/*		<button onClick={() => {dispatch(searchtabnum(`${this.state.info.tabnum}` ))}}*/}
-								{/*				className = {style.card_button}>Добавить в задачу</button>*/}
-								{/*	</td>*/}
-								{/*</tr>*/}
 							</tbody>
 						</table>
 					</div>
 			);
 	}
 }
+
+Cart.propTypes = {
+    children: PropTypes.node,
+    info: PropTypes.number,
+    img: PropTypes.string
+};
 
 export default connect()(Cart)

@@ -4,3 +4,9 @@
 	margin-bottom: 20px;
 }
 
+.list
+{
+	overflow-y: auto;
+	scrollbar-width: none;
+}
+

@@ -1,6 +1,6 @@
 import React from "react";
 import MessagesAddressee from "./message_addressee";
-import s from "../style/message.module.css"
+import s from "../style/addressee.module.css"
 import h from "../style/addressee.module.css"
 import Field from "../message/text_field";
 
@@ -38,8 +38,7 @@ class MessagesAddresseeList extends React.Component
 			addressee = this.props.addressee;
 		}
 
-		return (
-				<div className={s.messages}>
+		return ( <>
 					<Field
 						label="Поиск"
 						color="info"
@@ -49,6 +48,7 @@ class MessagesAddresseeList extends React.Component
 						focused 
 						autoFocus
 					/>
+				<div className = {s.list}>
 					{addressee.map((address, id) => (
 						<MessagesAddressee key={id}
 											id = {address.user}
@@ -59,6 +59,7 @@ class MessagesAddresseeList extends React.Component
 						/>
 					))}
 				</div>
+			</>
 		)
 	}
 }

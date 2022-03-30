@@ -84,3 +84,43 @@
 	min-height: 30px;
 	padding: 5px 5px;
 }
+
+.card
+{
+    background-color: #102027;
+	padding: 10px;
+}
+
+.card > div
+{
+	color: Darkorange;
+	animation: cardAnim 1s linear;
+}
+
+.card a
+{
+	color: Cyan;
+}
+
+.cardButton
+{
+	width: 100%;
+	height: 30px;
+	margin-bottom: 20px !important;
+}
+
+@keyframes cardAnim
+{
+	0%
+	{
+		opacity: 0;	
+	}
+	50%
+	{
+		opacity: 0.5;
+	}
+	100%
+	{
+		opacity: 1;
+	}
+}

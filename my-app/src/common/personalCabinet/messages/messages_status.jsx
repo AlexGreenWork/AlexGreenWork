@@ -74,17 +74,10 @@ class MessageStatus extends React.Component
 		if(MessageStatus.defaultTimer.is_run)
 		{
 			server.send_post_request(`${API_URL}api/messages/get_unread_messages_count`).then((res) => {
-				if(res.status === 200)
+				MessageStatus.defaultTimer.state = res.data;
+				for(let a in MessageStatus.defaultTimer.refs)
 				{
-					MessageStatus.defaultTimer.state = res.data;
-					for(let a in MessageStatus.defaultTimer.refs)
-					{
-						MessageStatus.defaultTimer.refs[a].forceUpdate();
-					}
-				}
-				else
-				{
-					MessageStatus.defaultTimer.is_run = false;
+					MessageStatus.defaultTimer.refs[a].forceUpdate();
 				}
 			});
 		}
