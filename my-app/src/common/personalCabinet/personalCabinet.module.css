@@ -284,14 +284,14 @@ input:required + label::after, textarea:required + label::after {
     flex-wrap: wrap;
     border-bottom: solid 1px gray;
     padding-left: 10px;
-    margin-top: 5px;
     width: 90%;
-    height: 45px;
+    min-height: 45px;
     align-items: center;
     position: relative;
 }
 .linksPC:active{
     transform: translateY(2px);
+
 }
 .linksPC a{
     color: #29569b;

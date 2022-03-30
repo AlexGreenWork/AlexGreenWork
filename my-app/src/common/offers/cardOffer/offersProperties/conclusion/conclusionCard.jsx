@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import s from "./conclusion.module.css";
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
 import FindWorkers from "../../../../personalCabinet/findWorkers/findWorkers";
@@ -18,8 +18,11 @@ import axios from "axios";
 import { closeConclusionResponsible } from "../../../../../actions/file";
 import FilesResponsible from "./responsibleFiles";
 import { useDispatch } from "react-redux";
+import {selectMyOffers} from "../../../../../reducers/offerReducer";
 
 const ConclusionCard = (props) => {
+  const ref = props;
+  const dispatch = useDispatch()
   const [viewChange, setViewChange] = React.useState(false);
   const [annot, setAnnot] = React.useState(`${props.id.mark}`);
   console.log(props.id.mark);
@@ -176,8 +179,47 @@ const ConclusionCard = (props) => {
           idOffer,
           position,
         }
-      );
-      console.log(respTabnum,idOffer, position)
+      ).then(res=>{
+            function  RequestSelectOffers(props) {
+
+              let xhr = new XMLHttpRequest();
+              xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, true);
+              xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+              xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                  let offersData = JSON.parse(xhr.response);
+                  console.log(offersData)
+
+                  dispatch(selectMyOffers(offersData.Id, offersData.nameOffer,
+                      offersData.date,  offersData.tabelNum, offersData.nameSendler,
+                      offersData.surnameSendler,  offersData.middlenameSendler,
+                      offersData.email,  offersData.status, offersData.descriptionProblem,
+                      offersData.category,
+                      offersData.view,
+                      offersData.responsibles,
+                      offersData.responsibles_rg,
+                      offersData.textOffer,
+                      offersData.phoneNumber,
+                      offersData.dateCommision,
+                      offersData.departament,
+                      offersData.division
+                  ))
+                  ref.onAdded(offersData.responsibles)
+                  // requestInfoAutor(xhr.response);
+                  //  this.state = {items: offersData.responsibles}
+                  //  console.log( this.state)
+
+                }
+              }
+
+              xhr.send(`selectOffers=${localStorage.getItem('idOffers')}`);
+            }
+            RequestSelectOffers(props)
+          });
+
+
+
       alert("Ответственный сотрудник добавлен");
     } catch (e) {
       alert(e.response.data.message);

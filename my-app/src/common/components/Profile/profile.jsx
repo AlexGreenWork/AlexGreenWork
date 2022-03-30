@@ -19,15 +19,12 @@ const [newPassword, setNewPassword] = useState("")
 
 function inpOldPassword(event) {
     setOldPassword(event.target.value)
-
 }
 function inpNewPassword(event) {
     setNewPassword(event.target.value)
-
 }
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
-  
 
   function changeHandler(e) {
     const file = e.target.files[0];

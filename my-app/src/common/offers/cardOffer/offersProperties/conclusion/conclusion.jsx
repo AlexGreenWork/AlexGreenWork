@@ -10,7 +10,7 @@ import {
   selectMyOffers,
   selectToMyOffer,
 } from "../../../../../reducers/offerReducer";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { render } from "react-dom";
 import ConclusionList from "./conclusionList";
 import ViewFileDoc from "../../../../../Pics/svg/ViewFiles/docFileSvg";
@@ -121,12 +121,19 @@ const ConclusionOffer = () => {
   useEffect(() => {});
 
   function addResp(value) {
+
     setResponsibles(responsibles.push({}));
   }
 
   function deleteResp() {
     setResponsibles(responsibles.pop({}));
   }
+
+  function onChange(e)
+  {
+        setResponsibles(e)
+  }
+
 
   function IsAdminRG() {
     return (
@@ -148,7 +155,7 @@ const ConclusionOffer = () => {
     return (
       <div className={s.fileUpload}>
         <input type="file" name="filename" className={s.buttonS} />
-        wefw
+
       </div>
     );
   }
@@ -346,9 +353,11 @@ const ConclusionOffer = () => {
 
   ///////////////////////////////////////////////////////////////
   // const responsibles = store.getState().offers.offer.responsibles
+      const Sell= useSelector(state => state.offers.offer.responsibles)
   const [responsibles, setResponsibles] = React.useState(
-    store.getState().offers.offer.responsibles
+    Sell
   );
+      console.log(Sell)
 
   //console.log("Респы - ", responsibles)
 
@@ -610,7 +619,7 @@ const ConclusionOffer = () => {
   return (
     <div id="OffContainer" className={s.cardOfferContainer1}>
       <AdminChange isAdmin={localStorage.getItem("userAdminOptions")} />
-      <ConclusionList responsibles={responsibles} />
+      <ConclusionList onChange = {onChange} responsibles={responsibles} />
 
       {/*{responsibles.map((index) =>*/}
       {/*       <ConclusionCard name={index} id={index} resp={index.fiofull} tabel={index.responsible_tabnum} /> ).reverse()*/}
