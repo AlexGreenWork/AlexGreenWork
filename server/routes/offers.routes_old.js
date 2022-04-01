@@ -916,7 +916,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
         pool.end()
     })
     /////////////////////////////////////////////////////////////
-    router.post("/toDbSaveNotesResponsible", urlencodedParser,
+    router.post("/saveNotesToDbRG", urlencodedParser,
     async function (request, response) {
     let actual = request.body.actual
     let innovate = request.body.innovate
@@ -935,7 +935,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
     const pool = mysql.createPool(mysqlConfig);
 
         console.log(moment().format('YYYY-MM-DD'),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
-        await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
 

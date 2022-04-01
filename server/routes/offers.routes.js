@@ -858,10 +858,11 @@ router.post("/responsibleToOffers", urlencodedParser,
                                                          status,
                                                          tabelNum 
                                                    FROM offers WHERE Id=${arrValidOffers[i].offer_id} `);
+
              
                 let sqlResponsible123 = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE offer_id=${sqlOffers[0][0].Id} AND deleted = 0  AND responsible_tabnum=${tabNum}`);
-                                                     
-                if(sqlOffers[0].length != 0){
+               if(sqlOffers[0].length != 0){
+
                     let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
                     let offersObj = sqlOffers[0][0]
                    
