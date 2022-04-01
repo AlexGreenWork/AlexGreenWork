@@ -103,13 +103,13 @@ const Registration = () => {
             <div className="authorization__header"><h2>Регистрация:</h2></div>
 
             <div className={s.formReg}>
-                <div className={s.inpChek}><input style={{
-                    borderRadius: "5px",
-                    height: "4vh",
-                    padding: "5px"
-                }} type="checkbox" checked={fired}
-                    onChange={() => setFired(!fired)} /><span>Я сотрудник ОАО "БЕЛАЗ"</span>
-                </div>
+                {/*<div className={s.inpChek}><input style={{*/}
+                {/*    borderRadius: "5px",*/}
+                {/*    height: "4vh",*/}
+                {/*    padding: "5px"*/}
+                {/*}} type="checkbox" checked={fired}*/}
+                {/*    onChange={() => setFired(!fired)} /><span>Я сотрудник ОАО "БЕЛАЗ"</span>*/}
+                {/*</div>*/}
                 <div>{inputIn}</div>
                 <input style={{
                     borderRadius: "5px",

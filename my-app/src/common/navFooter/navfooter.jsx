@@ -3,6 +3,73 @@ import s from "./navFooter.module.css"
 import {NavLink} from "react-router-dom";
 import {CountNoBrowsing, CountMessageNoBrowsing} from "../personalCabinet/personalCabinet"
 import MessageStatus from "../personalCabinet/messages/messages_status";
+import { useSelector } from "react-redux";
+import { store } from "../../reducers";
+import { useDispatch } from "react-redux";
+import axios from 'axios';
+import { API_URL } from "../../config";
+import {NotifOffersProcessing, NotifConclusionProcessing} from "../../reducers/notificationReducer"
+
+function CountNotificationALL(){
+    const notifConc = useSelector(state => state.notification.offerForProcessing.notifConc[0])
+    const countOffers = useSelector(state => state.notification.offerForProcessing.offersProcess)
+    const dispatch = useDispatch()
+    let tabNum = localStorage.getItem('userTabelNum');
+
+    BrowseHistory();
+    
+    function BrowseHistory(tab){
+        let tabNum = localStorage.getItem('userTabelNum');
+        try {
+            axios.post(`${API_URL}api/offers/getHistoryBrowsing`, {
+                tabNum: tabNum,
+
+            })
+                .then(res => {
+                    let history = res.data;
+                    if(history !== null){
+                        responsibleToOffersClose(Number(history[0]))
+                        // dispatch(NotifOffersProcessing(Number(history[0]), oldConc));
+                    } else {
+                        // dispatch(NotifOffersProcessing(Number(history[0]), oldConc));
+                        responsibleToOffersClose(Number(history[0]))
+                    }
+                })
+        } catch (e) {
+            alert(e.response)
+        }
+    }
+
+    function  responsibleToOffersClose(browsHist){
+       
+        try{
+            axios.post(`${API_URL}api/offers/responsibleToOffers`, {  tabNum: tabNum,
+    
+            })
+                .then(res => {
+                        if(res.data != 'noResponsible' ){
+                             dispatch(NotifOffersProcessing(browsHist, [res.data[1], res.data[2]]));
+                            // setResponsible(<OffersResponsible count= {countResp}/>)
+                        } else {
+                            dispatch(NotifOffersProcessing(browsHist, "noResponsible"));
+                        }
+                })
+        } catch (e){
+            alert(e.response)
+        }
+        
+    }
+    if(countOffers + notifConc > 0){
+        return(
+            <div className={s.countNoBrowser}>
+                {countOffers + notifConc}
+            </div>
+        )
+    } else {
+        return <div></div>
+    }
+    
+}
 
 const Navfooter = () => {
     if(localStorage.getItem("userAdminOptions") === "wg" || localStorage.getItem("userAdminOptions") === "admin" || localStorage.getItem("userAdminOptions") === "topComission " ){
@@ -21,7 +88,8 @@ const Navfooter = () => {
                     </NavLink>
                     <NavLink to="/personalCabinet" title="personal Cabinet">
                         <span style={{filter:"drop-shadow(2px 4px 6px black)"}}>Личный кабинет</span>
-                        <CountNoBrowsing/>
+                        <CountNotificationALL/>
+                        {/* <CountNoBrowsing/> */}
 						<MessageStatus>
 							<CountMessageNoBrowsing/>
 						</MessageStatus>
