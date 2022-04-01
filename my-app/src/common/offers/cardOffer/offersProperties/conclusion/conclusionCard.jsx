@@ -160,7 +160,9 @@ const ConclusionCard = (props) => {
           respTabnum,
           idOffer,
         }
-      );
+      ).then(() => {
+		  ref.handleRemove();
+	  });
 
       if (respTabnum !== undefined) {
         alert("Ответственный сотрудник удален");
@@ -189,27 +191,8 @@ const ConclusionCard = (props) => {
               xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                   let offersData = JSON.parse(xhr.response);
-                  console.log(offersData)
 
-                  dispatch(selectMyOffers(offersData.Id, offersData.nameOffer,
-                      offersData.date,  offersData.tabelNum, offersData.nameSendler,
-                      offersData.surnameSendler,  offersData.middlenameSendler,
-                      offersData.email,  offersData.status, offersData.descriptionProblem,
-                      offersData.category,
-                      offersData.view,
-                      offersData.responsibles,
-                      offersData.responsibles_rg,
-                      offersData.textOffer,
-                      offersData.phoneNumber,
-                      offersData.dateCommision,
-                      offersData.departament,
-                      offersData.division
-                  ))
                   ref.onAdded(offersData.responsibles)
-                  // requestInfoAutor(xhr.response);
-                  //  this.state = {items: offersData.responsibles}
-                  //  console.log( this.state)
-
                 }
               }
 

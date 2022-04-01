@@ -427,7 +427,7 @@ router.post("/sendAddInfo", urlencodedParser,
 
             let coAuthorTab = sqlSendAdd[0][i].co_author_tabNum;
             let sqlCoAuthorData = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${coAuthorTab} `);
-            console.log(sqlCoAuthorData[0][0])
+         
             let newObject = {}; //обьект в котором мы храним фио, нужен из за того что названия столбцов в offersworker и в старой offers отличались
             newObject["nameSendler"] = sqlCoAuthorData[0][0].name;
             newObject['surnameSendler'] = sqlCoAuthorData[0][0].surname;
@@ -438,7 +438,7 @@ router.post("/sendAddInfo", urlencodedParser,
             arr[i] = newObject;
 
         }
-        console.log(sqlSendAdd[0])
+      
         if (sqlSendAdd[0] !== undefined/*  && sqlSendAdd[0].length !== 0 */) { //добавил условие после &&
 
             response.send(arr)
@@ -500,7 +500,7 @@ router.post("/toDbSaveResposibleRG", urlencodedParser, authMiddleware,
 									VALUES (?, ?, ?, 0)`
 
         await pool.query(sqlNewResponsible, [idOffers, respTabnum, moment().format('YYYY-MM-DD')]);
-        console.log(moment().format('YYYY-MM-DD'), "добавление RG к предложению", idOffers)
+     
         response.status(200);
         response.send();
         pool.end()
@@ -805,7 +805,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
         response.send(result)
     })
-    router.post("/responsibleToOffers", urlencodedParser,
+router.post("/responsibleToOffers", urlencodedParser,
     async function (request, response) {
         const mysqlConfig = {
             host: config.database.host,
@@ -858,9 +858,9 @@ router.post("/respResults", urlencodedParser, authMiddleware,
                                                          status,
                                                          tabelNum 
                                                    FROM offers WHERE Id=${arrValidOffers[i].offer_id} `);
-                console.log(sqlOffers[0][0].Id)
+             
                 let sqlResponsible123 = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE offer_id=${sqlOffers[0][0].Id} AND deleted = 0  AND responsible_tabnum=${tabNum}`);
-                      console.log(sqlResponsible123[0][0].close)                                           
+                                                     
                 if(sqlOffers[0].length != 0){
                     let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
                     let offersObj = sqlOffers[0][0]
@@ -873,7 +873,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
     
                     if(i == arrValidOffers.length-1 ){
                         response.send([arrOffer, count_resp_no_close, unlockOffers])
-                        console.log([arrOffer, count_resp_no_close, unlockOffers])
+                     
                     }
                     } else {
                         response.send("noResponsible")
@@ -904,7 +904,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
     const pool = mysql.createPool(mysqlConfig);
 
-        console.log(moment().format('YYYY-MM-DD'),"Запись оценок responsible"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+     
         await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
@@ -914,7 +914,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
     let offerId = request.body.idOffer
     let respTabnum = request.body.tabNum
 
-        console.log(moment().format('YYYY-MM-DD'),"Заключение RG закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+      
         await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send() 
     })
@@ -933,7 +933,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
     let offerId = request.body.idOffer
     let respTabnum = request.body.tabNum
         try{
-        console.log(moment().format('YYYY-MM-DD'),"Заключение Responsible закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
+      
         await pool.query(`UPDATE offersresponsible SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send()
         }catch(e){
@@ -942,7 +942,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
         pool.end()
     })
 
-router.post("/toDbSaveNotesResponsible", urlencodedParser,
+router.post("/saveNotesToDbRG", urlencodedParser,
     async function (request, response) {
 
         const mysqlConfig = {
@@ -962,8 +962,8 @@ router.post("/toDbSaveNotesResponsible", urlencodedParser,
         let respTabnum = request.body.tabNum
         let position = request.body.position
 
-        console.log(Date(), "Запись оценок responsible", " ", "'", "в предложение", offerId, "с табельного ", respTabnum,)
-        await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+     
+        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send()
         pool.end();
     })

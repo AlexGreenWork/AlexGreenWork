@@ -30,7 +30,7 @@ class ConclusionList extends React.Component {
         console.log(this.props.responsibles)
         console.log(this.state.items)
 
-        if(props.responsibles !== this.state.items && props.responsibles.length !== 0)
+        if(this.props.responsibles !== this.state.items && this.props.responsibles.length !== 0)
         {
             this.setState({items: this.props.responsibles})
         }
@@ -41,9 +41,11 @@ class ConclusionList extends React.Component {
         this.props.onChange(e)
     }
 
-    handleRemove = index => this.setState({
-        items: this.state.items.filter(( item, i ) => i !== index)
-    });
+    handleRemove(index)
+	{
+        const newItems = this.state.items.filter(( item, i ) => i !== index);
+		this.props.onChange(newItems);
+    }
 
     render() {
         return this.state.items.map(( item, i ) => (
