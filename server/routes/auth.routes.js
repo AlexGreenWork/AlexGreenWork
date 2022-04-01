@@ -54,7 +54,7 @@ router.post('/registration',
 
         const connection = mysql.createPool(mysqlConfig);
 
-        console.log(req.body)
+        console.log("регистрация", req.body)
         try {
 
             const errors = validationResult(req)
