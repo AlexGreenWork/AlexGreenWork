@@ -1,10 +1,15 @@
 const NOTIFICATION_OFFERS_PROCESSING = "NOTIFICATION_OFFERS_PROCESSING"
 
+
 const defaultState = {
-    offerForProcessing: null
+    offerForProcessing :{
+        offersProcess: 0,
+        notifConc: 0
+    }
 }
 
 export default function notificationReducer(state = defaultState, action) {
+ 
     switch (action.type) {
         case NOTIFICATION_OFFERS_PROCESSING:
             state.offerForProcessing = action.payload
@@ -16,5 +21,8 @@ export default function notificationReducer(state = defaultState, action) {
 }
 
 
-export const NotifOffersProcessing = (notifOffersProcessing) => ({ type:NOTIFICATION_OFFERS_PROCESSING, payload: notifOffersProcessing
+export const NotifOffersProcessing = (notifOffersProcessing, notifConcProcessing) => ({ type:NOTIFICATION_OFFERS_PROCESSING, payload: {offersProcess: notifOffersProcessing,
+                                                                                                                notifConc: notifConcProcessing
+}
     }) 
+

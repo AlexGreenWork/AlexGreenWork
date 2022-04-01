@@ -124,10 +124,11 @@ function FileList() {
 
 const CommonOffer = () => {
 
+
     const [listFile, setFileList] = useState(<FileList/>);
 
     const [viewChange, setViewChange] = React.useState('');
-    const [category, setCategory] = React.useState('');
+    const [category, setCategory] = React.useState(``);
     const [view, setView] = React.useState('');
     const offersData =  useSelector(state => store.getState().offers.offer)
     const [status, setStatus] = React.useState(`${localStorage.getItem('status')}`);
@@ -209,7 +210,7 @@ let nameStatus;
     ///////////////////// MULTISELECT_ROLE_FOR_WG
         function AdminChange(props) {
         const isAdmin = props.isAdmin;
-        if (isAdmin == 'wg') {
+        if (isAdmin == 'wg' || isAdmin == 'admin') {
             return <IsAdminRG/>;
 
         } else {

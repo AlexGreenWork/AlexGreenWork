@@ -805,7 +805,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
 
         response.send(result)
     })
-    router.post("/responsibleToOffers", urlencodedParser,
+router.post("/responsibleToOffers", urlencodedParser,
     async function (request, response) {
         const mysqlConfig = {
             host: config.database.host,
@@ -815,50 +815,76 @@ router.post("/respResults", urlencodedParser, authMiddleware,
         }
 
         const pool = mysql.createPool(mysqlConfig);
+      
 
         let arrOffer = [];
-        let tabNum = request.body.tabNum
-     
-        let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
-        
-        if(sqlResponsible[0].length != 0){
-            for (let i = 0; i < sqlResponsible[0].length; i++) {
+        let tabNum = request.body.tabNum;
+        let arrValidOffers = [];
+        let count_resp_no_close = 0;
+        // let objUnlockOffers = {};
+        let unlockOffers = [];
+        let sqlResponsible = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE responsible_tabnum=${tabNum} AND deleted = 0 `);
+        // console.log(sqlResponsible[0])
+          
+        for(let i = 0; i < sqlResponsible[0].length; i++){
+          
+            let sqlOffers = await pool.query(`SELECT Id  FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `)
+           
+            if(sqlOffers[0].length != 0){
+               
+                arrValidOffers.push(sqlResponsible[0][i])
+                if(sqlResponsible[0][i].close == null){
+                    count_resp_no_close ++;
+                    let objUnlockOffers = {};
+                    objUnlockOffers[sqlResponsible[0][i].offer_id] =  true;
+                    unlockOffers.push(objUnlockOffers)
+                } else {
+                    // console.log(true)
+                    let objUnlockOffers = {};
+                    objUnlockOffers[sqlResponsible[0][i].offer_id] =  false
+                    unlockOffers.push(objUnlockOffers)
+                }
+            }
+           
+        }
+       
+    //   console.log(unlockOffers)
+        if(arrValidOffers.length != 0){
+            for (let i = 0; i < arrValidOffers.length; i++) {
 
                 let sqlOffers = await pool.query(`SELECT nameOffer,
                                                          Id,
                                                          date,
                                                          status,
                                                          tabelNum 
-                                                   FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
-
-                                                   
+                                                   FROM offers WHERE Id=${arrValidOffers[i].offer_id} `);
+             
+                let sqlResponsible123 = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE offer_id=${sqlOffers[0][0].Id} AND deleted = 0  AND responsible_tabnum=${tabNum}`);
+                                                     
                 if(sqlOffers[0].length != 0){
                     let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
                     let offersObj = sqlOffers[0][0]
-
+                   
                     offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
                     offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
                     offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
-    
+                    offersObj['close'] = sqlResponsible123[0][0].close ? false : true
                     arrOffer[i] = offersObj;
     
-                    if(i == sqlResponsible[0].length-1 ){
-                        response.send(arrOffer)
+                    if(i == arrValidOffers.length-1 ){
+                        response.send([arrOffer, count_resp_no_close, unlockOffers])
+                     
                     }
                     } else {
                         response.send("noResponsible")
                     }
-              
-
-
-               
+    
             }
         } else{
             response.send("noResponsible")
         }
         pool.end()
-    })
-    /////////////////////////////////////////////////////////////
+    })    /////////////////////////////////////////////////////////////
     router.post("/toDbSaveNotesResponsible", urlencodedParser,
     async function (request, response) {
     let actual = request.body.actual
@@ -882,15 +908,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
         response.status(200).send() 
     })
 
-    router.post("/closeConclusionRG", urlencodedParser,
-    async function (request, response) {
-    let offerId = request.body.idOffer
-    let respTabnum = request.body.tabNum
-
-        console.log(moment().format('YYYY-MM-DD'),"Заключение RG закрыто"," ","'","в предложение",offerId, "с табельного ", respTabnum, )
-        await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
-        response.status(200).send() 
-    })
+    
 
     router.post("/closeConclusionResponsible", urlencodedParser,
     async function (request, response) {
@@ -915,7 +933,7 @@ router.post("/respResults", urlencodedParser, authMiddleware,
         pool.end()
     })
 
-router.post("/toDbSaveNotesResponsible", urlencodedParser,
+router.post("/saveNotesToDbRG", urlencodedParser,
     async function (request, response) {
 
         const mysqlConfig = {
@@ -936,7 +954,7 @@ router.post("/toDbSaveNotesResponsible", urlencodedParser,
         let position = request.body.position
 
         console.log(Date(), "Запись оценок responsible", " ", "'", "в предложение", offerId, "с табельного ", respTabnum,)
-        await pool.query(`UPDATE offersresponsible SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}', position = '${position}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+        await pool.query(`UPDATE offersresponsible_rg SET actual = '${actual}', innov = '${innovate}',cost = '${cost}', extent = '${duration}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
         response.status(200).send()
         pool.end();
     })
