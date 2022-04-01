@@ -142,3 +142,26 @@ from div{
         grid-row-gap: 3px;
         margin-bottom: 10px;
     }
+
+.NumberOffers{
+    position: relative;
+    top: 10px;
+    width: 100px;
+    margin-left: 10px;
+}
+
+.lock{
+    /* style={{color:"rgb(0 191 63)", fontSize:"2.5em", texShadow: "4px 4px 2px rgba(150, 150, 150, 1);"}} */
+    color: rgb(0 191 63);
+    font-size: 2.5em;
+    position: relative;
+    top: 15px;
+}
+.unlock{
+    /* style={{color: "#ff4747",fontSize:"2.5em"}} */
+    color: #ff4747;
+    font-size: 2.5em;
+    position: relative;
+    top: 15px;
+}
+

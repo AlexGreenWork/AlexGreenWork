@@ -99,7 +99,7 @@ function Contacts(){
     try {
       axios.post(`${API_URL}api/offers/readContacts`, {})
         .then(res => {
-          console.log(res.data)
+          
           setReq(res.data)
         })
     } catch (e) {

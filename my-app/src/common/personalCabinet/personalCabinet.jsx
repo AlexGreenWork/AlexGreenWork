@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import s from "./personalCabinet.module.css"
 import {NavLink} from "react-router-dom";
 import axios from 'axios';
 import { API_URL } from "../../config";
 import {useDispatch, useSelector} from "react-redux";
 import { store } from "../../reducers";
-import {NotifOffersProcessing} from "../../reducers/notificationReducer"
+import {NotifOffersProcessing, NotifConclusionProcessing} from "../../reducers/notificationReducer"
 import MessageStatus from "./messages/messages_status";
 
 // const isAuth = useSelector(state => state.user.isAuth)
@@ -17,14 +17,14 @@ export const CountNoBrowsing = () =>{
     let tabNum = localStorage.getItem('userTabelNum');
     const [alloffers, setAllOffers] =  useState(null);
     const dispatch = useDispatch()
-    const countOffers = useSelector(state => state.notification.offerForProcessing)
-
+    const countOffers = useSelector(state => state.notification.offerForProcessing.offersProcess)
+   
+   
     if(alloffers === null){
         BrowseHistory(tabNum)
 
-    } else{
-
     }
+
     function BrowseHistory(tab){
         let tabNum = localStorage.getItem('userTabelNum');
         try {
@@ -33,26 +33,39 @@ export const CountNoBrowsing = () =>{
 
             })
                 .then(res => {
-
-
                     let history = res.data;
-
-                    // Resp(history)
                     if(history !== null){
-
-                        dispatch(NotifOffersProcessing(history[0]));
+                        responsibleToOffersClose(Number(history[0]))
+                        // dispatch(NotifOffersProcessing(Number(history[0]), oldConc));
                     } else {
-                        dispatch(NotifOffersProcessing(history[0]));
-
+                        // dispatch(NotifOffersProcessing(Number(history[0]), oldConc));
+                        responsibleToOffersClose(Number(history[0]))
                     }
-
-
                 })
         } catch (e) {
             alert(e.response)
         }
     }
 
+    function  responsibleToOffersClose(browsHist){
+       
+        try{
+            axios.post(`${API_URL}api/offers/responsibleToOffers`, {  tabNum: tabNum,
+    
+            })
+                .then(res => {
+                        if(res.data != 'noResponsible' ){
+                             dispatch(NotifOffersProcessing(browsHist, [res.data[1], res.data[2]]));
+                            // setResponsible(<OffersResponsible count= {countResp}/>)
+                        } else {
+                            dispatch(NotifOffersProcessing(browsHist, "noResponsible"));
+                        }
+                })
+        } catch (e){
+            alert(e.response)
+        }
+        
+    }
 
     // function Resp(history) {
     //
@@ -88,6 +101,8 @@ export const CountNoBrowsing = () =>{
 
 }
 
+
+
 export const CountMessageNoBrowsing = (props) => {
     if(props?.unread_message_count)
     {
@@ -110,30 +125,29 @@ export const CountMessageNoBrowsing = (props) => {
     return null;
 }
 
-
-const PersonalCabinet = () => {
-
-    const [responsible, setResponsible] = useState(null)
-    let tabNum = localStorage.getItem('userTabelNum');
-    try{
-        axios.post(`${API_URL}api/offers/responsibleToOffers`, {  tabNum: tabNum,
-
-        })
-            .then(res => {
-                if(responsible == null){
-                    if(res.data != 'noResponsible' ){
-                        setResponsible( <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Ваши заключения</NavLink></div>)
-                    }
-
-                }
-
-
-
-            })
-    } catch (e){
-        alert(e.response)
+function OffersResponsible(props){
+  
+    if(props.count != 'noResponsible'){
+        return(
+            <div className={s.navOffers}>
+              
+                <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Ваши заключения</NavLink></div>
+               {props.count > 0 ? ( <div className={s.countUnlock}>{props.count}</div> ) : <div/>}
+                {/* <div className={s.countUnlock}>{props.count}</div>  */}
+            </div>
+            
+        )
+    } else {
+        return(<div></div>)
     }
+    
+}
 
+
+ 
+const PersonalCabinet = () => {
+   
+    const countResp = useSelector(state => state.notification.offerForProcessing.notifConc[0])
 
     function IsAdminUser(props)
     {
@@ -160,8 +174,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/findWorkers">
                     Найти сотрудника
                 </NavLink></div>
-
-                {responsible}
+                <OffersResponsible count= {countResp}/>
 
             </div>
         )
@@ -202,9 +215,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}>
                     <NavLink className={s.offers} to="/personalCabinet/adminPanelComission">Панель администратора</NavLink>
                 </div>
-
-                {responsible}
-
+                <OffersResponsible count= {countResp}/>
 
             </div>
         );
@@ -242,10 +253,7 @@ const PersonalCabinet = () => {
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/adminPanelComission">
                     Панель Рабочей группы
                 </NavLink></div>
-
-
-                {responsible}
-
+                <OffersResponsible count= {countResp}/>
             </div>
         )
     }
@@ -280,7 +288,7 @@ const PersonalCabinet = () => {
                     Панель руководства
                 </NavLink></div>
                 <div className={s.linksPC}>
-                    {responsible}
+                    <OffersResponsible count= {countResp}/>
                 </div>
             </div>
         )

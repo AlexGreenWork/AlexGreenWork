@@ -815,43 +815,70 @@ router.post("/respResults", urlencodedParser, authMiddleware,
         }
 
         const pool = mysql.createPool(mysqlConfig);
+      
 
         let arrOffer = [];
-        let tabNum = request.body.tabNum
-     
-        let sqlResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${tabNum} `);
-        
-        if(sqlResponsible[0].length != 0){
-            for (let i = 0; i < sqlResponsible[0].length; i++) {
+        let tabNum = request.body.tabNum;
+        let arrValidOffers = [];
+        let count_resp_no_close = 0;
+        // let objUnlockOffers = {};
+        let unlockOffers = [];
+        let sqlResponsible = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE responsible_tabnum=${tabNum} AND deleted = 0 `);
+        // console.log(sqlResponsible[0])
+          
+        for(let i = 0; i < sqlResponsible[0].length; i++){
+          
+            let sqlOffers = await pool.query(`SELECT Id  FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `)
+           
+            if(sqlOffers[0].length != 0){
+               
+                arrValidOffers.push(sqlResponsible[0][i])
+                if(sqlResponsible[0][i].close == null){
+                    count_resp_no_close ++;
+                    let objUnlockOffers = {};
+                    objUnlockOffers[sqlResponsible[0][i].offer_id] =  true;
+                    unlockOffers.push(objUnlockOffers)
+                } else {
+                    // console.log(true)
+                    let objUnlockOffers = {};
+                    objUnlockOffers[sqlResponsible[0][i].offer_id] =  false
+                    unlockOffers.push(objUnlockOffers)
+                }
+            }
+           
+        }
+       
+    //   console.log(unlockOffers)
+        if(arrValidOffers.length != 0){
+            for (let i = 0; i < arrValidOffers.length; i++) {
 
                 let sqlOffers = await pool.query(`SELECT nameOffer,
                                                          Id,
                                                          date,
                                                          status,
                                                          tabelNum 
-                                                   FROM offers WHERE Id=${sqlResponsible[0][i].offer_id} `);
-
-                                                   
+                                                   FROM offers WHERE Id=${arrValidOffers[i].offer_id} `);
+                console.log(sqlOffers[0][0].Id)
+                let sqlResponsible123 = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE offer_id=${sqlOffers[0][0].Id} AND deleted = 0  AND responsible_tabnum=${tabNum}`);
+                      console.log(sqlResponsible123[0][0].close)                                           
                 if(sqlOffers[0].length != 0){
                     let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
                     let offersObj = sqlOffers[0][0]
-
+                   
                     offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
                     offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
                     offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
-    
+                    offersObj['close'] = sqlResponsible123[0][0].close ? false : true
                     arrOffer[i] = offersObj;
     
-                    if(i == sqlResponsible[0].length-1 ){
-                        response.send(arrOffer)
+                    if(i == arrValidOffers.length-1 ){
+                        response.send([arrOffer, count_resp_no_close, unlockOffers])
+                        console.log([arrOffer, count_resp_no_close, unlockOffers])
                     }
                     } else {
                         response.send("noResponsible")
                     }
-              
-
-
-               
+    
             }
         } else{
             response.send("noResponsible")
@@ -1373,6 +1400,27 @@ router.post("/editPropblem", urlencodedParser,
 )
 
 
+// router.post("/notificationResponsibleToOffers", urlencodedParser,
+// async function (req, res) {
+//     const mysqlConfig = {
+//         host: config.database.host,
+//         user: config.database.user,
+//         password: config.database.password,
+//         database: config.database.database,
+//     }
+
+//     const pool = mysql.createPool(mysqlConfig);
+//     let sqlReadAdmin = await pool.query(`SELECT * FROM telephone`)
+
+//     //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
+   
+//             res.send(sqlReadAdmin[0]);
+//             pool.end()
+        
+//     }
+   
+        
+// )
 
 
 

@@ -4,13 +4,16 @@ import s from "../../../common/offers/sendOffer/offerForm/offers.module.css"
 import { API_URL } from "../../../config";
 import {useContext} from "react";
 import Context from "../../context/Context";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addSendler, selectMyOffers } from "../../../reducers/offerReducer";
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
+import { StylesProvider } from "@material-ui/core/styles";
 
 const Offer = (props) => {
     const value = useContext(Context);
     const [dateComission, setDateComission] = useState('');
-
+    
     const dispatch = useDispatch();
 
     function DispatchOffers(){
@@ -106,22 +109,26 @@ const Offer = (props) => {
         setDateComission(localStorage.getItem('dateComission'))
 
     } 
-
+ 
     return (
         <div>
             <NavLink to='/cardOffer' onClick={() => { 
               clickOnOfferLink(); DispatchOffers(); DispatchAddSendler();
               localStorage.setItem('idOffers', props.id);
               localStorage.setItem('sendlerTabWG', props.tabelNum);
-             
+           
             }}>
                 <div className={s.header}>
+                {props.close ? <LockOpenIcon className={s.lock} />: <LockIcon className={s.unlock} />}
+                <div className={s.NumberOffers}>№ {props.id}</div>
                     <div className={s.offerPreview}>
+                 
                         <div className={s.from}>
-                        
+                            
                             <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
                             <div className={s.date}> {props.date.slice(0, 9)}</div>
                             <div className={s.status}>  {props.status}</div>
+                          
                         </div>
                         <div className={s.offerText}>{props.nameOffer}</div>
                     </div>
@@ -134,19 +141,22 @@ const Offer = (props) => {
 
 
 const OffersLink = (props) => {
-    let offersData = JSON.parse(props.request);
-   
-    return offersData.map((number) => <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
-                                             surname={number.surnameSendler} midlename={number.middlenameSendler}
-                                             status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum}
-                                             email={number.email}/>)
+
+    return props.request.map((number) => { 
+                               
+        return <Offer key={`offer_${number.Id}`} id={number.Id} date={number.date} name={number.nameSendler}
+        surname={number.surnameSendler} midlename={number.middlenameSendler}
+        status={number.status} nameOffer={number.nameOffer} tabelNum={number.tabelNum}
+        email={number.email} unlock = {props.unlock} close = {number.close}/>})
 
 }
 
 const OffersResponsible = () => {
     const [reqAllOff, setReqAllOff] = useState(0);
     let tabNum = localStorage.getItem('userTabelNum')
-    
+    let unlockOffResp = useSelector( state => state.notification.offerForProcessing.notifConc[1])
+
+
     if(reqAllOff === 0){
         Resp();
     }
@@ -159,9 +169,8 @@ const OffersResponsible = () => {
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-    
-                setReqAllOff(xhr.response)
-               
+                let dataOffers = JSON.parse(xhr.response)
+                setReqAllOff(dataOffers[0])
             }
         }
         xhr.send(`tabNum=${tabNum}`);
@@ -169,11 +178,13 @@ const OffersResponsible = () => {
         return xhr.response;
 
     }
+
     if(reqAllOff != 0 ){
+        
         return (
             <div className={s.offersContainer}>
                 <div className={s.titleHeader}> Предложения с вашими заключениями</div>
-                <OffersLink request={reqAllOff}/>
+                <OffersLink request={reqAllOff} unlock = {unlockOffResp}/>
             </div>
         )
     } else{

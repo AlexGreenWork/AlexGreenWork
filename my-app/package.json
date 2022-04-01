@@ -80,5 +80,9 @@
     "react-chartjs-2": "^4.0.0",
     "react-perfect-scrollbar": "^1.5.8",
     "webpack-cli": "^4.9.1"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
