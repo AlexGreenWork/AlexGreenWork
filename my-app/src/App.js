@@ -33,6 +33,12 @@ import Contacts from "./common/contacts/contacts";
 import News from "./common/news/news";
 import PublicServices from "./common/publicServices/publicServices";
 import Excursion from "./common/excursion/excursion";
+import cityGuide from "./common/cityGuide/cityGuide";
+
+
+let uSa = navigator.userAgent
+localStorage.setItem("userSystem",uSa)
+console.log(navigator)
 
 const AccessRouter = (props) =>
 {
@@ -113,7 +119,7 @@ function App(props) {
 								<Route exact path='/' component={ContentContainer}/>
 								<Route path='/news' component={News}/>
 								<Route path='/excursion' component={Excursion}/>
-
+                                <Route path='/cityGuide' component={cityGuide}/>
 								<Route path='/workerVariable' component={WorkerVariable}/>
 								<Route path='/administration' component={Administration}/>
 								<Route path='/management' component={Management}/>

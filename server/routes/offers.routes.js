@@ -884,8 +884,7 @@ router.post("/responsibleToOffers", urlencodedParser,
             response.send("noResponsible")
         }
         pool.end()
-    })
-    /////////////////////////////////////////////////////////////
+    })    /////////////////////////////////////////////////////////////
     router.post("/toDbSaveNotesResponsible", urlencodedParser,
     async function (request, response) {
     let actual = request.body.actual
