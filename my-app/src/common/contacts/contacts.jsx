@@ -98,6 +98,7 @@ function ListAccordion(props) {
     if (props.req !== null) {
         return CehList.map((number, index) => <AccordionName id={'accordionName' + index} key={index + "ListAccordion"}
                                                              ceh={number} req={props.req}/>)
+
         // return props.req.map()
     } else {
         return <div style={{
@@ -146,14 +147,14 @@ function AccordionName(props) {
 }
 
 function ContactList(props) {
-
+// console.log("rjczrb", props.req)
     return props.req.map((count, index) => {
 
-        if (Number(count.department) === props.number) {
+        if (Number(count.CEHCODE) === props.number) {
 
             return (
-                <ContactItem key={"ContactItem" + index} ceh={props.ceh} inside={count.inside} position={count.position}
-                             fio={count.fio} city={count.city}/>)
+                <ContactItem key={"ContactItem" + index} ceh={props.CEHCODE} inside={count.TELLPER} position={count.PROFNAME}
+                             fio={count.NAME} city={count.CITYPHONE}/>)
         } /* else{
       return(<div>null</div>)
     } */
@@ -188,7 +189,7 @@ function Contacts() {
         try {
             axios.post(`${API_URL}api/offers/readContacts`, {})
                 .then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     setReq(res.data)
                 })
         } catch (e) {

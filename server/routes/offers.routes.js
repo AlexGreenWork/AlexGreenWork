@@ -1206,8 +1206,8 @@ router.post("/comission", urlencodedParser,
 
         const pool = mysql.createPool(mysqlConfig);
 
-	let sqlReadAdmin1 = await pool.query(`SELECT * FROM rukovod`)
-        let sqlReadAdmin = await pool.query(`SELECT * FROM telephone`)
+	let sqlReadAdmin = await pool.query(`SELECT * FROM rukovod`)
+        let sqlReadAdmin1 = await pool.query(`SELECT * FROM telephone`)
 	console.log(sqlReadAdmin1)
 
         //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
