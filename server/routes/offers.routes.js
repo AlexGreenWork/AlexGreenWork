@@ -972,15 +972,24 @@ router.post("/closeConclusionRG", urlencodedParser,
 
         const pool = mysql.createPool(mysqlConfig);
 
-        let offerId = request.body.idOffer
-        let respTabnum = request.body.tabNum
-
-        console.log(Date(), "Заключение RG закрыто", " ", "'", "в предложение", offerId, "с табельного ", respTabnum,)
-        await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
-        response.status(200).send()
+       let offerId = request.body.idOffer
+       let respTabnum = request.body.tabNum
+        
+       let sqlCheckRespToDb = await pool.query(`SELECT offer_id FROM offersresponsible WHERE offer_id=${offerId} AND deleted = 0`)
+        
+       let sqlCheckRespNoClose =  await pool.query(`SELECT offer_id FROM offersresponsible WHERE offer_id=${offerId} AND close IS null AND deleted = 0`)
+      
+        if(sqlCheckRespNoClose[0].length != 0 && sqlCheckRespToDb.length != 0 ){
+          
+            response.send(false)
+        } else {
+            console.log(Date(), "Заключение RG закрыто", " ", "'", "в предложение", offerId, "с табельного ", respTabnum,)
+             await pool.query(`UPDATE offersresponsible_rg SET close = '${moment().format('YYYY-MM-DD')}' WHERE offer_id = ${offerId} AND responsible_tabnum = ${respTabnum}`);
+            response.status(200).send(true)
+        }
+        
         pool.end()
     })
-
 router.post("/closeConclusionResponsible", urlencodedParser,
     async function (request, response) {
         let offerId = request.body.idOffer
@@ -1175,8 +1184,9 @@ router.post("/comission", urlencodedParser,
         }
 
         const pool = mysql.createPool(mysqlConfig);
+	let sqlReadAdmin1 = await pool.query(`SELECT * FROM rukovod`)
         let sqlReadAdmin = await pool.query(`SELECT * FROM telephone`)
-
+	console.log(sqlReadAdmin1)
         //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
        
                 res.send(sqlReadAdmin[0]);

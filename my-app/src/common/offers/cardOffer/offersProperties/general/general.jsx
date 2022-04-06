@@ -139,12 +139,15 @@ const CommonOffer = () => {
 
 
     if (offersData.category == 1) {
+        setCategory(1)
         offersData.category = "По организации производства"
     }
     if (offersData.category == 2) {
+        setCategory(2)
         offersData.category = "По улучшению существующих процессов и продукции"
     }
     if (offersData.category == 3) {
+        setCategory(3)
         offersData.category = "Рационализаторское предложение"
     }
 
@@ -192,18 +195,23 @@ let nameStatus;
     }
 
     if (offersData.view == 1) {
+        setView(1)
         offersData.view = "Новые объекты на производстве"
     }
     if (offersData.view == 2) {
+        setView(2)
         offersData.view = "Улучшение технологии"
     }
     if (offersData.view == 3) {
+        setView(3)
         offersData.view = "Улучшение конструкции"
     }
     if (offersData.view == 4) {
+        setView(4)
         offersData.view = "Улучшение организации производства"
     }
     if (offersData.view == 5) {
+        setView(5)
         offersData.view = "Улучшение поддерживающей системы"
     }
 
