@@ -32,7 +32,7 @@ const ModalCardWithMissClick = (props) => {
 	const [open, set_open] = useState(false);
 	const modalRef = useRef(null);
 
-	const {User, Button} = props;
+	const {Button} = props;
 
 	function change()
 	{
@@ -51,7 +51,7 @@ const ModalCardWithMissClick = (props) => {
 							width="800px"
 							footer = {[]}
 					>
-						<Cart info = {User}/>
+						{props.children}
 					</Modal>
 				</div>
 			</div>
