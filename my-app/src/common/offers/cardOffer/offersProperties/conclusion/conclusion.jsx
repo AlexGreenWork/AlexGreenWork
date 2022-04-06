@@ -30,6 +30,7 @@ import TableBody from "@mui/material/TableBody";
 import FilesRG from "./conclusionFiles";
 import { saveNotesToDb } from "../../../../../actions/file";
 import { red } from "@mui/material/colors";
+import {NotifOffersProcessing} from "../../../../../reducers/notificationReducer";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 const ConclusionOffer = () => {
@@ -463,9 +464,27 @@ const ConclusionOffer = () => {
   function closeCunclusion() {
     const idOffer = localStorage.getItem("idOffers");
     const tabNum = localStorage.getItem("userTabelNum");
-    alert("Заключение закрыто");
-    setDateCloseRg(Date());
-    dispatch(closeConclusionRG(tabNum, idOffer));
+
+
+    // dispatch(closeConclusionRG(tabNum, idOffer));
+
+    try{
+      axios.post(`${API_URL}api/offers/closeConclusionRG`, {tabNum, idOffer}).then(res => {
+        if( res.data === true){
+          alert("Заключение закрыто");
+          setDateCloseRg(Date());
+          let notifConc =store.getState().notification.offerForProcessing.notifConc[0]-1
+          let notifConcArr =store.getState().notification.offerForProcessing.notifConc[1]
+          let offersProcess = store.getState().notification.offerForProcessing.offersProcess
+          dispatch(NotifOffersProcessing(offersProcess, [notifConc, notifConcArr]))
+        } else {
+          alert("Не все пользователи закрыли заключения");
+        }
+      })
+    }catch(e){
+      console.log(e)
+    }
+
   }
   const [actual, setActual] = React.useState("");
   const [innovate, setInnovate] = React.useState("");
