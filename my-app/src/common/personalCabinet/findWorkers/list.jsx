@@ -1,5 +1,5 @@
 import React from "react"
-import Card from "./card";
+import Card from "../card";
 import ScrollButton from "./scroll.jsx"
 import {API_URL} from "../../../config.js"
 import style from "./list.module.css"

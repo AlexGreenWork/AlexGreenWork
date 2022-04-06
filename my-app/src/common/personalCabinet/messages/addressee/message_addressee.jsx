@@ -4,21 +4,16 @@ import React from "react";
 import h from "../style/address.module.css"
 import { API_URL } from "../../../../config";
 import MessageStatusIcon from "../message_status_icon";
-import Cart from "../../findWorkers/card.jsx"
-import Arrow from "@mui/icons-material/ArrowDropUp"
-import ArrowDropUp from "@mui/icons-material/ArrowDropUp";
-import ArrowUpward from "@mui/icons-material/ArrowUpward";
+import ModalCardWithMissClick from "../../modalCardWithMissClick.jsx"
 
 class MessagesAddressee extends React.Component
 {
 	constructor(props)
 	{
 		super(props);
-		this.state = {openConfirm: false,
-						openCard: false}
+		this.state = {openConfirm: false}
 
 		this.onConfirm = this.onConfirm.bind(this);
-		this.onCard = this.onCard.bind(this);
 		this.onConfirmOpen = this.onConfirmOpen.bind(this);
 		this.onConfirmClose = this.onConfirmClose.bind(this);
 	}
@@ -44,11 +39,6 @@ class MessagesAddressee extends React.Component
 		this.setState({openConfirm: false});
 	}
 
-	onCard()
-	{
-		this.setState({openCard: !this.state.openCard});
-	}
-
 	render()
 	{
 		const message_sendler = this.props.addressee;
@@ -63,10 +53,12 @@ class MessagesAddressee extends React.Component
 								<MessageStatusIcon count = {this.props.unreads}/>
 							)
 						: null}
-						<Avatar className = {h.ava}
-								alt={this.props.id.toString()}
-								src = {avatar}
-								onClick = {this.onCard}/>
+
+						<ModalCardWithMissClick User = {this.props.id} Button = {
+							(<Avatar className = {h.ava}
+									alt={this.props.id.toString()}
+									src = {avatar}/>)
+						}/>
 						<div className = {h.messagePreview} onClick = {() => {this.props.onClick(this.props.id)}}>
 							<div className = {h.user}>
 								<h3>
@@ -107,19 +99,6 @@ class MessagesAddressee extends React.Component
 							</DialogActions>
 						</Dialog>
 				</div>
-				{this.state.openCard?
-					<div className = {h.card}>
-						<Button className = {h.cardButton}
-								color = "info"
-								variant = "contained"
-								onClick = {this.onCard}
-						>
-							<ArrowUpward/>
-						</Button>
-						<Cart info = {this.props.id} img = {avatar}/>
-					</div>
-					: null
-				}
 			</>
 		)
 	}

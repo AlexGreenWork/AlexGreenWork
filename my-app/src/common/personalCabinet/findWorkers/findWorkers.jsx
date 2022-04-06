@@ -1,7 +1,7 @@
 import style from "./findWorkers.module.css"
 import Complete from "./complete"
 import List from "./list"
-import Card from "./card";
+import Card from "../card";
 import {searchuser} from "../../../actions/search";
 import {React, useState} from "react";
 import {useDispatch} from "react-redux";
