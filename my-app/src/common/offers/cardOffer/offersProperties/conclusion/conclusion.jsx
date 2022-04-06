@@ -154,6 +154,7 @@ const ConclusionOffer = () => {
 		  offer.division
 	  ))
 	  setResponsibles(responsibles)
+console.log(responsibles)
   }
 
   function IsAdminRG() {

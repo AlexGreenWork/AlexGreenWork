@@ -874,18 +874,22 @@ router.post("/responsibleToOffers", urlencodedParser,
                                                          tabelNum 
                                                    FROM offers WHERE Id=${arrValidOffers[i].offer_id} `);
 
+
                 let sqlResponsible_list = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE offer_id=${sqlOffers[0][0].Id} AND deleted = 0  AND responsible_tabnum=${tabNum}`);
                 let sqlResponsible_rg_list = await pool.query(`SELECT offer_id, close  FROM offersresponsible_rg WHERE offer_id=${sqlOffers[0][0].Id} AND deleted = 0  AND responsible_tabnum=${tabNum}`);
                 let sqlrespAll_list = sqlResponsible_list[0].concat(sqlResponsible_rg_list[0])
 
                 if(sqlOffers[0].length != 0){
+
                     let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
                     let offersObj = sqlOffers[0][0]
 
                     offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
                     offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
                     offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
+
                     offersObj['close'] = sqlrespAll_list[0].close ? false : true
+
                     arrOffer[i] = offersObj;
 
                     if(i == arrValidOffers.length-1 ){
@@ -1007,7 +1011,6 @@ router.post("/saveNotesToDbRG", urlencodedParser,
         
         pool.end()
     })
-
 router.post("/closeConclusionResponsible", urlencodedParser,
     async function (request, response) {
         let offerId = request.body.idOffer
@@ -1202,9 +1205,11 @@ router.post("/comission", urlencodedParser,
         }
 
         const pool = mysql.createPool(mysqlConfig);
-        let sqlReadAdmin1 = await pool.query(`SELECT * FROM rukovod`)
+
+	let sqlReadAdmin1 = await pool.query(`SELECT * FROM rukovod`)
         let sqlReadAdmin = await pool.query(`SELECT * FROM telephone`)
-        console.log(sqlReadAdmin1)
+	console.log(sqlReadAdmin1)
+
         //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
 
         res.send(sqlReadAdmin[0]);
