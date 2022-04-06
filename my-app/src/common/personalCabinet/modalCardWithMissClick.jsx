@@ -47,6 +47,7 @@ const ModalCardWithMissClick = (props) => {
 					{React.cloneElement(Button, {onClick: change})}
 					<Modal title={<Text style={{fontSize: "17px", fontWeight: "bold"}}>Карточка пользователя</Text>}
 							visible={open}
+							closable = {false}
 							width="800px"
 							footer = {[]}
 					>
