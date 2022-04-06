@@ -5,6 +5,7 @@ import h from "../style/address.module.css"
 import { API_URL } from "../../../../config";
 import MessageStatusIcon from "../message_status_icon";
 import ModalCardWithMissClick from "../../modalCardWithMissClick.jsx"
+import Card from "../../card";
 
 class MessagesAddressee extends React.Component
 {
@@ -58,7 +59,9 @@ class MessagesAddressee extends React.Component
 							(<Avatar className = {h.ava}
 									alt={this.props.id.toString()}
 									src = {avatar}/>)
-						}/>
+						}>
+							<Card info = {this.props.id} img = {avatar}/>
+						</ModalCardWithMissClick>
 						<div className = {h.messagePreview} onClick = {() => {this.props.onClick(this.props.id)}}>
 							<div className = {h.user}>
 								<h3>
