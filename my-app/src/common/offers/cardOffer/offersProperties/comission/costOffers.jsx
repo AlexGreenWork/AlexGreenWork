@@ -61,33 +61,35 @@ function OffersCostBlock(props) {
 
     if (localStorage.getItem('userAdminOptions') == 'wg' || localStorage.getItem('userAdminOptions') == 'topComission' || localStorage.getItem('userAdminOptions') == 'admin') {
         if (props.fio.coAuthor === undefined) {
+            console.log(" админ нет соавтора")
             return (
                 <div>
-                    <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex", width: "50vw", justifyContent: "space-around", border: "1px solid", borderRadius: "10px"}}>
                         <div>
                             <div> Автор:
                                 <div>
                                     {props.fio.surname} {props.fio.name} {props.fio.middlename}
                                 </div>
                             </div>
-                            <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                            {/*<div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>*/}
                         </div>
-                        <div style={{display:"flex"}}>
+                        <div style={{display:"flex", alignItems:"center" }}>
                         <div contentEditable={"true"} id={`author${props.number}`}  style={{ backgroundColor: "white", minWidth:"20px" }}  > {props.fio.profit}</div> руб.</div>
                     </div>
                 </div>
             )
         } else {
+            console.log("админ есть соавтор")
             return (
                 <div>
-                    <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex", width: "50vw", justifyContent: "space-around", border: "1px solid", borderRadius: "10px"}}>
                         <div>
                             <div> Соавтор:
                                 <div>
                                     {props.fio.surname} {props.fio.name} {props.fio.middlename}
                                 </div>
                             </div>
-                            <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                            <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white", alignItems:"center"  }}  > {props.fio.profit}</div>
                         </div>
                     </div>
                 </div>
@@ -97,17 +99,17 @@ function OffersCostBlock(props) {
         if (props.fio.coAuthor === undefined) {
             return (
                 <div>
-                    <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex", width: "50vw", justifyContent: "space-around", border: "1px solid", borderRadius: "10px"}}>
                         <div>
                             <div> Автор:
                                 <div>
                                     {props.fio.surname} {props.fio.name} {props.fio.middlename}
                                 </div>
                             </div>
-                            <div id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                            {/*<div id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>*/}
                         </div>
-                       <div style={{display:"flex"}}>
-                        <div contentEditable={"true"} id={`author${props.number}`} style={{ backgroundColor: "white", minWidth:"20px" }}  > {props.fio.profit}</div> руб.</div>
+                       <div style={{display:"flex", alignItems: "center"}}>
+                        <div contentEditable={"false"} id={`author${props.number}`} style={{  minWidth:"20px" }}  > {props.fio.profit}</div> руб.</div>
                     </div>
                 </div>
             )
@@ -121,7 +123,7 @@ function OffersCostBlock(props) {
                                     {props.fio.surname} {props.fio.name} {props.fio.middlename}
                                 </div>
                             </div>
-                            <div id={`author${props.number}`} style={{ backgroundColor: "white" }}  > {props.fio.profit}</div>
+                            <div id={`author${props.number}`}  > {props.fio.profit}</div>
                         </div>
                     </div>
                 </div>
@@ -134,12 +136,12 @@ function OffersCostBlock(props) {
 }
 
 function CostOffersList(props) {
-   
+
 
 
     if (props.req !== null) {
         return props.req.map((elem, key) => {
-           
+
 
             return <OffersCostBlock key={key} fio={elem} number={key} />
         })
@@ -250,53 +252,53 @@ function CostOffers() {
 
     }
 
-    function inputValidator(number, req) {
-
-        let validInput = true;
-       
-        for (let i = 0; i < number; i++) {
-          
-            let countPont = 0
-            let cost = document.querySelector(`#author${i}`).innerText;
-           
-            for (let j = 0; j < cost.length; j++) {
-              
-                let codeKey = cost[j].charCodeAt()
-
-                if (codeKey > 47 && codeKey < 58 || codeKey === 9 || codeKey === 8 || codeKey === 46) {
-
-                    validInput = true;
-
-                    if (codeKey === 46) {
-                        countPont++
-                        console.log('countPont')
-                    }
-
-                } else {
-                    console.log(false)
-                    validInput = false;
-                    i = number
-                    j = cost.length
-                }
-                
-                if (countPont > 1) {
-                    validInput = false;
-                    i = number
-                    j = cost.length
-                }
-            }
-
-            countPont = 0
-
-        }
-        if (validInput === true) {
-          
-            SaveProfit(number, req)
-        
-        } else {
-            alert("Вы ввели неверную сумму")
-        }
-    }
+    // function inputValidator(number, req) {
+    //
+    //     let validInput = true;
+    //
+    //     for (let i = 0; i < number; i++) {
+    //
+    //         let countPont = 0
+    //         let cost = document.querySelector(`#author${i}`).innerText;
+    //
+    //         for (let j = 0; j < cost.length; j++) {
+    //
+    //             let codeKey = cost[j].charCodeAt()
+    //
+    //             if (codeKey > 47 && codeKey < 58 || codeKey === 9 || codeKey === 8 || codeKey === 46) {
+    //
+    //                 validInput = true;
+    //
+    //                 if (codeKey === 46) {
+    //                     countPont++
+    //                     console.log('countPont')
+    //                 }
+    //
+    //             } else {
+    //                 console.log(false)
+    //                 validInput = false;
+    //                 i = number
+    //                 j = cost.length
+    //             }
+    //
+    //             if (countPont > 1) {
+    //                 validInput = false;
+    //                 i = number
+    //                 j = cost.length
+    //             }
+    //         }
+    //
+    //         countPont = 0
+    //
+    //     }
+    //     if (validInput === true) {
+    //
+    //         SaveProfit(number, req)
+    //
+    //     } else {
+    //         alert("Вы ввели неверную сумму")
+    //     }
+    // }
 
     function ProfitChange(props) {
 
@@ -315,9 +317,10 @@ function CostOffers() {
         }
     }
 
+
+
     if (reqCost === null) {
-        
-     
+
         return (<div>
 
             <CostOffersList req={reqCost} />

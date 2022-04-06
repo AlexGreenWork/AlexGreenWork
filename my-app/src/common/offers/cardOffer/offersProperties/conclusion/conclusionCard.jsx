@@ -19,6 +19,7 @@ import { closeConclusionResponsible } from "../../../../../actions/file";
 import FilesResponsible from "./responsibleFiles";
 import { useDispatch } from "react-redux";
 import {selectMyOffers} from "../../../../../reducers/offerReducer";
+import {NotifOffersProcessing} from "../../../../../reducers/notificationReducer";
 
 const ConclusionCard = (props) => {
   const ref = props;
@@ -175,39 +176,43 @@ const ConclusionCard = (props) => {
   async function saveToDb(idOffer, respTabnum, position) {
     try {
       await server.send_post_request(
-        `${API_URL}api/offers/toDbSaveResponsible`,
-        {
-          respTabnum,
-          idOffer,
-          position,
-        }
+          `${API_URL}api/offers/toDbSaveResponsible`,
+          {
+            respTabnum,
+            idOffer,
+            position,
+          }
       ).then(res=>{
-            function  RequestSelectOffers(props) {
+        console.log(res.data)
+        if(res.data !== false){
+          RequestSelectOffers(props)
+          console.log(res.data)
+          alert("Ответственный сотрудник добавлен");
+        } else {
+          alert("Данный сотрудник уже добавлен")
+        }
+        function  RequestSelectOffers(props) {
 
-              let xhr = new XMLHttpRequest();
-              xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, true);
-              xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          let xhr = new XMLHttpRequest();
+          xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, true);
+          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-              xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                  let offersData = JSON.parse(xhr.response);
-
-                  ref.onAdded(offersData.responsibles)
-                }
-              }
-
-              xhr.send(`selectOffers=${localStorage.getItem('idOffers')}`);
+          xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+              let offersData = JSON.parse(xhr.response);
+              ref.onAdded(offersData.responsibles)
             }
-            RequestSelectOffers(props)
-          });
+          }
+          xhr.send(`selectOffers=${localStorage.getItem('idOffers')}`);
+        }
+      });
 
 
-
-      alert("Ответственный сотрудник добавлен");
     } catch (e) {
       alert(e.response.data.message);
     }
   }
+
 
   const CardDivisionConclusion = () => {
     console.log(props);
@@ -593,12 +598,33 @@ const ConclusionCard = (props) => {
     function closeCunclusion() {
       const idOffer = localStorage.getItem("idOffers");
       const tabNum = localStorage.getItem("userTabelNum");
-      alert("Заключение закрыто");
-      setDateClose(Date());
-      dispatch(closeConclusionResponsible(tabNum, idOffer));
+
+
+      // dispatch(closeConclusionResponsible(tabNum, idOffer));
+      closeConclusionResponsible(tabNum, idOffer)
+
+      function closeConclusionResponsible(tabNum, idOffer) {
+        let notifConc = store.getState().notification.offerForProcessing.notifConc[0] - 1
+        let notifConcArr = store.getState().notification.offerForProcessing.notifConc[1]
+        let offersProcess = store.getState().notification.offerForProcessing.offersProcess
+        try {
+          console.log(tabNum, idOffer)
+          axios.post(`${API_URL}api/offers/closeConclusionResponsible`, {tabNum, idOffer}).then(res => {
+            console.log(res.status)
+            if (res.status === 200) {
+              dispatch(NotifOffersProcessing(offersProcess, [notifConc, notifConcArr]))
+              alert("Заключение закрыто");
+              setDateClose(Date());
+            }
+          })
+        } catch (e) {
+          console.log(e)
+        }
+
+      }
     }
 
-    const [isActive, setIsActive] = React.useState(false);
+      const [isActive, setIsActive] = React.useState(false);
     const [resOtv, setResOtv] = React.useState(`${props.id}`);
     function ConfirmResponsible() {
       console.log(props);

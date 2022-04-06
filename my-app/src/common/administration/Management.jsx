@@ -75,7 +75,7 @@ class Administration extends React.Component {
                 </a>
               </li>
               <li>
-                <ul style={{display:"flex", listStyle:"none", alignItems: "baseline", flexWrap:"wrap"}}>
+                <ul style={{display:"flex", listStyle:"none", alignItems: "baseline", flexWrap:"wrap", justifyContent: "center"}}>
                   <li
                     style={{
                       listStyle: "none",
@@ -144,37 +144,37 @@ class Administration extends React.Component {
                       
                     </a>
                   </li>
-                  <li
-                    style={{
-                      listStyle: "none",
-                      display: "flex",
-                      justifyContent: "center",
-					  margin:"5px"
-                    }}
-                  >
-                    <a
-                      href="#"
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        padding: "5px",
-                        justifyContent: "center",
-                        alignItems: "center",
-						width:"150px"
-                      }}
-                    >
-						<div style={{
-							backgroundImage: `url("${"http://isi.belaz.minsk.by:5000/files/photos/42541.jpg"}")`, 
-							backgroundSize: "cover",
-							width: "150px", 
-							height:"200px" 
-						}}>
-						</div>
-						<span>Васько Леонид Михайлович</span>
-                      <span style={{color:"black"}}>Заместитель генерального директора по коммерческому импорту и материальному обеспечению</span>
-                      
-                    </a>
-                  </li>
+                  {/*<li*/}
+                  {/*  style={{*/}
+                  {/*    listStyle: "none",*/}
+                  {/*    display: "flex",*/}
+                  {/*    justifyContent: "center",*/}
+					{/*  margin:"5px"*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  <a*/}
+                  {/*    href="#"*/}
+                  {/*    style={{*/}
+                  {/*      display: "flex",*/}
+                  {/*      flexDirection: "column",*/}
+                  {/*      padding: "5px",*/}
+                  {/*      justifyContent: "center",*/}
+                  {/*      alignItems: "center",*/}
+					{/*	width:"150px"*/}
+                  {/*    }}*/}
+                  {/*  >*/}
+					{/*	<div style={{*/}
+					{/*		backgroundImage: `url("${"http://isi.belaz.minsk.by:5000/files/photos/42541.jpg"}")`, */}
+					{/*		backgroundSize: "cover",*/}
+					{/*		width: "150px", */}
+					{/*		height:"200px" */}
+					{/*	}}>*/}
+					{/*	</div>*/}
+					{/*	<span>Васько Леонид Михайлович</span>*/}
+                  {/*    <span style={{color:"black"}}>Заместитель генерального директора по коммерческому импорту и материальному обеспечению</span>*/}
+                  {/*    */}
+                  {/*  </a>*/}
+                  {/*</li>*/}
 				  <li
                     style={{
                       listStyle: "none",
