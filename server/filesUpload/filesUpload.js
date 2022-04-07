@@ -43,11 +43,6 @@ module.exports.CheckLastEntry = async function () {
         if (!err) {
             console.log(err)
             console.log(`Директория id${lstEntry[0][0].Id} есть`);
-
-
-
-
-
                 fs.readdir('../server/files/upload/', (err, files) => {
                    
                     if (files) {
@@ -63,11 +58,6 @@ module.exports.CheckLastEntry = async function () {
                     }
 
                 });
-
-
-
-
-
         }
         else if (err.code === 'ENOENT') {
             console.log('директории нет');

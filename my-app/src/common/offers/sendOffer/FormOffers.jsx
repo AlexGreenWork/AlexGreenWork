@@ -817,7 +817,7 @@ function OffersForm(props) {
                                     onChange={(e) => {setPassword(e.target.value) ; setAlertCheckPass(null)}} required autoComplete="off" />
                                 <div className="false-input false-name"></div>
                             </div>
-                            <div>
+                            <div className='alertCheckPass'>
                             {alertCheckPass}
                             </div>
                         </div>

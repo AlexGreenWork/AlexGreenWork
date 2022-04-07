@@ -25,6 +25,13 @@ router.use((req, res, next) => {
     return next();
 })
 
+// router.use(function(req, res){
+//     // console.log("vblkdfh", Object.keys(req) )
+//     console.log(req.headers)
+//     console.log(req.originalUrl)
+//     console.log(req.ip)
+// })
+
 
 // const mysqlConfig = {
 //     host: config.database.host,

@@ -127,7 +127,7 @@ const Offer = (props) => {
                             
                             <div className={s.fromName}>  {props.surname + " " + props.name + " " + props.midlename}</div>
                             <div className={s.date}> {props.date.slice(0, 9)}</div>
-                            <div className={s.status}>  {props.status}</div>
+                            {/* <div className={s.status}>  {props.status}</div> */}
                           
                         </div>
                         <div className={s.offerText}>{props.nameOffer}</div>

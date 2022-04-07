@@ -30,11 +30,19 @@ import TableBody from "@mui/material/TableBody";
 import FilesRG from "./conclusionFiles";
 import { saveNotesToDb } from "../../../../../actions/file";
 import { red } from "@mui/material/colors";
+import { NotifOffersProcessing } from "../../../../../reducers/notificationReducer";
+
+
+
+
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 const ConclusionOffer = () => {
   const dispatch = useDispatch();
-
+  console.log(654565646546546545465)
   const [viewChange, setViewChange] = React.useState(false);
 
   function changeViewSelect() {
@@ -154,6 +162,31 @@ const ConclusionOffer = () => {
 	  ))
 	  setResponsibles(responsibles)
 console.log(responsibles)
+  }
+
+  function CloseChangeOfferResponsiblesRg(responsibles_rg)
+  {
+	  dispatch(selectMyOffers(offer.Id,
+		  offer.nameOffer,
+		  offer.date,
+		  offer.tabelNum,
+		  offer.nameSendler,
+		  offer.surnameSendler,
+		  offer.middlenameSendler,
+		  offer.email,
+		  offer.status,
+		  offer.descriptionProblem,
+		  offer.category,
+		  offer.view,
+		  offer.responsibles,
+		  responsibles_rg,
+		  offer.textOffer,
+		  offer.phoneNumber,
+		  offer.dateCommision,
+		  offer.departament,
+		  offer.division
+	  ))
+
   }
 
   function IsAdminRG() {
@@ -464,9 +497,34 @@ console.log(responsibles)
   function closeCunclusion() {
     const idOffer = localStorage.getItem("idOffers");
     const tabNum = localStorage.getItem("userTabelNum");
-    alert("Заключение закрыто");
-    setDateCloseRg(Date());
-    dispatch(closeConclusionRG(tabNum, idOffer));
+   
+    
+    // dispatch(closeConclusionRG(tabNum, idOffer));
+
+    try{
+       axios.post(`${API_URL}api/offers/closeConclusionRG`, {tabNum, idOffer}).then(res => {
+        if( res.data === true){
+          alert("Заключение закрыто");
+          setDateCloseRg(Date());
+            let notifConc =store.getState().notification.offerForProcessing.notifConc[0]-1
+            let notifConcArr =store.getState().notification.offerForProcessing.notifConc[1]
+            let offersProcess = store.getState().notification.offerForProcessing.offersProcess
+            dispatch(NotifOffersProcessing(offersProcess, [notifConc, notifConcArr]));
+            console.log(store.getState().offers.offer.responsibles_rg)
+            
+            let respRG = store.getState().offers.offer.responsibles_rg
+            respRG.close = Date()
+            console.log(respRG)
+            CloseChangeOfferResponsiblesRg(respRG)
+            
+         } else {
+          alert("Не все пользователи закрыли заключения");
+         }
+      })
+    }catch(e){
+      console.log(e)
+  }
+
   }
   const [actual, setActual] = React.useState("");
   const [innovate, setInnovate] = React.useState("");

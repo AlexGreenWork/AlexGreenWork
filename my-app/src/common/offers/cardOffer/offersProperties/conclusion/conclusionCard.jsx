@@ -17,8 +17,9 @@ import Paper from "@mui/material/Paper";
 import axios from "axios";
 import { closeConclusionResponsible } from "../../../../../actions/file";
 import FilesResponsible from "./responsibleFiles";
-import { useDispatch } from "react-redux";
+import { useDispatch , useSelector} from "react-redux";
 import {selectMyOffers} from "../../../../../reducers/offerReducer";
+import {NotifOffersProcessing} from '../../../../../reducers/notificationReducer'
 
 const ConclusionCard = (props) => {
   const ref = props;
@@ -26,6 +27,7 @@ const ConclusionCard = (props) => {
   const [viewChange, setViewChange] = React.useState(false);
   const [annot, setAnnot] = React.useState(`${props.id.mark}`);
   console.log(props.id.mark);
+  const offer = useSelector(state => state.offers.offer)
   if (
     props.id.mark == "null" ||
     (props.id.mark == null &&
@@ -182,6 +184,14 @@ const ConclusionCard = (props) => {
           position,
         }
       ).then(res=>{
+          console.log(res.data)
+          if(res.data !== false){
+            RequestSelectOffers(props)
+            console.log(res.data)
+            alert("Ответственный сотрудник добавлен");
+          } else {
+            alert("Данный сотрудник уже добавлен")
+          }
             function  RequestSelectOffers(props) {
 
               let xhr = new XMLHttpRequest();
@@ -191,19 +201,14 @@ const ConclusionCard = (props) => {
               xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                   let offersData = JSON.parse(xhr.response);
-
                   ref.onAdded(offersData.responsibles)
                 }
               }
-
               xhr.send(`selectOffers=${localStorage.getItem('idOffers')}`);
             }
-            RequestSelectOffers(props)
           });
 
 
-
-      alert("Ответственный сотрудник добавлен");
     } catch (e) {
       alert(e.response.data.message);
     }
@@ -593,10 +598,76 @@ const ConclusionCard = (props) => {
     function closeCunclusion() {
       const idOffer = localStorage.getItem("idOffers");
       const tabNum = localStorage.getItem("userTabelNum");
-      alert("Заключение закрыто");
-      setDateClose(Date());
-      dispatch(closeConclusionResponsible(tabNum, idOffer));
+     
+     
+      // dispatch(closeConclusionResponsible(tabNum, idOffer));
+      closeConclusionResponsible(tabNum, idOffer)
+      
+      function closeConclusionResponsible(tabNum, idOffer){
+        
+        let notifConc =store.getState().notification.offerForProcessing.notifConc[0]-1
+        let notifConcArr =store.getState().notification.offerForProcessing.notifConc[1]
+        let offersProcess = store.getState().notification.offerForProcessing.offersProcess
+
+            try{
+                console.log(tabNum, idOffer)
+                axios.post(`${API_URL}api/offers/closeConclusionResponsible`, {tabNum, idOffer}).then(res =>{console.log(res.status)
+                if(res.status === 200){
+                    dispatch(NotifOffersProcessing(offersProcess, [notifConc, notifConcArr]))
+                    alert("Заключение закрыто");
+                    CloseChangeOfferResponsibles(tabNum)
+                    setDateClose(Date());
+                   
+                    // CloseChangeOfferResponsibles()
+                }})
+            }catch(e){
+                console.log(e)
+            }
+        
     }
+    }
+
+    function CloseChangeOfferResponsibles()
+  {
+    let keys = Object.keys(offer.responsibles)
+    let objRespTrue =offer.responsibles
+    let objTrue =  Object.keys(objRespTrue)
+   
+    let a  = null;
+    let tabNum = localStorage.getItem('userTabelNum')
+    for(let i = 0; i < keys.length; i++){
+      for(let j = 0; j < objTrue.length; j++){
+        if(keys[i] === objTrue[j] && tabNum === objRespTrue[j].responsible_tabnum ){
+       
+          a = offer.responsibles[i]
+          a.close  = Date()
+          objRespTrue[i] = a  
+         
+        }
+      }
+    }
+	  // dispatch(selectMyOffers(offer.Id,
+		//   offer.nameOffer,
+		//   offer.date,
+		//   offer.tabelNum,
+		//   offer.nameSendler,
+		//   offer.surnameSendler,
+		//   offer.middlenameSendler,
+		//   offer.email,
+		//   offer.status,
+		//   offer.descriptionProblem,
+		//   offer.category,
+		//   offer.view,
+		//   offer.responsibles,
+		//   offer.responsibles_rg,
+		//   offer.textOffer,
+		//   offer.phoneNumber,
+		//   offer.dateCommision,
+		//   offer.departament,
+		//   offer.division
+	  // ))
+
+  }
 
     const [isActive, setIsActive] = React.useState(false);
     const [resOtv, setResOtv] = React.useState(`${props.id}`);
