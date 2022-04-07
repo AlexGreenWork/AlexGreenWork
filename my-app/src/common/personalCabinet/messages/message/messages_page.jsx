@@ -1,6 +1,4 @@
 import React from "react";
-import s from "../style/messages.module.css"
-import {Button, Tooltip} from '@mui/material'
 import MessageList from './message_list'
 import MessageInputForm from "./message_input_form";
 

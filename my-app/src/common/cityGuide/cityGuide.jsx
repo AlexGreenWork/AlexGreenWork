@@ -20,7 +20,7 @@ const CityGuide = () => {
                height: "calc(100% - 170px)",
                overflowY:"scroll"
              }}
-        >>
+        >
             <ul id={s.categories} className={s.clr}>
 
                 <li>

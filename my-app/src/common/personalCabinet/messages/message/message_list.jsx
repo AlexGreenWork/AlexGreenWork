@@ -7,23 +7,20 @@ class MessageList extends React.Component
 	constructor(props)
 	{
 		super(props);
+		this.messageListRef = React.createRef();
 		this.onScroll = this.onScroll.bind(this);
 		this.messageViewPortIntersection = this.messageViewPortIntersection.bind(this);
-	}
-
-	scrollToBottom()
-	{
-		const messageContainer = document.getElementById('messages_user_container');
-		messageContainer.scrollTo(0, messageContainer.scrollHeight);
 	}
 
 	componentDidUpdate(props)
 	{
 		if(this.props !== props)
 		{
-			this.scrollToBottom();
-			const messageContainer = document.getElementById('messages_user_container');
-			this.messageViewCheck(messageContainer.children, messageContainer);
+			const element = this.messageListRef?.current;
+			if(element?.children)
+			{
+				this.messageViewCheck(element.children, element);
+			}
 		}
 	}
 
@@ -85,7 +82,8 @@ class MessageList extends React.Component
 	render()
 	{
 		return (
-					<div id = "messages_user_container" className={s.messages}
+					<div ref = {this.messageListRef}
+							className={s.messages}
 							onScroll = {this.onScroll}
 					>
 						{this.props.messages.map((message, id) => (

@@ -177,12 +177,12 @@ const ConclusionCard = (props) => {
   async function saveToDb(idOffer, respTabnum, position) {
     try {
       await server.send_post_request(
-        `${API_URL}api/offers/toDbSaveResponsible`,
-        {
-          respTabnum,
-          idOffer,
-          position,
-        }
+          `${API_URL}api/offers/toDbSaveResponsible`,
+          {
+            respTabnum,
+            idOffer,
+            position,
+          }
       ).then(res=>{
           console.log(res.data)
           if(res.data !== false){
@@ -194,9 +194,9 @@ const ConclusionCard = (props) => {
           }
             function  RequestSelectOffers(props) {
 
-              let xhr = new XMLHttpRequest();
-              xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, true);
-              xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          let xhr = new XMLHttpRequest();
+          xhr.open('POST', `${API_URL}api/offers/selectMyOffers`, true);
+          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
               xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -213,6 +213,7 @@ const ConclusionCard = (props) => {
       alert(e.response.data.message);
     }
   }
+
 
   const CardDivisionConclusion = () => {
     console.log(props);
@@ -669,7 +670,7 @@ const ConclusionCard = (props) => {
 
   }
 
-    const [isActive, setIsActive] = React.useState(false);
+      const [isActive, setIsActive] = React.useState(false);
     const [resOtv, setResOtv] = React.useState(`${props.id}`);
     function ConfirmResponsible() {
       console.log(props);

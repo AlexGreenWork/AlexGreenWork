@@ -569,7 +569,7 @@ router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
             || !position) {
             response.status(400)
             response.send();
-			return;
+            return;
         }
 
         const mysqlConfig = {
@@ -582,7 +582,7 @@ router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
         const pool = mysql.createPool(mysqlConfig);
 
         let sqlCheckoffResponsible = await pool.query(`SELECT offer_id  FROM offersresponsible WHERE responsible_tabnum=${respTabnum} AND offer_id=${idOffers} AND deleted = 0` ) 
-        console.log(sqlCheckoffResponsible[0].length)
+        
       
 		try
 		{
@@ -608,27 +608,27 @@ router.post("/toDbSaveResponsible", urlencodedParser, authMiddleware,
 										ow.adminOptions = 'admin'
 							)`
 
-            let placeholders = [respTabnum, position, userId, idOffers];
+                let placeholders = [respTabnum, position, userId, idOffers];
 
-            await pool.query(query, placeholders);
+                await pool.query(query, placeholders);
 
-            response.status(200);
-            if(pool) pool.end();
-            response.send();
+                response.status(200);
+                if(pool) pool.end();
+                response.send();
 
             }else {
                 response.status(200);
                 if(pool) pool.end();
                 response.send(false);
             }
-		} 
-		catch(e)
-		{
-			console.log(e);
-		}
+        }
+        catch(e)
+        {
+            console.log(e);
+        }
 
-       
     })
+
 
 router.post("/saveRespRGAnnotationToDb", urlencodedParser, authMiddleware,
     async function (request, response) {
@@ -828,7 +828,7 @@ router.post("/responsibleToOffers", urlencodedParser,
         }
 
         const pool = mysql.createPool(mysqlConfig);
-      
+
 
         let arrOffer = [];
         let tabNum = request.body.tabNum;
@@ -836,17 +836,17 @@ router.post("/responsibleToOffers", urlencodedParser,
         let count_resp_no_close = 0;
         // let objUnlockOffers = {};
         let unlockOffers = [];
-        let sqlResponsible = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE responsible_tabnum=${tabNum} AND deleted = 0 `); 
+        let sqlResponsible = await pool.query(`SELECT offer_id, close  FROM offersresponsible WHERE responsible_tabnum=${tabNum} AND deleted = 0 `);
         let sqlResponsible_Rg = await pool.query(`SELECT offer_id, close  FROM offersresponsible_rg WHERE responsible_tabnum=${tabNum} AND deleted = 0 `);
-        
-         let resPonsibleAll = sqlResponsible[0].concat(sqlResponsible_Rg[0])
-         
+
+        let resPonsibleAll = sqlResponsible[0].concat(sqlResponsible_Rg[0])
+
         for(let i = 0; i < resPonsibleAll.length; i++){
-      
+
             let sqlOffers = await pool.query(`SELECT Id  FROM offers WHERE Id=${resPonsibleAll[i].offer_id} `)
-           
+
             if(sqlOffers[0].length != 0){
-               
+
                 arrValidOffers.push(resPonsibleAll[i])
                 if(resPonsibleAll[i].close == null){
                     count_resp_no_close ++;
@@ -860,7 +860,7 @@ router.post("/responsibleToOffers", urlencodedParser,
                     unlockOffers.push(objUnlockOffers)
                 }
             }
-           
+
         }
 
         if(arrValidOffers.length != 0){
@@ -880,7 +880,7 @@ router.post("/responsibleToOffers", urlencodedParser,
                 if(sqlOffers[0].length != 0){
                     let sqlOffersAuthor = await pool.query(`SELECT * FROM offersworker WHERE tabelNum=${sqlOffers[0][0].tabelNum} `);
                     let offersObj = sqlOffers[0][0]
-                   
+
                     offersObj['nameSendler'] = sqlOffersAuthor[0][0].name
                     offersObj['surnameSendler'] = sqlOffersAuthor[0][0].surname
                     offersObj['middlenameSendler'] = sqlOffersAuthor[0][0].middlename
@@ -889,18 +889,19 @@ router.post("/responsibleToOffers", urlencodedParser,
                    
                     if(i == arrValidOffers.length-1 ){
                         response.send([arrOffer, count_resp_no_close, unlockOffers])
-                     
+
                     }
-                    } else {
-                        response.send("noResponsible")
-                    }
-    
+                } else {
+                    response.send("noResponsible")
+                }
+
             }
         } else{
             response.send("noResponsible")
         }
         pool.end()
-    })    /////////////////////////////////////////////////////////////
+    })
+/////////////////////////////////////////////////////////////
     router.post("/toDbSaveNotesResponsible", urlencodedParser,
     async function (request, response) {
     let actual = request.body.actual
@@ -984,7 +985,7 @@ router.post("/saveNotesToDbRG", urlencodedParser,
         pool.end();
     })
 
-router.post("/closeConclusionRG", urlencodedParser,
+    router.post("/closeConclusionRG", urlencodedParser,
     async function (request, response) {
 
         const mysqlConfig = {
@@ -1014,7 +1015,6 @@ router.post("/closeConclusionRG", urlencodedParser,
         
         pool.end()
     })
-
 router.post("/closeConclusionResponsible", urlencodedParser,
     async function (request, response) {
         let offerId = request.body.idOffer
@@ -1209,17 +1209,21 @@ router.post("/comission", urlencodedParser,
         }
 
         const pool = mysql.createPool(mysqlConfig);
-        let sqlReadAdmin = await pool.query(`SELECT * FROM telephone`)
+
+	let sqlReadAdmin = await pool.query(`SELECT * FROM rukovod`)
+        let sqlReadAdmin1 = await pool.query(`SELECT * FROM telephone`)
+	console.log(sqlReadAdmin1)
 
         //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
-       
-                res.send(sqlReadAdmin[0]);
-                pool.end()
-            
-        }
-       
-            
+
+        res.send(sqlReadAdmin[0]);
+        pool.end()
+
+    }
+
+
     )
+
 
 router.post("/getHistoryBrowsing", urlencodedParser,
     async function (req, res) {

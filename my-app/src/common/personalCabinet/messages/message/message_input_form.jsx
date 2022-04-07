@@ -7,23 +7,21 @@ class MessageInputForm extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {input: ""}
+		this.inputRef = React.createRef();
 
-		this.onInput = this.onInput.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
-	}
-
-	onInput(e)
-	{
-		this.setState({input: e.target.value});
 	}
 
 	onSubmit()
 	{
 		if(this.props?.onSubmit && typeof this.props.onSubmit === 'function')
 		{
-			this.props.onSubmit(this.state.input);
-			this.setState({input: ""});
+			const element = this.inputRef?.current;
+			if(element?.value)
+			{
+				this.props.onSubmit(element.value);
+				element.value = "";
+			}
 		}
 	}
 
@@ -35,11 +33,9 @@ class MessageInputForm extends React.Component
 					<div>
 						<div style = {{display: "grid", gridTemplateColumns: "auto 15%"}}>
 							<Field
-								id = "message_user_input"
 								label="Сообщение"
 								color="success"
-								onChange={this.onInput}
-								value = {this.state.input}
+								inputRef = {this.inputRef}
 								focused 
 								autoFocus
 								multiline

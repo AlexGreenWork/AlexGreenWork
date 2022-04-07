@@ -1,11 +1,11 @@
 import React from "react"
 import {connect} from "react-redux"
 import style from "./card.module.css"
-import {selectcard} from "../../../actions/search";
+import {selectcard} from "../../actions/search";
 import Mail from "@mui/icons-material/MailOutline"
 import PropTypes from "prop-types"
-import {API_URL} from "../../../config.js"
-import server from "../../../actions/server"
+import {API_URL} from "../../config.js"
+import server from "../../actions/server"
 import { NavLink } from "react-router-dom";
 
 class Cart extends React.Component

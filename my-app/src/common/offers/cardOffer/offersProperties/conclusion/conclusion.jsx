@@ -30,14 +30,7 @@ import TableBody from "@mui/material/TableBody";
 import FilesRG from "./conclusionFiles";
 import { saveNotesToDb } from "../../../../../actions/file";
 import { red } from "@mui/material/colors";
-import { NotifOffersProcessing } from "../../../../../reducers/notificationReducer";
-
-
-
-
-
-
-
+import {NotifOffersProcessing} from "../../../../../reducers/notificationReducer";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 const ConclusionOffer = () => {
