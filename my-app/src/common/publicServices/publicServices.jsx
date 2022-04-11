@@ -34,6 +34,7 @@ function PublicServices(){
             display:"flex",
             justifyContent:"center"}}>
             <ContentContainer />
+          
             <div style={{
                 position: "absolute",
                 display: "flex",
@@ -43,7 +44,9 @@ function PublicServices(){
                 justifyContent:"center",
                 height:"100%"
             }}>
+            
             <div className='servicesBox'>
+            <div style={{color: "red", position:"fixed", fontSize:'1.3em', top: "65px", left:"450px"}}>C 1 аперля цены не актуальны</div>
                <div className="headerServName">Наименование услуги</div>
                <div className="headerServCost">Стоимость</div>
             <ListServices req = {reqMatobzk}/>
