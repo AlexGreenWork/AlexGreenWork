@@ -306,7 +306,7 @@
 }
 
 .content{
-    paddind-top:50px;
+    padding-top:50px;
     -ms-grid-column: 1;
     -ms-grid-column-span: 1;
     grid-column: 2/ 4;
@@ -423,7 +423,7 @@
 }
 
 th{
-    border-right: 1px rgb(179, 214, 255) solid;
+    /* border-right: 1px rgb(179, 214, 255) solid; */
     font-weight: 100;
 }
 
@@ -454,7 +454,7 @@ h2{
     top: -30px;
 }
 td{
-    border-right: 1px solid #1d92ff54;
+    /* border-right: 1px solid #1d92ff54; */
     padding:  5px 10px;
 }
 .tdIgnore{

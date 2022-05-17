@@ -5,6 +5,7 @@ import axios from "axios"
 import {API_URL} from "../../config"
 import "./publicServices.css"
 import ContentContainer from "../contentHome/contentContainer";
+
 function PublicServices(){
 
     const [reqMatobzk, setReqMatobzk] = useState(null)
@@ -48,7 +49,7 @@ function PublicServices(){
             <div className='servicesBox'>
             <div style={{color: "red", position:"fixed", fontSize:'1.3em', top: "65px", left:"450px"}}>C 1 аперля цены не актуальны</div>
                <div className="headerServName">Наименование услуги</div>
-               <div className="headerServCost">Стоимость</div>
+               <div className="headerServCost">Стоимость (без НДС)</div>
             <ListServices req = {reqMatobzk}/>
 
             </div>

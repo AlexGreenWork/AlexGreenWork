@@ -1,0 +1,70 @@
+.buttonStatistic{
+    /* padding-top: 5px;
+    padding-bottom: 5px; */
+    font-size: 1.3em;
+    height: 40px;
+    background-color: rgb(255, 255, 255);
+    border: none;
+    transition: background-color 1s ;
+}
+
+.buttonStatistic:hover:after {
+    background-color: aqua;
+}
+
+/* :default */
+
+/* .buttonStatistic:default { content:"222";
+    background-color: rgb(25, 0, 255);
+} */
+
+.buttonStatisticHover{
+  font-size: 4em;
+  position: relative; 
+  top: -18px;
+  animation-name: statisticHover;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+  
+}
+@keyframes statisticHover {
+    0% {
+        top: -30px;
+    }
+    100% {
+        top: -18;
+    }
+}
+
+.chart{
+    /* style={{width:'90%', height:'400px', zIndex:'3000', background:"white"} */
+    position: relative;
+    width: 90%;
+    height: 400px;
+    z-index: 3000;
+    background-color: aliceblue;
+    left: 5%;
+    animation-name: chartDown;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+}
+
+@keyframes chartDown {
+    0% {
+        transform: translateX(-2000px);
+    }
+    100% {
+        transform: translateX(-18px);
+    }
+}
+
+.chartUp{
+    position: relative;
+    width: 90%;
+    height: 400px;
+    z-index: 3000;
+    background-color: aliceblue;
+    left: 5%;
+   
+}
+

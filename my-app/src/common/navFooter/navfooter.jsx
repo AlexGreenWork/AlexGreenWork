@@ -51,7 +51,7 @@ function CountNotificationALL(){
                              dispatch(NotifOffersProcessing(browsHist, [res.data[1], res.data[2]]));
                             // setResponsible(<OffersResponsible count= {countResp}/>)
                         } else {
-                            dispatch(NotifOffersProcessing(browsHist, "noResponsible"));
+                            dispatch(NotifOffersProcessing(browsHist, [0, 0]));
                         }
                 })
         } catch (e){
@@ -59,6 +59,7 @@ function CountNotificationALL(){
         }
         
     }
+    
     if(countOffers + notifConc > 0){
         return(
             <div className={s.countNoBrowser}>

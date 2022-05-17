@@ -58,7 +58,7 @@ export const CountNoBrowsing = () =>{
                              dispatch(NotifOffersProcessing(browsHist, [res.data[1], res.data[2]]));
                             // setResponsible(<OffersResponsible count= {countResp}/>)
                         } else {
-                            dispatch(NotifOffersProcessing(browsHist, "noResponsible"));
+                            dispatch(NotifOffersProcessing(browsHist, [0, 0]));
                         }
                 })
         } catch (e){
@@ -126,7 +126,7 @@ export const CountMessageNoBrowsing = (props) => {
 }
 
 function OffersResponsible(props){
-  
+    console.log(props)
     if(props.count != 'noResponsible'){
         return(
             <div className={s.navOffers}>
@@ -148,7 +148,7 @@ function OffersResponsible(props){
 const PersonalCabinet = () => {
    
     const countResp = useSelector(state => state.notification.offerForProcessing.notifConc[0])
-
+    console.log(countResp)
     function IsAdminUser(props)
     {
         return (

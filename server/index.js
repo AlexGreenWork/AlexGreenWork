@@ -25,6 +25,7 @@ app.use("/api/messages", require('./routes/messages.routes'))
 app.use("/api/task", require('./routes/task.routes'))
 app.use("/api/files", require('./routes/file.routes'))
 app.use("/api/offers", require('./routes/offers.routes'))
+app.use("/api/statistics", require('./routes/statistics.routes'))
 app.use(express.static('static'))
 
 if (process.env.NODE_ENV === 'production') {
