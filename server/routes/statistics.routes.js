@@ -29,7 +29,7 @@ router.post("/usersRegistration", urlencodedParser,
         const pool = mysql.createPool(mysqlConfig);
         let sqlRegiterUser = await pool.query('SELECT date FROM `offersworker` WHERE date  >= MAKEDATE(year(now()),1)')
         let sqlOffers = await pool.query('SELECT date FROM `offers` WHERE date  >= MAKEDATE(year(now()),1)')
-
+        let sqlAllJob = await pool.query('SELECT COUNT(*) FROM `kadryok`')
         let arrMonthSql = []
         let arrMonthRepeat = []
         let arrMonthOffers = []
@@ -147,7 +147,7 @@ router.post("/personnelStream", urlencodedParser,
             color: "green"
         }
       let objResp = {all: String(sqlAllJob[0][0]["COUNT(*)"]), dataPersonal }
-        response.send(dataPersonal)
+        response.send(objResp)
     })
 
     router.post("/personnelAll", urlencodedParser,

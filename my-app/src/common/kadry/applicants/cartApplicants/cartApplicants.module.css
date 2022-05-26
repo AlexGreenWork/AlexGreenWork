@@ -1,0 +1,27 @@
+.cart{
+    display:flex;
+    width: 100%;
+    border:1px solid #d181f5;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: white;
+}
+.cart:hover{
+    transition: ease .1s;
+    background-color: #c780f5;
+    transform: translate(-2px,  -2px);
+    box-shadow: 5px 5px 5px black;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+}
+.cart:active{
+    box-shadow: inset 1px 1px gold;
+    transform: translate(0px, 0px);
+}
+.rowCart{
+    width: 100%;
+    align-items: center;
+    padding-left: 2px;
+    padding-right: 2px;
+}

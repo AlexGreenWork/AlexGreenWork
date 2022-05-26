@@ -96,6 +96,9 @@ class OffersState extends React.Component
 							  font:"28px sans-serif",
 							  text_color: 'blue',
 							 },
+				toolTipText:{
+								type: "amount"
+							},
 				intCircle:{
 					circle_radius: 12,
 					colorBorder: "red",
@@ -105,8 +108,13 @@ class OffersState extends React.Component
 				 mouse :{
 				  padding_mouse_left: 15,
 				  padding_mouse_top: -80,
-				}
-			
+				},
+				
+				midleLine:{
+					valid: "false",
+					
+					
+			   }
 			}
 			this.setState({property:property});
 
@@ -129,6 +137,11 @@ class OffersState extends React.Component
 				vertical_line: "fasle",
 				vertical_line_width: "2",
 				vertical_line_color: "#dddd",
+				
+				midleLine:{
+					valid: "false",
+					
+			   },
 				pen: {active :"true",
 					circle_radius: 7,
 					colorBorder: "blue",
@@ -161,7 +174,8 @@ class OffersState extends React.Component
 				  text:{
 					color: "black",
 					type:"proc"
-				}
+				},
+				
 				}
 			
 			}
@@ -315,8 +329,9 @@ class OffersState extends React.Component
 										<Typography color="textPrimary" variant="h1" style={{position:"absolute"}}>
 											{offers_info.all}
 										</Typography>
-										<Charts data={this.state.data} property = {this.state.property} idElem={"chart"} idContainer = {"container"} chartName = {"Подача предложений и регистрация пользователей"}/>
-										<Charts data={this.state.dataChart} property = {this.state.propertyCircle} idElem={"chart10"} idContainer = {"container10"}  chartName = {"Обработка предложений"}/>
+										{ Object.keys(this.state.property).length !== 0  ? <Charts data={this.state.data} property = {this.state.property} idElem={"chart"} idContainer = {"container"} chartName = {"Подача предложений и регистрация пользователей"}/> : <div>null</div>}	
+										{/* { Object.keys( this.state.propertyCircle).length !== 0  ? <Charts data={this.state.dataChart} property = {this.state.propertyCircle} idElem={"chart10"} idContainer = {"container10"}  chartName = {"Обработка предложений"}/> : <div>null</div>}	 */}
+										
 									</Grid>
 								</Grid>
 							</CardContent>

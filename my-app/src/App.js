@@ -34,7 +34,9 @@ import News from "./common/news/news";
 import PublicServices from "./common/publicServices/publicServices";
 import Excursion from "./common/excursion/excursion";
 import cityGuide from "./common/cityGuide/cityGuide";
-
+import Applicants from "./common/kadry/applicants/applicants";
+import Kadry from "./common/kadry/kadry";
+//import EducationPortal from "./common/educationPortal/educationPortal";
 
 let uSa = navigator.userAgent
 localStorage.setItem("userSystem",uSa)
@@ -120,6 +122,8 @@ function App(props) {
 								<Route path='/news' component={News}/>
 								<Route path='/excursion' component={Excursion}/>
                                 <Route path='/cityGuide' component={cityGuide}/>
+								<Route path='/kadry' component={Kadry}/>
+                                <Route path='/kadry_/applicants' component={Applicants}/>
 								<Route path='/workerVariable' component={WorkerVariable}/>
 								<Route path='/administration' component={Administration}/>
 								<Route path='/management' component={Management}/>

@@ -35,7 +35,7 @@ export function InputDataTool(idElem, x, y, nameData, color, elemData, x_type, p
     block.className = elemData
    
     const elem = document.querySelector('.' + elemData)
-   
+      
    
     const container = document.querySelector('.tool-tip')
   
@@ -58,6 +58,7 @@ export function InputDataTool(idElem, x, y, nameData, color, elemData, x_type, p
         } else {
             
             let xName = x
+           
             if(x_type === "year"){
                 switch(x){
                     case 1: xName =  "Январь"; 
@@ -121,4 +122,5 @@ export function DestroyTool(){
     } else {
 
     }
+     
 }

@@ -11,7 +11,7 @@ import Slider from '@mui/material/Slider';
 import axios from 'axios'
 import {API_URL} from '../../config'
 import ChartPersonal from "./chartStates/chartPersonal/chartPersonal";
-
+import Sample from "../kadry/applicants/cartApplicants/sample/Sample";
 class TopComission extends React.Component
 {
 	constructor(props)
@@ -115,7 +115,11 @@ class TopComission extends React.Component
 		color: "black",
 		type:"number"
 	}
-    }
+    },
+	midleLine:{
+		 valid: "true",
+		 
+	}
 
 }
 	
@@ -153,8 +157,9 @@ class TopComission extends React.Component
 						{ (this.state.render === 1) ? <States/> : <div></div>}
 						{ (this.state.render === 1) ? <LastOffers/> : <div></div>}
 						
-			<ChartPersonal/>		
-            <Charts data={this.state.data} property = {property} idElem={"chart23"} idContainer = {"container23"}/>
+			<ChartPersonal/>
+			<Sample/>		
+            {/* <Charts data={this.state.data} property = {property} idElem={"chart23"} idContainer = {"container23"}/> */}
             {/* <Charts data={this.state.data} property = {property} idElem={"chart1"}/> */}
 					{/* { (this.state.render === 0) ? <div className={s.chart}><RangeSlider/></div>: <div></div>} */}
 					<div style={{width: "400px", height:"400px", background:"green",/*  position:"absolute", top:"523px" */}}></div>
