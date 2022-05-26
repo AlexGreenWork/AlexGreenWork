@@ -192,7 +192,7 @@ const Offers = () => {
     }
     return (
         <div className={s.offersContainer}>
-            <div className={s.titleHeader} >Мои предложения</div>
+            <div className={s.titleHeader} ><h1>Мои предложения</h1></div>
             <ChangeOff />
           
 

@@ -10,6 +10,7 @@ class MessageList extends React.Component
 		this.messageListRef = React.createRef();
 		this.onScroll = this.onScroll.bind(this);
 		this.messageViewPortIntersection = this.messageViewPortIntersection.bind(this);
+
 	}
 
 	componentDidUpdate(props)
@@ -20,6 +21,7 @@ class MessageList extends React.Component
 			if(element?.children)
 			{
 				this.messageViewCheck(element.children, element);
+				this.messageListRef.current.scrollTo(0, 99999999999999999999999);
 			}
 		}
 	}
@@ -68,6 +70,7 @@ class MessageList extends React.Component
 				this.messageViewPortIntersection(element.id);
 			}
 		}
+
 	}
 
 	messageViewPortIntersection(messageId)
@@ -77,14 +80,17 @@ class MessageList extends React.Component
 		{
 			this.props.onMessageRead(messageId);
 		}
+
 	}
+
 
 	render()
 	{
 		return (
-					<div ref = {this.messageListRef}
+					<div id='list'  ref = {this.messageListRef}
 							className={s.messages}
 							onScroll = {this.onScroll}
+
 					>
 						{this.props.messages.map((message, id) => (
 							<div key = {id} id = {id}>
@@ -95,5 +101,6 @@ class MessageList extends React.Component
 		)
 	}
 }
+
 
 export default MessageList;

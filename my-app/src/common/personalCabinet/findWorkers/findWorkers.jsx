@@ -16,7 +16,8 @@ const FindWorkers = (props) => {
 
 	return (
 
-				<div className={props?.className? props.className:style.sendOfferContainer}>
+				<div className={props?.className? props.className:style.sendOfferContainer} style={{display:"flex",flexDirection:"column", justifyContent:"flex-start", alignItems:"center" }}>
+					<div><h1>Поиск сотрудников</h1></div>
 					<div className={style.sendOfferInnerContainer}>
 						<div className={style.sendOfferSearchBar}>
 							<Complete

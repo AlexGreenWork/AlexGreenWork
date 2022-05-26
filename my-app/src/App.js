@@ -35,6 +35,10 @@ import PublicServices from "./common/publicServices/publicServices";
 import Excursion from "./common/excursion/excursion";
 import cityGuide from "./common/cityGuide/cityGuide";
 
+import Applicants from "./common/kadry/applicants/applicants";
+import Kadry from "./common/kadry/kadry";
+import EducationPortal from "./common/educationPortal/educationPortal";
+
 
 let uSa = navigator.userAgent
 localStorage.setItem("userSystem",uSa)
@@ -125,6 +129,10 @@ function App(props) {
 								<Route path='/management' component={Management}/>
 								<Route path='/contacts' component={Contacts}/>
 								<Route path='/publicServices' component={PublicServices}/>
+                                <Route path='/kadry' component={Kadry}/>
+                                <Route path='/kadry_/applicants' component={Applicants}/>
+
+                                <Route path='/educationPortal' component={EducationPortal}/>
 
 								<Route path='/personalCabinet/myOffers' component={MyOffers} />
 								<Route path='/personalCabinet/findWorkers' component={FindWorkers}/>
@@ -141,7 +149,7 @@ function App(props) {
 								<Route path='/personalCabinet/myFiles' component={MyFiles}/>
 								<Route path='/personalCabinet/offersResponsible' component={OffersResponsible}/>
 								<Route path='/personalCabinet/adminPanelComission' component={TopComission}/>
-								
+
 
 							</Switch>
 							:
@@ -166,7 +174,7 @@ function App(props) {
 
 
 
-						
+
 
 					</div>
 

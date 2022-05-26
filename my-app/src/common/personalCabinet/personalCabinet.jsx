@@ -18,8 +18,8 @@ export const CountNoBrowsing = () =>{
     const [alloffers, setAllOffers] =  useState(null);
     const dispatch = useDispatch()
     const countOffers = useSelector(state => state.notification.offerForProcessing.offersProcess)
-   
-   
+
+
     if(alloffers === null){
         BrowseHistory(tabNum)
 
@@ -48,14 +48,14 @@ export const CountNoBrowsing = () =>{
     }
 
     function  responsibleToOffersClose(browsHist){
-       
+
         try{
             axios.post(`${API_URL}api/offers/responsibleToOffers`, {  tabNum: tabNum,
-    
+
             })
                 .then(res => {
                         if(res.data != 'noResponsible' ){
-                            console.log(res.data)
+
                              dispatch(NotifOffersProcessing(browsHist, [res.data[1], res.data[2]]));
                             // setResponsible(<OffersResponsible count= {countResp}/>)
                         } else {
@@ -65,7 +65,7 @@ export const CountNoBrowsing = () =>{
         } catch (e){
             alert(e.response)
         }
-        
+
     }
 
     // function Resp(history) {
@@ -127,27 +127,27 @@ export const CountMessageNoBrowsing = (props) => {
 }
 
 function OffersResponsible(props){
-  
+
     if(props.count != 'noResponsible'){
         return(
             <div className={s.navOffers}>
-              
+
                 <div className={s.linksPC}><NavLink className={s.offers} to="/personalCabinet/offersResponsible">Ваши заключения</NavLink></div>
                {props.count > 0 ? ( <div className={s.countUnlock}>{props.count}</div> ) : <div/>}
                 {/* <div className={s.countUnlock}>{props.count}</div>  */}
             </div>
-            
+
         )
     } else {
         return(<div></div>)
     }
-    
+
 }
 
 
- 
+
 const PersonalCabinet = () => {
-   
+
     const countResp = useSelector(state => state.notification.offerForProcessing.notifConc[0])
 
     function IsAdminUser(props)

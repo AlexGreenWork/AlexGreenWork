@@ -1183,7 +1183,7 @@ router.post("/comission", urlencodedParser,
         }
 
         const pool = mysql.createPool(mysqlConfig);
-        let sqlReadAdmin = await pool.query(`SELECT * FROM kadryok WHERE CEHCODE = '400'`)
+        let sqlReadAdmin = await pool.query(`SELECT * FROM rukovod WHERE CEHCODE ='400' and PROFNAME NOT LIKE 'Секретарь%при%мной' AND NAME NOT LIKE 'Самуйлов Дмитрий Леонидович' AND NAME NOT LIKE ''`)
         console.log(sqlReadAdmin[0])
         //  pool.query(`INSERT INTO comission (offerID, annotation, tabelNum) VALUES ('${offerId}', '${textComission}', '${comissionTabnum}')`)
        
@@ -1216,9 +1216,7 @@ router.post("/comission", urlencodedParser,
         pool.end()
 
     }
-
-
-    )
+ )
 
 
 router.post("/getHistoryBrowsing", urlencodedParser,

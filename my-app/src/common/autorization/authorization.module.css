@@ -29,6 +29,13 @@
 .inp{
     margin-bottom: 10px;
 }
+.inp:focus{
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+}
+
 .inpChek{
     display:flex;
 
@@ -73,6 +80,15 @@
     min-height: var(--input-height);
     margin:5px;
 }
+
+.formControl:focus {
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+}
+
+
 
 .form_field:not(.radio):not(.checkbox) {
     flex-flow: row wrap;

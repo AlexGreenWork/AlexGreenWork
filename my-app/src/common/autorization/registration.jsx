@@ -116,17 +116,17 @@ const Registration = () => {
                     height: "4vh",
                     padding: "5px"
                 }} className={s.inp} onChange={inpSur} type="text" placeholder="Введите фамилию..." value={surname} />
-                <input style={{
+                <input   style={{
                     borderRadius: "5px",
                     height: "4vh",
                     padding: "5px"
                 }} className={s.inp} onChange={inpName} type="text" placeholder="Имя" value={name} />
-                <input style={{
+                <input className={s.formControl} style={{
                     borderRadius: "5px",
                     height: "4vh",
                     padding: "5px"
                 }} className={s.inp} onChange={inpMid} type="text" placeholder="Введите отчество..." value={middlename} />
-                <input style={{
+                <input   style={{
                     borderRadius: "5px",
                     height: "4vh",
                     padding: "5px"
@@ -137,14 +137,14 @@ const Registration = () => {
                     borderRadius: "5px",
                     height: "4vh",
                     padding: "5px"
-                }} className={s.inp} onChange={inpPhoneNumber} type="tel" maxLength="9" 
+                }} className={s.inp}   onChange={inpPhoneNumber} type="tel" maxLength="9"
                     placeholder="Введите номер телефона..." />
                 </div>
                 <input style={{
                     borderRadius: "5px",
                     height: "4vh",
                     padding: "5px"
-                }} className={s.inp} onChange={inpPassword} type="password" placeholder="Введите пароль..." />
+                }} className={s.inp}   onChange={inpPassword} type="password" placeholder="Введите пароль..." />
                 <div>
                     <Button className="authorization__btn"
                         style={{

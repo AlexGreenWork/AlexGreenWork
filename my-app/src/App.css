@@ -163,4 +163,8 @@ body {
   font-size: 1em;
 }
 
+
 /*-------------------------------------------------END CART OFFER*/
+#outlined-search:focus{
+  background-color: white;
+}

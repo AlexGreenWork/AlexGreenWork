@@ -1,0 +1,36 @@
+#chart{
+    box-shadow: 0px 0px 6px 1px rgba(34, 60, 80, 0.4);
+    
+}
+
+.tool-tip{
+    display: inline-flex;
+    /* flex-direction: column; */
+    /* flex-direction: row-reverse; */
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.733);
+    padding: 10px;
+    box-shadow: 2px 2px 6px 0px rgba(34, 60, 80, 0.3);
+    font-family:"Roboto","Helvetica","Arial",sans-serif;
+    font-size: 1em;
+    border: 1px solid rgba(26, 81, 233, 0.342);
+    border-radius: 5px;
+}
+
+/* .content-tooltip{
+    display: flex;
+    flex-direction: column;
+    padding-right: 5px;
+    align-items: center;
+   
+    
+} */
+
+.graph-Block{
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+   
+   
+}

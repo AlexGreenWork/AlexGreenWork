@@ -803,7 +803,7 @@ const Offers = () => {
       <div className={s.offersContainer}>
         <div className={s.titleHeader}>
           {" "}
-          Предложения для обработки рабочей группой
+          <h1>Предложения для обработки рабочей группой</h1>
         </div>
         <div className={s.searchContainer}>
           <div

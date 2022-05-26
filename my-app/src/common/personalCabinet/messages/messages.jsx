@@ -381,6 +381,7 @@ class Messages extends React.Component
 		{
 			return (
 					<div className={s.messagesContainer}>
+						<h1 style={{color:"white", width:"100%", display:"flex", justifyContent:"center"}}>Сообщения</h1>
 						{this.state.addressee.length > 0?
 							(
 								<MessageStatus>

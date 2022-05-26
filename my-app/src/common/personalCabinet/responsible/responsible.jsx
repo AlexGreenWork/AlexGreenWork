@@ -183,7 +183,7 @@ const OffersResponsible = () => {
         
         return (
             <div className={s.offersContainer}>
-                <div className={s.titleHeader}> Предложения с вашими заключениями</div>
+                <div className={s.titleHeader}> <h1>Предложения с вашими заключениями</h1></div>
                 <OffersLink request={reqAllOff} unlock = {unlockOffResp}/>
             </div>
         )

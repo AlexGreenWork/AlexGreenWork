@@ -12,9 +12,11 @@ export default function ReducerStepper (state=defaultState, action){
         case "ADD_STATUS":
 
              state.stepStatusOffer =action.payload;
-        case "ADD_REJECT":{
+            break;
+        case "ADD_REJECT":
             state.rejectStatusOffer =action.payload;
-        }
+
+            break;
         default:
             return state
     }

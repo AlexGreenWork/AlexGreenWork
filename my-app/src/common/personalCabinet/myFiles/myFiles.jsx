@@ -252,7 +252,7 @@ const MyFiles = () => {
         return(
 
             <div className={`${s.personalCabinetContainer} `}  >
-               <div className='blockname'>Мои файлы </div> 
+               <div className='blockname'><h1>Мои файлы</h1> </div>
                 <OfferList  offers={reqMyOff}/>
                 <WgFilesList/>
             </div>
